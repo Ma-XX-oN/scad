@@ -1,5 +1,7 @@
 /**
- * Base Algorithms
+ * # Base Algorithms
+ *
+ * Don't include this file.  Use the `use<>` idiom.
  *
  * This file contains the 4 basic algorithms which most other algorithms can be
  * built from.  They are:
@@ -9,48 +11,98 @@
  * 3. filter - create a list of indices or objects where some predicate is true.
  * 4. map - create a list of values/objects based on a range of indices.
  *
+ * ## Iterators:
+ *
  * These algorithms are index, not element centric, which means that a physical
  * container (i.e. list) is not needed.  A virtual container (i.e. function) is
  * all that is required.  The indices act as iterators as one might find in C++.
  *
+ * The begin_i_range_or_list parameter of each of these function state either:
+ *
+ * 1. Starting index (number)
+ *    - Implies that end_i will indicate the inclusive end index (number).  This
+ *      conforms to how ranges in OpenSCAD work.
+ * 2. Indices (list)
+ *    - end_i is ignored.  Will go through each element in the list and use them
+ *      as indices to pass to the algorithm.
+ * 3. Indices (range)
+ *    - end_i is ignored.  Will go through each item in the range and use them
+ *      as indices to pass to the algorithm.
+ *
+ * ## PDR functions
+ *
  * The functions that the dev can provide to the algorithms are:
  *
  * 1. predicate (function (i) : bool)
- *    - Used by find and filter.
+ *    - Used by find, filter and map.
  *    - Is only passed the index to test against.
  * 2. dereference (function (i, v) : any)
  *    - Optionally used by filter.
  *    - If v is not passed, then it acts like a predicate.  Otherwise, it's
  *      passed a true value, which usually results in the element at that index.
- * 3. reduce (function (i, acc) : any)
- *    - Used by reduce
+ *    - This 2 parameter function is an optimisation, not requiring the
+ *      generation of an intermediate index list, for which map would have to be
+ *      applied to get a completed list, if it's not needed.
+ * 3. reduction (function (i, acc) : any)
+ *    - Used by reduce.
  *    - Takes in the index and the previous accumulated object and returns the
  *      new accumulated object.
  *
- * There is an adaptor function (in_array) which will allow those functions to
- * take in an element rather than an index.  This can make the usage intent
- * clearer, and if the index range is omitted, can use the array's length as a
- * default reference.
+ * As a group, they are referred to as PDR functions.
  *
- * For the find and reduce algorithms, they rely on recursive decent.
-
- * This has some similarities to how the C++ STL separates iterators from
- * algorithms by reusing a common interface, namely a predicate or operation
- * lambda, and a begin and end index, or a range or list of indices.  The
- * indices act as iterators and the functions act as predicates, dereferencers
- * or operators.  Note that dereferencing doesn't necessarily mean that there is
- * an underlying list container.  It could just as easily be a function
- * container which has a O(1) memory footprint.
+ * ## Helpers functions:
  *
- * All predicate or operation lambdas take an index, but can be made to take an
- * element by using the `in_array()` helper.  This will cause the predicate or
- * operation lambda to accept the element rather than the index, which might
- * help with showing intent.  No performance testing has been done to see if
- * there is any execution degradation.
+ * 1. it_fwd(array, begin_offset = 0, end_offset = 0)
+ *    - Returns a range object.
+ *    - begin_offset is usually POSITIVE and end_offset usually NEGATIVE. If
+ *      they are not usual values, then OUT OF BOUND CONDITIONS will occur and
+ *      it is up to the dev to deal with it.
+ * 2. it_back(array, begin_offset = 0, end_offset = 0)
+ *    - Returns a range object.
+ *    - begin_offset is usually NEGATIVE and end_offset usually POSITIVE. If
+ *      they are not usual values, then OUT OF BOUND CONDITIONS will occur and
+ *      it is up to the dev to deal with it.
+ * 3. not(fn)
+ *    - Returns a lambda that will take one parameter and return the negation of
+ *      what the original function would give if passed that one parameter.
+ * 5. apply_to_fn(fn, parameters_as_array)
+ *    - Applies the parameters_as_array to the function fn.
+ * 4. in_array(array, algo_fn, pdr_fn, begin_i_range_or_list = 0,
+ *             end_i = len(array) - 1 )
+ *    - Adaptor function to iterate over the array and pass elements rather than
+ *      indices to the PDR function.  This can make the usage intent clearer,
+ *      and if the index range is omitted, can use the array's length as the
+ *      default reference.
  *
- * find and reduce were implemented using a logarithmic/linear hybrid recursion
- * model to reduce stack depth and maximise performance.  filter and map use
- * list comprehension.
+ * ## Secondary algorithms:
+ *
+ * 1. param_count(fn)
+ *    - Returns the number of parameters that the lambda takes.
+ *
+ * 2. substr(haystack, needle, begin_i_range_or_list = 0,
+ *           end_i = len(haystack) - 1)
+ *    - Returns the first time needle is found in haystack.
+ *
+ * 3. any_find(any_pred_fn, begin_i_range_or_list, end_i)
+ *    - Check if any call to any_pred_fn(i) returns true.
+ *
+ * 4. any_filter(any_pred_fn, begin_i_range_or_list, end_i)
+ *    - Check if any call to any_pred_fn(i) returns true.
+ *
+ * 5. all_find(all_pred_fn, begin_i_range_or_list, end_i)
+ *    - Check if all calls to all_pred_fn(i) return true.
+ *
+ * 6. all_filter(all_pred_fn, begin_i_range_or_list, end_i)
+ *    - Check if all calls to all_pred_fn(i) return true.
+ *
+ * any_find and any_filter are both available because I've not done any
+ * benchmarking to see if one is faster than the other.  Same goes with all_find
+ * and all_filter.  When I determine that one is better than the other, I'll
+ * just create functions any and all.  If they are better in different
+ * circumstances, I may keep both.
+ *
+ * For the find and reduce algorithms, they rely on recursive descent, but they
+ * also conform to TCO (Tail Call Optimisation) so don't have a maximum depth.
  *
  * Due to how OpenSCAD works where include<> is not guarded to only include a
  * file once and use<> does guard but doesn't evaluate and export top level
@@ -70,11 +122,6 @@ use <range.scad>
 ////////////////////////////////////////////////////////////////////////////////
 // Find and Reduce
 ////////////////////////////////////////////////////////////////////////////////
-
-function true_fn(i) = true;
-function function_true_fn() =
-  function(i) true
-;
 
 /**
  * Negate a lambda's return value
@@ -96,8 +143,7 @@ function not(not_fn) =
  *
  * NOTE:  Dev is responsible for ensuring that when using start_offset /
  *        end_offset, that they don't go out of bounds, or if they do, the
- *        underlying predicate / operator / dereference operator will handle it
- *        gracefully.
+ *        underlying PDR function will handle it gracefully.
  *
  * @param array (list)
  *   List to iterate over
@@ -108,7 +154,8 @@ function not(not_fn) =
  *   go to the end of array.  Positive would go past the end of the array.
  *
  * @returns (range)
- *   A range that goes from 0 + start_offset to len(array) + end_offset - 1.
+ *   An ascending range that goes from start_offset to len(array) + end_offset
+ *   - 1.
  */
 function it_fwd(array, start_offset = 0, end_offset = 0) =
   [start_offset : len(array) + end_offset - 1];
@@ -118,8 +165,7 @@ function it_fwd(array, start_offset = 0, end_offset = 0) =
  *
  * NOTE:  Dev is responsible for ensuring that when using start_offset /
  *        end_offset, that they don't go out of bounds, or if they do, the
- *        underlying predicate / operator / dereference operator will handle it
- *        gracefully.
+ *        underlying PDR function will handle it gracefully.
  *
  * @param array (list)
  *   List to iterate over
@@ -131,7 +177,8 @@ function it_fwd(array, start_offset = 0, end_offset = 0) =
  *   Offset to end the ending point to.  (Default: 0) 
  *
  * @returns (range)
- *   A range that goes from 0 to len(array) - 1.
+ *   A descending range that goes from len(array) + start_offset - 1 to
+ *   end_offset.
  */
 function it_back(array, start_offset = 0, end_offset = 0) =
   [len(array) + start_offset - 1 : -1 : end_offset];
@@ -139,15 +186,6 @@ function it_back(array, start_offset = 0, end_offset = 0) =
 echo(let(a=[1,2,3,4,5], fn=function(i) a[i]%2==0)
   str("find: ", find(fn, it_fwd(a)))
 );
-
-use_arrays_for_tests = true;
-
-/**
- * This is the max linear recursive decent depth.  Any higher will result in a
- * logarithmic recursive decent, which is slightly more computationally
- * intensive, but is much nicer to the stack depth.
- */
-function linear_threshold() = 1024;
 
 /**
  * Helper which calls it_fn but remaps signature function(fn,
@@ -206,16 +244,12 @@ function _to_begin_i_end_i(it_fn, it_helper_test_fn, begin_i_range_or_list, end_
  *   - If begin_i_range_or_list is a number, end index to check.  If end_i < 0
  *     then find_pred_fn is never called.  Therefore, this function returns
  *     undef.
- * @param linear_threshold (number)
- *   If the number of items to iterate over exceeds this value, then a
- *   logarithmic recursive decent will occur, rather than a linear one.  This is
- *   to prevent blowing the stack up.  (Default: linear_threshold())
  *
  * @returns (number)
  *   If a call to find_pred_fn(i) returns truthy, will return i.  Otherwise
  *   will return undef.
  */
-function find(find_pred_fn, begin_i_range_or_list, end_i, linear_threshold = linear_threshold()) =
+function find(find_pred_fn, begin_i_range_or_list, end_i) =
   let (
     // recursion depth is O(N)
     _find_linear = function(_find_pred_fn, begin_i, end_i)
@@ -225,48 +259,18 @@ function find(find_pred_fn, begin_i_range_or_list, end_i, linear_threshold = lin
         ? begin_i
         : _find_linear(_find_pred_fn, begin_i + 1, end_i)
       : undef
-  ,
-    _find_logarithmic = function(_find_pred_fn, begin_i, end_i)
-      // Recursion depth is O(ln(N))
-      // 0, 3  (b_i = 0, e_i = 3, m_i = (0 + 3)//2 = 1, e_i - b_i = 3) check (0, 1) and check (2, 3)
-      // 0, 2  (b_i = 0, e_i = 2, m_i = (0 + 2)//2 = 1, e_i - b_i = 2) check (0, 1) and check (2, 2)
-      // 0, 1  (b_i = 0, e_i = 1, m_i = (0 + 1)//2 = 0, e_i - b_i = 1) test (0) and test(1)
-      // 0     (b_i = 0, e_i = 0, m_i = (0 + 0)//2 = 0, e_i - b_i = 0) test (0)
-      let (index_diff = end_i - begin_i)
-      index_diff < linear_threshold
-      ? _find_linear(_find_pred_fn, begin_i, end_i)
-      : index_diff == 0 // 1 item
-        ? // echo("find_helper 1", begin_i)
-          _find_pred_fn(begin_i)
-          ? begin_i
-          : undef
-        : index_diff == 1 // 2 items
-          ? // echo("find_helper 2", begin_i)
-            _find_pred_fn(begin_i)
-            ? begin_i
-            : // echo("find_helper 3", end_i)
-              _find_pred_fn(end_i)
-              ? end_i
-              : undef
-          : let ( // 3+ items
-              middle_i = floor((begin_i + end_i) / 2),
-              result = _find_logarithmic(_find_pred_fn, begin_i, middle_i)
-            )
-            is_undef(result)
-              ? _find_logarithmic(_find_pred_fn, middle_i + 1, end_i)
-              : result
   )
   _to_begin_i_end_i(
     function(_find_pred_fn, begin_i, end_i)
       end_i < begin_i
       ? undef
-      : _find_logarithmic(_find_pred_fn, begin_i, end_i),
+      : _find_linear(_find_pred_fn, begin_i, end_i),
     find_pred_fn, begin_i_range_or_list, end_i)
 ;
 
 function function_find() =
-  function(find_pred_fn, begin_i_range_or_list, end_i, linear_threshold = linear_threshold())
-    find(find_pred_fn, begin_i_range_or_list, end_i, linear_threshold)
+  function(find_pred_fn, begin_i_range_or_list, end_i)
+    find(find_pred_fn, begin_i_range_or_list, end_i)
 ;
 
 /**
@@ -290,59 +294,39 @@ function function_find() =
  *   - If begin_i_range_or_list is a number, end index to check.  If end_i < 0
  *     then reduce_op_fn is never called.  Therefore, this function returns
  *     init.
- * @param linear_threshold (number)
- *   If the number of items to iterate over exceeds this value, then a
- *   logarithmic recursive decent will occur, rather than a linear one.  This is
- *   to prevent blowing the stack up.  (Default: linear_threshold())
  *
  * @returns (any)
  *   Final value of accumulator.
  */
-function reduce(reduce_op_fn, init, begin_i_range_or_list, end_i, linear_threshold = linear_threshold()) =
+function reduce(reduce_op_fn, init, begin_i_range_or_list, end_i) =
   // echo(str("reduce:\n  ", reduce_op_fn, "\n  ", init, "\n  ", begin_i_range_or_list, ", ", end_i ))
   let (
     _reduce_linear = function(reduce_op_fn, acc, begin_i, end_i)
       end_i > begin_i
       ? _reduce_linear(reduce_op_fn, reduce_op_fn(begin_i, acc), begin_i + 1, end_i)
       : reduce_op_fn(begin_i, acc)
-    ,
-    _reduce_logarithmic = function(reduce_op_fn, acc, begin_i, end_i)
-      let (i_diff = end_i - begin_i)
-      i_diff < linear_threshold
-      ? _reduce_linear(reduce_op_fn, acc, begin_i, end_i)
-      : i_diff == 0 // 1 element
-        ? reduce_op_fn(begin_i, acc)
-        : i_diff == 1 // 2 elements
-          ? let ( result = reduce_op_fn(begin_i, acc) )
-            reduce_op_fn(end_i, result)
-          : // more than 2 elements
-            let (
-              middle_i = floor((begin_i + end_i) / 2),
-              result = _reduce_logarithmic(reduce_op_fn, acc, begin_i, middle_i)
-            )
-            _reduce_logarithmic(reduce_op_fn, result, middle_i+1, end_i)
   )
   _to_begin_i_end_i(
     function (reduce_op_fn, begin_i, end_i)
       end_i < begin_i
       ? init
-      : _reduce_logarithmic(reduce_op_fn, init, begin_i, end_i),
+      : _reduce_linear(reduce_op_fn, init, begin_i, end_i),
     reduce_op_fn, begin_i_range_or_list, end_i)
 ;
 
 function function_reduce() =
-  function(reduce_op_fn, init, begin_i_range_or_list, end_i, linear_threshold = linear_threshold())
-    reduce(reduce_op_fn, init, begin_i_range_or_list, end_i, linear_threshold)
+  function(reduce_op_fn, init, begin_i_range_or_list, end_i)
+    reduce(reduce_op_fn, init, begin_i_range_or_list, end_i)
 ;
 
 /**
- * This convenience function will execute function in_array_op_fn as if it were
+ * This convenience function will execute function in_array_algo_fn as if it were
  * used on a collection, remapping the first parameter being passed to
- * in_array_fn so that it retrieves the element rather than the index.
+ * in_array_pdr_fn so that it retrieves the element rather than the index.
  *
  * This function isn't really necessary, but may make intention clearer.  It is
  * possible that this may reduce performance as this adds another layer of call
- * indirection to the in_array_fn.
+ * indirection to the in_array_pdr_fn.
  *
  * @example
  *
@@ -357,38 +341,38 @@ function function_reduce() =
  * even_values  = in_array([1,2,3,4,5], function_filter(), function(e, v) v ? e : e % 2);
  * ```
  *
- * NOTE: If `in_array_op_fn` takes more than the standard 3 parameters, then it
+ * NOTE: If `in_array_algo_fn` takes more than the standard 3 parameters, then it
  *       must bind the extra parameters so only the 3 standard parameters are
  *       required.
  *
  * @param arr (list)
  *   This is the list to take element data from.
- * @param in_array_op_fn (function (fn, begin_i_range_or_list, end_i))
+ * @param in_array_algo_fn (function (fn, begin_i_range_or_list, end_i))
  *   This is the operation function that is called. E.g. find(), filter(), etc.
- * @param in_array_fn (function(fn, begin_i_range_or_list, end_i) : any)
- *   This is forwarded to in_array_op_fn.  `fn` can take 1 or 2 parameters based
- *   on what `in_array_op_fn()` requires.
+ * @param in_array_pdr_fn (function(i) : any | function(i,v) : any)
+ *   This is forwarded to in_array_algo_fn.  `fn` can take 1 or 2 parameters based
+ *   on what `in_array_algo_fn()` requires.
  * @param begin_i_range_or_list (number | range | list)
- *   This is forwarded to in_array_op_fn (default: 0).
+ *   This is forwarded to in_array_algo_fn (default: 0).
  * @param end_i (undef | number)
- *   This is forwarded to in_array_op_fn (default: len(arr)-1).
+ *   This is forwarded to in_array_algo_fn (default: len(arr)-1).
  *
  * @returns (any)
- *   The return value of the in_array_op_fn() call.
+ *   The return value of the in_array_algo_fn() call.
  */
-function in_array(arr, in_array_op_fn, in_array_fn, begin_i_range_or_list=0, end_i=undef) =
-  // echo(str("in_array:\n  in_array_op_fn: ", in_array_op_fn, "\n  arr: ", arr, "\n  in_array_fn: ", in_array_fn))
+function in_array(arr, in_array_algo_fn, in_array_pdr_fn, begin_i_range_or_list=0, end_i=undef) =
+  // echo(str("in_array:\n  in_array_algo_fn: ", in_array_algo_fn, "\n  arr: ", arr, "\n  in_array_pdr_fn: ", in_array_pdr_fn))
   let (
-    pc = param_count(in_array_fn),
+    pc = param_count(in_array_pdr_fn),
     b_i = begin_i_range_or_list,
     e_i = is_undef(end_i) ? len(arr)-1 : end_i
   )
   assert(is_list(arr))
   pc == 1
-  ? in_array_op_fn(function(i) in_array_fn(arr[i]), b_i, e_i)
+  ? in_array_algo_fn(function(i) in_array_pdr_fn(arr[i]), b_i, e_i)
   : assert(pc == 2, str("parameter count (", pc, ") must be 1 or 2."))
     // forward 2nd parameter unmodified.
-    in_array_op_fn(function(i, o) in_array_fn(arr[i], o), b_i, e_i)
+    in_array_algo_fn(function(i, o) in_array_pdr_fn(arr[i], o), b_i, e_i)
 ;
 
 /**
@@ -537,16 +521,10 @@ echo(
 );
 
 /**
- * Will determine if any of the calls to any_fn(i) will result in a truthy
+ * Will determine if any of the calls to any_pred_fn(i) will result in a truthy
  * result.
  *
- * NOTE: This uses find to determine the any state which has a memory footprint
- *       of O(1), but may take longer than any_filter() if the matching item
- *       is way down the end of a long list due to call stack and iteration
- *       overhead.  On the plus side, this will terminate early if it finds a
- *       truthy result near the beginning of a list.
- *
- * @param any_fn (function(i) : bool)
+ * @param any_pred_fn (function(i) : bool)
  *   Where i is an index, if returns a truthy, will stop searching and return
  *   true.
  * @param begin_i_range_or_list (number | range | list)
@@ -559,31 +537,25 @@ echo(
  *     false.
  *
  * @returns (bool)
- *   If any any_fn(i) calls returns truthy, then returns true, otherwise
+ *   If any any_pred_fn(i) calls returns truthy, then returns true, otherwise
  *   false.
  */
-function any_find(any_fn, begin_i_range_or_list, end_i) =
-  assert(is_function(any_fn),
-    str("any_fn should be function. Got ", any_fn, " instead."))
-  !is_undef(find(any_fn, begin_i_range_or_list, end_i))
+function any_find(any_pred_fn, begin_i_range_or_list, end_i) =
+  assert(is_function(any_pred_fn),
+    str("any_pred_fn should be function. Got ", any_pred_fn, " instead."))
+  !is_undef(find(any_pred_fn, begin_i_range_or_list, end_i))
 ;
 
 function function_any_find() =
-  function(any_fn, begin_i_range_or_list, end_i)
-    any_find(any_fn, begin_i_range_or_list, end_i)
+  function(any_pred_fn, begin_i_range_or_list, end_i)
+    any_find(any_pred_fn, begin_i_range_or_list, end_i)
 ;
 
 /**
- * Will determine if all of the calls to all_fn(i) will result in a truthy
+ * Will determine if all of the calls to all_pred_fn(i) will result in a truthy
  * result.
  *
- * NOTE: This uses find to determine the any state which has a memory footprint
- *       of O(1), but may take longer than all_filter() if a non-matching
- *       item is way down the end of a long list due to call stack and iteration
- *       overhead.  On the plus side, this will terminate early if it finds a
- *       falsy result near the beginning of a list.
- *
- * @param all_fn (function(i) : bool)
+ * @param all_pred_fn (function(i) : bool)
  *   Where i is an index, if returns a falsy, will stop searching and return
  *   false.
  * @param begin_i_range_or_list (number | range | list)
@@ -596,19 +568,19 @@ function function_any_find() =
  *     true.
  *
  * @returns (bool)
- *   If any any_fn(i) calls returns truthy, then returns true, otherwise
+ *   If any any_pred_fn(i) calls returns truthy, then returns true, otherwise
  *   false.
  */
-function all_find(all_fn, begin_i_range_or_list, end_i) =
-  assert(is_function(all_fn),
-    str("all_fn should be function. Got ", all_fn, " instead."))
-  !any_find(not(all_fn), begin_i_range_or_list, end_i)
-  // is_undef(find(not(all_fn), begin_i_range_or_list, end_i));
+function all_find(all_pred_fn, begin_i_range_or_list, end_i) =
+  assert(is_function(all_pred_fn),
+    str("all_pred_fn should be function. Got ", all_pred_fn, " instead."))
+  !any_find(not(all_pred_fn), begin_i_range_or_list, end_i)
+  // is_undef(find(not(all_pred_fn), begin_i_range_or_list, end_i));
 ;
 
 function function_all_find() =
-  function(all_fn, begin_i_range_or_list, end_i)
-    all_find(all_fn, begin_i_range_or_list, end_i)
+  function(all_pred_fn, begin_i_range_or_list, end_i)
+    all_find(all_pred_fn, begin_i_range_or_list, end_i)
 ;
 
 module tests_any_all(test_group) {
@@ -809,14 +781,6 @@ function function_map() =
  * Determines if any indices or elements passed to any_pred_fn will result in
  * a truthy value.
  *
- * NOTE: This uses filter to determine the any state which has a memory
- *       footprint of O(n), where n is the number of times any_pred_fn(i)
- *       returns true.  However, may take less time than any_find() if a non-
- *       matching item is way down the end of a long list due to no recursion
- *       overhead.  On the minus side, this will have to go through EVERY 
- *       index and WILL NOT terminate early if it finds a falsy result near the
- *       beginning of a list.
- *
  * @param any_pred_fn (function(i) : bool)
  *   - If array is not passed, function will take an index parameter and if it
  *     returns a truthy value, the index is stored in the returned array.
@@ -848,14 +812,6 @@ function function_any_filter() =
 /**
  * Determines if all indices or elements passed to all_pred_fn will result in
  * a truthy value.
- *
- * NOTE: This uses filter to determine the any state which has a memory
- *       footprint of O(n), where n is the number of times all_pred_fn(i)
- *       returns false.  However, may take less time than all_find() if a non-
- *       matching item is way down the end of a long list due to no recursion
- *       overhead.  On the minus side, this will have to go through EVERY 
- *       index and WILL NOT terminate early if it finds a falsy result near the
- *       beginning of a list.
  *
  * @param all_pred_fn (function(i) : bool)
  *   - If array is not passed, function will take an index parameter and if it
