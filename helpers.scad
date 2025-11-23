@@ -1,0 +1,1222 @@
+use <any_all_none.scad>
+use <base_algos.scad>
+use <range.scad>
+use <types.scad>
+use <list.scad>
+use <test.scad>
+
+/** Convert radians to degrees
+ *
+ * @param radians (number):
+ *   radians to convert.
+ *
+ * @returns (number):
+ *   Equivalent degrees.
+ */
+function r2d(radians) = radians * (180 / PI);
+
+/** Convert degrees to radians
+ *
+ * @param degrees (number):
+ *   degrees to convert.
+ *
+ * @returns (number):
+ *   Equivalent radians.
+ */
+function d2r(degrees) = degrees * (PI / 180);
+
+/**
+ * Calculates the arc length between vectors A and B at radius R.
+ *
+ * @param A (list)
+ *   First vector.
+ * @param B (list)
+ *   Second vector.
+ * @param R (undef | number)
+ *   Radius to use to measure the length along a sphere's great arc.
+ *   - If undef then will use the magnitude of A. Asserts if magnitude of B is
+ *     not the same.
+ *   - If R=1, then the result is equivalent to the arc angle in radians.
+ *   - If R=180/PI, then the result is equivalent to the arc angle in degrees.
+ *
+ * @returns (number)
+ *   The length of the great arc between the two vectors for a sphere of radius
+ *   R.
+ */
+function arc_len(A, B, R=undef) =
+  (
+    is_undef(R)
+    ? assert(abs(norm(A)-norm(B)) < 1e8, str("If not specifying R, A (", norm(A), ") and B (", norm(B), ") must be the same magnitude."))
+      norm(A)
+    : R
+  )
+  * d2r(atan2(norm(cross(A, B)), A*B))
+;
+
+/**
+ * Central angle (degrees) from arc length on a circle.
+ * θ_deg = (arc_len / radius) * (180/π)
+ *
+ * @param arc_len (number)
+ *   Arc length along the circle.
+ * @param radius (number)
+ *   Circle radius (must be non-zero).
+ * @returns (number)
+ *   Angle in degrees. Sign follows arc_len.
+ */
+function arc_len_angle(arc_len, radius) =
+  assert(radius != 0, "arc_len_angle: radius must be non-zero")
+  r2d(arc_len / radius)
+;
+
+////////////////////////////////////////////////////////////////////////////////
+
+// Circle-line intersections for y = m*x + b with circle x^2 + y^2 = R^2.
+// Returns [[x1,y1],[x2,y2]] or [] if no intersection.
+function _circle_line_intersections(R, m, b) =
+  let(
+    A = 1 + m*m,
+    D = A*R*R - b*b
+  )
+  D < 0 ? [] :
+  let(
+    s  = sqrt(D),
+    x1 = (-m*b + s) / A,
+    x2 = (-m*b - s) / A,
+    y1 = m*x1 + b,
+    y2 = m*x2 + b
+  )
+  [[x1,y1],[x2,y2]]
+;
+
+// Pick the "right-side" intersection:
+// 1) Keep only points with x >= 0
+// 2) Choose the one with the largest x
+// 3) If x ties, choose the one with smaller y (lower point)
+function _pick_right(ptlist) =
+  len(ptlist)==0 ? undef :
+  let(
+    p0 = ptlist[0],
+    p1 = ptlist[1],
+    c0 = p0[0] >= 0,
+    c1 = p1[0] >= 0
+  )
+  (!c0 && !c1) ? undef :
+  ( c0 && !c1) ? p0   :
+  (!c0 &&  c1) ? p1   :
+  // both x >= 0: choose larger x; tie-breaker: lower y
+  (p0[0] > p1[0]) ? p0 :
+  (p0[0] < p1[0]) ? p1 :
+  (p0[1] <= p1[1]) ? p0 : p1
+;
+
+// Angle (deg) of a point on the circle.
+function _theta_deg(pt) = atan2(pt[1], pt[0]);
+
+// Smallest signed difference (deg) between two angles.
+function _wrap_diff_deg(a1, a2) =
+  let(d = a2 - a1)
+  (d >  180)
+  ? (d - 360)
+  : (d < -180)
+    ? (d + 360)
+    : d
+;
+
+// ---------- Public API (Right-side tracking) ----------
+
+/**
+ * Given a circle R = sqrt(x^2 + y^2) and a line y = m*x + (b + a),
+ * compute the arc-length difference Δs along the circle between the
+ * intersection of the original line y = m*x + b and the shifted line
+ * y = m*x + (b + a). Only the right-side (x >= 0) intersection is tracked.
+ *
+ * @param R (number)
+ *   circle radius
+ * @param m (number)
+ *   slope (dy/dx)
+ * @param a (number)
+ *   vertical shift of the line relative to b
+ * @param b (number)
+ *   original y-intercept (default 0)
+ *
+ * @returns (number)
+ *   Δs (nonnegative) or undef if the right-side intersection does not exist
+ *   before or after the shift.
+ */
+function arc_len_for_shift(R, m, a, b = 0) =
+  assert(R > 0, "R must be > 0.")
+  let(
+    pts0 = _circle_line_intersections(R, m, b),
+    p0   = _pick_right(pts0),
+    pts1 = _circle_line_intersections(R, m, b + a),
+    p1   = _pick_right(pts1)
+  )
+  (p0 == undef || p1 == undef) ? undef :
+  let(
+    t0_deg  = _theta_deg(p0),
+    t1_deg  = _theta_deg(p1),
+    dth_deg = _wrap_diff_deg(t0_deg, t1_deg),
+    dth_rad = d2r(abs(dth_deg))
+  )
+  R * dth_rad
+;
+
+/**
+ * Given a circle R = sqrt(x^2 + y^2) and an original line y = m*x + b,
+ * find the vertical shift values a that would produce a specified arc-length
+ * difference Δs between the original intersection and the shifted line
+ * y = m*x + (b + a), tracking only the right-side (x >= 0) intersection.
+ *
+ * @param R (number)
+ *   circle radius
+ * @param m (number)
+ *   slope (dy/dx)
+ * @param delta_s (number)
+ *   desired arc length difference
+ * @param b (number)
+ *   original y-intercept (default 0)
+ *
+ * @returns [a_up_or_undef, a_down_or_undef]
+ *   a_up ≥ 0, a_down ≤ 0.
+ */
+function shift_for_arc_len(R, m, delta_s, b = 0) =
+  assert(R > 0, "R must be > 0.")
+  let(
+    // Must have a right-side intersection to begin with
+    p0 = _pick_right(_circle_line_intersections(R, m, b))
+  )
+  (p0 == undef) ? [undef, undef] :
+  let(
+    K     = R * sqrt(1 + m*m),
+    u     = b / K,
+    // enforce intersection domain for original line (offensive check)
+    _ok0  = assert(abs(u) <= 1, "Original line has no circle intersection (|b| > K)."),
+    Delta = delta_s / R,           // radians
+    cosD  = cos(r2d(Delta)),
+    sinD  = sin(r2d(Delta)),
+    rad   = 1 - u*u,
+    // Algebraic candidates for the required vertical shift relative to the SAME original line
+    a_plus  = K * ( u*(cosD - 1) +  sqrt(rad)*sinD ),
+    a_minus = K * ( u*(cosD - 1) -  sqrt(rad)*sinD ),
+    // Keep only those that preserve a valid RIGHT-SIDE intersection after the shift
+    p_up_cand   = _pick_right(_circle_line_intersections(R, m, b + a_plus)),
+    p_down_cand = _pick_right(_circle_line_intersections(R, m, b + a_minus)),
+    a_up_raw    = (p_up_cand   == undef) ? undef : a_plus,
+    a_down_raw  = (p_down_cand == undef) ? undef : a_minus,
+    // Enforce sign convention: up >= 0, down <= 0
+    a_up   = (a_up_raw   == undef) ? undef : (a_up_raw   >= 0 ? a_up_raw   : undef),
+    a_down = (a_down_raw == undef) ? undef : (a_down_raw <= 0 ? a_down_raw : undef)
+  )
+  [a_up, a_down]
+;
+
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Clamps a value between [lo, hi].
+ *
+ * @param v (number)
+ *   Value to clamp.
+ * @param lo (number)
+ *   Lowest value v should take.
+ * @param hi (number)
+ *   Highest value v should take.
+ *
+ * @returns (number)
+ *   Value v that is clamped between [lo, hi].
+ */
+function clamp(v, lo, hi) = v < lo ? lo : v > hi ? hi : v;
+
+/**
+ * @param a (Point2D)
+ *   Starting point of vector
+ * @param b (Point2D)
+ *   Ending point of vector
+ *
+ * @returns (Array[Point2D])
+ *   result[VI_VECTOR()] = direction of ab
+ *   result[VI_LENGTH()] = length of ab
+ *   result[VI_DIR()   ] = unit ab vector
+ *   result[VI_NORMAL()] = normal unit vector of ab
+ */
+function vector_info(a, b) =
+  let(
+    edge_vec = b - a,                                 // direction and magnitude of a to b
+    edge_len = norm(edge_vec),                        // length of ab
+    edge_dir = edge_vec / edge_len,                   // unit ab vector
+    normal = [-edge_dir[1], edge_dir[0], edge_dir[2]] // normal unit vector of ab
+  ) [ edge_vec, edge_len, edge_dir, normal ]
+;
+
+// ### CONSTANTS ###
+function VI_VECTOR() = 0; // Index of direction of ab
+function VI_LENGTH() = 1; // Index of length of ab
+function VI_DIR()    = 2; // Index of unit ab vector
+function VI_NORMAL() = 3; // Index of normal unit vector of ab
+
+/**
+ * Transpose of a vector or matrix.
+ *
+ * - Row vector [x,y,z] → column vector [[x],[y],[z]]
+ * - Column vector [[x],[y],[z]] → row vector [x,y,z]
+ * - Matrix (list of equal-length rows) → transposed matrix
+ *
+ * @param A (list)
+ *   The vector or matrix to transpose.
+ *
+ * @returns (list)
+ *   The transpose of vector or matrix A.
+ */
+function transpose(A) =
+  assert(is_list(A), "transpose: input must be a list")
+  len(A) == 0 ? [] :
+  // Matrix case (including column vector [[x],[y],...])
+  is_list(A[0]) ?
+    let(
+      row_lens = [for (r = A) len(r)],
+      nc = row_lens[0]
+    )
+    assert(min(row_lens) == nc && max(row_lens) == nc,
+           "transpose: non-rectangular matrix")
+    [ for (j = [0 : nc - 1])
+      [ for (i = [0 : len(A) - 1]) A[i][j] ]
+    ] :
+  // Row-vector case [x,y,...] -> column vector [[x],[y],...]
+  [ for (i = [0 : len(A) - 1]) [ A[i] ] ]
+;
+
+/**
+ * Make pts homogenous.  If a point's dimension is less than n-1, then zeros are
+ * appended before adding a 1 to the end.
+ *
+ * @param pts (list)
+ *   A list of points.  Dimension must be less than n.
+ * @param n (number)
+ *   This is the homogenous dimension, which must be greater than the number of
+ *   dimensions for each point in the pts list.
+ *
+ * @returns (list)
+ *   A list of points which are all n dimensional, with the last dimension
+ *   having a value of 1.
+ */
+function homogenise(pts, n=4) =
+  let (result =
+  [ for (i = [0 : len(pts) - 1]) // iterate over each point in list of points
+    assert(len(pts[i]) < n, "Points must have fewer dimensions than n.")
+    [ for (j = [0 : n - 1]) // iterate over each dimension in each point
+      j < len(pts[i])
+      ? pts[i][j]
+      : j < n - 1 ? 0 : 1
+    ]
+  ])
+  // echo("homogenise: ", result)
+  result
+;
+// echo("test homogenise:", homogenise([[2,3,4]], 4));
+
+/**
+ * Remove homogenous dimension.  If a point's dimension - 1 is greater than n,
+ * then the extra dimensions are truncated.  All coordinates are divided by
+ * the homogeneous dimension.
+ *
+ * @param pts (list)
+ *   A list of points.  Dimension must be greater than n.
+ * @param n (number)
+ *   This is the target dimension, which must be less than the number of
+ *   dimensions for each point in the pts list.
+ *
+ * @returns (list)
+ *   A list of points which are all n dimensional.
+ */
+function dehomogenise(pts, n=3) =
+  [ for (i = [0 : len(pts) - 1]) // iterate over each point in list of points
+      let (
+        homogeneous =
+          assert(len(pts[i]) > n, "Points must have the more dimensions as n.")
+          pts[i][n]
+      )
+      assert(homogeneous != 0, "Homogeneous dimension can't have a value of 0.")
+      [ for (j = [0 : n - 1]) // iterate over each dimension in each point
+        pts[i][j] / homogeneous
+      ]
+  ]
+;
+// echo("test dehomogenise:", dehomogenise(homogenise([[2,3,4]], 4), 4));
+
+/**
+ * Takes a non-homogeneous transformation matrix and convert it into a
+ * homogeneous one.
+ *
+ * @param A (list[list[number]])
+ *   An MxM transformation matrix.
+ * @param n (number)
+ *   The dimension to make homogeneous.  Must be > than the dimensions (M) of
+ *   the transformation matrix A.
+ *
+ * @returns (list[list[number]])
+ *   The homogenized matrix.
+ */
+function homogenise_transform(A, n=4) =
+  let(
+    row_lens = [for (r = A) len(r)],
+    nc = row_lens[0]
+  )
+  assert(min(row_lens) == nc && max(row_lens) == nc && len(A) == nc,
+          "homogenise_transform: A must be square")
+  assert(nc < n, "Number of columns and rows must be less than n.")
+  [ for (i = [0 : n - 1])
+    i < nc
+    ? [ for (j = [0 : n - 1])
+      j < nc
+      ? A[i][j]
+      : i == j ? 1 : 0
+    ]
+    : [ for (j = [0 : n - 1])
+      i == j ? 1 : 0
+    ]
+  ]
+;
+
+// ROTATION MATRIX
+// --- Rotation matrices (3D) -----------------------------------------------
+// Applies to row vectors: new_p = old_p * M
+// Matches rotate([rx, ry, rz]) order: X then Y then Z (degrees).
+
+function rot_x(a) =
+  [
+    [ 1,       0,        0 ],
+    [ 0,  cos(a),  -sin(a) ],
+    [ 0,  sin(a),   cos(a) ]
+  ]
+;
+
+function rot_y(a) =
+  [
+    [  cos(a), 0,  sin(a) ],
+    [       0, 1,       0 ],
+    [ -sin(a), 0,  cos(a) ]
+  ]
+;
+
+function rot_z(a) =
+  [
+    [  cos(a), -sin(a), 0 ],
+    [  sin(a),  cos(a), 0 ],
+    [       0,       0, 1 ]
+  ]
+;
+
+// Axis-angle version like rotate(angle, v = axis)
+// 'angle' in degrees; 'axis' can be any nonzero vector.
+function rot_axis(angle, axis) =
+  let(
+    n = norm(axis)
+  )
+  assert(n > 0, "axis vector must be non-zero")
+  let(
+    ux = axis[0]/n, uy = axis[1]/n, uz = axis[2]/n,
+    c = cos(angle), s = sin(angle), t = 1 - c
+  )
+  [
+    [ t*ux*ux + c,     t*ux*uy - s*uz, t*ux*uz + s*uy ],
+    [ t*uy*ux + s*uz,  t*uy*uy + c,    t*uy*uz - s*ux ],
+    [ t*uz*ux - s*uy,  t*uz*uy + s*ux, t*uz*uz + c    ]
+  ]
+;
+
+/**
+ * Rotate matrix that parallel's module rotate.
+ *
+ * @param a (number | list)
+ *   - If number and b is undef, then rotate CCW around z-axis.
+ *   - If number and b is list, then rotate CCW around normal vector b.
+ *   - If list, then a rotates x, y and z the degrees specified in indices 0, 1
+ *     and 2 respectively, in that order.  b is ignored.
+ * @param b (undef | list)
+ *   - Only meaningful if a is a number.
+ *   - If list, then it is the normal vector to rotate around.
+ *   - If undef, then rotate around the z-axis.
+ *
+ * @returns (list[list[number]])
+ *   Non-homogenous column-vector rotation matrix M.
+ *   Use M * p to rotate a single point or Ps * transpose(M) to rotate a list of
+ *   points.
+ */
+function rotate(a, b=undef) =
+  is_num(a)
+    ? is_undef(b) ? rot_z(a)
+      : is_list(b)  ? rot_axis(a, b)
+      : assert(false, "rotate(angle, axis): axis must be a 3-vector") undef
+    : is_list(a) && len(a) == 3
+        ? rot_z(a[2]) * rot_y(a[1]) * rot_x(a[0])   // Rz * Ry * Rx
+        : assert(false, "rotate([rx,ry,rz]): need 3 components") undef
+;
+
+// echo(str("rotate test: ", [[1, 0, 0] ,[1, 0, 0]] * transpose(rotate([0,0,45]))));
+// echo(str("rotate test: ", rotate([0,0,45]) * [1, 0, 0]));
+
+/**
+ * Translation matrix that parallel's module translate.
+ *
+ * @param v (list)
+ *   The vector to translate by.
+ *
+ * @returns (list[list[number]])
+ *   Homogenous column-vector translation matrix M.
+ *   Use M * p to rotate a single point or Ps * transpose(M) to rotate a list of
+ *   points.
+ */
+function translate(v) =
+  [
+    [ 1, 0, 0, v[0] ],
+    [ 0, 1, 0, v[1] ],
+    [ 0, 0, 1, v[2] ],
+    [ 0, 0, 0,    1 ]
+  ]
+;
+
+/**
+ * Scale matrix that parallel's module scale.
+ *
+ * @param v (list)
+ *   The vector to scale by.
+ *
+ * @returns [list[list[number]]])
+ *   Non-homogeneous column-vector scaling matrix M.
+ *   Use M * p to rotate a single point or Ps * transpose(M) to scale a list of
+ *   points.
+ */
+function scale(v) =
+  [
+    [ v[0],    0,    0 ],
+    [    0, v[1],    0 ],
+    [    0,    0, v[2] ]
+  ]
+;
+  // echo(str("translate test 1: ", translate([1.5, 2.5, 3.5]) * [1,1,1,1]));
+  // echo(str("translate test 2: ", homogenise([[1,1,1]], 4) * transpose(translate([1.5, 2.5, 3.5]))));
+
+/**
+ * This will move vec so that the angle between ref_vec and vec will increase by
+ * delta_angle_deg.
+ *
+ * @param ref_vec (list)
+ *   Reference vector.
+ *   - Must have a magnitude > 0 or the angle is undefined.
+ * @param vec (list)
+ *   Vector to move.
+ *   - Must have a magnitude > 0 or the angle is undefined.
+ *   - Must not be parallel or anti-parallel to ref_vec, otherwise the rotation
+ *     plane is undefined.
+ * @param delta_angle_deg (number)
+ *   The number of degrees to move vec away from ref_vec (origin is angle
+ *   reference point).
+ *
+ * @returns new vector that is delta_angle_deg more away from ref_vec.
+ */
+function offset_angle(ref_vec, vec, delta_angle_deg) =
+  assert(norm(ref_vec) > 0, str("ref_vec ", ref_vec, " needs a length > 0."))
+  assert(norm(    vec) > 0, str(    "vec ",     vec, " needs a length > 0."))
+  let ( n = cross(ref_vec, vec) )
+  assert(norm(n) > 1e-12, "vectors cannot be (anti)parallel")
+  rotate(delta_angle_deg, n) * vec
+;
+
+/**
+ * Transforms a set of points with a matrix, or function that takes a point.
+ *
+ * @param pts (list<list<number>)
+ *   A list of points
+ * @param matrix_or_function (list<list<number>>)
+ *   A matrix to multiply each point with.
+ *
+ *   NOTE: It must be transposed compared to that when multiplying a single
+ *         point.
+ *
+ *   E.g.
+ *      new_pt = T * pt;
+ *      new_pts = pts * transpose(T); // this is how this function works.
+ *
+ * @returns (list<list<number>>)
+ *    Transformed points.
+ */
+function transform(pts, matrix_or_fn) =
+  is_function(matrix_or_fn)
+  ? [ for (pt = pts) matrix_or_fn(pt) ]
+  : len(pts[0]) < len(matrix_or_fn)
+    ? dehomogenise(homogenise(pts, len(matrix_or_fn)) * matrix_or_fn, len(pts[0]))
+    : // echo(len(pts[0]), len(matrix_or_fn), type_structure(pts), type_structure(matrix_or_fn))
+      pts * matrix_or_fn
+;
+
+/**
+ * Checks the equality of two items.  If v1 and v2 are lists of the same length,
+ * then check the equality of each element.  If each are numbers, then check to
+ * see if they are both equal to each other within an error of epsilon.  All
+ * other types are done using the == operator.
+ *
+ * @param v1 (any)
+ *   First item to compare against.
+ * @param v2 (any)
+ *   Second item to compare against.
+ * @param epsilon (number)
+ *   The max error tolerated for a number.
+ *
+ * @returns (bool)
+ *   True if the objects are equal within tolerance.  False otherwise.
+ */
+function equal(v1, v2, epsilon = 1e-6) =
+  is_num(v1) && is_num(v2)
+    ? abs(v1 - v2) <= epsilon
+    : is_list(v1) && is_list(v2)
+      ? len(v1) == len(v2)
+        ? // VAGUE BENCHMARKING
+          // 1. slightly slower than 2.  Perhaps call overhead?
+          all_find(function(i) equal(v1[i], v2[i], epsilon), 0, len(v1)-1)
+          
+          // 2. significantly slower than 3 (twice as slow).
+          // is_undef(find(function(i) !equal(v1[i], v2[i], epsilon), 0, len(v1)-1))
+
+          // 3. fastest, but has no epsilon testing.
+          // v1 == v2 
+        : false
+      : v1 == v2
+;
+
+function function_equal() =
+  function(v1, v2, epsilon = 1e-6)
+    equal(v1, v2, epsilon)
+;
+
+/**
+ * If v is undefined, then return the default value d.
+ *
+ * @param v (any)
+ *   The value to test if defined.
+ * @param d (any)
+ *   The result to give if v is undefined.
+ *
+ * @returns (any)
+ *   If v is defined, then return v, else d.
+ */
+function default(v, d) =
+  is_undef(v) ? d : v
+;
+
+/**
+ * Used to mark code as incomplete.
+ */
+function INCOMPLETE(x=undef) =
+  assert(false, "This function is incomplete")
+;
+
+////////////////////////////////////////////////////////////////////////////////
+// INVERT MATRIX
+
+/**
+ * Inverts a square matrix using Gauss–Jordan elimination with
+ * partial pivoting.
+ *
+ * @param A (matrix)
+ *   Non-empty square numeric matrix (list of equal-length lists).
+ * @param eps (number) [default=1e-12]
+ *   Pivot tolerance.  Must be > 0.
+ *
+ * @returns (matrix)
+ *   The inverse matrix A^{-1}.
+ *
+ * @throws
+ *   Assertion failure if A is not a valid square numeric matrix or if any
+ *   pivot has |pivot| < eps (numerically singular).
+ *
+ * @example
+ *   invert([[4,7],[2,6]])  // -> [[0.6,-0.7],[-0.2,0.4]]
+ */
+function invert(A, eps = 1e-12) =
+  assert(_is_square_matrix(A), "invert: A must be a non-empty square matrix")
+  assert(_all_numeric(A), "invert: all entries in A must be numeric")
+  let(
+    n   = len(A),
+    aug = augment(A, identity(n))    // [A | I]
+  )
+  let(
+    raug = row_reduction(aug, 0, n, eps)  // reduce to [I | A^{-1}]
+  )
+  _right_half(raug, n);
+
+/**
+ * Performs Gauss–Jordan row reduction with partial pivoting on an
+ * augmented matrix.
+ *
+ * @param aug (matrix)
+ *   Augmented matrix of shape n×(2n), typically [A | I].
+ * @param k (number)
+ *   Current column index (0-based).  External callers pass 0.
+ * @param n (number)
+ *   Matrix order.  Must equal the row count of aug.
+ * @param eps (number)
+ *   Pivot tolerance.  Must be > 0.
+ *
+ * @returns (matrix)
+ *   The reduced augmented matrix.  For a nonsingular A this is [I | A^{-1}].
+ *
+ * @throws
+ *   Assertion failure if |pivot| < eps at any step.
+ */
+function row_reduction(aug, k, n, eps) =
+  (k >= n) ? aug
+  : let(
+      r     = _argmax_abs_col(aug, k, k),
+      aug1  = (r == k) ? aug : _swap_rows(aug, k, r),
+      piv   = aug1[k][k]
+    )
+    assert(abs(piv) >= eps,
+           str("invert: singular/ill-conditioned at column ", k, " (|pivot| < eps)"))
+    let(
+      // Normalize pivot row to make pivot = 1
+      rowk  = [for (j = [0 : 2*n - 1]) aug1[k][j] / piv],
+      aug2  = [for (i = [0 : n - 1]) (i == k) ? rowk : aug1[i]],
+      // Eliminate column k in all other rows
+      aug3  = [for (i = [0 : n - 1])
+                (i == k) ? aug2[i]
+                         : let(f = aug2[i][k])
+                           [for (j = [0 : 2*n - 1]) aug2[i][j] - f * rowk[j]]
+              ]
+    )
+    row_reduction(aug3, k + 1, n, eps);
+
+// --- Helpers ---
+
+/**
+ * Creates an n×n identity matrix.
+ *
+ * @param n (number)
+ *   Matrix order.  Must be a positive integer.
+ *
+ * @returns (matrix)
+ *   The identity matrix of order n.
+ */
+function identity(n) =
+  assert(n > 0, "identity: n must be > 0")
+  [for (i = [0 : n - 1]) [for (j = [0 : n - 1]) (i == j) ? 1 : 0]];
+
+/**
+ * Horizontally concatenates two matrices with the same row count.
+ *
+ * @param A (matrix)
+ *   Left matrix with r rows.
+ * @param B (matrix)
+ *   Right matrix with r rows.
+ *
+ * @returns (matrix)
+ *   The augmented matrix [A | B].
+ *
+ * @throws
+ *   Assertion failure if A and B do not have the same non-zero row count.
+ */
+function augment(A, B) =
+  assert(len(A) == len(B) && len(A) > 0,
+         "augment: A and B must have same row count and be non-empty")
+  [for (i = [0 : len(A) - 1]) concat(A[i], B[i])];
+
+/**
+ * Extracts the right half (columns n..2n-1) of an n×(2n) augmented matrix.
+ *
+ * @param aug (matrix)
+ *   Augmented matrix of shape n×(2n).
+ * @param n (number)
+ *   Left block width and row count.
+ *
+ * @returns (matrix)
+ *   The right n×n block.
+ */
+function _right_half(aug, n) =
+  [for (i = [0 : n - 1]) [for (j = [n : 2*n - 1]) aug[i][j]]];
+
+/**
+ * Returns a copy of matrix M with rows i and j swapped.
+ *
+ * @param M (matrix)
+ *   Input matrix.
+ * @param i (number)
+ *   First row index (0-based).
+ * @param j (number)
+ *   Second row index (0-based).
+ *
+ * @returns (matrix)
+ *   Matrix with rows i and j exchanged.
+ */
+function _swap_rows(M, i, j) =
+  [for (r = [0 : len(M) - 1]) (r == i) ? M[j] : (r == j) ? M[i] : M[r]];
+
+/**
+ * Finds the row index r ∈ [start..n-1] that maximizes |aug[r][col]|.
+ * Ties resolve to the first occurrence.
+ *
+ * @param aug (matrix)
+ *   Matrix to scan.
+ * @param col (number)
+ *   Column index to examine.
+ * @param start (number)
+ *   First row index to consider (inclusive).
+ *
+ * @returns (number)
+ *   The row index of the maximal absolute entry in the given column slice.
+ */
+function _argmax_abs_col(aug, col, start) =
+  let(
+    n    = len(aug),
+    mags = [for (r = [start : n - 1]) abs(aug[r][col])],
+    mval = max(mags),
+    idx0 = search(mval, mags)[0]
+  ) start + idx0;
+
+/**
+ * Tests whether M is a rectangular list-of-lists with consistent row length.
+ * Returns a boolean.
+ *
+ * @param M (any)
+ *   Candidate matrix.
+ *
+ * @returns (bool)
+ *   true if M is a non-empty list of rows with equal positive length.
+ */
+function _is_rect_matrix(M) =
+  is_list(M) && (len(M) > 0) && is_list(M[0]) &&
+  (let(c = len(M[0]))
+     (c > 0) &&
+     (min([for (row = M) (is_list(row) && len(row) == c) ? 1 : 0]) == 1));
+
+/**
+ * Tests whether M is a square matrix (rectangular and rows == columns).
+ * Returns a boolean.
+ *
+ * @param M (any)
+ *   Candidate matrix.
+ *
+ * @returns (bool)
+ *   true if M is rectangular and len(M) == len(M[0]).
+ */
+function _is_square_matrix(M) =
+  _is_rect_matrix(M) && (len(M) == len(M[0]));
+
+/**
+ * Tests whether all entries of M are numeric.  Returns a boolean.
+ *
+ * @param M (any)
+ *   Candidate matrix.
+ *
+ * @returns (bool)
+ *   true if every element in every row is numeric.
+ */
+function _all_numeric(M) =
+  (min([for (row = M) min([for (x = row) is_num(x) ? 1 : 0])]) == 1);
+
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Create a homogeneous transform that maps one segment/frame to another.
+ *
+ * @overload reorient([P0,P1], [Q0,Q1]) => matrix 4x4
+ *   Rigid reorientation + uniform scaling: maps P0→Q0, aligns P1−P0 to Q1−Q0,
+ *   and scales by |Q1−Q0| / |P1−P0|.
+ *
+ * @overload reorient([P0,P1,P2], [Q0,Q1,Q2]) => matrix 4x4
+ *   Planar frame reorientation + in-plane scaling/shear:
+ *   L maps {P1−P0, P2−P0, nŜ} → {Q1−Q0, Q2−Q0, nÊ}; T = T(Q0)·H(L)·T(−P0).
+ *
+ * @overload reorient([P0,P1,P2,P3], [Q0,Q1,Q2,Q3]) => matrix 4x4
+ *   Full 3D (”cubic”) frame reorientation with anisotropic scale/shear:
+ *   Let V = [v1 v2 v3] with vk = Pk−P0, and W = [w1 w2 w3] with wk = Qk−Q0.
+ *   L = W · invert(V) sends each basis vector exactly: L·v_k = w_k.
+ *   T = T(Q0) · H(L) · T(−P0).
+ *
+ * @param start_line_seg (Array[Point3D,...])
+ * @param end_line_seg   (Array[Point3D,...])
+ *
+ * @returns (matrix 4x4)
+ *   Homogeneous transform T.  Apply to a point p (as [x,y,z,1]): p' = T * p.
+ */
+function reorient(start_line_seg, end_line_seg, scale_to_vectors) =
+  let(nA = len(start_line_seg), nB = len(end_line_seg))
+  assert((nA == 2 || nA == 3 || nA == 4) && nA == nB,
+         "reorient: both inputs must have length 2, 3, or 4, and match")
+  // ---------- 2-point overload: align direction + uniform scale ----------
+  (nA == 2)
+  ? (
+      let(
+        P0 = start_line_seg[0],  P1 = start_line_seg[1],
+        Q0 = end_line_seg[0],    Q1 = end_line_seg[1],
+        v  = P1 - P0,            w  = Q1 - Q0,
+        lv = norm(v),            lw = norm(w)
+      )
+      assert(lv > 0 && lw > 0, "reorient(2pt): segment lengths must be > 0")
+      let(
+        uhat   = v / lv,
+        what   = w / lw,
+        axis   = cross(uhat, what),
+        axn    = norm(axis),
+        d_raw  = uhat * what,
+        c      = clamp(d_raw, -1, 1),
+        thetaD = acos(c),  // degrees
+        R3 =
+          (axn < 1e-12)
+          ? (c > 0
+             ? identity(3)
+             : let(tmp = (abs(uhat[0]) < 0.9) ? [1,0,0] : [0,1,0],
+                   n2  = cross(uhat, tmp), n2n = n2 / norm(n2))
+               rot_axis(180, n2n))
+          : rot_axis(thetaD, axis / axn),
+        s   = lw / lv,
+        L3  = scale_to_vectors ? R3 * scale([s, s, s]) : R3,
+        T1  = translate(-P0),
+        T2  = translate(Q0)
+      )
+      T2 * homogenise_transform(L3) * T1
+    )
+  // ---------- 3-point overload: planar frame map ----------
+  : (nA == 3)
+    ? (
+        let(
+          P0 = start_line_seg[0],  P1 = start_line_seg[1],  P2 = start_line_seg[2],
+          Q0 = end_line_seg[0],    Q1 = end_line_seg[1],    Q2 = end_line_seg[2],
+          v1 = P1 - P0,            v2 = P2 - P0,
+          w1 = Q1 - Q0,            w2 = Q2 - Q0
+        )
+        assert(norm(v1) > 0 && norm(v2) > 0, "reorient(3pt): start axes must be non-zero")
+        assert(norm(w1) > 0 && norm(w2) > 0, "reorient(3pt): end axes must be non-zero")
+        let(
+          nS = cross(v1, v2), nSn = norm(nS),
+          nE = cross(w1, w2), nEn = norm(nE)
+        )
+        assert(nSn > 1e-12, "reorient(3pt): start points are collinear")
+        assert(nEn > 1e-12, "reorient(3pt): end points are collinear")
+        let(
+          BS = [
+            [ v1[0],  v2[0],  nS[0]/nSn ],
+            [ v1[1],  v2[1],  nS[1]/nSn ],
+            [ v1[2],  v2[2],  nS[2]/nSn ]
+          ],
+          BE = [
+            [ w1[0],  w2[0],  nE[0]/nEn ],
+            [ w1[1],  w2[1],  nE[1]/nEn ],
+            [ w1[2],  w2[2],  nE[2]/nEn ]
+          ],
+          L3 = BE * invert(BS),
+          T1 = translate(-P0),
+          T2 = translate(Q0)
+        )
+        T2 * homogenise_transform(L3) * T1
+      )
+    // ---------- 4-point overload: full 3D (“cubic”) frame map ----------
+    : (
+        let(
+          P0 = start_line_seg[0],  P1 = start_line_seg[1],
+          P2 = start_line_seg[2],  P3 = start_line_seg[3],
+          Q0 = end_line_seg[0],    Q1 = end_line_seg[1],
+          Q2 = end_line_seg[2],    Q3 = end_line_seg[3],
+          v1 = P1 - P0,            v2 = P2 - P0,            v3 = P3 - P0,
+          w1 = Q1 - Q0,            w2 = Q2 - Q0,            w3 = Q3 - Q0,
+          lv1 = norm(v1),          lv2 = norm(v2),          lv3 = norm(v3),
+          lw1 = norm(w1),          lw2 = norm(w2),          lw3 = norm(w3)
+        )
+        assert(lv1 > 0 && lv2 > 0 && lv3 > 0, "reorient(4pt): start axes must be non-zero")
+        assert(lw1 > 0 && lw2 > 0 && lw3 > 0, "reorient(4pt): end axes must be non-zero")
+        let(
+          detS = v1 * cross(v2, v3),
+          detE = w1 * cross(w2, w3)
+        )
+        assert(abs(detS) > 1e-12 * lv1 * lv2 * lv3, "reorient(4pt): start frame is singular")
+        assert(abs(detE) > 1e-12 * lw1 * lw2 * lw3, "reorient(4pt): end frame is singular")
+        let(
+          BS = [
+            [ v1[0],  v2[0],  v3[0] ],
+            [ v1[1],  v2[1],  v3[1] ],
+            [ v1[2],  v2[2],  v3[2] ]
+          ],
+          BE = [
+            [ w1[0],  w2[0],  w3[0] ],
+            [ w1[1],  w2[1],  w3[1] ],
+            [ w1[2],  w2[2],  w3[2] ]
+          ],
+          L3 = BE * invert(BS),  // sends v1→w1, v2→w2, v3→w3
+          T1 = translate(-P0),
+          T2 = translate(Q0)
+        )
+        T2 * homogenise_transform(L3) * T1
+      )
+;
+
+/**
+ * Create an arrow.  Primarily used for debugging.
+ *
+ * @param l (number)
+ *   Length of arrow.
+ * @param t (number)
+ *   Thickness of arrowhead shaft.
+ * @param c (list | string | undef)
+ *   Same as color() module's first parameter. [r, g, b], [r, g, b, a],
+ *   "color_name", "#hex_value".  If not defined, no colour is applied.
+ * @param c (number)
+ *   Same as color() module's optional second parameter.  Alpha value between
+ *   [0, 1].
+ */
+module arrow(l, t=1, c, a) {
+  if (is_undef(c)) {
+    cylinder(h = l*0.75, r = t); // shaft
+    translate([0, 0, l*0.75])
+      cylinder(h = l*0.25, r1 = t * 1.5, r2 = 0); // head
+  } else {
+    assert(is_num(l));
+    color(c, a) {
+      cylinder(h = l*0.75, r = t); // shaft
+      translate([0, 0, l*0.75])
+        cylinder(h = l*0.25, r1 = t * 1.5, r2 = 0); // head
+    }
+  }
+}
+
+module axis(l, t=1) {
+  rotate([0, 90, 0])
+    arrow(l, t, "red");
+  rotate([-90, 0, 0])
+    arrow(l, t, "green");
+  arrow(l, t, "blue");
+}
+
+let (
+  start = [[1, 2, 3], [4, 5, 6]],
+  end = [[7, 8, 9], [10, 11, 13]],
+  T = reorient(start, end),
+  r = dehomogenise([T * homogenise(start)[0]])[0],
+  output = str(
+    "\n  T: ", T,
+    "\n  start: ", start,
+    "\n  r: ", r,
+    "\n  diff: ", r - end)
+)
+echo(output)
+assert(equal(r, end[0]), "Single point reorientation didn't work.");
+    
+// let (
+//   start = [[1, 2, 3], [4, 5, 6]],
+//   end = [[7, 8, 9], [10, 11, 13]],
+//   T = reorient(start, end),
+//   TT = transpose(T),
+//   r = dehomogenise(homogenise(start) * TT),
+//   output = str(
+//     "\n  T: ", T,
+//     "\n  TT: ", TT,
+//     "\n  start: ", start,
+//     "\n  r: ", r,
+//     "\n  diff: ", r - end)
+// )
+// echo(output)
+// assert(equal(r, end), "Multi point reorientation didn't work.");
+
+let (
+  start = [[1, 2, 3], [4, 5, 6], [14, 15, 19]],
+  end = [[7, 8, 9], [10, 11, 13], [17, 18, 19]],
+  T = reorient(start, end),
+  TT = transpose(T),
+  r = dehomogenise(homogenise(start) * TT),
+  output = str(
+    "\n  T: ", T,
+    "\n  TT: ", TT,
+    "\n  start: ", start,
+    "\n  r: ", r,
+    "\n  diff: ", r - end)
+)
+echo(output)
+assert(equal(r, end), "Multi point reorientation didn't work.");
+
+// TODO:  reorient doesn't seem to work for 4 point setup.  Fix later.
+let (
+  start = [[1, 2, 3], [-4, 5, 6], [14, 15, 19], [20, 21, 27]],
+  end = [[7, 8, 9], [10, 11, 13], [17, 18, 19], [23, 24, 25]]
+)
+{
+  cs = [0, "red", "green", "blue"];
+  o = start[0];
+  for (i = it_fwd_i(start, 1)) {
+    pt = start[i];
+    v = (pt - o)/norm(pt - o);
+    T = reorient([[0,0,0], [0,0,1]], [o, v]);
+    multmatrix(T) 
+    arrow(norm(v), .1, cs[i], 0.15);
+  }
+  // let(
+  //   T = reorient(start, end),
+  //   TT = transpose(T),
+  //   r = dehomogenise(homogenise(start) * TT),
+  //   output = str("AAA",
+  //     "\n  T: ", T,
+  //     "\n  TT: ", TT,
+  //     "\n  start: ", start,
+  //     "\n  r: ", r,
+  //     "\n  diff: ", r - end)
+  // )
+  // echo(output)
+  // assert(equal(r, end), "Multi point reorientation didn't work.");
+}
+
+function align_left(s, width, pad_char) =
+  fn_reduce(s, 1, width - len(s))(
+    function (i, acc)
+      str(pad_char, acc)
+  )
+;
+
+function align_right(s, width, pad_char) =
+  fn_reduce(s, 1, width - len(s))(
+    function (i, acc)
+      str(acc, pad_char)
+  )
+;
+
+function repeat(c, i, r = "") =
+  i
+  ? repeat(c, i-1, str(c, r))
+  : r
+;
+
+function SHOW_SIGN_NEG() = 0;
+function SHOW_SIGN_POS_NEG() = 1;
+function SHOW_SIGN_SPC_NEG() = 2;
+function _sign_str(v, show_sign) =
+  v < 0 ? "-" : [ "", "+", " " ][show_sign]
+;
+
+/**
+ * Converts a floating point number to a string with formatting.
+ *
+ * TODO: Make function also do scientific formatting.
+ *
+ * @param v (number)
+ *   Number to convert to string.
+ * @param left_justified (bool)
+ *   States if number is left or right justified.
+ * @param show_sign (number)
+ *   SHOW_SIGN_NEG() - States if to only show a negative sign.
+ *   SHOW_SIGN_POS_NEG() - states if to show positive/negative signs.
+ *   SHOW_SIGN_SP_NEG() - States if to show space for positive sign or negative sign.
+ * @param pad_char (string)
+ *   The character to use for padding a right justified value.
+ * @param min_width (number)
+ *   The minimum width of the string.
+ * @param precision (number)
+ *   The number of decimal places to use.
+ *
+ * @returns (string)
+ *   Formatted number.
+ */
+function float_to_string(v, left_justified=false, show_sign=SHOW_SIGN_NEG(), pad_char=" ", min_width=1, precision=6) =
+  assert(is_num(v) || v != v, str("v (", type_value(v), ") must be a number."))
+  // echo(str("f2s: ", v))
+  let (
+    zero = ord("0"),
+    inf = 1/0,
+    s = v ==  inf ? str(_sign_str(v, show_sign), v)
+      : v == -inf ? str(v)
+      : v != v    ? "NaN"
+      : str(
+        _sign_str(v, show_sign),
+        fn_reduce_air([
+            "",                         // init string
+            round(abs(v)*10^precision), // init value to convert
+            precision                   // init number of digits to output     
+          ], 0, precision + 100 // Overkill. Number will never need 100+ chars.
+        )(
+          function(i, acc)
+            // echo("I", i, acc)
+            let (
+              s = acc[0],              // accumulated string so far
+              v = acc[1],              // value to convert
+              decimals_left = acc[2],  // how many digits left to show
+              remainder = v % 10,
+              new_v = floor(v / 10)
+            )
+            // echo(remainder, new_v, zero)
+            // echo(str("dl: ", decimals_left, " r: ", remainder, " nv: ", new_v, " != 0 == ", abs(new_v) > 1e-6))
+            [
+              decimals_left > 0 || new_v,
+              [
+                str( chr(zero + remainder), i == precision ? "." : "", s ), // new acc string
+                new_v,                                                      // new value (removed 1s digit)
+                decimals_left-1                                             // number of digits left
+              ]
+            ]
+        )[1][0]
+      )
+  )
+  len(s) < min_width
+    ? left_justified
+      ? align_left (s, min_width, pad_char)
+      : align_right(s, min_width, pad_char)
+    : s
+;
+
+inf = 1/0;
+nan = inf - inf;
+test_eq("+1.300000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG()));
+test_eq("+1.3000  ", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG(), precision=4, min_width=9));
+test_eq("  +1.3000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG(), left_justified=true, precision=4, min_width=9));
+test_eq(" 0.000000", float_to_string(0,    show_sign = SHOW_SIGN_SPC_NEG()));
+test_eq("+inf",      float_to_string(inf,  show_sign = SHOW_SIGN_POS_NEG()));
+test_eq("-inf",      float_to_string(-inf, show_sign = SHOW_SIGN_POS_NEG()));
+test_eq("NaN   ",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG(), min_width=6));
+test_eq("   NaN",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG(), min_width=6, left_justified=true));
+
+/**
+ * If fmt_fn doesn't recognise obj and is a string, puts double quotes around it
+ * otherwise, use fmt_fn or use str to convert to a string.
+ *
+ * @param obj (any)
+ *   Object to print.
+ * @param fmt_fn (function(obj) : string | undef)
+ *   Convert obj to string if obj is recognised or undef if not.
+ *
+ *   @param obj (any)
+ *     Obj to attempt to convert.
+ *
+ *   @returns (string | undef)
+ *     If recognised, the converted object as string, else undef.
+ *
+ * @returns (string)
+ *   String rep of object.
+ */
+function obj_to_string(obj, fmt_fn = function(obj) undef) =
+  let (fmt_obj = fmt_fn(obj))
+  fmt_obj != undef
+  ? fmt_obj
+  : is_string(obj)
+    ? let (
+        esc_chars = "\\\"\r\n\t", chars = "\\\"rnt",
+        found_i = in_array(obj, fn_find(), function(e) search(e, esc_chars)),
+        s = // Only create a new string if there are single quotes in it.
+          found_i != undef
+          ? in_array(obj, fn_reduce(""), function(e, a)
+              let (found_is = search(e, esc_chars))
+              found_is
+              ? str(a, "\\", chars[found_is[0]])
+              : str(a, e)
+            )
+          : obj
+      )
+      str("\"", s, "\"")
+    : str(obj)
+;
+
+echo("This should show three lines with these chars not escaped: \"\r\n\t\\\".");
+echo(["This should show one line with these chars escaped: \"\r\n\t\\\"."]);
+echo(obj_to_string("[\"This should show one line with these chars escaped: \"\r\n\t\\\".\"]"));
+
+echo(str("o2s: ", obj_to_string("hello")));
+echo(str("o2s: ", obj_to_string("he\"llo")));
+echo(str("o2s: ", obj_to_string("he\nllo")));
+echo(str("o2s: ", obj_to_string(1)));
+echo(str("o2s: ", obj_to_string(["hello",1])));
+echo(str("o2s: ", obj_to_string(["he\"llo",1])));
+echo(str("o2s: ", obj_to_string(["he\nllo",1])));
+echo(str("o2s: ", obj_to_string(["hello"])));
