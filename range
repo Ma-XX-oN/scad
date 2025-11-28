@@ -1,0 +1,199 @@
+use <list>
+/**
+ * Tests if the object is a range object.
+ *
+ * @param o (any)
+ *   Object to test.
+ *
+ * @returns (bool)
+ *   Returns if object is a range.
+ */
+function is_range(o) =
+  !is_list(o) && !is_string(o) && is_num(o[0])
+;
+
+/**
+ * @overload range(begin_i, end_i)
+ * @overload range(begin_i, step, end_i)
+ *
+ * Creates a range object.  Will NOT generate a warning if step results in no
+ * elements in range, unlike [ begin_i : end_i ] or [ begin_i : step : end_i ].
+ *
+ * @param begin_i (number)
+ *   The beginning index.
+ * @param step (number)
+ *   step value when iterating from begin_i to end_i.  Cannot be 0.
+ * @param end_i (number | undef)
+ *   If a number, then this is the ending index.
+ *
+ * @returns (range | list)
+ *   This is the range to iterate over.  If step < 0 and begin_i < end_i or step
+ *   > 0 and end_i < begin_i, then returns an empty list.
+ */
+function range(begin_i, step_or_end_i, end_i) =
+  is_undef(end_i)  // are only 2 params defined?
+  ? begin_i <= step_or_end_i
+    ? [ begin_i : step_or_end_i ]
+    : []
+  : step_or_end_i > 0 // 3 params defined.  Increasing or decreasing?
+    ? begin_i <= end_i
+      ? [ begin_i : step_or_end_i : end_i ]
+      : []
+    : assert(step_or_end_i != 0, "Range cannot have a step of 0.")
+      end_i <= begin_i
+      ? [ begin_i : step_or_end_i : end_i ]
+      : []
+;
+
+/**
+ * Will return the number of elements the range will return.
+ *
+ * @param range (range)
+ *   The range to count how many indices it will iterate over.
+ *
+ * @returns (number)
+ *   The number of indices the range contains.
+ */
+function range_len(r) =
+  assert(is_range(r), r)
+  floor((r[2] - r[0]) / r[1]) + 1
+;
+
+/**
+ * Will return the element that would have been returned if left to iterate i
+ * times.
+ *
+ * @param range (range)
+ *   The range to get index from if left to iterate i times.
+ * @param i (number)
+ *   The number iterations to have been done to get the return value.
+ *   If negative then start counting from end to beginning.
+ *
+ * @returns (number)
+ *   The index to have retrieved if iterated over i times.
+ */
+function range_el(r, i) =
+  assert(is_range(r), r)
+  r[0] + r[1] * range_idx(r, i)
+;
+
+/**
+ * Gets the index for an array.  Allows for negative values to reference
+ * elements starting from the end going backwards.
+ *
+ * @param a (list)
+ *   The array to get the index for.
+ * @param i (number)
+ *   The index of the element.  If value is negative, then goes backward from
+ *   end of array.
+ *
+ * @returns (number)
+ *   The positive index.
+ */
+function range_idx(r, i) =
+  let (
+    l = range_len(r)
+  )
+  i >= 0
+  ? i < l
+    ? i
+    : undef
+  : l+i < 0
+    ? l+i
+    : undef
+;
+
+/**
+ * Creates a subset of the lr object.
+ *
+ * @param lr (range | list)
+ *   Starting range/list object to slice.
+ * @param begin_i (number)
+ *   The first index of the slice.
+ * @param end_i (number | undef)
+ *   The last index of the slice.  If < begin_i, then will return an empty list.
+ *
+ * @returns (range | list)
+ *   Returns a portion of the original lr object.  If < begin_i, then will
+ *   return an empty list.
+ */
+function slice(lr, begin_i, end_i) =
+  let (
+    b_i = lr_idx(lr, begin_i),
+    e_i = lr_idx(lr, end_i)
+  )
+  is_list(lr)
+  ? els(lr, b_i, e_i)
+  : range(lr_el(lr, b_i), lr[1], lr_el(lr, e_i))
+;
+
+/**
+ * Will return the number of elements the range will return.
+ *
+ * @param lr (list | range)
+ *   The lr to count how many indices it will iterate over.
+ *
+ * @returns (number)
+ *   The number of indices the range contains.
+ */
+function lr_len(lr) =
+  assert(is_list(lr) || is_num(lr[0]) && is_num(lr[1]) && is_num(lr[2]),
+          str("Not a valid lr (", lr, ")."))
+  assert(lr[1] != 0, "range step cannot be 0")
+  let (
+    count =
+      is_list(lr)
+      ? len(lr)
+      : floor((lr[2] - lr[0]) / lr[1]) + 1
+  )
+  count < 0
+  ? undef
+  : count
+;
+
+/**
+ * Will return the element that would have been returned if left to iterate i
+ * times.
+ *
+ * @param lr (list | range)
+ *   The lr to get index from if left to iterate i times.
+ * @param i (number)
+ *   The number iterations to have been done to get the return value.
+ *   If negative then start counting from end to beginning.
+ *
+ * @returns (number)
+ *   The index to have retrieved if iterated over i times.
+ */
+function lr_el(lr, i) =
+  let (
+    l = lr_len(lr),
+    offset = i < 0 ? l : 0,
+    ii = i + offset
+  )
+  assert(ii < l, str("i (", i, ") exceeds the length for the range ", l, "."))
+  assert(ii >= 0,
+    str("i (", i, ") negative value exceeds the length of the range ", l, "."))
+  is_list(lr)
+  ? lr[ii]
+  : lr[0] + lr[1] * ii
+;
+
+/**
+ * Gets the index for an array.  Allows for negative values to reference
+ * elements starting from the end going backwards.
+ *
+ * @param lr (list | range)
+ *   The lr to get the index for.
+ * @param i (number)
+ *   The index of the element.  If value is negative, then goes backward from
+ *   end of array.
+ *
+ * @returns (number)
+ *   The positive index.
+ */
+function lr_idx(lr, i) =
+  i >= 0
+  ? i
+  : lr_len(lr)+i
+;
+

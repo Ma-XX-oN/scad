@@ -1,8 +1,9 @@
-use <base_algos.scad>
-use <list.scad>
-use <helpers.scad>
-use <types.scad>
-use <range.scad>
+use <base_algos>
+use <list>
+use <helpers>
+use <types>
+use <range>
+use <string>
 
 /** Header for skin */
 function SKIN_ID() = "SKIN";
@@ -29,8 +30,9 @@ function skin_to_string(obj, only_first_and_last_layers = true, precision = 4) =
     fmt_el_fn = function(i,e,indent)
       str(names[i], ": ",
         i == SKIN_PTS()
-        ? list_to_string(e, obj[SKIN_PTS_IN_LAYER()], indent=str("  ", indent),
-            fmt_pt_fn(precision), only_first_and_last_layers)
+        ? pt_list_to_string(
+          obj[SKIN_PTS()], obj[SKIN_PTS_IN_LAYER()], obj[SKIN_LAYERS()]+1,
+            indent, only_first_and_last_layers, precision)
         : e)
   )
   echo("skin_to_string", type_structure(obj), obj)
@@ -136,7 +138,7 @@ function layer_side_faces(pts_in_layer, layers = 1, wall_diagonal = [0, 1])
  * Projects the polygon to the XY plane and applies convex-only ear clipping.
  *
  * @param pts3d List of 3D points
- * @return List of triangle layer_i [ [i1, i2, i3], ... ]
+ * @returns List of triangle layer_i [ [i1, i2, i3], ... ]
  */
 function triangulate_planar_polygon(pts3d) =
   let (
@@ -221,16 +223,21 @@ function rotation_matrix(from, to) =
     ? (c > 0 ? I : [[-1,0,0],[0,-1,0],[0,0,1]])
     : I + vx + ((1 - c)/(s * s)) * (vx * vx);
 
+/**
+ * Creates a list of faces that has their normal pointing the opposite direction
+ * of the faces passed in.
+ *
+ * @param faces (list[list[number, number, number]])
+ *   A list of faces.  Faces are indices that reference points in a point list.
+ *
+ * @returns (list[list[number, number, number]])
+ *   A list of faces so that their normal's are now pointing in the opposite
+ *   direction.
+ */
 function flip_faces(faces) =
   [ for (face = faces)
       [ face[0], face[2], face[1] ]
   ];
-
-function filter_out_same_consecutive_items(a) =
-  a == [] ? [] :
-  [ a[0], each for (i=[1:len(a)-1]) if (a[i] != a[i-1]) a[i] ];
-
-// ECHO: [1, 2, 3, 1]
 
 function cap_layers_orig(pts_in_layer, layers = 1) =
   assert(is_num(pts_in_layer), str("pts_in_layer (", pts_in_layer, ") isn't a number") )
@@ -247,6 +254,171 @@ function cap_layers_orig(pts_in_layer, layers = 1) =
         [base, base + i + 1, base + i] // reverse order to preserve orientation
     ]
   );
+
+/** vertex is convex */
+function VERTEX_CONVEX()   = 0;
+/** vertex is concave */
+function VERTEX_CONCAVE()  = 1;
+/** vertex is colinear */
+function VERTEX_COLINEAR() = 2;
+
+/**
+ * Caps the end of a face by making all ears into faces until none left.
+ *
+ * Parameters staring with _ will not be set by the external caller.
+ *
+ * @param pt_is (list[number])
+ *   Point indices.
+ * @param create_ears_fn (function(pt_is) : list[number])
+ *   Callback that when given the set of point indices, return a new _ears list.
+ * @param _ears (list[number])
+ *   _ears[i] represent if pt_is[i:i+2] is convex, concave or colinear using
+ *   respective values VERTEX_CONVEX(), VERTEX_CONCAVE(), or VERTEX_COLINEAR().
+ * @param _i (number)
+ *   Where to start traversing polygon for ear clipping.
+ * @param _faces (list[list[number]])
+ *   Faces.
+ *
+ * @returns (list[list[number]])
+ *   Faces
+ */
+function _cap_ears(pt_is, create_ears_fn, _ears = undef, _i = 0, _faces = []) =
+  assert(_ears == undef || len(pt_is) == len(_ears), "Must be the same length.")
+  assert(                  len(pt_is) >= 3,          "Invalid number of vertices.")
+  len(pt_is) == 3
+  ? // last ear
+    push(_faces, [pt_is])
+  : let (ears = (_i ? _ears : create_ears_fn(pt_is)))
+    ears[_i] == VERTEX_CONVEX()
+    ? let (
+        // vertex at pt_is[j+1] is convex, so make pt_is[j : j+2] into a face and
+        // remove index j from ears and index j+1 from pt_is.
+        j           = next_in(pt_is, _i),
+        new_faces   = push(_faces, [
+            [ pt_is[_i], pt_is[j], pt_is[next_in(pt_is, j)] ]
+          ]),
+        new_i     = _i + 2 >= len(ears) - 1 ? 0 : _i + 2,
+        new_ears  = new_i ? remove(ears, _i, _i) : undef,
+        new_pt_is = remove(pt_is, j, j),
+      )
+      _cap_ears(new_pt_is, create_ears_fn, new_ears,             new_i, new_faces)
+    : _cap_ears(    pt_is, create_ears_fn,     ears, next_in(ears, _i),    _faces)
+;
+
+/**
+ * Caps the end of a face by making all ears into faces until none left.
+ *
+ * Parameters staring with _ will not be set by the external caller.
+ *
+ * @param pt_is (list[number])
+ *   Point indices.
+ * @param convexity_fn (function(pt_is, i) : number)
+ *   Callback that when given point indices and an index to start from, returns
+ *   either VERTEX_CONVEX(), VERTEX_CONCAVE(), or VERTEX_COLINEAR() for triple
+ *   pt_is[i, i+1, i+2], where indices are modulo len(pt_is).
+ * @param _i (number)
+ *   Where to start traversing polygon for ear clipping.
+ * @param _faces (list[list[number]])
+ *   Faces.
+ *
+ * @returns (list[list[number]])
+ *   Faces
+ */
+function _cap_ears(pt_is, convexity_fn, _i = 0, _faces = []) =
+  assert(len(pt_is) >= 3, "Invalid number of vertices.")
+  len(pt_is) == 3
+  ? // last ear
+    push(_faces, [pt_is])
+  : let (convexity = convexity_fn(pt_is, _i))
+    convexity == VERTEX_CONVEX()
+    ? let (
+        // vertex at pt_is[_i+1] is convex, so make pt_is[_i : _i+2] into a face and
+        // remove index _i+1 from pt_is.
+        j           = next_in(pt_is, _i),
+        new_faces   = push(_faces, [
+            [ pt_is[_i], pt_is[j], pt_is[next_in(pt_is, j)] ]
+          ]),
+        new_pt_is = remove(pt_is, j, j),
+      )
+      _cap_ears(new_pt_is, convexity_fn,         j ? _i : 0, new_faces)
+    : _cap_ears(    pt_is, convexity_fn, next_in(pt_is, _i),    _faces)
+;
+
+/**
+ * Project point to axis that is not `dim_i`.  E.g. `dim_i == 0` implies
+ * project to YZ axis or stated another way, project along `dim_i`.
+ *
+ * @param pt (list[number, number, number])
+ *   Point to have projected.
+ * @param dim_i (number)
+ *   Dimension to have projected (set to 0).  0 = x, 1 = y, 2 = z.
+ *   TODO: Maybe make this more clear?
+ *
+ * @returns (list[number, number, number])
+ *   Returns a point with the specified dimension set to 0.
+ */
+function proj_pt(pt, dim_i) =
+  replace(pt, dim_i, dim_i, [0])
+;
+
+/**
+ * Project all points to axis that is not `dim_i`.  E.g. `dim_i == 0` implies
+ * project to YZ axis or stated another way, project along `dim_i`.
+ *
+ * @param pts (list[list[number, number, number]])
+ *   Points to have projected.
+ * @param dim_i (number)
+ *   Axis to have project along (have set to 0).  0 = x, 1 = y, 2 = z.
+ *
+ * @returns (list[list[number, number, number]])
+ *   Returns points with the specified dimension set to 0.
+ */
+function proj_pts(pts, dim_i) =
+  fn_in_list(pts, fn_map())(function(pt)
+    proj_pt(pt, dim_i)
+  )
+;
+
+/**
+ * Determine which projection give the largest normal vector.
+ *
+ * @param pts (list[list[number, number, number]])
+ *   A list of points.  Must have at least 3
+ */
+function proj_to_what_norm(pts, dim_i = 0, last_n = [0,0,0], last_n_len = 0, last_i = -1) =
+  assert(len(pts) >= 3)
+  dim_i == 3
+  ? [ last_i, last_n ]
+  : let (
+      p0 = proj_pt(pts[0], dim_i),
+      e1 = proj_pt(pts[1], dim_i) - p0,
+      e2 = proj_pt(pts[2], dim_i) - p0,
+      n = cross(e1, e2),
+      n_len = norm(n)
+    )
+    last_n_len > n_len
+    ? proj_to_what_norm(pts, dim_i+1, last_n, last_n_len, last_i)
+    : proj_to_what_norm(pts, dim_i+1,      n,      n_len,  dim_i)
+;
+
+function get_ears(pts, pt_is, proj_dim_i, n) =
+  let(
+    dim_j = (proj_dim_i + 1) % 3,
+    dim_k = (dim_j + 1) % 3,
+    s_axis = n[proj_dim_i],
+    pts_len = len(pts)
+  )
+  fn_in_list(pt_is, fn_map(), it_fwd_i(pt_is, 1, 1))(function(i)
+    let(
+      v_prev = pts[i] - pts[ (i ? i : pts_len) - 1 ],
+      v_next = pts[i+1] - pts[i],
+      z_i = v_prev[dim_j]*v_next[dim_k] - v_prev[dim_k]*v_next[dim_j],
+      s_i = s_axis * z_i
+    )
+    // This is an ear to be chopped off.  Don't chop off colinear or concave vertex.
+    s_i > 0
+  )
+;
 
 /**
  * Generates triangulated faces to cap the first and last point layers.
@@ -271,20 +443,52 @@ function cap_layers_orig(pts_in_layer, layers = 1) =
  *   Triangle faces forming the two end caps.
  */
 function cap_layers(pts_in_layer, pts3d, layers = 1) =
+  assert(len(pts_in_layer) >= 3, "Can't cap a line")
   1 // Only accepting convex polygons for now.
   ? cap_layers_orig(pts_in_layer, layers)
-  : // ChatGPT implementation of ear clipping for end face is faulty.
-    concat(
-      echo("pts3d cap:", pts3d)
-      assert(pts3d != undef, "pts3d must be specified")
-      triangulate_planar_polygon(
-        [for (i = [0 : pts_in_layer - 1]) pts3d[i]]
-      ),
-      flip_faces(triangulate_planar_polygon(
-        [for (i = [0 : pts_in_layer - 1])
-          pts3d[pts_in_layer * layers + i]]
-      ))
-    );
+  : let (
+      // Only want indices of points that are not the same as the previous one.
+      indices = fn_reduce([0], it_fwd_i(pts_in_layer, 1))(function(i, acc)
+        pts_in_layer[i] == pts_in_layer[el(acc, -1)]
+        ? acc
+        : push(acc, [i])
+      )
+    )
+    assert(len(indices) >= 3, "Can't cap a line")
+    let(
+      pts = fn_in_list(indices, map())(function(i) pts_in_layer[i]),
+      use_xy_plane =
+        !equal(cross(replace(pts[0], 2, 2, [0]), replace(pts[1], 2, 2, [0])), 0),
+      dirs =
+        use_xy_plane
+        ? fn_in_list(fn_reduce(1), 1) cross([pts])
+        :
+    )
+    fn_filter(it_fwd_i(pts_in_layer, 0, -1))(function(i, v)
+      v
+      ? pts_in_layer[i]
+      : // a closed 2D shape with 3 vertices has only convex corners.
+        // a closed 2D shape with 4+ vertices MUST have more convex than concave vertices.
+        // 1. rotate or project cap to xy or yz plane.
+        //    Projection should be cheaper than rotation, but requires test to ensure that
+        //    resulting points are not colinear.  Colinear test is cross product ≠ 0.
+
+        INCOMPLETE
+      
+    )
+;
+  // : // ChatGPT implementation of ear clipping for end face is faulty.
+  //   concat(
+  //     echo("pts3d cap:", pts3d)
+  //     assert(pts3d != undef, "pts3d must be specified")
+  //     triangulate_planar_polygon(
+  //       [for (i = [0 : pts_in_layer - 1]) pts3d[i]]
+  //     ),
+  //     flip_faces(triangulate_planar_polygon(
+  //       [for (i = [0 : pts_in_layer - 1])
+  //         pts3d[pts_in_layer * layers + i]]
+  //     ))
+  //   );
 
 // Create faces for a particular layer.
 //
@@ -313,7 +517,7 @@ function cap_end(obj, layer_i) =
 ;
 
 function filter_out_degenerate_triangles(pts3d, triangles) =
-  in_array(triangles, function_filter(),
+  in_list(triangles, function_filter(),
     function(tri, v)
       v ? tri :
       let (
@@ -390,7 +594,7 @@ function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_di
  *   - If number, start index to check
  *   - If range, indices to check
  *   - If list, indices to check
- * @param end_i (number)
+ * @param end_i (number | undef)
  *   - If birl is a number, then end index to check.  end_i
  *     could be less than birl if there's nothing to iterate
  *     over.
@@ -418,10 +622,10 @@ function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_di
 function skin_extrude(pts_fn, birl, end_i, comment, operation, wall_diagonal, debug_axes) =
   let (
     layer_is = birlei_to_indices(birl, end_i),
-    layer_count = is_list(layer_is) ? len(layer_is) : range_len(layer_is),
+    layer_count = is_list(layer_is) ? len(layer_is) : lr_len(layer_is),
     // NOTE: this will result in pts_fn being called on index 0 twice.  Once
     //       here, and once in the skin_new() call.
-    pt_0 = pts_fn(is_list(layer_is) ? layer_is[0] : range_value(layer_is, 0)),
+    pt_0 = pts_fn(is_list(layer_is) ? layer_is[0] : lr_el(layer_is, 0)),
     pts_in_layer = len(pt_0)
   )
   assert(layer_count > 1, "Need 2 or more layers to make a volume.")
@@ -567,25 +771,22 @@ module skin_to_polyhedron(obj_or_objs) {
  * @param obj (SKIN object)
  *   Object to add to.
  * @param add_layers_fn (function(i) : number_of_layers_to_add)
- *   This function will return the first index of a layer, expecting that the
+ *   Callback that will return the first index of a layer, expecting that the
  *   point it refers to or its brethren on that layer to be compared to the
  *   points on the very next layer.
  *
  *   It is guaranteed that there is a next layer of points to compare with.
  *
- *   @param i (number)
- *     The first index of the layer to be analyzed.
+ *   `i` is the first index of the layer to be analyzed and will return the
+ *   number of additional layers to add between the current layer and the next.
+ *   Negative numbers are treated as 0.
  *
- *   @returns (number)
- *     The number of additional layers to add between the current layer and the
- *     next.  Negative numbers are treated as 0.
- *
- *     E.g.
- *     - 0 or less means add no additional layers.
- *     - 1 means add another layer that is half way in between the current and
- *       next layer.
- *     - 2 means add 2 layers, 1/3 and 2/3 between.
- *     - etc...
+ *   E.g.
+ *   - 0 or less means add no additional layers.
+ *   - 1 means add another layer that is half way in between the current and
+ *     next layer.
+ *   - 2 means add 2 layers, 1/3 and 2/3 between.
+ *   - etc...
  *
  * @returns (SKIN object)
  *   Updated SKIN object.
@@ -604,7 +805,7 @@ function skin_add_layer_if(obj, add_layers_fn) =
           let (
             prev_i = i - pts_in_layer,
             num_of_layers_to_add = add_layers_fn(prev_i),
-            layer_pts = extract(pts, prev_i, i - 1)
+            layer_pts = els(pts, prev_i, i - 1)
           )
           num_of_layers_to_add > 0
           ? [
@@ -614,7 +815,7 @@ function skin_add_layer_if(obj, add_layers_fn) =
               // points and make it into a list of points, without creating a
               // function to do so.  This is just easier (and possibly faster).
               each each interpolated_values(
-                layer_pts, extract(pts, i, i+pts_in_layer), num_of_layers_to_add)
+                layer_pts, els(pts, i, i+pts_in_layer), num_of_layers_to_add)
             ]
           : concat(
               acc,
@@ -655,13 +856,29 @@ function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
             )
             concat(
               acc2,
-              extract(pts, p0_i, p1_i),
+              els(pts, p0_i, p1_i),
               interpolated_values(p1, p2, pt_count_to_insert)
             )
         )
     )
 ;
 
+/**
+ * Gets a list of `number_of_values` between `p0` and `p1`.
+ *
+ * @example
+ *   interpolated_values(1, 2, 1) == [1.5]
+ *   interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
+ *
+ * @param p0 (number | list)
+ *   Starting point.
+ * @param p1 (number | list)
+ *   Ending point.
+ *
+ * @returns (list[number | list])
+ *   List of `number_of_values` that are the interpolated values between `p0`
+ *   and `p1`.
+ */
 function interpolated_values(p0, p1, number_of_values) =
   let (
     diff = p1 - p0
@@ -704,10 +921,10 @@ module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
       if (init == undef) {
 
         pred = function(a)
-          any_find(function(i) a[i] == undef, 0, 2);
+          any(function(i) a[i] == undef, 0, 2);
 
         data = pred(init)
-          ? in_array(styles, fn_reduce_air(init),
+          ? in_list(styles, fn_reduce_air(init),
               function(e, acc)
                 [ pred(acc), [ for (i = [0:2]) default(acc[i], e) ] ],
               range(pt_i % len(styles), -1, 0))[1]
@@ -734,6 +951,9 @@ module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
   }
 }
 
+/**
+ * Interpolates value between v0 and v1?
+ */
 function interpolate(v0, v1, v) =
   (v - v0[0]) / (v1[0] - v0[0]) * (v1[1] - v0[1]) + v0[1]
 ;
@@ -772,13 +992,13 @@ function skin_limit(obj, extract_order_value_fn, begin, end) =
     begin_i = is_undef(begin)
       ? 0
       : default(
-          in_array(pts, function_find_lower(),
+          in_list(pts, function_find_lower(),
             function(pt) extract_order_value_fn(pt) - begin),
           0),
     end_i = is_undef(end)
       ? last_i
       : default(
-          in_array(pts, function_find_upper(),
+          in_list(pts, function_find_upper(),
             function(pt) extract_order_value_fn(pt) - end),
           last_i),
     result =
@@ -877,15 +1097,10 @@ function skin_verify(obj, disp_all_pts = false) =
  *   Maximum distance before adding another layer to reduce the distance below
  *   max_diff.
  * @param diff_fn (function(p0, p1) : distance_between_layers)
- *   This gives the distance between layers.  (Default: checks x distances)
- *
- *   @param p0 (point)
- *     The first point of the current layer.
- *   @param p1 (point)
- *     The first point of the next layer.
- *
- *   @returns (number)
- *     A value that states the distance between layers.
+ *   Callback that gives the distance between layers, where `p0` is the first
+ *   point of the current layer and `p1` is the first point of the next layer.
+ *   Will return a value that states the distance between layers.
+ *   (Default: checks x distances)
  *
  * @returns (function(i) : number_of_layers_to_add)
  *   Function that can be used with skin_add_layer_if().
@@ -909,10 +1124,11 @@ function skin_max_pt_distance_fn(obj, max_diff) =
   )
   function(i)
     let (
-      diff = max(in_array(
-          extract(pts, i+pts_in_layer, i+pts_in_layer*2-1)
-        - extract(pts, i             , i+pts_in_layer  -1),
-        function_map(), function(pt) norm(pt)))
+      diff = max(
+        in_list(
+            els(pts, i+pts_in_layer, i+pts_in_layer*2-1)
+          - els(pts, i             , i+pts_in_layer  -1),
+          function_map(), function(pt) norm(pt)))
     )
     floor(diff / max_diff) - 1
 ;

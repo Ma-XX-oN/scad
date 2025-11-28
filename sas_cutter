@@ -1,6 +1,6 @@
-use <helpers.scad>
-use <skin.scad>
-use <base_algos.scad>
+use <helpers>
+use <skin>
+use <base_algos>
 
 /**
  * Self aligning seam cutter aligned along edge a → b, with sinusoidal cutface.
@@ -217,7 +217,7 @@ function sas2_cutter(a, b, y_thickness, z_thickness,
     // // identity(3)
     // reorient([[0,0,0], [L, 0, 0]], [a, b])
   )
-  //in_array(cutter, function_map(), function(e) skin_transform(e, T))
+  //in_list(cutter, function_map(), function(e) skin_transform(e, T))
   // skin_transform(cutter, T)
   cutter
 ;

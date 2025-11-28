@@ -1,260 +1,3 @@
-use <any_all_none.scad>
-use <base_algos.scad>
-use <range.scad>
-use <types.scad>
-use <list.scad>
-use <test.scad>
-
-/** Convert radians to degrees
- *
- * @param radians (number):
- *   radians to convert.
- *
- * @returns (number):
- *   Equivalent degrees.
- */
-function r2d(radians) = radians * (180 / PI);
-
-/** Convert degrees to radians
- *
- * @param degrees (number):
- *   degrees to convert.
- *
- * @returns (number):
- *   Equivalent radians.
- */
-function d2r(degrees) = degrees * (PI / 180);
-
-/**
- * Calculates the arc length between vectors A and B at radius R.
- *
- * @param A (list)
- *   First vector.
- * @param B (list)
- *   Second vector.
- * @param R (undef | number)
- *   Radius to use to measure the length along a sphere's great arc.
- *   - If undef then will use the magnitude of A. Asserts if magnitude of B is
- *     not the same.
- *   - If R=1, then the result is equivalent to the arc angle in radians.
- *   - If R=180/PI, then the result is equivalent to the arc angle in degrees.
- *
- * @returns (number)
- *   The length of the great arc between the two vectors for a sphere of radius
- *   R.
- */
-function arc_len(A, B, R=undef) =
-  (
-    is_undef(R)
-    ? assert(abs(norm(A)-norm(B)) < 1e8, str("If not specifying R, A (", norm(A), ") and B (", norm(B), ") must be the same magnitude."))
-      norm(A)
-    : R
-  )
-  * d2r(atan2(norm(cross(A, B)), A*B))
-;
-
-/**
- * Central angle (degrees) from arc length on a circle.
- * θ_deg = (arc_len / radius) * (180/π)
- *
- * @param arc_len (number)
- *   Arc length along the circle.
- * @param radius (number)
- *   Circle radius (must be non-zero).
- * @returns (number)
- *   Angle in degrees. Sign follows arc_len.
- */
-function arc_len_angle(arc_len, radius) =
-  assert(radius != 0, "arc_len_angle: radius must be non-zero")
-  r2d(arc_len / radius)
-;
-
-////////////////////////////////////////////////////////////////////////////////
-
-// Circle-line intersections for y = m*x + b with circle x^2 + y^2 = R^2.
-// Returns [[x1,y1],[x2,y2]] or [] if no intersection.
-function _circle_line_intersections(R, m, b) =
-  let(
-    A = 1 + m*m,
-    D = A*R*R - b*b
-  )
-  D < 0 ? [] :
-  let(
-    s  = sqrt(D),
-    x1 = (-m*b + s) / A,
-    x2 = (-m*b - s) / A,
-    y1 = m*x1 + b,
-    y2 = m*x2 + b
-  )
-  [[x1,y1],[x2,y2]]
-;
-
-// Pick the "right-side" intersection:
-// 1) Keep only points with x >= 0
-// 2) Choose the one with the largest x
-// 3) If x ties, choose the one with smaller y (lower point)
-function _pick_right(ptlist) =
-  len(ptlist)==0 ? undef :
-  let(
-    p0 = ptlist[0],
-    p1 = ptlist[1],
-    c0 = p0[0] >= 0,
-    c1 = p1[0] >= 0
-  )
-  (!c0 && !c1) ? undef :
-  ( c0 && !c1) ? p0   :
-  (!c0 &&  c1) ? p1   :
-  // both x >= 0: choose larger x; tie-breaker: lower y
-  (p0[0] > p1[0]) ? p0 :
-  (p0[0] < p1[0]) ? p1 :
-  (p0[1] <= p1[1]) ? p0 : p1
-;
-
-// Angle (deg) of a point on the circle.
-function _theta_deg(pt) = atan2(pt[1], pt[0]);
-
-// Smallest signed difference (deg) between two angles.
-function _wrap_diff_deg(a1, a2) =
-  let(d = a2 - a1)
-  (d >  180)
-  ? (d - 360)
-  : (d < -180)
-    ? (d + 360)
-    : d
-;
-
-// ---------- Public API (Right-side tracking) ----------
-
-/**
- * Given a circle R = sqrt(x^2 + y^2) and a line y = m*x + (b + a),
- * compute the arc-length difference Δs along the circle between the
- * intersection of the original line y = m*x + b and the shifted line
- * y = m*x + (b + a). Only the right-side (x >= 0) intersection is tracked.
- *
- * @param R (number)
- *   circle radius
- * @param m (number)
- *   slope (dy/dx)
- * @param a (number)
- *   vertical shift of the line relative to b
- * @param b (number)
- *   original y-intercept (default 0)
- *
- * @returns (number)
- *   Δs (nonnegative) or undef if the right-side intersection does not exist
- *   before or after the shift.
- */
-function arc_len_for_shift(R, m, a, b = 0) =
-  assert(R > 0, "R must be > 0.")
-  let(
-    pts0 = _circle_line_intersections(R, m, b),
-    p0   = _pick_right(pts0),
-    pts1 = _circle_line_intersections(R, m, b + a),
-    p1   = _pick_right(pts1)
-  )
-  (p0 == undef || p1 == undef) ? undef :
-  let(
-    t0_deg  = _theta_deg(p0),
-    t1_deg  = _theta_deg(p1),
-    dth_deg = _wrap_diff_deg(t0_deg, t1_deg),
-    dth_rad = d2r(abs(dth_deg))
-  )
-  R * dth_rad
-;
-
-/**
- * Given a circle R = sqrt(x^2 + y^2) and an original line y = m*x + b,
- * find the vertical shift values a that would produce a specified arc-length
- * difference Δs between the original intersection and the shifted line
- * y = m*x + (b + a), tracking only the right-side (x >= 0) intersection.
- *
- * @param R (number)
- *   circle radius
- * @param m (number)
- *   slope (dy/dx)
- * @param delta_s (number)
- *   desired arc length difference
- * @param b (number)
- *   original y-intercept (default 0)
- *
- * @returns [a_up_or_undef, a_down_or_undef]
- *   a_up ≥ 0, a_down ≤ 0.
- */
-function shift_for_arc_len(R, m, delta_s, b = 0) =
-  assert(R > 0, "R must be > 0.")
-  let(
-    // Must have a right-side intersection to begin with
-    p0 = _pick_right(_circle_line_intersections(R, m, b))
-  )
-  (p0 == undef) ? [undef, undef] :
-  let(
-    K     = R * sqrt(1 + m*m),
-    u     = b / K,
-    // enforce intersection domain for original line (offensive check)
-    _ok0  = assert(abs(u) <= 1, "Original line has no circle intersection (|b| > K)."),
-    Delta = delta_s / R,           // radians
-    cosD  = cos(r2d(Delta)),
-    sinD  = sin(r2d(Delta)),
-    rad   = 1 - u*u,
-    // Algebraic candidates for the required vertical shift relative to the SAME original line
-    a_plus  = K * ( u*(cosD - 1) +  sqrt(rad)*sinD ),
-    a_minus = K * ( u*(cosD - 1) -  sqrt(rad)*sinD ),
-    // Keep only those that preserve a valid RIGHT-SIDE intersection after the shift
-    p_up_cand   = _pick_right(_circle_line_intersections(R, m, b + a_plus)),
-    p_down_cand = _pick_right(_circle_line_intersections(R, m, b + a_minus)),
-    a_up_raw    = (p_up_cand   == undef) ? undef : a_plus,
-    a_down_raw  = (p_down_cand == undef) ? undef : a_minus,
-    // Enforce sign convention: up >= 0, down <= 0
-    a_up   = (a_up_raw   == undef) ? undef : (a_up_raw   >= 0 ? a_up_raw   : undef),
-    a_down = (a_down_raw == undef) ? undef : (a_down_raw <= 0 ? a_down_raw : undef)
-  )
-  [a_up, a_down]
-;
-
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Clamps a value between [lo, hi].
- *
- * @param v (number)
- *   Value to clamp.
- * @param lo (number)
- *   Lowest value v should take.
- * @param hi (number)
- *   Highest value v should take.
- *
- * @returns (number)
- *   Value v that is clamped between [lo, hi].
- */
-function clamp(v, lo, hi) = v < lo ? lo : v > hi ? hi : v;
-
-/**
- * @param a (Point2D)
- *   Starting point of vector
- * @param b (Point2D)
- *   Ending point of vector
- *
- * @returns (Array[Point2D])
- *   result[VI_VECTOR()] = direction of ab
- *   result[VI_LENGTH()] = length of ab
- *   result[VI_DIR()   ] = unit ab vector
- *   result[VI_NORMAL()] = normal unit vector of ab
- */
-function vector_info(a, b) =
-  let(
-    edge_vec = b - a,                                 // direction and magnitude of a to b
-    edge_len = norm(edge_vec),                        // length of ab
-    edge_dir = edge_vec / edge_len,                   // unit ab vector
-    normal = [-edge_dir[1], edge_dir[0], edge_dir[2]] // normal unit vector of ab
-  ) [ edge_vec, edge_len, edge_dir, normal ]
-;
-
-// ### CONSTANTS ###
-function VI_VECTOR() = 0; // Index of direction of ab
-function VI_LENGTH() = 1; // Index of length of ab
-function VI_DIR()    = 2; // Index of unit ab vector
-function VI_NORMAL() = 3; // Index of normal unit vector of ab
-
 /**
  * Transpose of a vector or matrix.
  *
@@ -383,6 +126,19 @@ function homogenise_transform(A, n=4) =
 // Applies to row vectors: new_p = old_p * M
 // Matches rotate([rx, ry, rz]) order: X then Y then Z (degrees).
 
+/**
+ * Builds a 3×3 rotation matrix for a rotation about the X axis.
+ *
+ * The matrix is intended for post-multiplying 3D row vectors:
+ * new_p = old_p * rot_x(a).
+ *
+ * @param a (number):
+ *   Rotation angle in degrees.
+ *
+ * @returns (list):
+ *   3×3 rotation matrix representing a rotation about the X axis through
+ *   the origin by angle a.
+ */
 function rot_x(a) =
   [
     [ 1,       0,        0 ],
@@ -391,6 +147,19 @@ function rot_x(a) =
   ]
 ;
 
+/**
+ * Builds a 3×3 rotation matrix for a rotation about the Y axis.
+ *
+ * The matrix is intended for post-multiplying 3D row vectors:
+ * new_p = old_p * rot_y(a).
+ *
+ * @param a (number):
+ *   Rotation angle in degrees.
+ *
+ * @returns (list):
+ *   3×3 rotation matrix representing a rotation about the Y axis through
+ *   the origin by angle a.
+ */
 function rot_y(a) =
   [
     [  cos(a), 0,  sin(a) ],
@@ -399,6 +168,19 @@ function rot_y(a) =
   ]
 ;
 
+/**
+ * Builds a 3×3 rotation matrix for a rotation about the Z axis.
+ *
+ * The matrix is intended for post-multiplying 3D row vectors:
+ * new_p = old_p * rot_z(a).
+ *
+ * @param a (number):
+ *   Rotation angle in degrees.
+ *
+ * @returns (list):
+ *   3×3 rotation matrix representing a rotation about the Z axis through
+ *   the origin by angle a.
+ */
 function rot_z(a) =
   [
     [  cos(a), -sin(a), 0 ],
@@ -407,8 +189,21 @@ function rot_z(a) =
   ]
 ;
 
-// Axis-angle version like rotate(angle, v = axis)
-// 'angle' in degrees; 'axis' can be any nonzero vector.
+/**
+ * Builds a 3×3 rotation matrix for an arbitrary axis-angle rotation.
+ *
+ * The axis is normalised internally and the matrix is intended for
+ * post-multiplying 3D row vectors: new_p = old_p * rot_axis(angle, axis).
+ *
+ * @param angle (number):
+ *   Rotation angle in degrees.
+ * @param axis (list):
+ *   3-element axis vector [x, y, z].  The vector must be non-zero.
+ *
+ * @returns (list):
+ *   3×3 rotation matrix representing a rotation of angle degrees about the
+ *   given axis through the origin.
+ */
 function rot_axis(angle, axis) =
   let(
     n = norm(axis)
@@ -494,8 +289,9 @@ function scale(v) =
     [    0,    0, v[2] ]
   ]
 ;
-  // echo(str("translate test 1: ", translate([1.5, 2.5, 3.5]) * [1,1,1,1]));
-  // echo(str("translate test 2: ", homogenise([[1,1,1]], 4) * transpose(translate([1.5, 2.5, 3.5]))));
+// echo(str("translate test 1: ", translate([1.5, 2.5, 3.5]) * [1,1,1,1]));
+// echo(str("translate test 2: ", homogenise([[1,1,1]], 4) * transpose(translate([1.5, 2.5, 3.5]))));
+
 
 /**
  * This will move vec so that the angle between ref_vec and vec will increase by
@@ -550,72 +346,11 @@ function transform(pts, matrix_or_fn) =
       pts * matrix_or_fn
 ;
 
-/**
- * Checks the equality of two items.  If v1 and v2 are lists of the same length,
- * then check the equality of each element.  If each are numbers, then check to
- * see if they are both equal to each other within an error of epsilon.  All
- * other types are done using the == operator.
- *
- * @param v1 (any)
- *   First item to compare against.
- * @param v2 (any)
- *   Second item to compare against.
- * @param epsilon (number)
- *   The max error tolerated for a number.
- *
- * @returns (bool)
- *   True if the objects are equal within tolerance.  False otherwise.
- */
-function equal(v1, v2, epsilon = 1e-6) =
-  is_num(v1) && is_num(v2)
-    ? abs(v1 - v2) <= epsilon
-    : is_list(v1) && is_list(v2)
-      ? len(v1) == len(v2)
-        ? // VAGUE BENCHMARKING
-          // 1. slightly slower than 2.  Perhaps call overhead?
-          all_find(function(i) equal(v1[i], v2[i], epsilon), 0, len(v1)-1)
-          
-          // 2. significantly slower than 3 (twice as slow).
-          // is_undef(find(function(i) !equal(v1[i], v2[i], epsilon), 0, len(v1)-1))
-
-          // 3. fastest, but has no epsilon testing.
-          // v1 == v2 
-        : false
-      : v1 == v2
-;
-
-function function_equal() =
-  function(v1, v2, epsilon = 1e-6)
-    equal(v1, v2, epsilon)
-;
-
-/**
- * If v is undefined, then return the default value d.
- *
- * @param v (any)
- *   The value to test if defined.
- * @param d (any)
- *   The result to give if v is undefined.
- *
- * @returns (any)
- *   If v is defined, then return v, else d.
- */
-function default(v, d) =
-  is_undef(v) ? d : v
-;
-
-/**
- * Used to mark code as incomplete.
- */
-function INCOMPLETE(x=undef) =
-  assert(false, "This function is incomplete")
-;
-
 ////////////////////////////////////////////////////////////////////////////////
 // INVERT MATRIX
 
 /**
- * Inverts a square matrix using Gauss–Jordan elimination with
+ * Inverts a square matrix using Gauss-Jordan elimination with
  * partial pivoting.
  *
  * @param A (matrix)
@@ -646,7 +381,7 @@ function invert(A, eps = 1e-12) =
   _right_half(raug, n);
 
 /**
- * Performs Gauss–Jordan row reduction with partial pivoting on an
+ * Performs Gauss-Jordan row reduction with partial pivoting on an
  * augmented matrix.
  *
  * @param aug (matrix)
@@ -813,8 +548,6 @@ function _is_square_matrix(M) =
 function _all_numeric(M) =
   (min([for (row = M) min([for (x = row) is_num(x) ? 1 : 0])]) == 1);
 
-////////////////////////////////////////////////////////////////////////////////
-
 /**
  * Create a homogeneous transform that maps one segment/frame to another.
  *
@@ -827,7 +560,7 @@ function _all_numeric(M) =
  *   L maps {P1−P0, P2−P0, nŜ} → {Q1−Q0, Q2−Q0, nÊ}; T = T(Q0)·H(L)·T(−P0).
  *
  * @overload reorient([P0,P1,P2,P3], [Q0,Q1,Q2,Q3]) => matrix 4x4
- *   Full 3D (”cubic”) frame reorientation with anisotropic scale/shear:
+ *   Full 3D ("cubic") frame reorientation with anisotropic scale/shear:
  *   Let V = [v1 v2 v3] with vk = Pk−P0, and W = [w1 w2 w3] with wk = Qk−Q0.
  *   L = W · invert(V) sends each basis vector exactly: L·v_k = w_k.
  *   T = T(Q0) · H(L) · T(−P0).
@@ -909,7 +642,7 @@ function reorient(start_line_seg, end_line_seg, scale_to_vectors) =
         )
         T2 * homogenise_transform(L3) * T1
       )
-    // ---------- 4-point overload: full 3D (“cubic”) frame map ----------
+    // ---------- 4-point overload: full 3D ("cubic") frame map ----------
     : (
         let(
           P0 = start_line_seg[0],  P1 = start_line_seg[1],
@@ -948,42 +681,6 @@ function reorient(start_line_seg, end_line_seg, scale_to_vectors) =
       )
 ;
 
-/**
- * Create an arrow.  Primarily used for debugging.
- *
- * @param l (number)
- *   Length of arrow.
- * @param t (number)
- *   Thickness of arrowhead shaft.
- * @param c (list | string | undef)
- *   Same as color() module's first parameter. [r, g, b], [r, g, b, a],
- *   "color_name", "#hex_value".  If not defined, no colour is applied.
- * @param c (number)
- *   Same as color() module's optional second parameter.  Alpha value between
- *   [0, 1].
- */
-module arrow(l, t=1, c, a) {
-  if (is_undef(c)) {
-    cylinder(h = l*0.75, r = t); // shaft
-    translate([0, 0, l*0.75])
-      cylinder(h = l*0.25, r1 = t * 1.5, r2 = 0); // head
-  } else {
-    assert(is_num(l));
-    color(c, a) {
-      cylinder(h = l*0.75, r = t); // shaft
-      translate([0, 0, l*0.75])
-        cylinder(h = l*0.25, r1 = t * 1.5, r2 = 0); // head
-    }
-  }
-}
-
-module axis(l, t=1) {
-  rotate([0, 90, 0])
-    arrow(l, t, "red");
-  rotate([-90, 0, 0])
-    arrow(l, t, "green");
-  arrow(l, t, "blue");
-}
 
 let (
   start = [[1, 2, 3], [4, 5, 6]],
@@ -1060,163 +757,3 @@ let (
   // echo(output)
   // assert(equal(r, end), "Multi point reorientation didn't work.");
 }
-
-function align_left(s, width, pad_char) =
-  fn_reduce(s, 1, width - len(s))(
-    function (i, acc)
-      str(pad_char, acc)
-  )
-;
-
-function align_right(s, width, pad_char) =
-  fn_reduce(s, 1, width - len(s))(
-    function (i, acc)
-      str(acc, pad_char)
-  )
-;
-
-function repeat(c, i, r = "") =
-  i
-  ? repeat(c, i-1, str(c, r))
-  : r
-;
-
-function SHOW_SIGN_NEG() = 0;
-function SHOW_SIGN_POS_NEG() = 1;
-function SHOW_SIGN_SPC_NEG() = 2;
-function _sign_str(v, show_sign) =
-  v < 0 ? "-" : [ "", "+", " " ][show_sign]
-;
-
-/**
- * Converts a floating point number to a string with formatting.
- *
- * TODO: Make function also do scientific formatting.
- *
- * @param v (number)
- *   Number to convert to string.
- * @param left_justified (bool)
- *   States if number is left or right justified.
- * @param show_sign (number)
- *   SHOW_SIGN_NEG() - States if to only show a negative sign.
- *   SHOW_SIGN_POS_NEG() - states if to show positive/negative signs.
- *   SHOW_SIGN_SP_NEG() - States if to show space for positive sign or negative sign.
- * @param pad_char (string)
- *   The character to use for padding a right justified value.
- * @param min_width (number)
- *   The minimum width of the string.
- * @param precision (number)
- *   The number of decimal places to use.
- *
- * @returns (string)
- *   Formatted number.
- */
-function float_to_string(v, left_justified=false, show_sign=SHOW_SIGN_NEG(), pad_char=" ", min_width=1, precision=6) =
-  assert(is_num(v) || v != v, str("v (", type_value(v), ") must be a number."))
-  // echo(str("f2s: ", v))
-  let (
-    zero = ord("0"),
-    inf = 1/0,
-    s = v ==  inf ? str(_sign_str(v, show_sign), v)
-      : v == -inf ? str(v)
-      : v != v    ? "NaN"
-      : str(
-        _sign_str(v, show_sign),
-        fn_reduce_air([
-            "",                         // init string
-            round(abs(v)*10^precision), // init value to convert
-            precision                   // init number of digits to output     
-          ], 0, precision + 100 // Overkill. Number will never need 100+ chars.
-        )(
-          function(i, acc)
-            // echo("I", i, acc)
-            let (
-              s = acc[0],              // accumulated string so far
-              v = acc[1],              // value to convert
-              decimals_left = acc[2],  // how many digits left to show
-              remainder = v % 10,
-              new_v = floor(v / 10)
-            )
-            // echo(remainder, new_v, zero)
-            // echo(str("dl: ", decimals_left, " r: ", remainder, " nv: ", new_v, " != 0 == ", abs(new_v) > 1e-6))
-            [
-              decimals_left > 0 || new_v,
-              [
-                str( chr(zero + remainder), i == precision ? "." : "", s ), // new acc string
-                new_v,                                                      // new value (removed 1s digit)
-                decimals_left-1                                             // number of digits left
-              ]
-            ]
-        )[1][0]
-      )
-  )
-  len(s) < min_width
-    ? left_justified
-      ? align_left (s, min_width, pad_char)
-      : align_right(s, min_width, pad_char)
-    : s
-;
-
-inf = 1/0;
-nan = inf - inf;
-test_eq("+1.300000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG()));
-test_eq("+1.3000  ", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG(), precision=4, min_width=9));
-test_eq("  +1.3000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG(), left_justified=true, precision=4, min_width=9));
-test_eq(" 0.000000", float_to_string(0,    show_sign = SHOW_SIGN_SPC_NEG()));
-test_eq("+inf",      float_to_string(inf,  show_sign = SHOW_SIGN_POS_NEG()));
-test_eq("-inf",      float_to_string(-inf, show_sign = SHOW_SIGN_POS_NEG()));
-test_eq("NaN   ",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG(), min_width=6));
-test_eq("   NaN",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG(), min_width=6, left_justified=true));
-
-/**
- * If fmt_fn doesn't recognise obj and is a string, puts double quotes around it
- * otherwise, use fmt_fn or use str to convert to a string.
- *
- * @param obj (any)
- *   Object to print.
- * @param fmt_fn (function(obj) : string | undef)
- *   Convert obj to string if obj is recognised or undef if not.
- *
- *   @param obj (any)
- *     Obj to attempt to convert.
- *
- *   @returns (string | undef)
- *     If recognised, the converted object as string, else undef.
- *
- * @returns (string)
- *   String rep of object.
- */
-function obj_to_string(obj, fmt_fn = function(obj) undef) =
-  let (fmt_obj = fmt_fn(obj))
-  fmt_obj != undef
-  ? fmt_obj
-  : is_string(obj)
-    ? let (
-        esc_chars = "\\\"\r\n\t", chars = "\\\"rnt",
-        found_i = in_array(obj, fn_find(), function(e) search(e, esc_chars)),
-        s = // Only create a new string if there are single quotes in it.
-          found_i != undef
-          ? in_array(obj, fn_reduce(""), function(e, a)
-              let (found_is = search(e, esc_chars))
-              found_is
-              ? str(a, "\\", chars[found_is[0]])
-              : str(a, e)
-            )
-          : obj
-      )
-      str("\"", s, "\"")
-    : str(obj)
-;
-
-echo("This should show three lines with these chars not escaped: \"\r\n\t\\\".");
-echo(["This should show one line with these chars escaped: \"\r\n\t\\\"."]);
-echo(obj_to_string("[\"This should show one line with these chars escaped: \"\r\n\t\\\".\"]"));
-
-echo(str("o2s: ", obj_to_string("hello")));
-echo(str("o2s: ", obj_to_string("he\"llo")));
-echo(str("o2s: ", obj_to_string("he\nllo")));
-echo(str("o2s: ", obj_to_string(1)));
-echo(str("o2s: ", obj_to_string(["hello",1])));
-echo(str("o2s: ", obj_to_string(["he\"llo",1])));
-echo(str("o2s: ", obj_to_string(["he\nllo",1])));
-echo(str("o2s: ", obj_to_string(["hello"])));

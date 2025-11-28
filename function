@@ -1,0 +1,305 @@
+use <base_algos>
+use <test>
+use <list>
+
+/**
+ * Counts the number of parameters that can be passed to the function fn.
+ *
+ * @param fn (function(...) : any)
+ *
+ * @returns (number)
+ *   The number of parameters that the function can take.
+ */
+function param_count(fn) =
+  let (
+    fn_str = assert(is_function(fn)) str(fn),
+    // Where to start scanning parameters in stringified function
+    param_begin_i = 9,
+    params =
+      assert(fn_str[param_begin_i-1] == "(", str("lambda parameters expected to start at ", param_begin_i))
+      fn_reduce_air([0, 0, 0, 0, 1], param_begin_i, len(fn_str)-1)(
+        // This function does 6 separate tests per character to check if at a
+        // parameter or not. 5 of which are against the character.
+        // Could use search to get index of interested characters and a dispatch
+        // table to call appropriate code so that I could limit tests to just 2
+        // or 3 I think.
+        // TODO: Should do some benchmarking to see if it's worth the effort.
+        function(i, acc)
+          let (
+            c           = fn_str[i],
+            params      = acc[0], // parameter count so far
+            escaping    = acc[1], // this char is escaped
+            quoting     = acc[2], // currently in a string
+            nwscf       = acc[3], // non-whitespace character found
+            paren_depth = acc[4]  // current parenthesis depth
+          )
+          quoting
+          ? escaping
+            ? [1, [params, !escaping, quoting, nwscf, paren_depth]]          // escaping this char, so no longer escaping
+            : c == "\\"
+              ? [1, [params, !escaping, quoting, nwscf, paren_depth]]        // escape next char
+              : c == "\""
+                ? [1, [params, escaping, !quoting, nwscf, paren_depth]]      // next chars are not quoted
+                : [1, acc]                                                   // no state change
+          : c == "\""
+            ? [1, [params, escaping, !quoting, nwscf, paren_depth]]          // next chars are quoted
+            : c == ")"
+              ? // reduce paren depth. finished searching if new paren_depth == 0
+                [paren_depth-1, [params, escaping, quoting, nwscf, paren_depth-1]]
+              : c == "("
+                ? [1, [params, escaping, quoting, nwscf, paren_depth+1]]     // increment paren depth
+                : paren_depth == 1
+                  ? c == ","
+                    ? [1, [params+1, escaping, quoting, false, paren_depth]] // increment param count only if at main param def level
+                    : c != " " && c != "\n" && c != "\t" && c != "\r"
+                      ? // found what should be a param name. If no params yet, add a parameter to the count.
+                        [1, [params == 0 && !nwscf ? 1 : params, escaping, quoting, true, paren_depth]]
+                      : [1, acc]                                             // no state change
+                  : [1, acc]                                                 // no state change
+      )[1][0]
+  )
+  params
+;
+
+/** Constant stating what character to start scanning stringified function. */
+function _PARAM_BEGIN_I() = 9;
+
+/**
+ * Main processing loop to count function parameters.
+ *
+ * THIS IS A DEMO to show amount of code noise generated when using direct
+ * recursion vs fn_reduce_air().  Made by translating that loop.
+ *
+ * @param fn_str (string)
+ *   String representation of function.
+ * @param i (number)
+ *   Current index being looked at.
+ * @param params (number)
+ *   Parameter count so far.
+ * @param escaping (number)
+ *   This char is escaped.
+ * @param quoting (number)
+ *   Currently in a string.
+ * @param nwscf (number)
+ *   Non-whitespace character found.
+ * @param paren_depth (number)
+ *   Current parenthesis depth.
+ *
+ * @returns (number)
+ *   Number of parameters counted.
+ */
+function _pc_loop(fn_str, i = _PARAM_BEGIN_I(), params = 0, escaping = 0, quoting = 0, nwscf = 0, paren_depth = 1) =
+  let (
+    c = fn_str[i],
+  )
+  quoting
+  ? escaping
+    ? _pc_loop(fn_str, i+1, params, !escaping, quoting, nwscf, paren_depth)          // escaping this char, so no longer escaping
+    : c == "\\"
+      ? _pc_loop(fn_str, i+1, params, !escaping, quoting, nwscf, paren_depth)        // escape next char
+      : c == "\""
+        ? _pc_loop(fn_str, i+1, params, escaping, !quoting, nwscf, paren_depth)      // next chars are not quoted
+        : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, paren_depth)                                                   // no state change
+  : c == "\""
+    ? _pc_loop(fn_str, i+1, params, escaping, !quoting, nwscf, paren_depth)          // next chars are quoted
+    : c == ")"
+      ? // reduce paren depth. finished searching if new paren_depth == 0
+        paren_depth-1
+          ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, paren_depth-1)
+          : params
+      : c == "("
+        ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, paren_depth+1)     // increment paren depth
+        : paren_depth == 1
+          ? c == ","
+            ? _pc_loop(fn_str, i+1, params+1, escaping, quoting, false, paren_depth) // increment param count only if at main param def level
+            : c != " " && c != "\n" && c != "\t" && c != "\r"
+              ? // found what should be a param name. If no params yet, add a parameter to the count.
+                _pc_loop(fn_str, i+1, params == 0 && !nwscf ? 1 : params, escaping, quoting, true, paren_depth)
+              : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, paren_depth)                                             // no state change
+          : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, paren_depth)                                                 // no state change
+;
+
+/**
+ * Counts the number of parameters that can be passed to the function fn.
+ *
+ * THIS IS A DEMO of how this would look if using direct recursion.
+ *
+ * @see _pc_loop for processing function.
+ *
+ * TODO: Should benchmark this against main param_count() version which uses
+ *       fn_reduce_air() to see how much overhead fn_reduce_air() adds.
+ *
+ * @param fn (function(...) : any)
+ *
+ * @returns (number)
+ *   The number of parameters that the function can take.
+ */
+function param_count_direct_recursion_demo(fn) =
+  assert(is_function(fn))
+  let (fn_str = str(fn))
+  assert(fn_str[_PARAM_BEGIN_I()-1] == "(", str("lambda parameters expected to start at ", _PARAM_BEGIN_I()))
+  _pc_loop(fn_str)
+;
+
+test_eq(0, param_count(function() 1));
+test_eq(1, param_count(function( s) 1));
+test_eq(2, param_count(function(d,e) 1));
+
+test_eq(15, reduce(function (i, a) echo(i) [1,2,3,4,5][i] + a, 0, 0, 4));
+test_eq(15, in_list([1,2,3,4,5], fn_reduce(0))(
+    function(e, a) e + a
+  )
+);
+
+/**
+ * Applies each element in an array to a function's parameter list.
+ *
+ * TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
+ *       overhead.  NEED TO BENCHMARK to determine which to keep.
+ *
+ * @param fn (function(...) : any)
+ *   A lambda that takes between 0 and 15 parameters.
+ * @param p (list)
+ *   A list of elements to apply to the function fn.  Must have the same or
+ *   fewer elements than `fn` can take and must be less than 15 elements.
+ *
+ * @returns (any)
+ *   The return value of fn().
+ */
+function apply_to_fn(fn, p) =
+  let (
+    fn_pc = param_count(fn),
+    passed_pc = len(p),
+    dispatch_table = [
+      function() fn(),
+      function() fn(p[0]),
+      function() fn(p[0], p[1]),
+      function() fn(p[0], p[1], p[2]),
+      function() fn(p[0], p[1], p[2], p[3]),
+      function() fn(p[0], p[1], p[2], p[3], p[4]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13]),
+      function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14])
+    ]
+  )
+  assert(is_function(fn))
+  assert(is_list(p))
+  assert(
+    fn_pc >= passed_pc,
+    str("Too many array elements (", passed_pc,
+        ") for the number of parameters available (", fn_pc, ")."))
+  assert(passed_pc < len(dispatch_table), "Can't apply more than 15 parameters.")
+  dispatch_table[passed_pc]()
+;
+
+/**
+ * Applies each element in an array to a function's parameter list.
+ *
+ * TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
+ *       overhead.  NEED TO BENCHMARK to determine which to keep.
+ *
+ * @param fn (function(...) : any)
+ *   A lambda that takes between 0 and 15 parameters.
+ * @param p (list)
+ *   A list of elements to apply to the function fn.  Must have the same or
+ *   fewer elements than `fn` can take and must be less than 15 elements.
+ *
+ * @returns (any)
+ *   The return value of fn().
+ */
+function apply_to_fn2(fn, p) =
+  let (
+    fn_pc = param_count(fn),
+    passed_pc = len(p)
+  )
+  assert(is_function(fn))
+  assert(is_list(p))
+  assert(
+    fn_pc >= passed_pc,
+    str("Too many array elements (", passed_pc,
+        ") for the number of parameters available (", fn_pc, ")."))
+  assert(passed_pc < 16, "Can't apply more than 15 parameters.")
+  //                     1 1 1 1 1 1
+  // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+  //                 <
+  //         <               <
+  //     <       <       <       <
+  //   <   <   <   <   <   <   <   <
+  passed_pc < 8
+  ? passed_pc < 4
+    ? passed_pc < 2
+      ? passed_pc < 1
+        ? fn()
+        : fn(p[0])
+      : passed_pc < 3
+        ? fn(p[0], p[1])
+        : fn(p[0], p[1], p[2])
+    : passed_pc < 6
+      ? passed_pc < 5
+        ? fn(p[0], p[1], p[2], p[3])
+        : fn(p[0], p[1], p[2], p[3], p[4])
+      : passed_pc < 7
+        ? fn(p[0], p[1], p[2], p[3], p[4], p[5])
+        : fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6])
+  : passed_pc < 12
+    ? passed_pc < 10
+      ? passed_pc < 9
+        ? fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7])
+        : fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8])
+      : passed_pc < 11
+        ? fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9])
+        : fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10])
+    : passed_pc < 14
+      ? passed_pc < 13
+        ? fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11])
+        : fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12])
+      : passed_pc < 15
+        ? fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13])
+        : fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14])
+;
+
+module tests_apply_to_fn() {
+  fn = function(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15)
+    let (arr =
+      in_list(
+        [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15],
+        function_filter(), function(e, v) v ? e : !is_undef(e))
+    )
+    // echo(arr)
+    arr
+  ;
+
+  arr = function(is)
+    let (
+      a = map(function(i) i, 0, is-1)
+    )
+    // echo("arr", a)
+    a
+  ;
+
+  let(a = arr(0) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(1) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(2) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(3) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(4) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(5) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(6) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(7) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(8) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(9) , r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(10), r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(11), r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(12), r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(13), r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(14), r = apply_to_fn(fn, a)) test_eq(a, r);
+  let(a = arr(15), r = apply_to_fn(fn, a)) test_eq(a, r);
+  // x = apply_to_fn(function(q,w)1, [3,3,3]);
+}
+tests_apply_to_fn();

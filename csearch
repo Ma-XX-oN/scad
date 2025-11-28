@@ -1,0 +1,77 @@
+use <base_algos>
+use <types>
+/**
+ * Searches for a contiguous set of elements needle in haystack in the range
+ * specified.  Similar to built-in search() function, but allows specifying
+ * index range to search and exposes the equal() operator to allow for non-exact
+ * matches.
+ *
+ * @param haystack (string | list)
+ *   String or list of consecutive items to search through.
+ * @param needle (string | list)
+ *   String or list of consecutive items being searched for.
+ * @param birl (number | range | list)
+ *   - If number, start index to check (Default: 0)
+ *   - If range, indices to check
+ *   - If list, indices to check
+ * @param end_i (number | undef)
+ *   - If birl is a number, end index to check. If end_i is
+ *     less than or equal to birl, nothing is searched.
+ *     (Default: len(haystack)-1)
+ * @param equal (function(a, b) : equality_result)
+ *   Function that defines how to perform equality.
+ *
+ * @returns (number | undef)
+ *   The index where needle was found or undef if wasn't found.
+ */
+function csearch(haystack, needle, birl=0, end_i=undef, equal = function(a, b) a == b) =
+  len(needle) > len(haystack)
+  ? undef
+  : let(
+      t = type_enum(birl),
+      n_len = len(needle),
+      h_len = len(haystack),
+      b_i =
+        t == NUM()
+        ? birl
+        : t == LIST()
+          ? // If list then filter out start indices that would extend past the
+            // end of the haystack.
+            filter(function(i) birl[i] + n_len < h_len, it_fwd_i(birl))
+          : assert(t == RANGE(),
+              str("birl (", type_enum_to_str(t), "(", t, ")) must be a number, list or range."))
+            birl[1] > 0
+            ? [ birl[0] : birl[1] : min(birl[2], h_len-n_len) ]
+            : [ min(birl[0], h_len-n_len) : birl[1] : birl[2] ],
+      e_i =
+        t == NUM()
+        ? is_undef(end_i)
+          ? h_len-n_len
+          : min(end_i, h_len-n_len)
+        : undef
+    )
+    find(
+      function(i)
+        all(
+          function(j)
+            let (h_i = j, n_i = j - i)
+            equal(haystack[h_i], needle[n_i]),
+          i,
+          i + len(needle) - 1),
+      b_i, e_i)
+;
+
+module tests_substr() {
+  echo("search begin")
+  echo("search end: ",
+  let(
+    s = "hello there out there.",
+    i = csearch(s, "there"),
+    i2 = csearch(s, "there", i + 1)
+    ) [i, i2],
+    let (
+      s = "hello there out there."
+    ) filter(function(i) !is_undef(csearch(s, "there", i, i)), it_fwd_i(s))
+  );
+}
+

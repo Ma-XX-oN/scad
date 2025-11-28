@@ -1,0 +1,282 @@
+use <base_algos>
+use <test>
+use <types>
+use <list>
+
+/**
+ * Makes s wider to fit into width characters by padding the string on the right
+ * with the `pad_char` character.  If same or wider than width, then do nothing.
+ *
+ * @param s (string)
+ *   String to align.
+ * @param width (int)
+ *   Minimum width to make `s`.
+ * @param pad_char (string)
+ *   The character to pad `s` with.
+ *
+ * @returns (string)
+ *   The padded string.
+ */
+function align_left(s, width, pad_char = " ") =
+  str(s, repeat(pad_char, width - len(s)))
+;
+
+/**
+ * Makes s wider to fit into width characters by padding the string on the left
+ * with the `pad_char` character.  If same or wider than width, then do nothing.
+ *
+ * @param s (string)
+ *   String to align.
+ * @param width (int)
+ *   Minimum width to make `s`.
+ * @param pad_char (string)
+ *   The character to pad `s` with.
+ *
+ * @returns (string)
+ *   The padded string.
+ */
+function align_right(s, width, pad_char = " ") =
+  str(repeat(pad_char, width - len(s)), s)
+;
+
+/**
+ * Repeats a string `c`, `i` times.
+ *
+ * @param c (string)
+ *   The string to repeat.
+ * @param i (int)
+ *   The number of times to repeat.
+ * @param r (string)
+ *   The accumulated repeated string.
+ *
+ * @returns (string)
+ *   The final repeated string.
+ */
+function repeat(c, i, r = "") =
+  i > 0
+  ? repeat(c, i-1, str(c, r))
+  : r
+;
+
+/** The enum that represents showing only -ve and never +ve sign */
+function SHOW_SIGN_NEG() = 0;
+/** The enum that represents showing only -ve and +ve signs */
+function SHOW_SIGN_POS_NEG() = 1;
+/** The enum that represents showing only -ve and a space for +ve sign */
+function SHOW_SIGN_SPC_NEG() = 2;
+
+/**
+ * Outputs the sign character for value `v` based on `show_sign` enum.
+ *
+ * @param v (number)
+ *   Value to get +ve/-ve sign value from.
+ * @param show_sign (integer)
+ *    A value that is taken from SHOW_SIGN_*() consts.
+ *
+ * @returns (string)
+ *    Character of `-`, ``, `+` or ` ` (space) depending of sign of `v`.
+ */
+function _sign_str(v, show_sign) =
+  v < 0 ? "-" : [ "", "+", " " ][show_sign]
+;
+
+/**
+ * Converts a floating point number to a string with formatting.
+ *
+ * TODO: Make function also do scientific formatting.
+ *
+ * @param v (number)
+ *   Number to convert to string.
+ * @param left_justified (bool)
+ *   States if number is left or right justified.
+ * @param show_sign (number)
+ *   SHOW_SIGN_NEG() - States if to only show a negative sign.
+ *   SHOW_SIGN_POS_NEG() - states if to show positive/negative signs.
+ *   SHOW_SIGN_SP_NEG() - States if to show space for positive sign or negative sign.
+ * @param pad_char (string)
+ *   The character to use for padding a right justified value.
+ * @param min_width (number)
+ *   The minimum width of the string.
+ * @param precision (number)
+ *   The number of decimal places to use.
+ *
+ * @returns (string)
+ *   Formatted number.
+ */
+function float_to_string(v, left_justified=true, show_sign=SHOW_SIGN_NEG(), pad_char=" ", min_width=1, precision=6) =
+  assert(is_num(v) || v != v, str("v (", type_value(v), ") must be a number."))
+  // echo(str("f2s v: ", v, " min_width: ", min_width))
+  let (
+    zero = ord("0"),
+    inf = 1/0,
+    s = v ==  inf ? str(_sign_str(v, show_sign), v)
+      : v == -inf ? str(v)
+      : v != v    ? "NaN"
+      : str(
+        _sign_str(v, show_sign),
+        fn_reduce_air([
+            "",                         // init string
+            round(abs(v)*10^precision), // init value to convert
+            precision                   // init number of digits to output     
+          ], 0, precision + 100 // Overkill. Number will never need 100+ chars.
+        )(
+          function(i, acc)
+            // echo("I", i, acc)
+            let (
+              s = acc[0],              // accumulated string so far
+              v = acc[1],              // value to convert
+              decimals_left = acc[2],  // how many digits left to show
+              remainder = v % 10,
+              new_v = floor(v / 10)
+            )
+            // echo(remainder, new_v, zero)
+            // echo(str("dl: ", decimals_left, " r: ", remainder, " nv: ", new_v, " != 0 == ", abs(new_v) > 1e-6))
+            [
+              decimals_left > 0 || new_v,
+              [
+                str( chr(zero + remainder), i == precision ? "." : "", s ), // new acc string
+                new_v,                                                      // new value (removed 1s digit)
+                decimals_left-1                                             // number of digits left
+              ]
+            ]
+        )[1][0]
+      )
+  )
+  assert(is_num(min_width), min_width)
+  len(s) < min_width
+    ? left_justified
+      ? align_left (s, min_width, pad_char)
+      : align_right(s, min_width, pad_char)
+    : s
+;
+
+inf = 1/0;
+nan = inf - inf;
+test_eq("+1.300000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG()));
+test_eq("+1.3000  ", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG(), precision=4, min_width=9));
+test_eq("  +1.3000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG(), left_justified=false, precision=4, min_width=9));
+test_eq(" 0.000000", float_to_string(0,    show_sign = SHOW_SIGN_SPC_NEG()));
+test_eq("+inf",      float_to_string(inf,  show_sign = SHOW_SIGN_POS_NEG()));
+test_eq("-inf",      float_to_string(-inf, show_sign = SHOW_SIGN_POS_NEG()));
+test_eq("NaN   ",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG(), min_width=6));
+test_eq("   NaN",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG(), min_width=6, left_justified=false));
+
+/**
+ * Converts an object to a string so that if the object contains a string, all
+ * escapable characters are escaped.
+ *
+ * If `fmt_fn` doesn't recognise `obj` and `obj` is a string, puts double quotes
+ * around it.  If `obj` is list, put `[]` around each element which is formatted
+ * with `obj_to_string`.  Otherwise, use `fmt_fn()` or use `str()` to convert to
+ * a string.
+ *
+ * @param obj (any)
+ *   Object to print.
+ * @param fmt_fn (function(obj) : string | undef)
+ *   Formatting callback to convert obj to string if obj is recognised or undef
+ *   if not. (Default: function(obj) undef)
+ *
+ *   @param obj (any)
+ *     Obj to attempt to convert.
+ *
+ *   @returns (string | undef)
+ *     If recognised, the converted object as string, else undef.
+ * @param esc_chars (list[string])
+ *   A list of 2 strings, where esc_chars[0] is the characters to escape and
+ *   esc_chars[1] is the character to have `\\` prefixed to when escaping.  This
+ *   allows for only escaping certain characters if desired.
+ *   (Default: ["\\\"\r\n\t", "\\\"rnt"] )
+ * @param quote_strings (bool)
+ *   If obj is a string, put double quotes around it. (Default: true)
+ *
+ * @returns (string)
+ *   String rep of object.
+ */
+function obj_to_string(obj, fmt_fn = function(obj) undef
+    , esc_chars = ["\\\"\r\n\t", "\\\"rnt"], quote_strings = true) =
+  let (fmt_obj = fmt_fn(obj))
+  fmt_obj != undef
+  ? fmt_obj
+  : is_string(obj)
+    ? let (
+        found_i = in_list(obj, fn_find(), function(e) search(e, esc_chars[0])),
+        s = // Only create a new string if there are characters to escape in it.
+          found_i != undef
+          ? in_list(obj, fn_reduce(""), function(e, a)
+              let (found_is = search(e, esc_chars[0]))
+              found_is
+              ? str(a, "\\", esc_chars[1][found_is[0]])
+              : str(a, e)
+            )
+          : obj
+      )
+      quote_strings
+      ? str("\"", s, "\"")
+      : s
+    : is_list(obj)
+    ? len(obj) == 0
+      ? "[]"
+      : str(
+          // fn_reduce(str("[", obj_to_string(obj[0], fmt_fn, esc_chars)), it_fwd_i(obj, 1))(
+          //   function(i, acc) str(acc, ", ", obj_to_string(obj[i], fmt_fn, esc_chars))
+          // ), "]"
+          fn_in_list(obj, fn_reduce(str("[", obj_to_string(obj[0], fmt_fn, esc_chars))), 1)(
+            function(e, acc) str(acc, ", ", obj_to_string(e, fmt_fn, esc_chars))
+          ), "]"
+        )
+    : str(obj)
+;
+
+echo("This should show three lines with these chars not escaped: \"\r\n\t\\\".");
+echo(["This should show one line with these chars escaped: \"\r\n\t\\\"."]);
+echo(obj_to_string(["This should show one line with these chars escaped: \"\r\n\t\\\"."]));
+
+echo(str("o2s: ", obj_to_string("hello")));
+echo(str("o2s: ", obj_to_string("he\"llo")));
+echo(str("o2s: ", obj_to_string("he\"llo", esc_chars=["",""])));
+echo(str("o2s: ", obj_to_string("he\nllo")));
+echo(str("o2s: ", obj_to_string(1)));
+echo(str("o2s: ", obj_to_string(["hello",1])));
+echo(str("o2s: ", obj_to_string(["he\"llo",1])));
+echo(str("o2s: ", obj_to_string(["he\nllo",1])));
+echo(str("o2s: ", obj_to_string(["hello"])));
+
+/**
+ * Converts a 2D array to a csv string.  If an element contains a double quote,
+ * comma or newline, enclose it in double quotes and escape any double quotes.
+ *
+ * @param a (list[list[any]])
+ *   A 2D list of any object types to convert to a CSV.
+ * @param fmt_fn (function(e) : string | undef)
+ *   Uses this to convert a field into a string if a string is returned.
+ *
+ * @returns (string)
+ *   Returns a string of the 2D list `a` as a CSV string.
+ */
+function to_csv(a, fmt_fn = function(e) undef) =
+  assert(is_list(a), str("First level of a (", a, ") must be a list"))
+  let (
+    esc_quotes = [ "\"\\", "\"\\" ],
+    to_field = function(f)
+      let (f2 = is_string(f) ? f : obj_to_string(f, fmt_fn, esc_quotes))
+      fn_in_list("\",\n", fn_find())(function(e) search(e, f2)) != undef
+      ? obj_to_string(f2, fmt_fn, esc_quotes)
+      : f2,
+    to_csv_row = function(r)
+      assert(is_list(r), str("Second level of a (", a, ") must be a list"))
+      len(r) == 0
+      ? "\n"
+      : str(
+          fn_in_list(r, fn_reduce(to_field(r[0])), 1)(
+            function(e, acc) str(acc, ",", to_field(e))
+          ), "\n"
+        )
+  )
+  len(a) == 0
+  ? ""
+  : fn_in_list(a, fn_reduce(""))(
+    function(e, acc) str(acc, to_csv_row(e))
+  )
+;
+echo(to_csv([["hello", "th,ere", "ou\nt", "th\"ere"]]));
+

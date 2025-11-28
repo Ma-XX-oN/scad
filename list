@@ -1,0 +1,1296 @@
+use <base_algos>
+use <range>
+use <types>
+use <helpers>
+use <test>
+use <string>
+use <birlei>
+use <function>
+
+/**
+ * Gets the element of an array.  Allows for negative values to reference
+ * elements starting from the end going backwards.
+ *
+ * @param slr (string | list | range)
+ *   The slr to get the element from.
+ * @param i (number)
+ *   The index of the element.  If value is negative, then goes backward from
+ *   end of array.
+ *
+ * @returns (any)
+ *   The element at the index specified.
+ */
+function el(slr, i) =
+  is_string(slr) || is_list(slr)
+  ? slr[el_idx(slr, i)]
+  : range_el(slr, i)
+;
+
+/**
+ * Gets the index for an slr.  Allows for negative values to reference
+ * elements starting from the end going backwards.
+ *
+ * @param slr (string | list | range)
+ *   The slr to get the index for.
+ * @param i (number)
+ *   The index of the element.  If value is negative, then goes backward from
+ *   end of slr.
+ * @param debug (bool)
+ *   If truthy, outputs the array, requested index and the resulting index.
+ *   Does nothing if falsy. (Default: false)
+ *
+ * @returns (number)
+ *   The positive index.
+ */
+function el_idx(slr, i, debug = false) =
+  let (
+    result = i >= 0
+      ? i
+      : (is_string(slr) || is_list(slr)
+          ? len(slr)
+          : range_len(slr)
+        ) + i,
+    _ = debug?echo("el_idx", slr, i, result) : 0
+  )
+  result
+;
+
+/**
+ * Gets a substring or elements of a list or range.  Allows for negative range
+ * values to reference elements starting from the end going backwards.
+ *
+ * @param slr (string | list | range)
+ *   The slr to get the elements from.
+ * @param birl (number | range | list)
+ *   - If number, start index to check (Default: 0)
+ *   - If range, indices to check
+ *   - If list, indices to check
+ * @param end_i (number | undef)
+ *   - If birl is a number, end index to check.  If end_i is less than birl,
+ *     then returns an empty list / string. (Default: el_idx(slr, -1))
+ *
+ * @returns (string | list[any])
+ *   The elements at the indices specified or the substring.
+ */
+function els(slr, birl = 0, end_i = undef) =
+  let(
+    slr_te = type_enum(slr),
+    _end_i = birlei_end_i(birl, end_i, slr)
+  )
+  // echo(str("birl: ", birl, " _end_i: ", _end_i))
+  assert(is_indexable_te(slr_te))
+  slr_te == LIST()
+  ? fn_map(birl, _end_i)(function(i) el(slr, i))
+  : 
+    slr_te == STR()
+    ? fn_reduce("", birl, _end_i)(function(i, acc)str(acc, el(slr, i)))
+    : // slr_te must be RANGE()
+      fn_map(birl, _end_i)(function(i) range_el(slr, i))
+;
+
+echo("els: ", els([0,1,2,3,4,5], 1));
+echo("els: ", els([0,1,2,3,4,5], 1, 3));
+echo("els: ", els([0,1,2,3,4,5], range(3, -1, 1)));
+echo("els: ", els("hello", 2, 3));
+let (h = "hello") echo("els: ", els(h, it_rev_i(h)));
+echo("els: ", els(range(1, 2, 6), 1, 2));
+echo("els: ", els(range(1, 2, 6), range(2, -1, 1)));
+
+/**
+ * Gets the positive indices for an array.  Allows for negative values to
+ * reference elements starting from the end going backwards.
+ *
+ * @param slr (string | list | range)
+ *   The slr to get the indies from.
+ * @param birl (number | range | list)
+ *   - If number, start index to check
+ *   - If range, indices to check
+ *   - If list, indices to check
+ * @param end_i (number | undef)
+ *   - If birl is a number, end index to check.  If end_i is less than birl,
+ *     then returns an empty list / string. (Default: len(a)-1)
+ *
+ * @returns (list[number])
+ *   The positive indices.
+ */
+function el_idxs(slr, birl, end_i) =
+  let (_end_i = birlei_end_i(birl, end_i, slr))
+  fn_map(birl, _end_i)(function(i) el_idx(slr, i))
+;
+
+/**
+ * Gets the next index, wrapping if goes to or beyond len(a).
+ *
+ * @param a (list)
+ *   List used for knowing when to wrap.
+ * @param i (number)
+ *   Index to start from.
+ * @param inc (number)
+ *   Count to increase i by.
+ * @param wrap_to_0 (bool)
+ *   If true, then when i+inc >= len(a), result is 0.  Otherwise, it wraps to
+ *   modulo len(a).
+ *
+ * @returns (number)
+ *   Next element index in list.
+ */
+function next_in(sl, i, inc=1, wrap_to_0 = false) =
+  wrap_to_0
+  ? let (new_i = i + inc)
+    new_i >= len(sl)
+    ? 0
+    : new_i
+  : (i + inc) % len(sl)
+;
+
+/**
+ * Gets the prev index, wrapping if goes negative.
+ *
+ * @param a (list)
+ *   List used for knowing when to wrap.
+ * @param i (number)
+ *   Index to start from.
+ * @param inc (number)
+ *   Count to increase i by.
+ * @param wrap_to_last (bool)
+ *   If true, then when i-dec < 0, result is 0.  Otherwise, it wraps to
+ *   modulo len(a).
+ *
+ * @returns (number)
+ *   Next element index in list.
+ */
+function prev_in(sl, i, dec=1, wrap_to_last = false) =
+  wrap_to_last
+  ? let (new_i = i - dec)
+    new_i < 0
+    ? len(sl) - 1
+    : new_i
+  : abs((i - dec) % len(sl))
+;
+
+/**
+ * Push an element onto the head (end) of the sl.
+ *
+ * @param sl (string | list)
+ *   sl to add to.
+ * @param es (string | list | range)
+ *   - string of elements to append to string or list.
+ *   - list   of elements to append to list.
+ *
+ * @returns (string | list)
+ *   The updated string or list.
+ */
+function push(sl, es) =
+  // echo(str("push: sl: ", sl, " es: ", es))
+  let (
+    sl_te = type_enum(sl),
+    es_te = type_enum(es)
+  )
+  assert(is_indexable_te(sl_te) && sl_te != RANGE())
+  assert(is_indexable_te(es_te))
+  assert(sl_te == STR() && es_te == STR() || sl_te == LIST(),
+    "String elements can pushed to strings or lists, but list elements can't be pushed to strings.")
+  is_string(sl)
+  ? str(sl, es)
+  : [
+      each sl,
+      each es
+    ]
+;
+
+/**
+ * Pops one or more elements off the head (end) of the sl.
+ *
+ * @param sl (string | list)
+ *   sl to remove from.
+ * @param i (number)
+ *   Number of elements to pop off end of list.
+ *
+ * @returns (string | list)
+ *   The updated sl.
+ */
+function pop(sl, i=1) =
+  els(sl, 0, el_idx(sl, -i)-1)
+;
+
+/**
+ * Unshift elements onto the tail (beginning) of the sl.
+ *
+ * @param sl (string | list)
+ *   List to add to.
+ * @param es (string | list)
+ *   List of elements to prepend to the list.  When adding one element, it must
+ *   be wrapped in a list.
+ *
+ * @returns (string | list)
+ *   The updated sl.
+ */
+function unshift(sl, es) =
+  is_string(sl)
+  ? str( es, sl )
+  : [
+      each es,
+      each sl
+    ]
+;
+
+/**
+ * Shift elements off of the tail (beginning) of the sl.
+ *
+ * @param sl (string | list)
+ *   List to add to.
+ * @param i (number)
+ *   Number of elements to shift off beginning of list.
+ *
+ * @returns (string | list)
+ *   The updated sl.
+ */
+function shift(sl, i=1) =
+  els(sl, i)
+;
+
+/**
+ * Insert elements es in list a starting at index i.
+ *
+ * @param sl (string | list)
+ *   String or list to insert into.
+ * @param i (number)
+ *   Index to insert into.
+ *   - 0 to insert at beginning of list (like unshift)
+ *   - len(a) to insert at end of list (like push)
+ *   - Negative values will insert starting from the end.
+ *     - -1 will insert between the second last element and the last element.
+ *     - -len(a) will insert at the beginning of list (like unshift)
+ *     - if less than -len(a), then will wrap.  E.g. -len(a)-1 is equivalent to
+ *       -1.
+ * @param es (list)
+ *   Elements to insert.
+ *
+ * @returns (string | list)
+ *   The updated sl.
+ */
+function insert(sl, i, es) =
+  let ( _i = el_idx(sl, i) )
+  is_string(sl)
+  ? str( els(sl, 0, _i-1), es, els(sl, _i) )
+  : [
+      each els(sl, 0, _i-1),
+      each es,
+      each els(sl, _i)
+    ]
+;
+
+/**
+ * Removes a contagious set of elements from a sl.
+ *
+ * @param sl (string | list)
+ *   List to remove elements from.
+ * @param begin_i (number)
+ *   The first index to remove.
+ * @param end_i (number | undef)
+ *   The last index to remove.  If < begin_i, no elements are removed.  If undef
+ *   then remove to end of list.
+ *
+ *   TTA: Should remove to end of list or just that element if undefined?
+ *
+ * @returns (string | list)
+ *   The updated sl.
+ */
+function remove(sl, begin_i, end_i) =
+  assert(is_num(begin_i), begin_i)
+  let (
+    _end_i = birlei_end_i(begin_i, end_i)
+  )
+  // echo(str("remove: sl:", sl, " begin_i: ", begin_i, " end_i: ", end_i, " _end_i: ", _end_i))
+  is_string(sl)
+  ?
+    str(els(sl, 0, begin_i-1), els(sl, _end_i+1))
+  : [
+      each els(sl, 0, begin_i-1),
+      each els(sl, _end_i+1)
+    ]
+;
+
+
+/**
+ * Removes each element indexed in the birlei.
+ *
+ * @param sl (string | list)
+ *   List to remove elements from.
+ * @param begin_i (number)
+ *   The first index to remove.
+ * @param end_i (number | undef)
+ *   The last index to remove.  If < begin_i, no elements are removed.  If undef
+ *   then remove to end of list.
+ *
+ *   TTA: Should remove to end of list or just that element if undefined?
+ *
+ * @returns (string | list)
+ *   The updated sl.
+ */
+function remove_each(sl, birl = 0, end_i = undef) =
+  is_num(birl)
+  ? remove(sl, birl, end_i) // Take out section in one shot
+  : let (
+      _sl = birlei(birl, end_i, sl)
+    )
+    _sl[BIRLEI_CONTIG()]()
+    ? let (
+        b = _sl[BIRLEI_EL()](0), e = _sl[BIRLEI_EL()](-1)
+      )
+      remove(sl, min(b, e), max(b, e)) // Take out section in one shot
+    : fn_reduce(els(sl, 0, _sl[BIRLEI_EL()](0)-1), 1, _sl[BIRLEI_LEN()]-1)(
+        function(i, acc)
+          push(acc, els(sl, _sl[BIRLEI_EL()](i-1)+1, _sl[BIRLEI_EL()](i)-1))      
+    )
+;
+
+/**
+ * Replaces contiguous index set [`a_begin_i`, `a_end_i`] from list `a` with
+ * birl index set of list `b`.
+ *
+ * @param a (string | list)
+ *   List to have elements replaced.
+ * @param a_begin_i (number)
+ *   The starting index of a to replace.  Must be < len(a).
+ * @param a_end_i (number)
+ *   The ending index of a to replace. Must be >= 0.
+ * @param b (string | list)
+ *   List to draw elements from to replace the a element range with.
+ * @param b_birl (number | range | list)
+ *   - If number, start index to draw elements from (Default: 0)
+ *   - If range, indices to draw elements from
+ *   - If list, indices to draw elements from
+ * @param b_end_i (number)
+ *   - If b_birl is a number, then end index to draw elements from.  b_end_i
+ *     could be less than b_birl if there's nothing to iterate over. (Default:
+ *     len(b)-1)
+ *
+ * @returns (string | list)
+ *   This is the updated list of elements.
+ */
+function replace(a, a_begin_i, a_end_i, b, b_birl=0, b_end_i=undef) =
+  assert(is_num(a_begin_i) && is_num(a_end_i), str("a_begin_i (", a_begin_i,
+    ") and a_end_i (", a_end_i, ") must both be integers."))
+  let (
+    _b_end_i = birlei_end_i(b_birl, b_end_i, b)
+  )
+  is_string(a)
+  ? str(
+      els(a, 0, a_begin_i-1),
+      els(b, b_birl, _b_end_i),
+      els(a, a_end_i+1)
+    )
+  : [
+      each els(a, 0, a_begin_i-1),
+      each els(b, b_birl, _b_end_i),
+      each els(a, a_end_i+1)
+    ]
+;
+
+/**
+ * Replaces each element specified by `a_birl, a_end_i` with each element
+ * specified by `b_birl, b_end_i`.  MUST contain the same number of elements.
+ *
+ * @param a (string | list)
+ *   sl to have elements replaced.
+ * @param a_begin_i (number)
+ *   The starting index of a to replace.  Must be < len(a).
+ * @param a_birl (number | range | list)
+ *   - If number, start index to draw elements from (Default: 0)
+ *   - If range, indices to draw elements from
+ *   - If list, indices to draw elements from
+ * @param a_end_i (number)
+ *   - If b_birl is a number, then end index to draw elements from.  a_end_i
+ *     could be less than a_birl if there's nothing to iterate over. (Default:
+ *     len(a)-1)
+ * @param b (string | list)
+ *   sl to have elements replaced with.
+ * @param b_birl (number | range | list)
+ *   - If number, start index to draw elements from (Default: 0)
+ *   - If range, indices to draw elements from
+ *   - If list, indices to draw elements from
+ * @param b_end_i (number)
+ *   - If b_birl is a number, then end index to draw elements from.  b_end_i
+ *     could be less than b_birl if there's nothing to iterate over. (Default:
+ *     len(b)-1)
+ *
+ * @returns (string | list)
+ *   This is the updated list of elements.
+ */
+function replace_each(a, a_birl, a_end_i, b, b_birl=0, b_end_i=undef) =
+  is_num(a_birl)
+  ? replace(a, a_birl, a_end_i, b, b_birl, b_end_i)
+  : let (
+      _a = birlei(a_birl, a_end_i, a),
+      _b = birlei(b_birl, b_end_i, b)
+    )
+    assert(_a[BIRLEI_LEN()] == _b[BIRLEI_LEN()],
+      str("a and b ranges must be the same length.  Lengths are: ", _a[BIRLEI_LEN()],
+        " and ", _b[BIRLEI_LEN()], " respectively."))
+    _a[BIRLEI_CONTIG()]()
+    ? let (
+        b = _sl[BIRLEI_EL()](0), e = _sl[BIRLEI_EL()](-1)
+      )
+      replace(a, min(b, e), max(b, e), b, b_birl, b_end_i)
+    : push(
+        fn_reduce(els(a, 0, _a[BIRLEI_EL()](0)-1), 1, _a[BIRLEI_LEN()]-1)(
+          function(i, acc)
+            push(
+              push(acc, els(b, _b[BIRLEI_EL()](i-1), _b[BIRLEI_EL()](i-1)))
+              , els(a, _a[BIRLEI_EL()](i-1)+1, _a[BIRLEI_EL()](i)-1)
+            )
+        ), els(b, _b[BIRLEI_EL()](-1), _b[BIRLEI_EL()](-1))
+      )
+;
+
+/**
+ * Swap the elements between [begin_i1 : end_i1] and [begin_i2 : end_i2].
+ *
+ * @param a (string | list)
+ *   List to swap elements in.
+ * @param begin_i1 (number)
+ *   Starting index of group 1.
+ * @param end_i1 (number)
+ *   Ending index of group 1.
+ * @param begin_i2 (number)
+ *   Starting index of group 2.
+ * @param end_i2 (number)
+ *   Ending index of group 2.
+ *
+ * @returns (string | list)
+ *   List with ranges swapped.
+ *
+ * TODO: Fix this to work for use case where ranges are not the same length.
+ */
+function swap(sl, begin_i1, end_i1, begin_i2, end_i2) =
+  end_i2 < begin_i1
+  ? // Not overlapping and group 2 is before group 1
+    replace(
+      replace(sl, begin_i1, end_i1, sl, begin_i2, end_i2),
+      begin_i2, end_i2, sl, begin_i1, end_i1
+    )
+  : end_i1 < begin_i2
+    ? // Not overlapping and group 1 is before group 2
+      replace(
+        replace(sl, begin_i2, end_i2, sl, begin_i1, end_i1),
+        begin_i1, end_i1, sl, begin_i2, end_i2
+      )
+    : assert(false, str("Groups ", birlei_to_indices(begin_i1, end_i1), " and ",
+        birlei_to_indices(begin_i2, end_i2), " cannot overlap."))
+      undef
+;
+
+/**
+ * Rotates the elements in the list so that the elements are reordered as
+ * [i : len(a)-1] followed by [0 : i - 1].
+ *
+ * @param sl (string | list)
+ *   This is the list to rotate.
+ * @param i (number)
+ *   Index to move to index 0.  If negative, starts from the right.
+ *   If -len(a) < i < len(a), then modulo is taken.  E.g. i = -3 and len(a) = 2
+ *   gives `i` to be -1.  Then `i` becomes len(a)-1.
+ *
+ * @returns (string | list)
+ *   Returns the rotated list.
+ */
+function rotate_list(sl, i) =
+  let (i1 = el_idx(sl, i % len(sl)))
+  [
+    each els(sl, -i),
+    each els(sl, 0, -i-1)
+  ]
+;
+
+/**
+ * Gets the element at the head (end) of the list.
+ *
+ * @param sl (list)
+ *   List to get from.
+ *
+ * @returns (any)
+ *   Object at the head of the list.
+ */
+function head(sl) =
+  assert(len(sl) >= 1)
+  sl[len(sl)-1]
+;
+
+/**
+ * Gets the elements at the head (end) of the list.
+ *
+ * @param sl (string | list)
+ *   List to get from.
+ * @param i (number)
+ *   Number of elements to retrieve from the head.
+ *
+ * @returns (string | list)
+ *   Object at the head of the list.
+ */
+function head_multi(sl, i) =
+  assert(len(sl) >= i)
+  els(sl, -i, -1)
+;
+
+/**
+ * Gets the element at the tail (beginning) of the list.
+ *
+ * @param sl (string | list)
+ *   List to get from.
+ *
+ * @returns (string | list)
+ *   Object at the tail of the list.
+ */
+function tail(sl) =
+  assert(len(sl) >= 1)
+  sl[0]
+;
+
+/**
+ * Gets the elements at the tail (beginning) of the list.
+ *
+ * @param sl (string | list)
+ *   List to get from.
+ * @param i (number)
+ *   Number of elements to retrieve from the tail.
+ *
+ * @returns (string | list)
+ *   Object at the tail of the list.
+ */
+function tail_multi(sl, i) =
+  assert(len(sl) >= i)
+  els(sl, 0, i-1)
+;
+
+module tests_lists() {
+  echo("RUNNING TESTS!");
+
+  s0 = push([], [1]);
+  s1 = push(s0, [2]);
+  test_eq([1,2],        s1);
+  test_eq(2,            head(s1));
+  test_eq([2],          head_multi(s1,1));
+  test_eq([1,2],        head_multi(s1,2));
+  test_eq(1,            tail(s1));
+
+  s2 = unshift(s1, [0]);
+  test_eq(0,            tail(s2));
+  test_eq([0, 1],       tail_multi(s2,2));
+
+  s3 = insert(s2, 2, [3]);
+  test_eq([0, 1, 3, 2], s3);
+  test_eq([1, 3, 2],    shift(s3));
+  test_eq([3, 2],       shift(s3, 2));
+  test_eq([0, 1, 3],    pop(s3));
+  test_eq([0, 1],       pop(s3, 2));
+  test_eq([0, 2],       remove(s3, 1, 2));
+  test_eq([0, 3, 2],    remove(s3, 1, 1));
+  test_eq([0, 1, 3, 2], remove(s3, 1, 0));
+
+  echo("TESTS SUCCEEDED!");
+}
+
+/**
+ * Takes a 1D list and outputs it as a string with only row_length elements on
+ * each row.
+ *
+ * E.g.  If row_length were 3 then we'd get something like this:
+ * ```
+ * [
+ *    a, b, c,
+ *    d, e, f
+ * ]
+ * ```
+ *
+ * If the row_length doesn't evenly divide into the length of the list, it will
+ * be padded with undef at the end.
+ *
+ * @param list (list)
+ *   A list to prettify.
+ * @param row_length (number)
+ *   The number of elements to show per line (Default: len(list))
+ * @param fmt_el_fn (function(i, e, indent) : formatted_element)
+ *   Format element callback.  Where `i` is the index of the element, `e` is the
+ *   element at `i` and `indent` is the characters to put at the beginning of
+ *   the line.  Returns a string displaying the element.
+ * @param indent (string)
+ *   The character to put at the beginning of each line.
+ * @param indent_first_line (bool)
+ *   States if to indent the first line.
+ * @param new_indent (string)
+ *   The indent string to add when adding a new indent level.
+ * @param only_first_and_last (bool)
+ *   States if to output only first and last row (true) or all rows (false).
+ *
+ * @returns (string)
+ *   Prettified list.
+ */
+function list_to_string(list, row_length, fmt_el_fn = fmt_list_fn(),
+  indent = "", indent_first_line = false, new_indent = "  ", only_first_and_last = false
+) =
+  let (
+    output_row_fn = function(i, acc, row_length = row_length, new_indent = new_indent)
+      fn_reduce(
+        str(acc, indent, new_indent, fmt_el_fn(i, list[i], indent)),
+        i+1, i+row_length-1)
+      (
+        function(i, acc)
+          // echo(str("list: ", list, " i: ", i, " acc: ", acc))
+          str(acc, ", ", fmt_el_fn(i, list[i], indent))
+      )
+  )
+  row_length == 0
+  ?
+    let (result = output_row_fn(0, "", len(list), ""))
+    str(
+      "[",
+      result,
+      "]"
+    )
+  :
+  only_first_and_last
+  ? str(
+      indent_first_line ? indent : "",
+      output_row_fn(0, "[\n"),
+      len(list) > row_length
+      ? str(
+          len(list) > row_length * 2
+          ? str(",\n", new_indent, indent, "...\n")
+          : ",\n",
+          output_row_fn((round(len(list)/row_length)-1)*row_length, "")
+        )
+      : "",
+      "\n",
+      indent,
+      "]"
+    )
+  : str(
+      indent_first_line ? indent : "",
+      fn_reduce(
+        output_row_fn(0, "[\n"),
+        range(row_length, row_length, len(list)-1))
+      (
+        function(i, acc)
+          output_row_fn(i, str(acc, ",\n"))
+      ),
+      "\n",
+      indent,
+      "]"
+    )
+;
+
+/**
+ * Used to pass resulting lambda to list_to_string to format any numbers that
+ * are found with a precision and sign formatting.  Everything else is rendered
+ * by str().
+ *
+ * @param precision (number)
+ *   Number of decimal places to show.
+ * @param show_sign (number)
+ *   SHOW_SIGN_NEG() - States if to only show a negative sign.
+ *   SHOW_SIGN_POS_NEG() - states if to show positive/negative signs.
+ *   SHOW_SIGN_SP_NEG() - States if to show space for positive sign or negative sign.
+ *
+ * @returns (function (i, e, indent) : string)
+ *   Returns the lambda to render an element.
+ */
+function fmt_list_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG()) =
+  function(i, e, indent)
+    is_list(e)
+    ? list_to_string(e, len(e), fmt_list_fn(), str("  ", indent))
+    : is_num(e)
+      ? float_to_string(e, precision=precision, show_sign=show_sign)
+      : str(e)
+;
+
+/**
+ * Passed to `list_to_string`, this will format elements as if they are a list
+ * of coordinates, placing coordinates of one row over another aligning over the
+ * decimal point.
+ *
+ * @param precision (number)
+ *   The number of decimal places to output.
+ * @param show_sign (number)
+ *   SHOW_SIGN_NEG() - States if to only show a negative sign.
+ *   SHOW_SIGN_POS_NEG() - states if to show positive/negative signs.
+ *   SHOW_SIGN_SP_NEG() - States if to show space for positive sign or negative sign.
+ * @param min_widths (list[number] | undef)
+ *   If specified, will output coord with minimum width of each specified by
+ *   corresponding value in this list.
+ *
+ * @returns (function (i, e, indent) : string)
+ *   Returns the lambda to render an element.
+ *
+ *   If an element is not a list, will output `*UNEXPECTED* ` followed by what
+ *   the element was.
+ */
+function fmt_pt_list_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG(), min_widths_for_pts = undef) =
+  function(i, e, indent)
+    is_list(e)
+    ? let(
+        min_widths_for_pt =
+          min_widths_for_pts
+          ? min_widths_for_pts[i % len(min_widths_for_pts)]
+          : undef
+      )
+      // echo(str("fmt_pt_list_fn min_widths_for_pts: ", min_widths_for_pts, " i: ", i, " min_widths_for_pt: ", min_widths_for_pt))
+      list_to_string(e, 0, fmt_pt_fn(precision, show_sign,  min_widths_for_pt))
+    : str("*UNEXPECTED* ", e)
+;
+
+/**
+ * Passed to `list_to_string`, this will format element as if it's a coordinate.
+ *
+ * @param precision (number)
+ *   The number of decimal places to output.
+ * @param show_sign (number)
+ *   SHOW_SIGN_NEG() - States if to only show a negative sign.
+ *   SHOW_SIGN_POS_NEG() - states if to show positive/negative signs.
+ *   SHOW_SIGN_SP_NEG() - States if to show space for positive sign or negative sign.
+ * @param min_widths_for_dims (list[number] | undef)
+ *   If specified, will output coord with minimum width of each specified by
+ *   corresponding value in this list.
+ *
+ * @returns (function (i, e, indent) : string)
+ *   Returns the lambda to render an element.
+ *
+ *   If an element is not a number, will output `*UNEXPECTED* ` followed by what
+ *   the element was.
+ */
+function fmt_pt_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG(), min_widths_for_dims = undef) =
+  function(i, e, indent)
+    is_num(e)
+    ?
+      // echo("fmt_pt_fn min_widths_for_dims: ", min_widths_for_dims, " i: ", i)
+      float_to_string(e, precision=precision, left_justified=false,
+        show_sign=show_sign, min_width = default(min_widths_for_dims[i], 1))
+    : str("*UNEXPECTED* ", e)
+;
+
+/**
+ * Formats a list of points aligning cols over rows.
+ *
+ * @param pts (list[list[number, number, number]])
+ *   A list of coordinates.
+ * @param cols (number)
+ *   Number of columns 
+ */
+function pt_list_to_string(pts, cols, rows, indent, only_first_and_last, precision = 4) =
+  let (
+    min_widths = fn_map(0, cols-1)(function(col)
+      // echo(str("col: ", col))
+      fn_map(0, len(pts[col])-1)(function(dim_i)
+        // echo(str("dim: ", dim_i))
+        fn_in_list(pts, fn_reduce(0), range(col, cols, len(pts)-1))(function(pt, acc)
+          // echo(str("pt: ", pt, " acc: ", acc, " precision: ", precision))
+          let (
+            // num of digits and `.`.
+            v = round(abs(pt[dim_i]) * 10^precision),
+            width = 1 + (v ? floor(log(v)) : precision) + (precision > 0 ? 1 : 0)
+          )
+          // echo(str("v: ", v, " width: ", width))
+          max(acc, width + 1) // + 1 for sign
+        )
+      )
+    )
+  )
+  // echo(str("min_widths: ", min_widths))
+  list_to_string(pts, cols, indent=str("  ", indent), fmt_pt_list_fn(precision, min_widths_for_pts=min_widths), only_first_and_last)
+;
+echo("pt_list_to_string", pt_list_to_string([[1, 10, 4], [1,5,0]], 2, 3, ""));
+echo("pt_list_to_string", pt_list_to_string([[1, 10, 4], [1,5,0], [1,5,0], [1, 10, 4]], 2, 3, ""));
+
+let(a = [1, 2, [3, 4, 5, 6, 7], 8])
+echo(
+  list_to_string(a, 1,
+    function(i, e, indent)
+      is_list(e)
+      ? list_to_string(e, 2, indent = str(indent, "  "))
+      : e
+  )
+);
+
+let(a = [1,2,3,2,3,4])
+echo(
+  list_to_string(a, 2, only_first_and_last=1)
+);
+
+/**
+ * Will determine if any of the calls to any_pred_fn(i) will result in a truthy
+ * result.
+ *
+ * @param any_pred_fn (function(i) : bool)
+ *   Where i is an index, if returns a truthy, will stop searching and return
+ *   true.
+ * @param birl (number | range | list)
+ *   - If number, start index to check
+ *   - If range, indices to check
+ *   - If list, indices to check
+ * @param end_i (number | undef)
+ *   - If birl is a number, end index to check.  If end_i < birl then any_pred_fn
+ *     is never called, making this function return false.
+ *
+ * @returns (bool)
+ *   If any any_pred_fn(i) calls returns truthy, then returns true, otherwise
+ *   false.
+ */
+function any(any_pred_fn, birl, end_i) =
+  assert(is_function(any_pred_fn),
+    str("any_pred_fn should be function. Got ", any_pred_fn, " instead."))
+  !is_undef(find(any_pred_fn, birl, end_i))
+;
+
+/** Hoists function into variable ns to be able to pass as a lambda */
+function function_any() =
+  function(any_pred_fn, birl, end_i)
+    any(any_pred_fn, birl, end_i)
+;
+
+/**
+ * Will determine if all of the calls to all_pred_fn(i) will result in a truthy
+ * result.
+ *
+ * @param all_pred_fn (function(i) : bool)
+ *   Where i is an index, if returns a falsy, will stop searching and return
+ *   false.
+ * @param birl (number | range | list)
+ *   - If number, start index to check
+ *   - If range, indices to check
+ *   - If list, indices to check
+ * @param end_i (number | undef)
+ *   - If birl is a number, end index to check.  If end_i < birl then all_pred_fn
+ *     is never called, making this function return true.
+ *
+ * @returns (bool)
+ *   If any any_pred_fn(i) calls returns truthy, then returns true, otherwise
+ *   false.
+ */
+function all(all_pred_fn, birl, end_i) =
+  assert(is_function(all_pred_fn),
+    str("all_pred_fn should be function. Got ", all_pred_fn, " instead."))
+  // VAGUE BENCHMARKING
+  // 1. slightly slower than 2.
+  // !any(not(all_pred_fn), birl, end_i)
+
+  // 2. marginally slower than 3.
+  // is_undef(find(not(all_pred_fn), birl, end_i))
+  
+  // 3. appear to be faster than other two, but it's really hard to tell.
+  is_undef(find(function(v) !all_pred_fn(v), birl, end_i))
+;
+
+/** Hoists function into variable ns to be able to pass as a lambda */
+function function_all() =
+  function(all_pred_fn, birl, end_i)
+    all(all_pred_fn, birl, end_i)
+;
+
+module tests_any_all(test_group) {
+  if (test_group) {
+    assert(let(a=[1,2,3,4,5])  any(function(i) a[i]==3, it_fwd_i(a)));
+    assert(let(a=[1,2,3,4,5]) !any(function(i) a[i]==6, it_fwd_i(a)));
+    assert(let(a=[1,2,3,4,5])  all(function(i) a[i]>0 , it_fwd_i(a)));
+    assert(let(a=[1,2,3,4,5]) !all(function(i) a[i]!=3, it_fwd_i(a)));
+    assert( in_list([1,2,3,4,5], function_any(), function(e) e==3));
+    assert(!in_list([1,2,3,4,5], function_any(), function(e) e==6));
+    assert( in_list([1,2,3,4,5], function_all(), function(e) e!=0));
+    assert(!in_list([1,2,3,4,5], function_all(), function(e) e!=3));
+  } else {
+    assert( [for (e=[1,2,3,4,5]) if (e==3) 1 ]);
+    assert(![for (e=[1,2,3,4,5]) if (e==6) 1 ]);
+    assert(![for (e=[1,2,3,4,5]) if (e<=0) 1 ]);
+    assert( [for (e=[1,2,3,4,5]) if (e==3) 1 ]);
+    assert( [for (e=[1,2,3,4,5]) if (e==3) 1 ]);
+    assert(![for (e=[1,2,3,4,5]) if (e==6) 1 ]);
+    assert(![for (e=[1,2,3,4,5]) if (e<=0) 1 ]);
+    assert( [for (e=[1,2,3,4,5]) if (e==3) 1 ]);
+  }
+}
+
+tests_any_all(1);
+
+/**
+ * Takes an list of elements and removes elements which are the same as the
+ * previous element.
+ *
+ * @param (list[any])
+ *   A list of items.
+ *
+ * @param (list[any])
+ *   List of elements that have any elements that are the same as the previous
+ *   element removed.
+ */
+function filter_out_same_consecutive_items(a) =
+  a == [] ? [] :
+  [ a[0], each for (i=[1:len(a)-1]) if (a[i] != a[i-1]) a[i] ];
+
+/**
+ * Return a range representing indices to iterate over array forwards.
+ *
+ * NOTE:  Dev is responsible for ensuring that when using start_offset /
+ *        end_offset, that they don't go out of bounds, or if they do, the
+ *        underlying PPMRRAIR function will handle it gracefully.
+ *
+ * @param array (list)
+ *   List to iterate over
+ * @param start_offset (number)
+ *   Offset to start the starting point from.  (Default: 0)
+ *   - Should prolly be positive to not give an undefined index.
+ * @param end_offset (number)
+ *   Offset to end the ending point to.  (Default: 0)
+ *   - Should prolly be negative to not give an undefined index.
+ * @param debug (bool)
+ *   If truthy, outputs the array, start_offset, end_offset and the resulting
+ *   end_i.  Does nothing if falsy. (Default: false)
+ *
+ * @returns (range)
+ *   An ascending range that goes from start_offset to el_idx(array, -1) +
+ *   end_offset.
+ */
+function it_fwd_i(array, start_offset = 0, end_offset = 0, debug = false) =
+  let (
+    end_i = el_idx(array, -1, debug) + end_offset,
+    _ = debug ? echo("it_fwd_i", array, start_offset, end_offset, end_i) : 0
+  )
+  start_offset <= end_i
+  ? [ start_offset : end_i ]
+  : []
+;
+
+/**
+ * Return a range representing indices to iterate over array backwards.
+ *
+ * NOTE:  Dev is responsible for ensuring that when using start_offset /
+ *        end_offset, that they don't go out of bounds, or if they do, the
+ *        underlying PPMRRAIR function will handle it gracefully.
+ *
+ * @param array (list)
+ *   List to iterate over
+ * @param start_offset (number)
+ *   Offset to start the starting point from.  (Default: 0)
+ *   - Should prolly be positive to not give an undefined index.
+ * @param end_offset (number)
+ *   Offset to end the ending point to.  (Default: 0)
+ *   - Should prolly be negative to not give an undefined index.
+ * @param debug (bool)
+ *   If truthy, outputs the array, start_offset, end_offset and the resulting
+ *   begin_i.  Does nothing if falsy. (Default: false)
+ *
+ * @returns (range)
+ *   A descending range that goes from el_idx(array, -1) + start_offset to
+ *   end_offset.
+ */
+function it_rev_i(array, start_offset = 0, end_offset = 0, debug = false) =
+  let (
+    begin_i = el_idx(array, -1, debug) + start_offset,
+    _ = debug ? echo("it_rev_i", array, start_offset, end_offset, begin_i) : 0
+  )
+  end_offset <= begin_i
+  ? [ begin_i : -1 : end_offset ]
+  : []
+;
+
+assert(
+  let(
+    a=[1,2,3,4,5],
+    fn=function(i) a[i]%2==0
+  )
+  find(fn, it_rev_i(a)) == 1
+);
+
+/**
+ * @overload in_list(array, algo_fn, ppmrrair_fn, begin_i, end_i) : any
+ * @overload in_list(array, algo_fn, ppmrrair_fn, range_is) : any
+ * @overload in_list(array, algo_fn, ppmrrair_fn, list_is) : any
+ *
+ * This convenience function will execute function algo_fn as if it were
+ * used on a collection, remapping the first parameter being passed to
+ * ppmrrair_fn so that it receives the element rather than the index.  Uses the
+ * list as a reference so that birlei can be partially or fully omitted.
+ *
+ * @example
+ *
+ * Normal usage:
+ * ```
+ * even_indices = let(a=[1,2,3,4,5]) filter(function(i) a[i] % 2);
+ * even_values  = let(a=[1,2,3,4,5]) filter(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
+ * vs in_list() usage:
+ * ```
+ * even_indices = in_list([1,2,3,4,5], fn_filter(), function(e) e % 2);
+ * even_values  = in_list([1,2,3,4,5], fn_filter(), function(e, v) v ? e : e % 2);
+ * ```
+ *
+ * NOTE: If `algo_fn` takes more than the standard 3 parameters, then
+ *       it must bind the extra parameters so that only the 3 standard
+ *       parameters are required.
+ *
+ * @param arr (list | string)
+ *   This is the list to take element data from.
+ * @param algo_fn (function (fn, birl, end_i))
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param ppmrrair_fn (function(i) : any | function(i, v) : any)
+ *   This is forwarded to algo_fn.  Function can take 1 or 2 parameters
+ *   based on what `algo_fn()` requires.
+ * @param birl (number | range | list)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: 0).
+ * @param end_i (undef | number)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: el_idx(arr, -1)).
+ *
+ * @returns (any)
+ *   The return value of the algo_fn() call.
+ */
+function in_list(arr, algo_fn, ppmrrair_fn, birl=0, end_i=undef) =
+  // echo(str("in_list:\n  algo_fn: ", algo_fn, "\n  arr: ", arr, "\n  ppmrrair_fn: ", ppmrrair_fn))
+  // echo(str("in_list: birl= ", birl, " end_i= ", end_i))
+  let (
+    pc = param_count(ppmrrair_fn),
+    b_i = is_num(birl) ? el_idx(arr, birl) : birl,
+    e_i = is_undef(end_i) ? el_idx(arr, -1) : el_idx(arr, end_i)
+  )
+  assert(is_list(arr) || is_string(arr), str("arr (", type(arr), ") must be a list or a string"))
+  pc == 1
+  ? algo_fn(
+    function(i) ppmrrair_fn(arr[i]),
+    b_i, e_i)
+  : assert(pc == 2, str("parameter count (", pc, ") must be 1 or 2."))
+    // forward 2nd parameter unmodified.
+    algo_fn(
+      function(i, o) ppmrrair_fn(arr[i], o),
+      b_i, e_i)
+;
+
+/**
+ * @overload fn_in_list(arr, begin_i, end_i) : (function(ppmrrair_fn) : any)
+ * @overload fn_in_list(arr, range_is) : (function(ppmrrair_fn) : any)
+ * @overload fn_in_list(arr, list_is) : (function(ppmrrair_fn) : any)
+ * @overload fn_in_list(arr) : (function(ppmrrair_fn, birl, end_i) : any)
+ *
+ * Allows the ppmrrair_fn to be placed after the other parameters for
+ * clarity.
+ *
+ * @param arr (list | string)
+ *   This is the list to take element data from.
+ * @param algo_fn (function (fn, birl, end_i))
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param ppmrrair_fn (function(i) : any | function(i, v) : any)
+ *   This is forwarded to algo_fn.  Function can take 1 or 2 parameters
+ *   based on what `algo_fn()` requires.
+ * @param birl (number | range | list)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: 0).
+ * @param end_i (undef | number)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: el_idx(arr, -1)).
+ *
+ * @returns (function(find_pred_fn, birl, end_i) : any |
+ *           function(find_pred_fn) : any)
+ *   Function to pass to in_list, or to allow placing the PPMRAIR function
+ *   after the birl/end_i for easier reading.
+ */
+function fn_in_list(arr, algo_fn, birl=0, end_i=undef) =
+  function(ppmrrair_fn)
+    in_list(arr, algo_fn, ppmrrair_fn, birl, end_i)
+;
+
+/**
+ * @overload ref_list(array, algo_fn, ppmrrair_fn, begin_i, end_i) : any
+ * @overload ref_list(array, algo_fn, ppmrrair_fn, range_is) : any
+ * @overload ref_list(array, algo_fn, ppmrrair_fn, list_is) : any
+ * @overload ref_list(array, algo_fn, ppmrrair_fn) : any
+ *
+ * This convenience function will execute function algo_fn as if it were
+ * used on a collection, the first parameter being passed to ppmrrair_fn is
+ * still the index, but uses the list as a reference so that birlei can be
+ * partially or fully omitted.
+ *
+ * @example
+ *
+ * Normal usage:
+ * ```
+ * even_indices = let(a=[1,2,3,4,5]) filter(function(i) i % 2);
+ * values_at_even_indices =
+ *   let(a=[1,2,3,4,5]) filter(function(i, v) v ? a[i] : i % 2);
+ * ```
+ * vs ref_list() usage:
+ * ```
+ * even_indices = ref_list([1,2,3,4,5], fn_filter(), function(i) i % 2);
+ * values_at_even_indices =
+ *   let(a=[1,2,3,4,5])
+ *   ref_list(a, fn_filter(), function(i, v) v ? a[i] : i % 2);
+ * ```
+ *
+ * NOTE: If `algo_fn` takes more than the standard 3 parameters, then
+ *       it must bind the extra parameters so that only the 3 standard
+ *       parameters are required.
+ *
+ * @param arr (list | string)
+ *   This is the list to take element data from.
+ * @param algo_fn (function (fn, birl, end_i))
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param ppmrrair_fn (function(i) : any | function(i, v) : any)
+ *   This is forwarded to algo_fn.  Function can take 1 or 2 parameters
+ *   based on what `algo_fn()` requires.
+ * @param birl (number | range | list)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: 0).
+ * @param end_i (undef | number)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: el_idx(arr, -1)).
+ *
+ * @returns (any)
+ *   The return value of the algo_fn() call.
+ */
+function ref_list(arr, algo_fn, ppmrrair_fn, birl=0, end_i=undef) =
+  // echo(str("ref_list:\n  algo_fn: ", algo_fn, "\n  arr: ", arr, "\n  ppmrrair_fn: ", ppmrrair_fn))
+  // echo(str("ref_list: birl= ", birl, " end_i= ", end_i))
+  let (
+    pc = param_count(ppmrrair_fn),
+    b_i = is_num(birl) ? el_idx(arr, birl) : birl,
+    e_i = is_undef(end_i) ? el_idx(arr, -1) : el_idx(arr, end_i)
+  )
+  assert(is_list(arr) || is_string(arr), str("arr (", type(arr), ") must be a list or a string"))
+  pc == 1
+  ? algo_fn(
+    function(i) ppmrrair_fn(arr[i]),
+    b_i, e_i)
+  : assert(pc == 2, str("parameter count (", pc, ") must be 1 or 2."))
+    // forward 2nd parameter unmodified.
+    algo_fn(
+      function(i, o) ppmrrair_fn(arr[i], o),
+      b_i, e_i)
+;
+
+/**
+ * @overload fn_ref_list(arr, begin_i, end_i) : (function(ppmrrair_fn) : any)
+ * @overload fn_ref_list(arr, range_is) : (function(ppmrrair_fn) : any)
+ * @overload fn_ref_list(arr, list_is) : (function(ppmrrair_fn) : any)
+ * @overload fn_ref_list(arr) : (function(ppmrrair_fn, birl, end_i) : any)
+ *
+ * Allows the ppmrrair_fn to be placed after the other parameters for
+ * clarity.
+ *
+ * @param arr (list | string)
+ *   This is the list to take element data from.
+ * @param algo_fn (function (fn, birl, end_i))
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param ppmrrair_fn (function(i) : any | function(i, v) : any)
+ *   This is forwarded to algo_fn.  Function can take 1 or 2 parameters
+ *   based on what `algo_fn()` requires.
+ * @param birl (number | range | list)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: 0).
+ * @param end_i (undef | number)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: el_idx(arr, -1)).
+ *
+ * @returns (function(find_pred_fn, birl, end_i) : any |
+ *           function(find_pred_fn) : any)
+ *   Function to pass to ref_list, or to allow placing the PPMRAIR function
+ *   after the birl/end_i for easier reading.
+ */
+function fn_ref_list(arr, algo_fn, birl=0, end_i=undef) =
+  function(ppmrrair_fn)
+    ref_list(arr, algo_fn, ppmrrair_fn, birl, end_i)
+;
+
+/**
+ * @overload enum_list(array, algo_fn, ppmrrair_fn, begin_i, end_i) : any
+ * @overload enum_list(array, algo_fn, ppmrrair_fn, range_is) : any
+ * @overload enum_list(array, algo_fn, ppmrrair_fn, list_is) : any
+ * @overload enum_list(array, algo_fn, ppmrrair_fn) : any
+ *
+ * This convenience function will execute function algo_fn as if it were
+ * used on a collection, remapping the first parameter being passed to
+ * ppmrrair_fn so that it receives [index, element] rather than the index.  Uses
+ * the list as a reference so that birlei can be partially or fully omitted.
+ *
+ * @example
+ *
+ * Normal usage:
+ * ```
+ * even_indices = let(a=[1,2,3,4,5]) filter(function(i) a[i] % 2);
+ * even_values  = let(a=[1,2,3,4,5]) filter(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
+ * vs enum_list() usage:
+ * ```
+ * even_indices = enum_list([1,2,3,4,5], fn_filter(), function(e) e % 2);
+ * even_values  = enum_list([1,2,3,4,5], fn_filter(), function(e, v) v ? e : e % 2);
+ * ```
+ *
+ * NOTE: If `algo_fn` takes more than the standard 3 parameters, then
+ *       it must bind the extra parameters so that only the 3 standard
+ *       parameters are required.
+ *
+ * @param arr (list | string)
+ *   This is the list to take element data from.
+ * @param algo_fn (function (fn, birl, end_i))
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param ppmrrair_fn (function(i) : any | function(i, v) : any)
+ *   This is forwarded to algo_fn.  Function can take 1 or 2 parameters
+ *   based on what `algo_fn()` requires.
+ * @param birl (number | range | list)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: 0).
+ * @param end_i (undef | number)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: el_idx(arr, -1)).
+ *
+ * @returns (any)
+ *   The return value of the algo_fn() call.
+ */
+function enum_list(arr, algo_fn, ppmrrair_fn, birl=0, end_i=undef) =
+  // echo(str("enum_list:\n  algo_fn: ", algo_fn, "\n  arr: ", arr, "\n  ppmrrair_fn: ", ppmrrair_fn))
+  // echo(str("enum_list: birl= ", birl, " end_i= ", end_i))
+  let (
+    pc = param_count(ppmrrair_fn),
+    b_i = is_num(birl) ? el_idx(arr, birl) : birl,
+    e_i = is_undef(end_i) ? el_idx(arr, -1) : el_idx(arr, end_i)
+  )
+  assert(is_list(arr) || is_string(arr), str("arr (", type(arr), ") must be a list or a string"))
+  pc == 1
+  ? algo_fn(
+      function(i) ppmrrair_fn([i, arr[i]]),
+      b_i, e_i)
+  : assert(pc == 2, str("parameter count (", pc, ") must be 1 or 2."))
+    // forward 2nd parameter unmodified.
+    algo_fn(
+      function(i, o) ppmrrair_fn([i, arr[i]], o),
+      b_i, e_i)
+;
+
+/**
+ * @overload fn_enum_list(arr, begin_i, end_i) : (function(ppmrrair_fn) : any)
+ * @overload fn_enum_list(arr, range_is) : (function(ppmrrair_fn) : any)
+ * @overload fn_enum_list(arr, list_is) : (function(ppmrrair_fn) : any)
+ * @overload fn_enum_list(arr) : (function(ppmrrair_fn, birl, end_i) : any)
+ *
+ * Allows the ppmrrair_fn to be placed after the other parameters for
+ * clarity.
+ *
+ * @param arr (list | string)
+ *   This is the list to take element data from.
+ * @param algo_fn (function (fn, birl, end_i))
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param ppmrrair_fn (function(i) : any | function(i, v) : any)
+ *   This is forwarded to algo_fn.  Function can take 1 or 2 parameters
+ *   based on what `algo_fn()` requires.
+ * @param birl (number | range | list)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: 0).
+ * @param end_i (undef | number)
+ *   This is forwarded to algo_fn. If a negative number, will count
+ *   from the end of the array. (Default: el_idx(arr, -1)).
+ *
+ * @returns (function(find_pred_fn, birl, end_i) : any |
+ *           function(find_pred_fn) : any)
+ *   Function to pass to in_list, or to allow placing the PPMRAIR function
+ *   after the birl/end_i for easier reading.
+ */
+function fn_enum_list(arr, algo_fn, birl=0, end_i=undef) =
+  function(ppmrrair_fn)
+    enum_list(arr, algo_fn, ppmrrair_fn, birl, end_i)
+;
