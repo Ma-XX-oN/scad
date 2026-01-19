@@ -1,6 +1,7 @@
 use <test>
 use <string>
 use <types>
+include <types_consts>
 
 module tests_string_align_left_right() {
   // align_left / align_right semantics from implementation.

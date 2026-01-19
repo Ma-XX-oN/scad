@@ -1,27 +1,77 @@
+/**
+ * ## skin
+ *
+ * ### Purpose
+ * 
+ * The built in extrude module isn't powerful or flexible enough so this library
+ * was made.  It creates a skin by making layers of polygons with the same
+ * number of vertices and then skins them by putting faces between layers.
+ * 
+ * 
+ * ### Design
+ * 
+ * This requires keeping track of a bunch of data, which was put into a list.
+ */
 use <base_algos>
-use <list>
+use <indexable>
 use <helpers>
 use <types>
+include <types_consts>
 use <range>
 use <string>
+use <birlei>
+use <param_check>
+use <any_all>
+include <skin_consts>
 
-/** Header for skin */
-function SKIN_ID() = "SKIN";
-/** Index for points in layer */
-function SKIN_PTS_IN_LAYER() = 1;
-/** Index for # of point layers - 1 */
-function SKIN_LAYERS() = 2;
-/** Index for the list of points */
-function SKIN_PTS() = 3;
-/** Index for debug axes */
-function SKIN_DEBUG_AXES() = 4;
-/** Index for the comment if any */
-function SKIN_COMMENT() = 5;
-/** Index for the operation ([op, apply_to_next_count]) */
-function SKIN_OPERATION() = 6;
-/** Index for wall diagonal info */
-function SKIN_WALL_DIAG() = 7;
+/**
+ * @typedef {list} skin
+ *
+ * Represents a skin object.
+ *
+ * @slot {number} SKIN_PTS_IN_LAYER
+ *   Number of points in a layer.
+ * @slot {number} SKIN_LAYERS
+ *   Number of layers-1.
+ * @slot {list[Point3D,...]} SKIN_PTS
+ *   A list of points representing the skin object.  This is a flattened list of
+ *   points in layer order.  Points are in clockwise order when looking towards
+ *   the next layer.
+ * @slot {...} SKIN_DEBUG_AXES
+ *   A set of points that gets transformed with the skin points.
+ *
+ *   > NOTE:
+ *   >
+ *   > Rendering is still under development.  **Untested**.
+ * @slot {string} SKIN_COMMENT
+ *   A string to give meaning as to what this object represents.
+ * @slot {...} SKIN_OPERATION
+ *   This is to allow operations between adjacent skin objects in a list.
+ *
+ *   > NOTE:
+ *   >
+ *   > Rendering is still under development.  **Untested**.
+ * @slot {list[bool,...]} SKIN_WALL_DIAG
+ *   When skinning the side walls of the skin, there are two ways to skin a 4
+ *   point polygon.  This allows controlling that by specifying the direction.
+ *   The first polygon is rendered by what slot 0 states.  The second, by what
+ *   slot 1 states.  This continues till the list slots are exhausted, at which
+ *   point, it starts at slot 0 again.
+ */
 
+/**
+ * Converts a skin object to a human readable string.
+ *
+ * @param {skin} obj
+ *   This is the skin object to view.
+ * @param {bool} only_first_and_last_layers
+ *   Show only the first and last layers if true, otherwise all layers.
+ * @param {number} precision
+ *   The number of decimal places to show the layers.
+ *
+ * @returns {string}
+ *   The string representation of the skin object.
+ */
 function skin_to_string(obj, only_first_and_last_layers = true, precision = 4) =
   let (
     names = [
@@ -29,9 +79,9 @@ function skin_to_string(obj, only_first_and_last_layers = true, precision = 4) =
     ],
     fmt_el_fn = function(i,e,indent)
       str(names[i], ": ",
-        i == SKIN_PTS()
+        i == SKIN_PTS
         ? pt_list_to_string(
-          obj[SKIN_PTS()], obj[SKIN_PTS_IN_LAYER()], obj[SKIN_LAYERS()]+1,
+          obj[SKIN_PTS], obj[SKIN_PTS_IN_LAYER], obj[SKIN_LAYERS]+1,
             indent, only_first_and_last_layers, precision)
         : e)
   )
@@ -40,7 +90,9 @@ function skin_to_string(obj, only_first_and_last_layers = true, precision = 4) =
 ;
 
 /**
- * Computes the linear index of a point in a layered point array.
+ * Computes the index of a point in a layered point array.  This is like a 2D
+ * coordinate map, where `pt_i` is the x-axis (limited by modulo `pts_in_layer`
+ * so that it wraps) and `layer_i` is the y-axis.
  *
  * This allows to more easily visualise what points are being referenced,
  * relative to different layers.
@@ -48,22 +100,23 @@ function skin_to_string(obj, only_first_and_last_layers = true, precision = 4) =
  * Assumes that points are stored consecutively per layer, and layers are
  * stacked consecutively in memory.
  *
- * @param pts_in_layer (integer):
+ * @param {number} pts_in_layer
  *   Number of points in each layer.
- * @param pt_i (integer):
- *   Index of the point (0-based).  If > pts_in_layer, then wraps back to 0.
- * @param layer (integer):
+ * @param {number} pt_i
+ *   Index of the point on a layer (0-based).  If > pts_in_layer, then wraps
+ *   back to 0.
+ * @param {number} layer_i
  *   Index of the layer (0-based).
  *
- * @returns (integer)
+ * @returns {number}
  *   The linear index of the specified point.
  */
-function layer_pt(pts_in_layer, pt_i, layer)
-  = (pt_i % pts_in_layer) + pts_in_layer * layer
+function layer_pt(pts_in_layer, pt_i, layer_i)
+  = (pt_i % pts_in_layer) + pts_in_layer * layer_i
 ;
 
 /**
- * Computes a list of linear layer_i for multiple points in a layered point
+ * Computes a list of layer indices for multiple points in a layered point
  * array.
  *
  * This allows to more easily visualise what points are being referenced,
@@ -72,12 +125,12 @@ function layer_pt(pts_in_layer, pt_i, layer)
  * Assumes points are stored consecutively per layer, with each layer laid out
  * sequentially.
  *
- * @param pts_in_layer (integer):
+ * @param {number} pts_in_layer
  *   Number of points per layer.
- * @param pt_offset_and_layer_list (list of [pt_offset, layer]):
+ * @param {list[list[number, number]]} pt_offset_and_layer_list
  *   List of (point index, layer index) pairs.
  *
- * @returns (list of integer)
+ * @returns {list[number,...]}
  *   A list of linear layer_i corresponding to the given points.
  */
 function layer_pts(pts_in_layer, pt_offset_and_layer_list)
@@ -87,6 +140,17 @@ function layer_pts(pts_in_layer, pt_offset_and_layer_list)
     ];
 
 /**
+ * @typedef {list} Face
+ *
+ * @slot {number} 0
+ *   This is the first index to the point in the referenced point list.
+ * @slot {number} 1
+ *   This is the second index to the point in the referenced point list.
+ * @slot {number} 2
+ *   This is the third index to the point in the referenced point list.
+ */
+
+/**
  * Helper to generate side wall faces between consecutive layers.
  *
  * Assumes the points are arranged in a flat list, with each layer's points
@@ -94,14 +158,14 @@ function layer_pts(pts_in_layer, pt_offset_and_layer_list)
  * layer must be ordered **clockwise when looking into the object**.
  *
  * Each wall segment is formed from two triangles connecting corresponding
- * points between adjacent layers.
+ * points between adjacent layers.  Each triangle is a [`Face`](#t-Face).
  *
- * @param pts_in_layer (integer):
+ * @param {number} pts_in_layer
  *   Number of points per layer.
- * @param layers (integer):
+ * @param {number} layers
  *   Number of vertical wall segments to generate (requires one more point
  *   layer).
- * @param wall_diagonal (list<bool>):
+ * @param {list[bool,...]} [wall_diagonal=[0,1]]
  *   This is used to allow changing the diagonal of neighbouring square polygons
  *   on a layer.
  *
@@ -109,10 +173,10 @@ function layer_pts(pts_in_layer, pt_offset_and_layer_list)
  *     - [1] will have all diagonals go one way.
  *     - [1,0] will alternate.
  *     - [0,1] will alternate the opposite way to [1,0].
- *     - [0,0,1] will have it go one way for 2 consecutive squares, and then the
- *       other way, and then repeat.
+ *     - [0,0,1] will have it go one way for 2 consecutive 4 point face, and
+ *       then the other way, and then repeat.
  *
- * @returns (list of [int, int, int]):
+ * @returns {list[Face]}
  *   A list of triangle layer_i forming the side walls.
  */
 function layer_side_faces(pts_in_layer, layers = 1, wall_diagonal = [0, 1])
@@ -131,293 +195,289 @@ function layer_side_faces(pts_in_layer, layers = 1, wall_diagonal = [0, 1])
           layer_pts(pts_in_layer, [[i, layer+1], [i+1, layer+1], [i+1, layer]]),
           layer_pts(pts_in_layer, [[i, layer+1], [i+1, layer  ], [i  , layer]])
         ]
-    ];
-
-/**
- * Triangulates a simple, planar, CW-wound polygon in 3D space.
- * Projects the polygon to the XY plane and applies convex-only ear clipping.
- *
- * @param pts3d List of 3D points
- * @returns List of triangle layer_i [ [i1, i2, i3], ... ]
- */
-function triangulate_planar_polygon(pts3d) =
-  let (
-    normal = echo("pts3d:", pts3d) cross(pts3d[1] - pts3d[0], pts3d[2] - pts3d[0]),
-    zaxis = [0, 0, 1],
-    rot = rotation_matrix(normal, zaxis),
-    pts2d = echo("rot: ", rot) [for (pt = pts3d) rot * pt],
-    idxs = echo("pts2d: ", pts2d) [for (i = [0 : len(pts2d) - 1]) i],
-    dummy = echo("idxs: ", idxs)
-  )
-  triangulate_loop(pts2d, idxs, []);
-
-
-/**
- * Recursively performs convex-only ear clipping. TODO: INCOMPLETE
- */
-function triangulate_loop(pts, idxs, acc) =
-  len(idxs) == 3
-    ? concat(acc, [[idxs[0], idxs[1], idxs[2]]])
-    : let (ear = find_ear(pts, idxs))
-        echo("ear:", ear) ear != undef
-          ? triangulate_loop(
-              pts,
-              concat(
-                [for (i = [0 : ear[3] - 1]) idxs[i]],
-                [for (i = [ear[3] + 1 : len(idxs) - 1]) idxs[i]]
-              ),
-              concat(acc, [[ear[0], ear[1], ear[2]]])
-            )
-          : assert(false, "No convex ear found - input may be degenerate");
-
-
-/**
- * Finds and returns the first convex "ear" from a list of point layer_i in a polygon.
- *
- * Assumes:
- * - Points are in clockwise order when looking into the polygon.
- * - The polygon lies in the XY plane.
- *
- * Returns a list [iA, iB, iC, i], where A-B-C form a convex ear and `i` is the index
- * into the idxs list of the middle point `B`. Returns `undef` if no ear is found.
- */
-function find_ear(pts, idxs) =
-  let (
-    n = len(idxs),
-    candidates = [
-      for (i = [0 : n - 1])
-        let (
-          iA = idxs[(i - 1 + n) % n],
-          iB = idxs[i],
-          iC = idxs[(i + 1) % n],
-          A = pts[iA], B = pts[iB], C = pts[iC],
-          AB = B - A,
-          BC = C - B,
-          cross_z = AB[0] * BC[1] - AB[1] * BC[0]
-        )
-        echo("cross_z:", cross_z) cross_z > 0 ? [iA, iB, iC, i] : undef
-    ],
-    ears = [for (ear = candidates) if (ear != undef) ear]
-  )
-  echo("ears find_ear:", ears) len(ears) > 0 ? ears[0] : undef;
-
-
-/**
- * Returns a rotation matrix to align `from` to `to` (both 3D).
- * Uses Rodrigues' rotation formula.
- */
-function rotation_matrix(from, to) =
-  let (
-    v = cross(from, to),
-    c = from * to,
-    s = norm(v),
-    I = [[1,0,0],[0,1,0],[0,0,1]],
-    vx = [
-      [    0, -v[2],  v[1]],
-      [ v[2],     0, -v[0]],
-      [-v[1],  v[0],     0]
-    ],
-    dummy = echo("from:", from) echo("to:", to) echo("c:", c)
-  )
-  s == 0
-    ? (c > 0 ? I : [[-1,0,0],[0,-1,0],[0,0,1]])
-    : I + vx + ((1 - c)/(s * s)) * (vx * vx);
-
-/**
- * Creates a list of faces that has their normal pointing the opposite direction
- * of the faces passed in.
- *
- * @param faces (list[list[number, number, number]])
- *   A list of faces.  Faces are indices that reference points in a point list.
- *
- * @returns (list[list[number, number, number]])
- *   A list of faces so that their normal's are now pointing in the opposite
- *   direction.
- */
-function flip_faces(faces) =
-  [ for (face = faces)
-      [ face[0], face[2], face[1] ]
-  ];
-
-function cap_layers_orig(pts_in_layer, layers = 1) =
-  assert(is_num(pts_in_layer), str("pts_in_layer (", pts_in_layer, ") isn't a number") )
-  concat(
-    [ // Bottom cap (layer 0)
-      for (i = [1 : pts_in_layer - 2])
-        [0, i, i + 1]
-    ],
-    [ // Top cap (layer = layers)
-      for (i = [1 : pts_in_layer - 2])
-        let (
-          base = pts_in_layer * layers
-        )
-        [base, base + i + 1, base + i] // reverse order to preserve orientation
     ]
-  );
-
-/** vertex is convex */
-function VERTEX_CONVEX()   = 0;
-/** vertex is concave */
-function VERTEX_CONCAVE()  = 1;
-/** vertex is colinear */
-function VERTEX_COLINEAR() = 2;
+;
 
 /**
- * Caps the end of a face by making all ears into faces until none left.
+ * @type {function}
  *
- * Parameters staring with _ will not be set by the external caller.
+ * Given a set of points and an index, returns a face if pts[pt_is[i..i+2]]
+ * are convex, or undef if concave or colinear.
  *
- * @param pt_is (list[number])
- *   Point indices.
- * @param create_ears_fn (function(pt_is) : list[number])
- *   Callback that when given the set of point indices, return a new _ears list.
- * @param _ears (list[number])
- *   _ears[i] represent if pt_is[i:i+2] is convex, concave or colinear using
- *   respective values VERTEX_CONVEX(), VERTEX_CONCAVE(), or VERTEX_COLINEAR().
- * @param _i (number)
- *   Where to start traversing polygon for ear clipping.
- * @param _faces (list[list[number]])
- *   Faces.
+ * This is for clockwise polygons when looking towards -z.
  *
- * @returns (list[list[number]])
- *   Faces
+ * @param {list[Point2D,...]} pts
+ *   A list of 2D points
+ * @param {number} pt_i0
+ *   Index into the `pts` list.
+ * @param {number} pt_i1
+ *   Index into the `pts` list.
+ * @param {number} pt_i2
+ *   Index into the `pts` list.
+ * @param {number} eps
+ *   Biggest abs value to consider as 0.
+ *
+ * @returns {(Face|undef)}
+ *   Face if convex, or undef if concave or colinear.
  */
-function _cap_ears(pt_is, create_ears_fn, _ears = undef, _i = 0, _faces = []) =
-  assert(_ears == undef || len(pt_is) == len(_ears), "Must be the same length.")
-  assert(                  len(pt_is) >= 3,          "Invalid number of vertices.")
-  len(pt_is) == 3
-  ? // last ear
-    push(_faces, [pt_is])
-  : let (ears = (_i ? _ears : create_ears_fn(pt_is)))
-    ears[_i] == VERTEX_CONVEX()
-    ? let (
-        // vertex at pt_is[j+1] is convex, so make pt_is[j : j+2] into a face and
-        // remove index j from ears and index j+1 from pt_is.
-        j           = next_in(pt_is, _i),
-        new_faces   = push(_faces, [
-            [ pt_is[_i], pt_is[j], pt_is[next_in(pt_is, j)] ]
-          ]),
-        new_i     = _i + 2 >= len(ears) - 1 ? 0 : _i + 2,
-        new_ears  = new_i ? remove(ears, _i, _i) : undef,
-        new_pt_is = remove(pt_is, j, j),
-      )
-      _cap_ears(new_pt_is, create_ears_fn, new_ears,             new_i, new_faces)
-    : _cap_ears(    pt_is, create_ears_fn,     ears, next_in(ears, _i),    _faces)
+_ear_cw = function(pts, pt_i0, pt_i1, pt_i2, eps = 1e-6)
+  let ( _ = verify_vpi(pts, pt_i0) )
+  let ( _ = verify_vpi(pts, pt_i1) )
+  let ( _ = verify_vpi(pts, pt_i2) )
+  let ( _ = verify_vpi(eps) )
+  let(
+    pt0 = pts[pt_i0],
+    pt1 = pts[pt_i1],
+    pt2 = pts[pt_i2],
+    a = pt1 - pt0,
+    b = pt2 - pt1,
+    cross_z = a[0] * b[1] - a[1] * b[0]
+  )
+  // echo(str("_ear_cw: cross_z: ", cross_z))
+  abs(cross_z) <= eps ? undef                 // COLINEAR
+  : cross_z < 0       ? [pt_i2, pt_i1, pt_i0] // CONVEX
+                      : undef                 // CONCAVE
+;
+
+/**
+ * Given a set of points and an index, returns a face if pts[pt_is[i..i+2]]
+ * are convex, or undef if concave or colinear.
+ *
+ * This is for counter-clockwise polygons when looking towards -z.
+ *
+ * @param {list[Point2D,...]} pts
+ *   A list of 2D points
+ * @param {number} pt_i0
+ *   Index into the `pts` list.
+ * @param {number} pt_i1
+ *   Index into the `pts` list.
+ * @param {number} pt_i2
+ *   Index into the `pts` list.
+ * @param {number} eps
+ *   Biggest abs value to consider as 0.
+ *
+ * @returns {(Face|undef)}
+ *   Face if convex, or undef if concave or colinear.
+ */
+_ear_ccw = function(pts, pt_i0, pt_i1, pt_i2, eps = 1e-6)
+  let ( _ = verify_vpi(pts, pt_i0) )
+  let ( _ = verify_vpi(pts, pt_i1) )
+  let ( _ = verify_vpi(pts, pt_i2) )
+  let ( _ = verify_vpi(eps) )
+  let(
+    pt0 = pts[pt_i0],
+    pt1 = pts[pt_i1],
+    pt2 = pts[pt_i2],
+    a = pt1 - pt0,
+    b = pt2 - pt1,
+    cross_z = a[0] * b[1] - a[1] * b[0]
+  )
+  // echo(str("_ear_ccw: cross_z: ", cross_z))
+  abs(cross_z) <= eps ? undef                 // COLINEAR
+  : cross_z > 0       ? [pt_i0, pt_i1, pt_i2] // CONVEX
+                      : undef                 // CONCAVE
+;
+
+/**
+ * Determines if `pt` is in triangle `(pt0, pt1, pt2)`. `_*` parameters are
+ * cached values.
+ */
+function _pt_in_triangle(pt, pt0, pt1, pt2, _v0, _v1, _v2, _cross_1020, eps = 1e-6) =
+  let (
+    p0 = pt  - pt0,
+    p1 = pt  - pt1,
+    p2 = pt  - pt2,
+    s0 = cross(_v0, p0),
+    s1 = cross(_v1, p1),
+    s2 = cross(_v2, p2)
+  )
+  _cross_1020 > 0 && s0 >= -eps && s1 >= -eps && s2 >= -eps ||
+  _cross_1020 < 0 && s0 <=  eps && s1 <=  eps && s2 <=  eps
+;
+
+/**
+ * Checks if any point indexed by pt_is that is not pt_i{0, 1, 2} is inclusively
+ * bounded by the triangle pts[pt_is[pt_i{0, 1, 2}]]
+ */
+function _any_point_in_ear(pts, pt_is, pt_i0, pt_i1, pt_i2, eps = 1e-6) =
+  let (
+    pts_i0 = pt_is[pt_i0],
+    pts_i1 = pt_is[pt_i1],
+    pts_i2 = pt_is[pt_i2],
+    pt0 = pts[pts_i0],
+    pt1 = pts[pts_i1],
+    pt2 = pts[pts_i2],
+    v0 = pt1 - pt0,
+    v1 = pt2 - pt1,
+    v2 = pt0 - pt2,
+    cross_1020 = cross(v0, -v2)
+  )
+  any(pt_is)(function(i)
+    i == pts_i0 || i == pts_i1 || i == pts_i2
+    ? false
+    : _pt_in_triangle(pts[i], pt0, pt1, pt2, v0, v1, v2, cross_1020, eps)
+  )
 ;
 
 /**
  * Caps the end of a face by making all ears into faces until none left.
  *
- * Parameters staring with _ will not be set by the external caller.
+ * Parameters starting with _ will not be set by the external caller.
  *
- * @param pt_is (list[number])
+ * @param {list[number,...]} pt_is
  *   Point indices.
- * @param convexity_fn (function(pt_is, i) : number)
- *   Callback that when given point indices and an index to start from, returns
- *   either VERTEX_CONVEX(), VERTEX_CONCAVE(), or VERTEX_COLINEAR() for triple
- *   pt_is[i, i+1, i+2], where indices are modulo len(pt_is).
- * @param _i (number)
+ * @param {(function(pts, pt_i0, pt_i1, pt_i2, eps = 1e-6): (list[number]|undef))} create_ear_fn
+ *   Callback that when given the set of point indices, return a new face or
+ *   undef if not an ear.
+ * @param {number} _i
  *   Where to start traversing polygon for ear clipping.
- * @param _faces (list[list[number]])
+ * @param {list[Face,...]} _faces
  *   Faces.
+ * @param {bool} _removed_at_least_one_ear
+ *   States if at least one ear has been removed after one complete cycle of cap
+ *   points.
  *
- * @returns (list[list[number]])
+ * @returns {list[Face,...]}
  *   Faces
  */
-function _cap_ears(pt_is, convexity_fn, _i = 0, _faces = []) =
-  assert(len(pt_is) >= 3, "Invalid number of vertices.")
+function _cap_ears(pts, pt_is, create_ear_fn, _i = 0, _faces = [], _removed_at_least_one_ear = false) =
+  assert(                   len(pt_is) >= 3,          "Invalid number of vertices.")
+  // echo("pt_is: ", pt_is)
+  let (
+    pt_i0 =                _i    ,
+    pt_i1 = next_in(pt_is, _i, 1),
+    pt_i2 = next_in(pt_is, _i, 2),
+    ear    = create_ear_fn(pts, pt_is[pt_i0], pt_is[pt_i1], pt_is[pt_i2])
+  )
   len(pt_is) == 3
   ? // last ear
-    push(_faces, [pt_is])
-  : let (convexity = convexity_fn(pt_is, _i))
-    convexity == VERTEX_CONVEX()
-    ? let (
-        // vertex at pt_is[_i+1] is convex, so make pt_is[_i : _i+2] into a face and
-        // remove index _i+1 from pt_is.
-        j           = next_in(pt_is, _i),
-        new_faces   = push(_faces, [
-            [ pt_is[_i], pt_is[j], pt_is[next_in(pt_is, j)] ]
-          ]),
-        new_pt_is = remove(pt_is, j, j),
+    assert(is_list(ear), str("Last set of points are not convex. ", ear))
+    push(_faces, [ear])
+  : is_list(ear) && !_any_point_in_ear(pts, pt_is, pt_i0, pt_i1, pt_i2)
+    ? pt_i1
+      ? _cap_ears(pts, remove(pt_is, pt_i1, pt_i1), create_ear_fn,      _i , push(_faces, [ear]), true)
+      : _cap_ears(pts, remove(pt_is, pt_i1, pt_i1), create_ear_fn, -1 + _i , push(_faces, [ear]), false)
+    : // didn't find ear, go to next index
+      let (
+        _ = Assert(
+          pt_i1 || _removed_at_least_one_ear,
+          function()
+            str("Didn't remove ear after complete cycle of cap points.  ",
+              let (
+                mapped_pts = it_each(pts, map(), pt_is)(function(pt) pt)
+              )
+              mapped_pts
+            )
+        )
       )
-      _cap_ears(new_pt_is, convexity_fn,         j ? _i : 0, new_faces)
-    : _cap_ears(    pt_is, convexity_fn, next_in(pt_is, _i),    _faces)
+      _cap_ears  (pts,        pt_is               , create_ear_fn,   pt_i1,       _faces        , pt_i1 && _removed_at_least_one_ear)
 ;
 
 /**
- * Project point to axis that is not `dim_i`.  E.g. `dim_i == 0` implies
- * project to YZ axis or stated another way, project along `dim_i`.
+ * Project all points to an axis by removing `dim_i` and possibly swapping
+ * coordinates.  This is done to simplify calculations.
  *
- * @param pt (list[number, number, number])
- *   Point to have projected.
- * @param dim_i (number)
- *   Dimension to have projected (set to 0).  0 = x, 1 = y, 2 = z.
- *   TODO: Maybe make this more clear?
- *
- * @returns (list[number, number, number])
- *   Returns a point with the specified dimension set to 0.
- */
-function proj_pt(pt, dim_i) =
-  replace(pt, dim_i, dim_i, [0])
-;
-
-/**
- * Project all points to axis that is not `dim_i`.  E.g. `dim_i == 0` implies
- * project to YZ axis or stated another way, project along `dim_i`.
- *
- * @param pts (list[list[number, number, number]])
+ * @param {list[Point3D,...]} pts
  *   Points to have projected.
- * @param dim_i (number)
+ * @param {number} dim_i
  *   Axis to have project along (have set to 0).  0 = x, 1 = y, 2 = z.
  *
- * @returns (list[list[number, number, number]])
- *   Returns points with the specified dimension set to 0.
+ * @returns {list[Point2D,...]}
+ *   Returns points with the specified dimension removed.
  */
-function proj_pts(pts, dim_i) =
-  fn_in_list(pts, fn_map())(function(pt)
-    proj_pt(pt, dim_i)
-  )
+function _proj_pts(pts, dim_i) =
+  // echo(str("Removing axis ", dim_i, " from pts ", pts))
+  dim_i == 1
+  ? [
+      for (pt = pts) [ pt.z, pt.x ]
+    ]
+  : dim_i == 0
+    ? [
+        for (pt = pts) [ pt.y, pt.z ]
+      ]
+    : [
+        for (pt = pts) [ pt.x, pt.y ]
+      ]
 ;
 
 /**
  * Determine which projection give the largest normal vector.
  *
- * @param pts (list[list[number, number, number]])
- *   A list of points.  Must have at least 3
+ * @param {list[Point3D,...]} pts
+ *   A list of points.  Must have at least 3 points.
+ * @param {number} dim_i
+ *   Dimension index currently checking.
+ * @param {number} _n
+ *   Current best normal found so far.
+ * @param {number} _n_len
+ *   Length of the current best normal found so far.
+ * @param {number} _dim_i
+ *   Current best projection axis so far.
+ *
+ * @returns {list[number, Point3D]}
+ *   The best projection axis with it's corresponding best normal.
  */
-function proj_to_what_norm(pts, dim_i = 0, last_n = [0,0,0], last_n_len = 0, last_i = -1) =
+function _proj_to_what_norm(pts, dim_i = 0, _n = 0, _n_len = 0, _dim_i = -1) =
   assert(len(pts) >= 3)
   dim_i == 3
-  ? [ last_i, last_n ]
+  ? [ _dim_i, _n ]
   : let (
-      p0 = proj_pt(pts[0], dim_i),
-      e1 = proj_pt(pts[1], dim_i) - p0,
-      e2 = proj_pt(pts[2], dim_i) - p0,
-      n = cross(e1, e2),
-      n_len = norm(n)
+      _pts = _proj_pts(pts, dim_i),
+      normals = [
+        for (i = fwd_i(pts))
+          let (
+            pt0 = _pts[             i    ],
+            pt1 = _pts[next_in(pts, i, 1)],
+            pt2 = _pts[next_in(pts, i, 2)],
+            p0 = pt0,
+            e1 = pt1 - p0,
+            e2 = pt2 - p0,
+            n = cross(e1, e2)
+          )
+          // echo(str("(", i, ", ", dim_i, ", ", n, ") ", [pt0, pt1, pt2]))
+          n
+      ],
+      n = it_each(normals, reduce(normals[0]), 1)(
+        function(n, acc)
+          abs(n) > abs(acc) ? n : acc
+      ),
+      n_len = abs(n)
     )
-    last_n_len > n_len
-    ? proj_to_what_norm(pts, dim_i+1, last_n, last_n_len, last_i)
-    : proj_to_what_norm(pts, dim_i+1,      n,      n_len,  dim_i)
+    _n_len > n_len
+    ? _proj_to_what_norm(pts, dim_i+1, _n, _n_len, _dim_i)
+    : _proj_to_what_norm(pts, dim_i+1,  n,  n_len,  dim_i)
 ;
 
-function get_ears(pts, pt_is, proj_dim_i, n) =
-  let(
-    dim_j = (proj_dim_i + 1) % 3,
-    dim_k = (dim_j + 1) % 3,
-    s_axis = n[proj_dim_i],
-    pts_len = len(pts)
-  )
-  fn_in_list(pt_is, fn_map(), it_fwd_i(pt_is, 1, 1))(function(i)
-    let(
-      v_prev = pts[i] - pts[ (i ? i : pts_len) - 1 ],
-      v_next = pts[i+1] - pts[i],
-      z_i = v_prev[dim_j]*v_next[dim_k] - v_prev[dim_k]*v_next[dim_j],
-      s_i = s_axis * z_i
+/**
+ * Caps a layer of points.
+ *
+ * @param {list[Point3D,...]} pts
+ *   List of points in layer.
+ * @param {list[number,...]} pt_is
+ *   List of indices used to dereference `pts`.
+ *
+ * @returns {list[Face,...]}
+ *   List of faces.
+ */
+function _cap_layer(pts, pt_is) =
+  // echo(str("_cap_layer(", pts, ", ", pt_is, ")"))
+  let (
+    // removing duplicate consecutive points from pt_is
+    pt_is = remove_adjacent_dups(pt_is, true)(
+      function(a, b) pts[a] == pts[b]
     )
-    // This is an ear to be chopped off.  Don't chop off colinear or concave vertex.
-    s_i > 0
   )
+  len(pt_is) < 3
+  ? []
+  : let(
+      proj_info = _proj_to_what_norm(pts),
+      proj_axis = proj_info[0],
+      cw = proj_info[1] < 0,
+      proj_pts = _proj_pts(pts, proj_axis)
+    )
+    // echo(str("pt_is: ", pt_is))
+    // echo(str("Removed axis ", proj_info[0]))
+    _cap_ears(proj_pts, pt_is, cw ? _ear_cw : _ear_ccw)
 ;
 
 /**
@@ -426,98 +486,47 @@ function get_ears(pts, pt_is, proj_dim_i, n) =
  * Assumes `pts3d` is a flat list of points arranged in contiguous layers,
  * each containing `pts_in_layer` points. There must be `layers + 1` total
  * point layers. The polygon formed by each cap must be planar and ordered
- * clockwise when looking into the object.
+ * clockwise when looking from the start layer towards the next layer.  Each
+ * layer of points are all coplanar to the other points in that layer.
  *
- * Cap faces are generated by applying triangulate_planar_polygon()
- * to each cap independently. The first cap uses points from layer 0,
- * and the last cap uses points from the final layer.
+ * This algorithm uses ear clipping to allow for non-convex polygons to be
+ * capped.
  *
- * @param pts_in_layer (int):
- *   Number of points per layer.
- * @param pts3d (list of [x, y, z]):
- *   The full list of points arranged in stacked layers.
- * @param layers (int):
- *   Number of wall layers (so total layers = layers + 1).
+ * @param {number} pts_in_layer
+ *   Number of points in a layer.
+ * @param {list[Point3D,...]} pts3d
+ *   Points for all layers.
+ * @param {number} layers
+ *   Number of layers - 1.
  *
- * @returns list of triangle index triplets:
- *   Triangle faces forming the two end caps.
+ * @returns {list[Face,...]}
+ *   Generated faces.
  */
-function cap_layers(pts_in_layer, pts3d, layers = 1) =
-  assert(len(pts_in_layer) >= 3, "Can't cap a line")
-  1 // Only accepting convex polygons for now.
-  ? cap_layers_orig(pts_in_layer, layers)
-  : let (
-      // Only want indices of points that are not the same as the previous one.
-      indices = fn_reduce([0], it_fwd_i(pts_in_layer, 1))(function(i, acc)
-        pts_in_layer[i] == pts_in_layer[el(acc, -1)]
-        ? acc
-        : push(acc, [i])
-      )
-    )
-    assert(len(indices) >= 3, "Can't cap a line")
-    let(
-      pts = fn_in_list(indices, map())(function(i) pts_in_layer[i]),
-      use_xy_plane =
-        !equal(cross(replace(pts[0], 2, 2, [0]), replace(pts[1], 2, 2, [0])), 0),
-      dirs =
-        use_xy_plane
-        ? fn_in_list(fn_reduce(1), 1) cross([pts])
-        :
-    )
-    fn_filter(it_fwd_i(pts_in_layer, 0, -1))(function(i, v)
-      v
-      ? pts_in_layer[i]
-      : // a closed 2D shape with 3 vertices has only convex corners.
-        // a closed 2D shape with 4+ vertices MUST have more convex than concave vertices.
-        // 1. rotate or project cap to xy or yz plane.
-        //    Projection should be cheaper than rotation, but requires test to ensure that
-        //    resulting points are not colinear.  Colinear test is cross product ≠ 0.
-
-        INCOMPLETE
-      
-    )
-;
-  // : // ChatGPT implementation of ear clipping for end face is faulty.
-  //   concat(
-  //     echo("pts3d cap:", pts3d)
-  //     assert(pts3d != undef, "pts3d must be specified")
-  //     triangulate_planar_polygon(
-  //       [for (i = [0 : pts_in_layer - 1]) pts3d[i]]
-  //     ),
-  //     flip_faces(triangulate_planar_polygon(
-  //       [for (i = [0 : pts_in_layer - 1])
-  //         pts3d[pts_in_layer * layers + i]]
-  //     ))
-  //   );
-
-// Create faces for a particular layer.
-//
-// TODO: FIX ALGORITHM to perform general end capping by clipping ears around
-//       concave points.
-function cap_end(obj, layer_i) =
+function _cap_layers(pts_in_layer, pts3d, layers) =
   let (
-    // TODO: Need to rotate or project layer so that it's on the xy plane.
-    //       When on xy plane, convexity can be determined by checking if z of
-    //       cross(p1, p2) is positive or negative.
-    //       Projection is cheeper CPU wise, but have to deal with edge case
-    //       where layer is perpendicular to xy plane, which will result in z of
-    //       cross product equaling 0.
-    pts = obj[SKIN_PTS()],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER()],
-    _cap_layer = function(layer_pts_is, faces_is)
-      let (
-        // TODO: Need to clip ears off of polygon, skipping colinear points.
-        // TODO: Finally, finish face by making a fan face from a single staring
-        //       point.
-        remove_i = find(function(i)
-          cross(pts[i-1]-pts[i], pts[i+1]-pts[i]))[2] > 0
-      )INCOMPLETE
+    pt_is = [ each range(0, pts_in_layer-1) ],
+    last_layer_pt = layers*pts_in_layer,
+
+    front_pts = it_each(pts3d, map(), 0, pts_in_layer-1)(
+      function(e) e
+    ),
+    front_faces = _cap_layer(front_pts, pt_is),
+
+    back_pts = it_each(pts3d, map(), last_layer_pt, last_layer_pt + pts_in_layer-1)(
+      function(e) e
+    ),
+    back_faces = it_each(_cap_layer(back_pts, pt_is), map())(
+      function(e) [e[2]+last_layer_pt, e[1]+last_layer_pt, e[0]+last_layer_pt]
+    )
   )
-  1
+  [
+    each front_faces,
+    each back_faces
+  ]
 ;
 
 function filter_out_degenerate_triangles(pts3d, triangles) =
-  in_list(triangles, function_filter(),
+  it_each(triangles, filter())(
     function(tri, v)
       v ? tri :
       let (
@@ -543,25 +552,25 @@ function filter_out_degenerate_triangles(pts3d, triangles) =
 /**
  * Checks to see if object is a skin object
  */
-function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID();
+function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID;
 
 /**
  * Create a new skin object.
  *
- * @param pt_count_per_layer (integer):
- *   number of points per layer (must be ≥ 3) or
- * @param pts3d (list of [x, y, z]):
- *   The full list of points arranged in stacked layers.
- * @param layers (integer):
+ * @param {number} pt_count_per_layer
+ *   number of points per layer (must be ≥ 3)
+ * @param {number} layers
  *   Number of wall segments (requires `layers + 1` total point layers).
- * @param comment (string)
+ * @param {list of [x, y, z]} pts3d
+ *   The full list of points arranged in stacked layers.
+ * @param {string} comment
  *   Usually a string, this is just a comment for reading and debugging purposes.
- * @param operation (string)
- *   This is used by skin_to_polyhedron() when passing a list of SKIN objects.
- *   If a SKIN object has an operation attached, then that SKIN object will have
+ * @param {string} operation
+ *   This is used by skin_to_polyhedron() when passing a list of skins.
+ *   If a skin has an operation attached, then that skin will have
  *   the operation specified applied to the next element in the list which can
  *   be an object or list of objects.
- * @param wall_diagonal (list<bool>):
+ * @param {list[bool,...]} wall_diagonal
  *   This is used to allow changing the diagonal of neighbouring square polygons
  *   on a layer.
  *
@@ -571,41 +580,43 @@ function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID();
  *     - [0,1] will alternate the opposite way to [1,0].
  *     - [0,0,1] will have it go one way for 2 consecutive squares, and then the
  *       other way, and then repeat.
- * @param debug_axes (list<list<points>>)
- *   This is a list of point groups.  The first element in the point group is
- *   the reference point.  Everything after that is a point relative to that
- *   reference point.  When debugging, call skin_
+ * @param {list[list[Point3D]]} debug_axes
+ *   This is a list of point groups.  When rendering, arrows will be drawn from
+ *   the first point to each succeeding point in list.  When debugging, call
+ *   skin_show_debug_axis().
  *
- * @returns (skin object)
+ *   > WARNING:
+ *   >
+ *   > INCOMPLETE and UNTESTED.
+ *
+ * @returns {skin object}
  */
 function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_diagonal, debug_axes) =
-  [ SKIN_ID(), pt_count_per_layer, layers, pts3d, debug_axes, comment, operation, wall_diagonal ]
+  [ SKIN_ID, pt_count_per_layer, layers, pts3d, debug_axes, comment, operation, wall_diagonal ]
 ;
 
 /**
+ * @callchain skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes) (pts_fn) : skin
+ *
  * Generates an extruded point list from a number range, range or list of
  * indices.
  *
- * @param pts_fn (function(i) list_of_points)
- *   Function that returns a list of points for layer i.  It's fine to have
- *   duplicate points in list as they will be filtered when calling
- *   skin_to_polyhedron.
- * @param birl (number | range | list)
+ * @param {(number|range|list)} birl
  *   - If number, start index to check
  *   - If range, indices to check
  *   - If list, indices to check
- * @param end_i (number | undef)
+ * @param {(number|undef)} end_i
  *   - If birl is a number, then end index to check.  end_i
  *     could be less than birl if there's nothing to iterate
  *     over.
- * @param comment (string)
+ * @param {string} comment
  *   Usually a string, this is just a comment for reading and debugging purposes.
- * @param operation (string)
- *   This is used by skin_to_polyhedron() when passing a list of SKIN objects.
- *   If a SKIN object has an operation attached, then that SKIN object will have
+ * @param {string} operation
+ *   This is used by skin_to_polyhedron() when passing a list of skins.
+ *   If a skin has an operation attached, then that skin will have
  *   the operation specified applied to the next element in the list which can
  *   be an object or list of objects.
- * @param wall_diagonal (list<bool>):
+ * @param {list[bool,...]} wall_diagonal
  *   This is used to allow changing the diagonal of neighbouring square polygons
  *   on a layer.
  *
@@ -615,28 +626,38 @@ function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_di
  *     - [0,1] will alternate the opposite way to [1,0].
  *     - [0,0,1] will have it go one way for 2 consecutive squares, and then the
  *       other way, and then repeat.
+ * @param {function(i: number) list_of_points} pts_fn
+ *   Function that returns a list of points for layer i.  It's fine to have
+ *   duplicate points in list as degenerate triangles will be filtered when
+ *   calling skin_to_polyhedron.
  *
+ *   > NOTE:
+ *   >
+ *   > Points **MUST** wind in clockwise order when looking into object from
+ *   > starting layer towards next layer.
+ *   >
+ *   > Non-coplanar points on a layer may result in **UB**. Especially on end caps.
  *
- * @returns (skin object)
+ * @returns {skin object}
  */
-function skin_extrude(pts_fn, birl, end_i, comment, operation, wall_diagonal, debug_axes) =
-  let (
-    layer_is = birlei_to_indices(birl, end_i),
-    layer_count = is_list(layer_is) ? len(layer_is) : lr_len(layer_is),
-    // NOTE: this will result in pts_fn being called on index 0 twice.  Once
-    //       here, and once in the skin_new() call.
-    pt_0 = pts_fn(is_list(layer_is) ? layer_is[0] : lr_el(layer_is, 0)),
-    pts_in_layer = len(pt_0)
-  )
-  assert(layer_count > 1, "Need 2 or more layers to make a volume.")
-  // - `pts_fn returns` a list of points.
-  // - `map` makes that into a list of list of points.
-  // - Inside of list initialisation, `each` is used to remove the outer list,
-  //   making it a list of points in a list.  Another `each` is used to make
-  //   it just a bunch of points in a list.
-  skin_new(pts_in_layer, layer_count - 1,
-    [ each each map(pts_fn, layer_is) ], comment, operation, wall_diagonal, debug_axes
-  )
+function skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes) =
+  function(pts_fn)
+    let (
+      layer_is = birlei_to_indices(birl, end_i),
+      layer_count = slr_len(layer_is),
+      layer_0 = pts_fn(el(layer_is, 0)),
+      pts_in_layer = len(layer_0)
+    )
+    let ( layer_is = _els(layer_is, 1, len(layer_is)-1) )
+    assert(layer_count > 1, "Need 2 or more layers to make a volume.")
+    skin_new(pts_in_layer, layer_count - 1,
+      [ 
+        each layer_0,
+        // Which is better?  each before or after for?
+        // each for (i = layer_is) pts_fn(i)
+        for (i = layer_is) each pts_fn(i)
+      ], comment, operation, wall_diagonal, debug_axes
+    )
 ;
 
 /**
@@ -649,22 +670,22 @@ function skin_extrude(pts_fn, birl, end_i, comment, operation, wall_diagonal, de
  * points per layer, and layers stored consecutively. Points within each
  * layer must be ordered clockwise when looking into the object.
  *
- * @param obj (skin object):
+ * @param {skin} skin
  *   The skin object generating the faces from.
  *
- * @returns (list of [int, int, int]):
+ * @returns {list of [int, int, int]}
  *   A list of triangle face definitions.
  */
-function skin_create_faces(obj) =
-  assert(is_skin(obj))
+function skin_create_faces(skin) =
+  assert(is_skin(skin))
   let (
-    wall_diagonal = default(obj[SKIN_WALL_DIAG()], [0, 1]),
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER()],
-    layers = obj[SKIN_LAYERS()],
-    pts3d = obj[SKIN_PTS()]
+    wall_diagonal = default(skin[SKIN_WALL_DIAG], [0, 1]),
+    pts_in_layer = skin[SKIN_PTS_IN_LAYER],
+    layers = skin[SKIN_LAYERS],
+    pts3d = skin[SKIN_PTS]
   )
   concat(
-    cap_layers(pts_in_layer,
+    _cap_layers(pts_in_layer,
       //echo("pts3d skin: ", pts3d)
       pts3d, layers)
     ,
@@ -677,26 +698,26 @@ function skin_create_faces(obj) =
 /**
  * Performs a transformation on the points stored in the skin object.
  *
- * @param obj (skin object):
+ * @param {skin object} obj
  *   The skin object where the points are coming from to transform.
- * @param matrix_or_fn (list<list<number>> | function(pt) : pt):
+ * @param {(Matrix|function(pt: Point3D): Point3D)} matrix_or_fn
  *   The matrix or function to do the transformation with.  If the
  *   transformation is homogenous, then will convert the points to a homogeneous
  *   basis, perform the transformation and then remove the basis.
  *
- * @returns (skin object):
+ * @returns {skin object}
  *   A new skin object with the points transformed.
  */
 function skin_transform(obj_or_objs, matrix_or_fn) =
   is_skin(obj_or_objs)
   ? let (
-      pts = obj_or_objs[SKIN_PTS()],
-      dbg_pts = obj_or_objs[SKIN_DEBUG_AXES()],
+      pts = obj_or_objs[SKIN_PTS],
+      dbg_pts = obj_or_objs[SKIN_DEBUG_AXES],
       _ = assert(is_list(pts), str("pts (", pts, ") is not a list\n", obj_or_objs))
     )
-    replace(obj_or_objs, SKIN_PTS(), SKIN_DEBUG_AXES(), [
+    replace(obj_or_objs, SKIN_PTS, SKIN_DEBUG_AXES, [
       transform(pts, matrix_or_fn),
-      dbg_pts == undef ? undef : transform(dbg_pts, matrix_or_fn)
+      is_undef(dbg_pts) ? undef : transform(dbg_pts, matrix_or_fn)
     ])
   : [ for (obj = obj_or_objs) skin_transform(obj, matrix_or_fn) ]
 ;
@@ -705,39 +726,39 @@ function skin_transform(obj_or_objs, matrix_or_fn) =
  * Takes the skin object and make it into a polyhedron.  If obj is a list, will
  * assume all are skin objects and attempt to skin them all.
  *
- * @param obj_or_objs (skin object | list<skin object>):
+ * @param {(skin|list[skin,...])} obj_or_objs
  *   The skin object or list of skin objects to make into a polyhedron.
  *
- * @returns (skin object):
+ * @returns {skin object}
  *   A new skin object with the points transformed.
  */
 module skin_to_polyhedron(obj_or_objs) {
   // base case
   if (is_skin(obj_or_objs)) {
     obj = obj_or_objs;
-    pts = obj[SKIN_PTS()];
+    pts = obj[SKIN_PTS];
     faces = skin_create_faces(obj);
     polyhedron(pts, faces);
   } else {
     assert(is_list(obj_or_objs),
       str(
-        "If obj_or_objs is not a SKIN object, then it must be a list of SKIN objects.",
+        "If obj_or_objs is not a skin, then it must be a list of skins.",
         "\n", obj_or_objs));
     objs = obj_or_objs;
 
     // Collect all indices that don't have an operation or is the 0th index.
-    // Prevents the need to recurse just to iterate over list of SKIN objects.
-    is = filter(function(i)
+    // Prevents the need to recurse just to iterate over list of skins.
+    is = filter(0, len(objs)-1)(function(i)
         // filter out any index that does have an operation in the previous index.
-        i == 0 || !is_skin(objs[i-1]) || objs[i-1][SKIN_OPERATION()] == undef,
-      0, len(objs)-1);
+        i == 0 || !is_skin(objs[i-1]) || objs[i-1][SKIN_OPERATION] == undef);
+        
     for (i = is) {
       obj = objs[i];
       if (is_skin(obj)) {
-        op = obj[SKIN_OPERATION()];
-        pts = obj[SKIN_PTS()];
+        op = obj[SKIN_OPERATION];
+        pts = obj[SKIN_PTS];
         faces = skin_create_faces(obj);
-        if (op == undef) {
+        if (is_undef(op)) {
             polyhedron(pts, faces);
         } else if (op == "difference") {
           difference() {
@@ -768,9 +789,9 @@ module skin_to_polyhedron(obj_or_objs) {
  * Adds a number of interpolated layers between layers based how many
  * add_layers_fn(i) returns.
  *
- * @param obj (SKIN object)
+ * @param {skin} obj
  *   Object to add to.
- * @param add_layers_fn (function(i) : number_of_layers_to_add)
+ * @param {function(i: number): number} add_layers_fn
  *   Callback that will return the first index of a layer, expecting that the
  *   point it refers to or its brethren on that layer to be compared to the
  *   points on the very next layer.
@@ -788,16 +809,16 @@ module skin_to_polyhedron(obj_or_objs) {
  *   - 2 means add 2 layers, 1/3 and 2/3 between.
  *   - etc...
  *
- * @returns (SKIN object)
- *   Updated SKIN object.
+ * @returns {skin}
+ *   Updated skin.
  */
 function skin_add_layer_if(obj, add_layers_fn) =
   let (
-    pts = obj[SKIN_PTS()],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER()],
+    pts = obj[SKIN_PTS],
+    pts_in_layer = obj[SKIN_PTS_IN_LAYER],
 
     new_pts =
-      fn_reduce(
+      reduce(
         tail_multi(pts, pts_in_layer),
         range(pts_in_layer, pts_in_layer, len(pts) - pts_in_layer))
       (
@@ -815,38 +836,39 @@ function skin_add_layer_if(obj, add_layers_fn) =
               // points and make it into a list of points, without creating a
               // function to do so.  This is just easier (and possibly faster).
               each each interpolated_values(
-                layer_pts, els(pts, i, i+pts_in_layer), num_of_layers_to_add)
+                layer_pts, els(pts, i, i+pts_in_layer-1), num_of_layers_to_add)
             ]
           : concat(
               acc,
               layer_pts
             )
       )
-    , _ = len(new_pts) != len(pts)
-        ? echo(str("Added ", (len(new_pts) - len(pts))/pts_in_layer, " layers",
-          obj[SKIN_COMMENT()] == undef ? "" : str(" to ", obj[SKIN_COMMENT()])))
-        : undef,
+    ,
+    //  _ = len(new_pts) != len(pts)
+    //     ? echo(str("Added ", (len(new_pts) - len(pts))/pts_in_layer, " layers",
+    //       obj[SKIN_COMMENT] == undef ? "" : str(" to ", obj[SKIN_COMMENT])))
+    //     : undef,
 
-    result = replace(obj, SKIN_LAYERS(), SKIN_PTS(), [ len(new_pts)/pts_in_layer-1, new_pts ]),
-    added_layer_count = result[SKIN_LAYERS()] - obj[SKIN_LAYERS()]
+    result = replace(obj, SKIN_LAYERS, SKIN_PTS, [ len(new_pts)/pts_in_layer-1, new_pts ]),
+    added_layer_count = result[SKIN_LAYERS] - obj[SKIN_LAYERS]
   )
   assert(added_layer_count >= 0, str("Lost ", -added_layer_count, " layers."))
-  echo("layers", added_layer_count)
-  echo(skin_verify(result, true))
+  // echo("layers", added_layer_count)
+  // echo(skin_verify(result, true))
   result
 ;
 
 function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
   let (
-    pts = obj[SKIN_PTS()],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER()],
+    pts = obj[SKIN_PTS],
+    pts_in_layer = obj[SKIN_PTS_IN_LAYER],
     pt_ranges = [ [0], each add_pt_between_pt_numbers ]
   )
   // iterate over each layer
-  fn_reduce([], range(0, pts_in_layer, len(pts)-pts_in_layer))(
+  reduce([], range(0, pts_in_layer, len(pts)-pts_in_layer))(
       function(i0, acc)
         // iterate each point in layer
-        fn_reduce(acc, range(1, len(pt_ranges)-1))(
+        reduce(acc, range(1, len(pt_ranges)-1))(
           function(pt_i, acc2)
             let (
               p0_i = i + pt_ranges[pt_i-1][0],
@@ -864,39 +886,12 @@ function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
 ;
 
 /**
- * Gets a list of `number_of_values` between `p0` and `p1`.
- *
- * @example
- *   interpolated_values(1, 2, 1) == [1.5]
- *   interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
- *
- * @param p0 (number | list)
- *   Starting point.
- * @param p1 (number | list)
- *   Ending point.
- *
- * @returns (list[number | list])
- *   List of `number_of_values` that are the interpolated values between `p0`
- *   and `p1`.
- */
-function interpolated_values(p0, p1, number_of_values) =
-  let (
-    diff = p1 - p0
-  )
-  fn_map(1, number_of_values)(
-    function(i)
-      i/(number_of_values+1)*diff + p0
-  )
-;
-
-
-/**
  * UNTESTED!
  * Shows the debug axes to verify where you think things should be.
  *
- * @param obj (SKIN object)
+ * @param {skin} obj
  *   Object to show debug axes for.
- * @param styles (list<list<color, alpha, thickness>>)
+ * @param {list<list<color, alpha, thickness>>} styles
  *   Contains a list of styles that are reused when the number of points in a
  *   debug group exceeds the the number of styles.
  *
@@ -906,25 +901,25 @@ function interpolated_values(p0, p1, number_of_values) =
 module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
 {
   assert(is_skin(obj));
-  dbg_pt_grps = obj[SKIN_DEBUG_AXES()];
+  dbg_pt_grps = obj[SKIN_DEBUG_AXES];
   assert(dbg_pt_grps != undef, "No debug axes to show.");
   for (pt_grp = debug_pt_grps) {
     ref_pt = pt_grp[0];
-    for (pt_i = it_fwd_i(pt_grp, 1)) {
+    for (pt_i = fwd_i(pt_grp, 1)) {
       v = pt_grp[i] - ref_pt;
       angle = arc_len([0, 0, 1], v, 180/PI);
       normal = cross([0, 0, 1], v);
       length = norm(v);
       T = translate(axis_obj[0]) * homogenise_transform(rotate(angle, normal));
 
-      init = styles == undef ? undef : styles[ pt_i % len(styles) ];
-      if (init == undef) {
+      init = is_undef(styles) ? undef : styles[ pt_i % len(styles) ];
+      if (is_undef(init)) {
 
         pred = function(a)
           any(function(i) a[i] == undef, 0, 2);
 
         data = pred(init)
-          ? in_list(styles, fn_reduce_air(init),
+          ? it_each(styles, reduce_air(init))(
               function(e, acc)
                 [ pred(acc), [ for (i = [0:2]) default(acc[i], e) ] ],
               range(pt_i % len(styles), -1, 0))[1]
@@ -934,7 +929,7 @@ module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
         alpha     = data[1];
         thickness = default(data[2], length * 0.1);
 
-        if (color == undef) {
+        if (is_undef(color)) {
           multmatrix(T)
           axis(length, thickness);
         } else {
@@ -962,43 +957,39 @@ function interpolate(v0, v1, v) =
  * INCOMPLETE!
  * Truncates the beginning, end or both of the extrusion.
  *
- * @param obj (skin object)
+ * @param {skin object} obj
  *   Object to remove values before in points.  Value extracted from points MUST
  *   BE monotonically nondecreasing over the points list.
- * @param extract_order_value_fn (function(pt) : extracted_value)
+ * @param {function(pt: Point3D): extracted_value} extract_order_value_fn
  *   This take in a point and returns some value.  This is to allow selection of
  *   a particular axis or length for a given point to compare against value.
- * @param begin (number)
+ * @param {number} [begin=extract_order_value_fn(el(obj[SKIN_PTS],  0))]
  *   The value to compare against the extracted value from a point.
- *   (Default: extract_order_value_fn(el(obj[SKIN_PTS()],  0)) )
- * @param end (number)
+ * @param {number} [end=extract_order_value_fn(el(obj[SKIN_PTS], -1))]
  *   The value to compare against the extracted value from a point.
- *   (Default: extract_order_value_fn(el(obj[SKIN_PTS()], -1)) )
  *
- * @returns (skin object)
+ * @returns {skin object}
  *   Updated skin object with all of the points before value removed.  If
  *   extracted value is not EXACTLY value, then will linearly interpolated to
  *   cup off EXACTLY at value.
  */
- /*
-  * [1, 3, 5], begin = undef, end = 5 => begin_i = 0, end_i = 2 => no interpolation required
-  * [1, 3, 5], begin = undef, end = 4 => begin_i = 0, end_i = 1 => end interpolation required
-  */
 function skin_limit(obj, extract_order_value_fn, begin, end) =
+  // [1, 3, 5], begin = undef, end = 5 => begin_i = 0, end_i = 2 => no interpolation required
+  // [1, 3, 5], begin = undef, end = 4 => begin_i = 0, end_i = 1 => end interpolation required
   // assert(begin <= end)
   let (
-    pts = INCOMPLETE(obj[SKIN_PTS()]),
-    last_i = el_idx(pts, -1),
+    pts = INCOMPLETE(obj[SKIN_PTS]),
+    last_i = idx(pts, -1),
     begin_i = is_undef(begin)
       ? 0
       : default(
-          in_list(pts, function_find_lower(),
+          it_each(pts, find_lower())(
             function(pt) extract_order_value_fn(pt) - begin),
           0),
     end_i = is_undef(end)
       ? last_i
       : default(
-          in_list(pts, function_find_upper(),
+          it_each(pts, find_upper())(
             function(pt) extract_order_value_fn(pt) - end),
           last_i),
     result =
@@ -1064,22 +1055,22 @@ function skin_limit(obj, extract_order_value_fn, begin, end) =
  *
  * Asserts if the object's number of points doesn't correspond to the equation:
  *
- *   `(layers - 1) * pts_in_layer`
+ *   `(layers + 1) * pts_in_layer`
  *
- * @param obj (SKIN object)
+ * @param {skin} obj
  *   Object to verify.
- * @param disp_all_pts (bool)
+ * @param {bool} disp_all_pts
  *   - If false, only returns the first and last points in the list.
  *   - If true, returns all points, with each layer of points on a separate line.
  *
- * @returns (string)
+ * @returns {string}
  *   A prettified/simplified view of points in the object.
  */
 function skin_verify(obj, disp_all_pts = false) =
   let (
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER()],
-    layers = obj[SKIN_LAYERS()],
-    pts3d = obj[SKIN_PTS()],
+    pts_in_layer = obj[SKIN_PTS_IN_LAYER],
+    layers = obj[SKIN_LAYERS],
+    pts3d = obj[SKIN_PTS],
     result = len(pts3d) == pts_in_layer * (layers + 1),
     output = str("pts_in_layer: ", pts_in_layer, ", layers: ", layers, " gives: ", pts_in_layer * (layers+1), " pts."),
     str_obj = skin_to_string(obj, !disp_all_pts)
@@ -1092,23 +1083,22 @@ function skin_verify(obj, disp_all_pts = false) =
  * Returns a function that can be used with skin_add_layer_if() to ensure that
  * the distance between layers don't exceed some length.
  *
- * @param obj (SKIN object)
- * @param max_diff (number)
+ * @param {skin} obj
+ * @param {number} max_diff
  *   Maximum distance before adding another layer to reduce the distance below
  *   max_diff.
- * @param diff_fn (function(p0, p1) : distance_between_layers)
+ * @param {function(p0: Point3D, p1: Point3D): number} [diff_fn=function(p0, p1) p1.x - p0.x]
  *   Callback that gives the distance between layers, where `p0` is the first
  *   point of the current layer and `p1` is the first point of the next layer.
  *   Will return a value that states the distance between layers.
- *   (Default: checks x distances)
  *
- * @returns (function(i) : number_of_layers_to_add)
+ * @returns {function(i: number): number_of_layers_to_add}
  *   Function that can be used with skin_add_layer_if().
  */
 function skin_max_layer_distance_fn(obj, max_diff, diff_fn = function(p0, p1) p1.x - p0.x) =
   let (
-    pts = obj[SKIN_PTS()],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER()]
+    pts = obj[SKIN_PTS],
+    pts_in_layer = obj[SKIN_PTS_IN_LAYER]
   )
   function(i)
     let (
@@ -1119,16 +1109,16 @@ function skin_max_layer_distance_fn(obj, max_diff, diff_fn = function(p0, p1) p1
 
 function skin_max_pt_distance_fn(obj, max_diff) =
   let (
-    pts = obj[SKIN_PTS()],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER()]
+    pts = obj[SKIN_PTS],
+    pts_in_layer = obj[SKIN_PTS_IN_LAYER]
   )
   function(i)
     let (
       diff = max(
-        in_list(
+        it_each(
             els(pts, i+pts_in_layer, i+pts_in_layer*2-1)
           - els(pts, i             , i+pts_in_layer  -1),
-          function_map(), function(pt) norm(pt)))
+          function_map())(function(pt) norm(pt)))
     )
     floor(diff / max_diff) - 1
 ;
@@ -1147,9 +1137,9 @@ module skin_example1() {
   ];
 
   test_skin = 
-    skin_extrude(rectangular_prism_fn, 0, 3)
+    skin_extrude(0, 3)(rectangular_prism_fn)
   ;
-  echo("test_skin: ", test_skin);
+  echo("test_skin: ", skin_to_string(test_skin));
   skin_to_polyhedron(test_skin);
 }
 
@@ -1170,10 +1160,10 @@ module skin_example2() {
   ];
 
   test_skin = [
-    skin_extrude(rectangular_prism_fn, 0, 3),
-    skin_extrude(triangular_prism_fn, -3, 0)
+    skin_extrude(0, 3)(rectangular_prism_fn),
+    skin_extrude(-3, 0)(triangular_prism_fn)
   ];
-  echo("test_skin: ", test_skin);
+  echo("test_skin: ", skin_to_string(test_skin));
   skin_to_polyhedron(test_skin);
 }
 
@@ -1199,14 +1189,15 @@ module skin_example3() {
     i < 0 ? triangular_prism_fn(i) : rectangular_prism_fn(i)
   ;
   test_skin = 
-    skin_extrude(hybrid_fn, -3, 3)
+    skin_extrude(-3, 3)(hybrid_fn)
   ;
-  echo("test_skin: ", test_skin);
+  echo("test_skin: ", skin_to_string(test_skin, false));
   skin_to_polyhedron(
     let (
-      pts = test_skin[SKIN_PTS()],
-      pts_in_layer = test_skin[SKIN_PTS_IN_LAYER()]
+      pts = test_skin[SKIN_PTS],
+      pts_in_layer = test_skin[SKIN_PTS_IN_LAYER]
     )
+    // test_skin
     skin_add_layer_if(test_skin, skin_max_layer_distance_fn(test_skin, 0.333)
       // function(i)
       //   let (

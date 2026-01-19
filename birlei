@@ -1,323 +1,384 @@
-use <types>
+/**
+ * ## birlei
+ *
+ * ### How to Import
+ *     use <birlei>
+ * 
+ * ### Purpose
+ * 
+ * This is the core of the library's algorithm set.  It evolved from having two
+ * indices,
+ * `begin_i` and `end_i` so that functions could be made to recursively iterate
+ * over them.  However, it didn't contain a step, but there was already an
+ * object that worked for list comprehension and it worked the same way as lists
+ * would.
+ * 
+ * However, to actually use a range or list recursively, they would have to be
+ * indexable in a similar way, so the [ranges](#ranges) library was made.
+ * `begin_i` would be used to count to `end_i` over the length of the object,
+ * dereferencing each element as needed.
+ * 
+ * Keeping this in the user facing API was done because just counting from N to
+ * M is very common, and without dereferencing a list or range it's marginally
+ * faster.
+ */
 use <range>
 use <function>
+use <indexable>
+use <param_check>
+
 /**
- * @overload birlei_to_begin_i_end_i(algo_fn, ppmrrair_fn, begin_i, end_i) : any
- * @overload birlei_to_begin_i_end_i(algo_fn, ppmrrair_fn, range_is) : any
- * @overload birlei_to_begin_i_end_i(algo_fn, ppmrrair_fn, list_is) : any
+ * @typedef {(number|range|list)} Birl
+ * - If `number`, start index to iterate over
+ * - If `range`, indices to iterate over
+ * - If `list`, indices to iterate over
+ */
+
+/**
+ * @typedef {(number|undef)} EndI
+ * - If related `birl` is a number, then this is the end index to iterate
+ *   over.
+ *   - If this value is less than the related birl's value, then nothing is
+ *     iterated over.
+ */
+
+/**
+ * @callback SpaceshipFn
+ * Compares a derived comparison value against an internally stored value.
  *
- * Helper which calls algo_fn but remaps signature function(fn, birl, end_i) to
- * signature function(fn, begin_i, end_i, map_back_fn).
+ * Definitions:
+ * - probe: the argument passed to this callback by the algorithm.
+ * - comparison value: the value derived from the probe that is actually
+ *   compared to the stored value.
  *
- * @param algo_fn (function (fn, begin_i, end_i, map_back_fn) : any)
- *   Function with (fn, begin_i, end_i, map_back_fn) signature to call.
- *     @param fn (number)
- *       ppmrrair function to call.
- *     @param begin_i (number)
- *       Starting index to operate on.
- *     @param end_i (number | undef)
- *       Ending index to operate on.
- *     @param map_back_fn (function(i) : number | undef)
- *       If returning an index, pass the index retrieved by algorithm
- *       to get actual index as it may have been remapped with a range or list.
- *       i can be a number or undef
+ * Probe convention:
+ * - Without an [Algorithm Adaptor](#algorithm-adaptors), the probe is a number
+ *   within the `birlei`.
+ * - With an Algorithm Adaptor, the probe is the adaptor's output:
+ *   - it_each: element
+ *   - it_enum: [index, element]
+ *   - it_idxs: index
  *
- * @param ppmrrair_fn (function (i) : any | function (i, o) : any)
+ * The callback is responsible for mapping probe → comparison value.  The
+ * mapping is defined by the callback's closure over the searched structure (slr
+ * or any other abstract structure) and/or by how it interprets adaptor outputs.
+ *
+ * @param {any} probe
+ *   The probe value as defined above.
+ *
+ * @returns {number}
+ *   - comparison value < stored value: return < 0
+ *   - comparison value == stored value: return 0
+ *   - comparison value > stored value: return > 0
+ */
+
+/**
+ * @callback PredFn
+ * Compares a derived comparison value against an internally stored value.
+ *
+ * Definitions:
+ * - probe: the argument passed to this callback by the algorithm.
+ * - comparison value: the value derived from the probe that is actually
+ *   compared to the stored value.
+ *
+ * Probe convention:
+ * - Without an [Algorithm Adaptor](#algorithm-adaptors), the probe is a number
+ *   within the `birlei`.
+ * - With an Algorithm Adaptor, the probe is the adaptor's output:
+ *   - it_each: element
+ *   - it_enum: [index, element]
+ *   - it_idxs: index
+ *
+ * The callback is responsible for mapping probe → comparison value.  The
+ * mapping is defined by the callback's closure over the searched structure (slr
+ * or any other abstract structure) and/or by how it interprets adaptor outputs.
+ *
+ * @param {any} probe
+ *   The probe value as defined above.
+ *
+ * @returns {bool}
+ *   - comparison value matches stored value: return `true`
+ *   - comparison value doesn't match stored value: return `false`
+ */
+
+/**
+ * @callback ReductionFn
+ *
+ * Mutates the accumulator given a derived comparison value.
+ *
+ * Definitions:
+ * - probe: the argument passed to this callback by the algorithm.
+ * - comparison value: the value derived from the probe that is actually
+ *   compared to the stored value.
+ *
+ * Probe convention:
+ * - Without an [Algorithm Adaptor](#algorithm-adaptors), the probe is a number
+ *   within the `birlei`.
+ * - With an Algorithm Adaptor, the probe is the adaptor's output:
+ *   - it_each: element
+ *   - it_enum: [index, element]
+ *   - it_idxs: index
+ *
+ * The callback is responsible for mapping probe → comparison value.  The
+ * mapping is defined by the callback's closure over the searched structure (slr
+ * or any other abstract structure) and/or by how it interprets adaptor outputs.
+ *
+ * > NOTE:
+ * >
+ * > `acc` **is the second parameter** which is different from most languages.
+ * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
+ * > and this library in general.  You have been warned.
+ *
+ * @param {any} probe
+ *   The probe value as defined above.
+ * @param {any} accumulator
+ *   The accumulator being mutated.
+ *
+ * @returns {any}
+ *   The newly mutated accumulator value or the initial value if the `birlei`
+ *   was empty.
+ */
+
+/**
+ * @callback ReductionAirFn
+ *
+ * Mutates the accumulator given a derived comparison value.
+ *
+ * Definitions:
+ * - probe: the argument passed to this callback by the algorithm.
+ * - comparison value: the value derived from the probe that is actually
+ *   compared to the stored value.
+ *
+ * Probe convention:
+ * - Without an [Algorithm Adaptor](#algorithm-adaptors), the probe is a number
+ *   within the `birlei`.
+ * - With an Algorithm Adaptor, the probe is the adaptor's output:
+ *   - it_each: element
+ *   - it_enum: [index, element]
+ *   - it_idxs: index
+ *
+ * The callback is responsible for mapping probe → comparison value.  The
+ * mapping is defined by the callback's closure over the searched structure (slr
+ * or any other abstract structure) and/or by how it interprets adaptor outputs.
+ *
+ * > NOTE:
+ * >
+ * > `acc` **is the second parameter** which is different from most languages.
+ * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
+ * > and this library in general.  You have been warned.
+ *
+ * @param {any} probe
+ *   The probe value as defined above.
+ * @param {any} accumulator
+ *   The accumulator being mutated.
+ *
+ * @returns {list[bool,any]}
+ *   List containing if to continue Boolean and the newly mutated accumulator
+ *   value.
+ */
+
+/**
+ * @callback PredMapFn
+ * Compares a derived comparison value against an internally stored value and
+ * returns a value if 
+ *
+ * Definitions:
+ * - probe: the argument passed to this callback by the algorithm.
+ * - comparison value: the value derived from the probe that is actually
+ *   compared to the stored value.
+ *
+ * Probe convention:
+ * - Without an [Algorithm Adaptor](#algorithm-adaptors), the probe is a number
+ *   within the `birlei`.
+ * - With an Algorithm Adaptor, the probe is the adaptor's output:
+ *   - it_each: element
+ *   - it_enum: [index, element]
+ *   - it_idxs: index
+ *
+ * The callback is responsible for mapping probe → comparison value.  The
+ * mapping is defined by the callback's closure over the searched structure (slr
+ * or any other abstract structure) and/or by how it interprets adaptor outputs.
+ *
+ * @param {any} probe
+ *   The probe value as defined above.
+ * @param {bool} [get_value=undef]
+ *   States if to return the predicate result or the probed value.
+ *
+ * @returns {any}
+ *   - if `get_value` is falsy, then
+ *     - comparison value matches stored value: return `true`
+ *     - comparison value doesn't match stored value: return `false`
+ *   - else returns the probed value
+ */
+
+/**
+ * @callback MapperFn
+ * Maps a probed value to a list.
+ *
+ * Definitions:
+ * - probe: the argument passed to this callback by the algorithm.
+ *
+ * Probe convention:
+ * - Without an [Algorithm Adaptor](#algorithm-adaptors), the probe is a number
+ *   within the `birlei`.
+ * - With an Algorithm Adaptor, the probe is the adaptor's output:
+ *   - it_each: element
+ *   - it_enum: [index, element]
+ *   - it_idxs: index
+ *
+ * The callback is responsible for mapping probe value.  The mapping is defined
+ * by the callback's closure over the searched structure (slr or any other
+ * abstract structure) and/or by how it interprets adaptor outputs.
+ *
+ * @param {any} probe
+ *   The probe value as defined above.
+ *
+ * @returns {any}
+ *   Value that was mapped given the probe.
+ */
+
+/**
+ * @typedef {(SpaceshipFn|PredFn|ReductionFn|ReductionAirFn|PredMapFn|MapperFn)} PpmrrairFn
+ *
+ * The exact meaning depends on the type expected.  For more info, go to the
+ * type you are interested in.
+ */
+
+/**
+ * @callback MapBackFn
+ *
+ * When an algorithm is iterating, it iterates over a contiguous set of
+ * integers.  The original set of values don't have to be contiguous.  This
+ * function, remaps the contiguous integers back to the original set of values.
+ *
+ * @param {(number|undef)} i
+ *   Index to remap or undef if no index to remap.
+ *
+ * @returns {(number|undef)}
+ *   - If originating algo_fn is returning an index, this function will map it
+ *     to the correct index.
+ *   - If passed undef, returns undef.
+ */
+
+/**
+ * Helper which calls `algo_fn` but remaps signature `function(fn, birl, end_i)`
+ * to signature `function(fn, begin_i, end_i, map_back_fn)`.
+ *
+ * @param {function(fn: PpmrrairFn, begin_i: number, end_i: number, map_back_fn: MapBackFn): any} algo_fn
+ *   Function with `(fn, begin_i, end_i, map_back_fn)` signature to call, where:
+ *     - `fn`: `number`
+ *       - ppmrrair function to call.
+ *     - `begin_i`: `number`
+ *       - Starting index to operate on.
+ *     - `end_i`: `number`
+ *       - Ending index to operate on.
+ *     - `map_back_fn`: `function(i: number|undef): (number|undef)`
+ *       - When the algorithm is returning a number from the `birlei`, the
+ *         algorithm is to pass the index it found to this function, which will
+ *         remap it back to the `birlei` value.
+ *       - If this function is passed `undef`, it returns `undef` for
+ *         convenience.
+ * @param {PpmrrairFn} ppmrrair_fn
  *   - Takes index or element and possibly a second param and returns a value.
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param begin_i (number)
- *   - Start index to check.
- * @param end_i (number | undef)
- *   - If birl is a number, then end index to check.  end_i could be less than
- *     birl if there's nothing to iterate over, but would have to be handled by
- *     algo_fn.  Ignored if birl is not a number.
- * @param range_is (range)
- *   - Range of indices to check.
- * @param list_is (list)
- *   - List of indices to check.
+ * @param {Birl} birl
+ * @param {EndI} end_i
  *
- * @returns result of algo_fn().
+ * @returns {any}
+ *   Result of `algo_fn()`.
  */
 function birlei_to_begin_i_end_i(algo_fn, ppmrrair_fn, birl, end_i) =
-  assert(is_function(algo_fn),
-    str("algo_fn should be function. Got ", algo_fn, " instead."))
-  assert(is_function(ppmrrair_fn),
-    str("ppmrrair_fn should be function. Got {", ppmrrair_fn, "} instead."))
+  let ( _ = verify_fn(algo_fn) )
+  let ( _ = verify_fn(ppmrrair_fn) )
+  let ( _ = verify_birlei(birl, end_i) )
   is_num(birl)
-  ? assert(is_num(end_i), str("end_i (", end_i, ") must be a number."))
+  ? // (NUM, NUM)
+    assert(is_num(end_i), str("end_i (", end_i, ") must be a number."))
     algo_fn(ppmrrair_fn, birl, end_i, function(i) i)
   : let ( pc = param_count(ppmrrair_fn) )
     is_list(birl)
-    ? let (
+    ? // LIST
+      let (
         result = algo_fn(
           pc == 1
           ? function(i) ppmrrair_fn(birl[i])
           : function(i, o) ppmrrair_fn(birl[i], o),
-          0, el_idx(birl, -1), function(i) i == undef ? undef : birl[i])
+          0, len(birl)-1, function(i) is_undef(i) ? undef : birl[i])
       )
       result
-    : // birl must be a range
-      assert(is_range(birl),
-        str("birl (", birl, ") must be a range."))
+    : // RANGE
+      let ( _ = verify_r(birl) )
       birl[1] == 1
       ? // If step is 1, no need to use range which reduces indirection.
-        algo_fn(ppmrrair_fn, birl[0], birl[2], function(i) i == undef ? undef : i)
+        algo_fn(ppmrrair_fn, birl[0], birl[2], function(i) is_undef(i) ? undef : i)
       : let (
-          rc = lr_len(birl),
+          rc = range_len(birl),
           end2_i = is_undef(rc) ? -1 : rc - 1,
           result = algo_fn(
             pc == 1
-            ? function(i) ppmrrair_fn(lr_el(birl, i))
-            : function(i, o) ppmrrair_fn(lr_el(birl, i), o),
-            0, end2_i, function(i) i == undef ? undef : lr_el(birl, i))
+            ? function(i) ppmrrair_fn(el(birl, i))
+            : function(i, o) ppmrrair_fn(el(birl, i), o),
+            0, end2_i, function(i) is_undef(i) ? undef : el(birl, i))
         )
         result
 ;
 
 /**
- * Helper to convert birlei parameters to indices to traverse.
+ * Helper to convert birlei parameters to an lr to traverse.
  *
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i is less than birl,
- *     then returns an empty list.
+ * @param {Birl} birl
+ * @param {EndI} end_i
  *
- * @returns (list | range)
+ * @returns {(list|range)}
  *   Returns a list or range describing the indices to traverse.
  */
 function birlei_to_indices(birl, end_i) =
-  // echo("_to_idices:", birl, end_i)
+  let ( _ = verify_birlei(birl, end_i) )
   is_num(birl)
-  ? assert(is_num(end_i), str("end_i (", end_i, ") must be a number."))
-    // echo("made range: ", range(birl, end_i))
-    range(birl, end_i)
-  : // echo("birl: ", birl)
-    birl
+  ? range(birl, end_i)
+  : birl
 ;
 
-/**
- * Validates if the range specified by `(birl, end_i)` are within the bounds of
- * [`valid_min`, `valid_max`].  Asserts if not within range.
- *
- * @param valid_min (number)
- *   Minimum value that birl/end_i can encode.
- * @param valid_max (number)
- *   Maximum value that birl/end_i can encode.
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check. 
- *
- * @returns (undef)
- */
-function birlei_verify(valid_min, valid_max, birl, end_i) =
-  let (
-    _min = is_num(birl)
-      ? birl
-      : is_list(birl)
-        ? min(birl)
-        : birl[1] > 0
-          ? range_el(birl, 0)
-          : range_el(birl, -1),
-    _max = is_num(birl)
-      ? end_i
-      : is_list(birl)
-        ? max(birl)
-        : birl[1] > 0
-          ? range_el(birl, -1)
-          : range_el(birl, 0)
-  )
-  assert(valid_min <= _min && _max <= valid_max, str("birlei (", [ birl, end_i ],
-    ") out of range (", [ valid_min, valid_max ], ")"))
-  undef
-;
-
-function birlei_end_i(birl, end_i, slr) =
-  is_num(birl) && undef == end_i
-  ? (is_list(slr) || is_string(slr)
-      ? len(slr)
-      : range_len(slr)
-    ) - 1
-  : end_i
-;
-
-/** Index to length of BIRLEI */
-function BIRLEI_LEN()    = 0;
-/** Index to function to determine if BIRLEI is contagious */
-function BIRLEI_CONTIG() = 1;
-/** Index to function to get string representation of BIRLEI */
-function BIRLEI_STR()    = 2;
-/** Index to function to get element of BIRLEI at specified index */
-function BIRLEI_EL()     = 3;
-/** Index to function to deref indexable with the BIRLEI at specified index */
-function BIRLEI_DEREF()  = 4;
-
-/**
- * Provides a list containing value and minimal functions that get the required
- * information across all birlei formats.
- *
- * BIRLEI_LEN() (number)
- *   Length of birlei
- * BIRLEI_CONTIG() (function() : string)
- *   Callback that returns if birlei represents a contagious range.
- * BIRLEI_STR() (function() : string)
- *   Callback that returns a string representation of the birlei.
- * BIRLEI_EL() (function(i) : number)
- *   Callback that will give element of birlei, where 0 <= i < length of birlei.
- *   Out of range index will result in undef, like when getting element from
- *   array.
- * BIRLEI_DEREF() (function(i) : any)
- *   Callback that will dereference indexable with the index provided by birlei,
- *   where 0 <= i < length of birlei.  Asserts if indexable not provided.
- *
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- *   (Default: 0)
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If not defined, then 
- *     el_idx(indexable)-1.  If indexable required, will asserts if not defined.
- * @param indexable (string | list | range | undef)
- *   - This will be used if end_i is not specified and birl is a number.  It is
- *     also used in the dereferencing of the index given by the birlei.
- *
- * @returns (list[ number, function():string, function(i):number,
- *           function(i):any ])
- *   List of value and functions that correspond to information needed across
- *   all birlei's.
- *
- */
-function birlei(birl = 0, end_i = undef, indexable = undef) =
-  assert(!is_num(birl) || (is_num(end_i) || !is_undef(indexable)),
-    str("if birl (", birl, ") is a number then end_i (", end_i,
-      ") must also be a number or indexable (", indexable,
-      ") must be defined to infer it."))
-  let(
-    indexable_te = type_enum(indexable),
-    birl_te = type_enum(birl),
-    _end_i =
-      birl_te == NUM()
-      ? // since birl is a number, end_i has to be a number to make birlei valid
-        undef == end_i
-        ? // birl is a number but end_i is not defined, so use indexable's len
-          assert(is_indexable_te(indexable_te), "Can't infer end_i as valid indexable wasn't provided")
-          (
-            indexable_te == RANGE()
-            ? range_len(indexable) // is a range
-            : len(indexable)       // is a list or string
-          ) - 1
-        : // end_i has been specified, so use that
-          end_i
-      : // birl isn't a number so end_i is going to be ignored
-        undef,
-    int_birl_idx_fn =
-      function(i)
-        let (
-          _i = 0 <= i && i <= _end_i
-            ? birl + i
-            : -_end_i - 1 <= i && i <= -1
-              ? _end_i + i + 1
-              : undef
-        )
-        // echo(str("BIRLEI_EL for int birl: ", birl, " _end_i: ", _end_i, " i: ", i, " _i: ", _i, " indexable: ", indexable))
-        _i,
-      list_contiguous_fn = function()
-        fn_ref_list(birl, fn_find(), 1)(
-          function(i)
-            abs(birl[i] - birl[i-1]) > 1
-        ) == undef,
-      range_contiguous_fn = function()
-        birl[1] == -1 || birl[1] == 1
-  )
-  // echo("birlei: birl: ", birl, " end_i: ", end_i, " indexable: ", indexable, " _end_i: ", _end_i)
-  indexable_te == UNDEF()
-  ? birl_te == NUM() // beginning index and end index.
-    ? [
-        _end_i - birl + 1,
-        function()  true,
-        function()  str("[ ", birl, " : ", _end_i, " ]"),
-        int_birl_idx_fn,
-        function(i)
-          assert(is_indexable_te(indexable_te),
-            str("indexable_te is a ", type_enum_to_str(indexable_te)))
-      ]
-    : birl_te == RANGE() // range of indices
-      ? [
-          range_len(birl),
-          range_contiguous_fn,
-          function()  str(birl),
-          function(i) range_el(birl, i),
-          function(i)
-            assert(is_indexable_te(indexable_te),
-              str("indexable_te is a ", type_enum_to_str(indexable_te)))
-        ]
-      : // list of indices
-        [
-          len(birl),
-          list_contiguous_fn,
-          function()  str(birl),
-          function(i) birl[i],
-          function(i)
-            assert(is_indexable_te(indexable_te),
-              str("indexable_te is a ", type_enum_to_str(indexable_te)))
-        ]
-  : indexable_te == RANGE()
-    ? birl_te == NUM() // beginning index and end index.
-      ? [
-          _end_i - birl + 1,
-          function()  true,
-          function()  str("[ ", birl, " : ", _end_i, " ]"),
-          int_birl_idx_fn,
-          function(i) range_el(int_birl_idx_fn(i))
-        ]
-      : birl_te == RANGE() // range of indices
-        ? [
-            lr_len(birl),
-            range_contiguous_fn,
-            function()  str(birl),
-            function(i) range_el(birl, i),
-            function(i) range_el(indexable, range_el(birl, i))
-          ]
-        : // list of indices
-          [
-            len(birl),
-            list_contiguous_fn,
-            function()  str(birl),
-            function(i) birl[i],
-            function(i) range_el(indexable, birl[i])
-          ]
-    : // indexable type must be a LIST()
-      birl_te == NUM() // beginning index and end index.
-      ? [
-          _end_i - birl + 1,
-          function()  true,
-          function()  str("[ ", birl, " : ", _end_i, " ]"),
-          int_birl_idx_fn,
-          function(i) indexable[int_birl_idx_fn(i)]
-        ]
-      : birl_te == RANGE() // range of indices
-        ? [
-            lr_len(birl),
-            range_contiguous_fn,
-            function()  str(birl),
-            function(i) range_el(birl, i),
-            function(i) indexable[range_el(birl, i)]
-          ]
-        : // list of indices
-          [
-            len(birl),
-            list_contiguous_fn,
-            function()  str(birl),
-            function(i) birl[i],
-            function(i) indexable[birl[i]]
-          ]
-;
+// /**
+//  * Validates if the range specified by `(birl, end_i)` are within the bounds of
+//  * [`valid_min`, `valid_max`].  Asserts if not within range.
+//  *
+//  * @param {number} valid_min
+//  *   Minimum value that birl/end_i can encode.
+//  * @param {number} valid_max
+//  *   Maximum value that birl/end_i can encode.
+//  * @param {(number|range|list)} birl
+//  *   - If number, start index to check
+//  *   - If range, indices to check
+//  *   - If list, indices to check
+//  * @param {(number|undef)} end_i
+//  *   - If `birl` is a number, end index to check. 
+//  *
+//  * @returns {true}
+//  *   if valid, returns true, else false, unless raise_assertion is true, then
+//  *   assert on failure.
+//  */
+// function birlei_verify(valid_min, valid_max, birl, end_i, raise_assertion) =
+//   let (
+//     _min = is_num(birl)
+//       ? birl
+//       : is_list(birl)
+//         ? min(birl)
+//         : birl[1] > 0
+//           ? range_el(birl, 0)
+//           : range_el(birl, -1),
+//     _max = is_num(birl)
+//       ? end_i
+//       : is_list(birl)
+//         ? max(birl)
+//         : birl[1] > 0
+//           ? range_el(birl, -1)
+//           : range_el(birl, 0)
+//   )
+//   valid_min <= _min && _max <= valid_max
+//   ? true
+//   : raise_assertion
+//     ? assert(valid_min <= _min && _max <= valid_max,
+//         str("birlei (", [ birl, end_i ], ") out of range (", [ valid_min,
+//           valid_max ], ")"))
+//     : false
+// ;

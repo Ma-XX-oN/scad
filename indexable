@@ -1,0 +1,2181 @@
+/**
+ * ## indexable
+ *
+ * ### How to Import
+ *     use <indexable>
+ *
+ * ### Purpose
+ *
+ * Treats all indexable objects similarly.  As a group, they are referred to as
+ * `slr`s (`s`tring, `l`ist or `r`ange).  Any function that can take an indexable
+ * reference and a `birlsei` can have the `birlsei` partially or completely
+ * omitted (defaults to the start and end indices of the indexable).  To iterate
+ * backwards, use a reverse `range`, `rev_i`, or a reverse `slice` (step < 0).
+ *
+ * #### Example
+ *
+ *     hello = "hello"
+ *     echo(els(hello, range(4, -1, 0)));
+ *     echo(els(hello, rev_i(hello)));
+ *     echo(els(hello, slice(-1, -1, 0)));
+ *
+ * Would output
+ *
+ *     ECHO: "olleh"
+ *     ECHO: "olleh"
+ *     ECHO: "olleh"
+ *
+ * > NOTE:
+ * >
+ * > `birlei` (`begin_i`, `range`, or `list`, and `end_i`) is not the same as
+ * > `birlsei` (`begin_i`, `range`, `list`, or `slice`, and `end_i`).
+ * >
+ * > - `birlei` is a general index specification and is not tied to any `slr`.
+ * >   It may contain any integers (including negatives).
+ * >
+ * > - `birlsei` is a `birlei` that is tied to a specific `slr`.  It consists of
+ * >   positive `slr` indices `(0..slr_len(slr)-1)` or no indices.
+ * >
+ * > <details><summary><b>TL;DR</b></summary>
+ * >
+ * > **`birlei` (not tied to any `slr`) can represent any number:**
+ * >
+ * > - `(begin_i, end_i)` pair.
+ * >
+ * >   Produces an empty `birlei` if `end_i < begin_i`.  Otherwise iterates over
+ * >   the contiguous indices `begin_i .. end_i` (inclusive).
+ * >
+ * > - `list`: any list of integers `[ e₁, e₂, ... eₙ ]`.
+ * >
+ * >   Produces an empty `birlei` if `n == 0`.  Otherwise iterates over all list
+ * >   elements in order.
+ * >
+ * > - `range`: closed `range(begin_i, step, end_i)`.
+ * >
+ * >   Requires `step ≠ 0`.  Produces an empty `birlei` if:
+ * >
+ * >   - `step > 0` and `end_i < begin_i`, or
+ * >   - `step < 0` and `begin_i < end_i`.
+ * >
+ * >   Otherwise iterates the closed range.
+ * >
+ * >
+ * > **`birlsei` (tied to an `slr`) can only represent positive numbers:**
+ * >
+ * > - `(begin_i, end_i)` pair.
+ * >
+ * >   `begin_i` and `end_i` are indices, so they must satisfy:
+ * >
+ * >       0 ≤ begin_i < slr_len(slr) and 0 ≤ end_i < slr_len(slr)
+ * >
+ * >   Produces an empty `birlsei` if `end_i < begin_i`.  Otherwise iterates over
+ * >   the contiguous indices `begin_i .. end_i` (inclusive), and requires:
+ * >
+ * >       0 ≤ begin_i ≤ end_i < slr_len(slr)
+ * >
+ * > - `list`: any list of indices `[ e₁, e₂, ... eₙ ]`.
+ * >
+ * >   Produces an empty `birlsei` if `n == 0`.  Otherwise requires for every
+ * >   element:
+ * >
+ * >       0 ≤ eᵢ < slr_len(slr)
+ * >
+ * > - `range`: closed `range(begin_i, step, end_i)`.
+ * >
+ * >   Requires `step ≠ 0` and:
+ * >
+ * >       0 ≤ begin_i < slr_len(slr) and 0 ≤ end_i < slr_len(slr)
+ * >
+ * >   Produces an empty `birlsei` if:
+ * >
+ * >   - `step > 0` and `end_i < begin_i`, or
+ * >   - `step < 0` and `begin_i < end_i`.
+ * >
+ * >   Otherwise iterates the closed range.
+ * >
+ * > - slice: closed `slice(begin_i, step, end_i)`.
+ * >
+ * >   Requires `step ≠ 0`.  A slice becomes iterable only when applied to an
+ * >   `slr` (implicit call to `slice_to_range()`).
+ * >
+ * >   The resulting range may be empty.  When non-empty, its endpoints are
+ * >   valid indices:
+ * >
+ * >       0 ≤ begin_i < slr_len(slr) and 0 ≤ end_i < slr_len(slr)
+ * >
+ * >   Iteration rules then follow the range rules above (based on `step` and
+ * >   the ordering of `begin_i` and `end_i`).
+ * > 
+ * > </details>
+ */
+ /*
+ * #### Optimisations
+ *
+ * Because dereferencing an `slr`'s element can be expensive as there are up to 3
+ * checks that may need to be done and this can add up over many iterations, and
+ * since slices need to be converted to ranges for these functions, there is an
+ * `_slr_cache` function to centralise this code, and removes the need for such
+ * checks.
+ *
+ * There are also private functions (starting with underscore) which are similar
+ * to the main functions. Like the main functions, the `birlei` it takes assumes
+ * the same constraints as the `birlsei` (dereferences to only positive indices)
+ * except that as a `birlei`, it doesn't take a slice.  They also take
+ * parameters that are usually taken from the slr_cache object.
+ *
+ * Although these optimisations are somewhat visible to the end user, their use
+ * is mainly for the library itself.  It's unlikely that a user of the library
+ * will need these, unless they are doing something that really needs such
+ * optimisation.  The API of these private functions and parameters are not
+ * guaranteed to remain stable over different versions.  Use them at your own
+ * risk.
+ */
+use <base_algos>
+use <range>
+use <types>
+include <types_consts>
+use <helpers>
+use <test>
+use <string>
+use <birlei>
+use <function>
+use <param_check>
+include <indexable_consts>
+
+/**
+ * ### Slices
+ * 
+ * A `slice` is an object similar to a `range`, but it's not a realised
+ * indexable object until it is paired with an `slr`.
+ */
+
+/**
+ * Check if object is a `slice` object.
+ *
+ * @param {any} o
+ *   Object to check.
+ *
+ * @returns {bool}
+ *   `true` if object is a slice, `false` otherwise.
+ */
+function is_slice(o) =
+  is_list(o) && o[0] == "SLICE"
+;
+
+/**
+ * @typedef {list} slice
+ * Slice is an unresolved range that works with an indexable.  It itself is
+ * **not indexable**.  Use [`slice_to_range`](#slice_to_range) to convert to an
+ * indexable range.
+ *
+ * > NOTE:
+ * >
+ * > Due to ranges using inclusive values, and slices adhering to that same
+ * > paradigm, a slice cannot refer to an empty range unless `step` precludes
+ * > `begin_i` from getting to `end_i` or the referred to `slr` has a length of
+ * > `0`.
+ */
+
+/**
+ * Create a `slice` object.
+ *
+ * @param {number} begin_i
+ *   The first index of the slice.  If negative, then counts backward from end
+ *   of slr being referred to.
+ * @param {number} step_or_end_i
+ *   - If `end_i` not defined, then refers to the lat index of the sequence.
+ *     - If negative, then counts backward from end of `slr` being referred to.
+ *   - If `end_i` is defined, then refers to the step count used to go between
+ *     `begin_i` and `end_i`.
+ * @param {(number|undef)} end_i
+ *   If defined, then the last index of the slice.  If negative, then counts
+ *   backward from end of slr being referred to.
+ *
+ * @returns {slice}
+ *   Returns a slice object.
+ */
+function slice(begin_i, step_or_end_i, end_i) =
+  let ( _ = verify_i(begin_i) )
+  let ( _ = verify_i(step_or_end_i) )
+  let ( _ = verify_iu(end_i) )
+  let ( _ = verify_vnz(is_undef(end_i) ? 1 : step_or_end_i) )
+  is_undef(end_i)
+  ? [ "SLICE", begin_i, 1, step_or_end_i ]
+  : assert(step_or_end_i, "Slice cannot have a step of 0.")
+    [ "SLICE", begin_i, step_or_end_i, end_i ]
+;
+
+/**
+ * @callchain slice_to_range(slice, slr)
+ * @callchain slice_to_range(slice, slr, _slr_len)
+ *
+ * Converts a slice to a range when given a particular `slr`.
+ *
+ * @param {slice} slice
+ *   The slice being converted.
+ * @param {(string|list|range)} slr
+ *   The `slr` used as reference.
+ * @param {number} [_slr_len]
+ *   If passed, then use that cached value instead of calculating `len(slr)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {(range|list)}
+ *   A range that corresponds to what the slice is to do given an `slr`.
+ *   If the slice is completely before or after the slr, returns [].
+ */
+function slice_to_range(slice, slr, _slr_len) =
+  let ( _ = verify_slice(slice) )
+  let ( _ = verify_iu(_slr_len) )
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vlen(slr, _slr_len) )
+  let (
+    _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len
+  )
+  _slr_len == 0
+  ? []
+  : let (
+      b_raw  = slice[1],
+      step   = slice[2],
+      e_raw  = slice[3],
+
+      // normalise negatives "from the end"
+      b_norm = b_raw < 0 ? b_raw + _slr_len : b_raw,
+      e_norm = e_raw < 0 ? e_raw + _slr_len : e_raw,
+
+      // classify each end once (before or after viable range of indices)
+      b_before = b_norm < 0,
+      b_after  = b_norm >= _slr_len,
+      e_before = e_norm < 0,
+      e_after  = e_norm >= _slr_len
+    )
+    // if both ends are entirely before or entirely after, or if start before
+    // or after the range and step continues to move away from the range then
+    // there is no overlap with [0, _slr_len-1]
+    (b_before && (e_before || step < 0)) || (b_after && (e_after || step > 0))
+    ? []
+    : let (
+        // clamp partially out-of-range indices into [0, _slr_len-1]
+        b_clamped =
+          b_before ? 0 :
+          b_after  ? _slr_len - 1 :
+                     b_norm,
+        e_clamped =
+          e_before ? 0 :
+          e_after  ? _slr_len - 1 :
+                     e_norm
+      )
+      range(b_clamped, step, e_clamped)
+;
+
+/**
+ * @typedef {(number|range|list|slice)} Birls
+ * - If `number`, start index to iterate over.
+ * - If `range`, indices to iterate over.
+ * - If `list`, indices to iterate over.
+ * - If `slice`, to convert to range providing indices to iterate over.
+ */
+
+/**
+ * @typedef {list} slr_cache
+ *
+ * Cache returned by `_slr_cache(slr, birls, end_i)`.  Usage example:
+ *
+ *     len_of_slr = cache_obj[_SLR_LEN]
+ *
+ * @slot {number} _SLR_LEN
+ *   Length of `slr`.
+ * @slot {type_enum} _SLR_TE
+ *   Type enum of `slr`.
+ * @slot {function(i: number): any} _SLR_ELD
+ *   `i` is the index to dereference the `slr` (Direct addressing).
+ *   Returns roughly `slr[i]`, where `0 <= i < slr_len`.
+ *   - If backward indexing is wanted, manually calculating it by the formula
+ *     `slr_len - i` is required.  This maximises throughput for most common
+ *     case.
+ * @slot {number} _SLR_BLEN
+ *   Length of normalised `birlsei`.
+ * @slot {function(j: number): any} _SLR_ELI
+ *   `j` is the index to dereference the normalised `birlsei` to index the `slr`
+ *   (Indirect addressing).  Returns roughly `slr[birlei[j]]`, where
+ *   `0 <= j < birlei_len`.
+ *   - If backward indexing is wanted, manually calculating it by the formula
+ *     `birlei_len - j` is required.  This maximises throughput for most common
+ *     case.
+ * @slot {function(k: number): number} _SLR_IDX
+ *   `k` is the index to dereference the normalised `birlsei`.  Returns roughly
+ *   `birlei[k]`, where `0 <= k < birlei_len`.
+ *   - If backward indexing is wanted, manually calculating it by the formula
+ *     `birlei_len - k` is required.  This maximises throughput for most common
+ *     case.
+ * @slot {function(): string} _SLR_STR
+ *   String representation of normalised `birlsei`.
+ * @slot {(number|range|list)} _SLR_BIRL
+ *   Normalised birls.
+ * @slot {(number|undef)} _SLR_END_I
+ *   Normalised end_i.
+ */
+
+/**
+ * A `birlsei` may be incomplete or may be a slice. This function normalise it
+ * to a `birlei` such that:
+ *
+ * 1. If `is_num(birls) && is_undef(end_i)` then `end_i` is the index of the
+ *    last element.
+ * 2. If `is_slice(birls)`, then convert to a a range using `slice_to_range()`.
+ *
+ * > NOTE:
+ * >
+ * >   The `birlei` can represent only positive indices.
+ *
+ * The returned array can be dereferenced using the _SLR_* constants, which can
+ * be included using the command `include<indexable_consts>` (DO NOT USE
+ * `use<>`).
+ *
+ * > NOTE:
+ * >
+ * > All functions that dereference the slr or normalised `birlsei` are fully
+ * > unrolled and optimized for their specific slr type, so will be faster when
+ * > compared with using `el()` or `idx()` calls.
+ *
+ * > TTA:
+ * >
+ * > Do we need a _SLR_BTE to store the type of the normalised `birlsei`?
+ * >
+ * > Answer:
+ * >
+ * > I would think that testing using is_num(birls), is_list(birls) and
+ * > is_num(birls[0]) would be faster than using a stored _SLR_BTE, unless
+ * > considering using a dispatch table, which would require function call
+ * > overhead, so is prolly not worth it.
+ *
+ * > TTA:
+ * >
+ * > Do we need the normalised `birlsei` to house values that are positive and
+ * > negative?  Can we just make it house just positive values?
+ * >
+ * > Answer:
+ * >    
+ * > No, if that's really needed, just add the `birlei` length to the index
+ * > needed.  Don't want to slow things down in the most common case.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` used as reference.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(slr, -1)]
+ *
+ * @returns {slr_cache}
+ *  Normalised values:
+ *  [ header, slr_len, slr_te, eld_fn, blen, eli_fn, idx_fn, str_fn, birl, end_i ]
+ *
+ *  > MICRO OPTIMIZATION:
+ *  >
+ *  > On normalisation, if a birl is not a number, then end_i will not be
+ *  > allocated.  Referencing that value will return undef and should be
+ *  > marginally faster than having to actually get the undef value if it was
+ *  > allocated.
+ */
+function _slr_cache(slr, birls=0, end_i=undef) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_birlsei(birls, end_i) )
+  let ( _ = verify_vbsis(slr, birls, end_i) )
+  let (
+    _slr_te = type_enum(slr),
+    _slr_len = _slr_te
+      ? len(slr)
+      : range_len(slr)
+  )
+  _slr_te
+  // NOTE: The THEN and ELSE blocks are almost the same code with different init
+  //       values set in the let statement and different ways of dereferencing
+  //       the `slr`.  Done this way to omit an extra function call to be as
+  //       fast as possible.  Using a diff comparator like Meld to confirm
+  //       correctness.
+  ? // slr is STRING or LIST
+    is_num(birls)
+    ? // `birlsei` is (begin_i, end_i)
+      let (
+        end_i = is_undef(end_i)
+          ? _slr_len - 1
+          : end_i,
+        birls_len = max(end_i - birls + 1, 0)
+      )
+      [
+        _SLR_CACHE_HEADER,
+        _slr_len,
+        _slr_te,
+        function(i) slr[i],
+        birls_len,
+        function(j) slr[birls + j],
+        function(k)     birls + k,
+        function()  str("[ ", birls, " : ", end_i, " ]"),
+        birls,
+        end_i
+      ]
+    : is_list(birls)
+      ? is_string(birls[0])
+        ? // `birlsei` is SLICE.
+          // convert `birlsei` to range and unroll range branch here
+          // Non-unrolled code:
+          // _slr_cache(slr, slice_to_range(birls, slr, _slr_len))
+          let (
+            birls = slice_to_range(birls, slr, _slr_len)
+          )
+          is_list(birls)
+          ? // Would only be a list if it is an empty list.
+            [
+              _SLR_CACHE_HEADER,
+              _slr_len,
+              _slr_te,
+              function(i) undef,
+              0,
+              function(j) undef,
+              function(k) undef,
+              function()  str("[]"),
+              1, 0 // empty birls
+            ]
+          : let (
+              birls_len = range_len(birls),
+              begin_i = birls[0]
+            )
+            birls[1] == 1
+            ? // +1 step, convert to (begin_i, end_i)
+              [
+                _SLR_CACHE_HEADER,
+                _slr_len,
+                _slr_te,
+                function(i) slr[i],
+                birls_len,
+                function(j) slr[begin_i + j],
+                function(k)     begin_i + k,
+                function()  str("[ ", begin_i, " : ", birls[2], " ]"),
+                birls[0],
+                birls[2]
+              ]
+            : let (
+                step = birls[1]
+              )
+              [
+                _SLR_CACHE_HEADER,
+                _slr_len,
+                _slr_te,
+                function(i) slr[i],
+                birls_len,
+                function(j) slr[begin_i + step * j],
+                function(k)     begin_i + step * k,
+                function()  str(birls),
+                birls
+                // end_i is not defined. When deref this index, will return undef as expected.
+              ]
+        : // `birlsei` is LIST
+          let (
+            birls_len = len(birls)
+          )
+          [
+            _SLR_CACHE_HEADER,
+            _slr_len,
+            _slr_te,
+            function(i) slr[i],
+            birls_len,
+            function(j) slr[birls[j]],
+            function(k)     birls[k],
+            function()  str(birls),
+            birls
+            // end_i is not defined. When deref this index, will return undef as expected.
+          ]
+      : // birls is RANGE
+        assert(is_num(birls[0]), str("birls (", birls, ") must be a number, range, list or slice."))
+        let (
+          birls_len = range_len(birls),
+          begin_i = birls[0]
+        )
+        birls[1] == 1
+        ? // +1 step, convert to (begin_i, end_i)
+          [
+            _SLR_CACHE_HEADER,
+            _slr_len,
+            _slr_te,
+            function(i) slr[i],
+            birls_len,
+            function(j) slr[begin_i + j],
+            function(k)     begin_i + k,
+            function()  str("[ ", begin_i, " : ", birls[2], " ]"),
+            birls[0],
+            birls[2]
+          ]
+        : let (
+            step = birls[1]
+          )
+          [
+            _SLR_CACHE_HEADER,
+            _slr_len,
+            _slr_te,
+            function(i) slr[i],
+            birls_len,
+            function(j) slr[begin_i + step * j],
+            function(k)     begin_i + step * k,
+            function()  str(birls),
+            birls
+            // end_i is not defined. When deref this index, will return undef as expected.
+          ]
+  : // slr is RANGE
+    let (
+        slr_begin_i = slr[0],
+        slr_step = slr[1]
+    )
+    is_num(birls)
+    ? // `birlsei` is (begin_i, end_i)
+      let (
+        end_i = is_undef(end_i)
+          ? _slr_len - 1
+          : end_i,
+        birls_len = max(end_i - birls + 1, 0)
+      )
+      [
+        _SLR_CACHE_HEADER,
+        _slr_len,
+        _slr_te,
+        function(i)                       slr_begin_i + slr_step * i,
+        birls_len,
+        function(j) let ( j = birls + j ) slr_begin_i + slr_step * j,
+        function(k)           birls + k,
+        function()  str("[ ", birls, " : ", end_i, " ]"),
+        birls,
+        end_i
+      ]
+    : is_list(birls)
+      ? is_string(birls[0])
+        ? // `birlsei` is SLICE.
+          // convert `birlsei` to range and unroll range branch here
+          // Non-unrolled code:
+          // _slr_cache(slr, slice_to_range(birls, slr, _slr_len))
+          let (
+            birls = slice_to_range(birls, slr, _slr_len)
+          )
+          is_list(birls)
+          ? // Would only be a list if it is an empty list.
+            [
+              _SLR_CACHE_HEADER,
+              _slr_len,
+              _slr_te,
+              function(i) undef,
+              0,
+              function(j) undef,
+              function(k) undef,
+              function()  str("[]"),
+              1, 0 // empty birls
+            ]
+          : let (
+              birls_len = range_len(birls),
+              begin_i = birls[0]
+            )
+            birls[1] == 1
+            ? // +1 step, convert to (begin_i, end_i)
+              [
+                _SLR_CACHE_HEADER,
+                _slr_len,
+                _slr_te,
+                function(i)                         slr_begin_i + slr_step * i,
+                birls_len,
+                function(j) let ( j = begin_i + j ) slr_begin_i + slr_step * j,
+                function(k)           begin_i + k,
+                function()  str("[ ", begin_i, " : ", birls[2], " ]"),
+                birls[0],
+                birls[2]
+              ]
+            : let (
+                step = birls[1]
+              )
+              [
+                _SLR_CACHE_HEADER,
+                _slr_len,
+                _slr_te,
+                function(i)                                slr_begin_i + slr_step * i,
+                birls_len,
+                function(j) let ( j = begin_i + step * j ) slr_begin_i + slr_step * j,
+                function(k)           begin_i + step * k,
+                function()  str(birls),
+                birls
+                // end_i is not defined. When deref this index, will return undef as expected.
+              ]
+        : // `birlsei` is LIST
+          let (
+            birls_len = len(birls)
+          )
+          [
+            _SLR_CACHE_HEADER,
+            _slr_len,
+            _slr_te,
+            function(i)                      slr_begin_i + slr_step * i,
+            birls_len,
+            function(j) let ( j = birls[j] ) slr_begin_i + slr_step * j,
+            function(k)           birls[k],
+            function()  str(birls),
+            birls
+            // end_i is not defined. When deref this index, will return undef as expected.
+          ]
+      : // birls is RANGE
+        assert(is_num(birls[0]), str("birls (", birls, ") must be a number, range, list or slice."))
+        let (
+          birls_len = range_len(birls),
+          begin_i = birls[0]
+        )
+        birls[1] == 1
+        ? // +1 step, convert to (begin_i, end_i)
+          [
+            _SLR_CACHE_HEADER,
+            _slr_len,
+            _slr_te,
+            function(i)                         slr_begin_i + slr_step * i,
+            birls_len,
+            function(j) let ( j = begin_i + j ) slr_begin_i + slr_step * j,
+            function(k)           begin_i + k,
+            function()  str("[ ", begin_i, " : ", birls[2], " ]"),
+            birls[0],
+            birls[2]
+          ]
+        : let (
+            step = birls[1]
+          )
+          [
+            _SLR_CACHE_HEADER,
+            _slr_len,
+            _slr_te,
+            function(i)                      slr_begin_i + slr_step * i,
+            birls_len,
+            function(j) let ( j = begin_i + step * j ) slr_begin_i + slr_step * j,
+            function(k)           begin_i + step * k,
+            function()  str(birls),
+            birls
+            // end_i is not defined. When deref this index, will return undef as expected.
+          ]
+;
+
+/**
+ * ### Algorithm Adaptors
+ * 
+ * The `PPMRRAIR` functions usually are passed an integer as it's first
+ * parameter, referring to the current index.  For convenience, there are
+ * adaptor functions which allow referencing a `slr`'s element values.
+ *   - [`it_each`](#it_each): passes `slr_element`.
+ *   - [`it_enum`](#it_enum): passes `[index, slr_element]`.
+ *   - [`it_idxs`](#it_idxs): passes `index`.
+ *
+ * Using these adaptors allows the use the length of the `slr` as reference if
+ * the `birlsei` is partially or fully omitted.
+ */
+
+/**
+ * @callback GetPpmrrairFn
+ *
+ * Gets the PPMRRAIR function to apply the [AlgoFn](#algofn) to.
+ *
+ * @param {PpmrrairFn} ppmrrair_fn
+ *   The PPMRRAIR function to iterate with.
+ *
+ * @returns {any}
+ *   The result of the adaptor call.
+ */
+
+/**
+ * @callchain it_each(slr, algo_fn, birls, end_i) (ppmrrair_fn) : any
+ *
+ * This convenience function will execute function `algo_fn` as if it were used
+ * on a collection, remapping the first parameter being passed to `ppmrrair_fn`
+ * so that it receives the *element* rather than the *index*.  Uses the `slr` as
+ * a reference so that `birlsei` can be partially or fully omitted.  The
+ * `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
+ *
+ * **Example:**
+ *
+ * Normal usage:
+ * ```
+ * a = [1,2,3,4,5]
+ * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
+ * vs `it_each()` usage:
+ * ```
+ * a = [1,2,3,4,5]
+ * even_indices = it_each(a, filter())(function(e) e % 2);
+ * even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
+ * ```
+ *
+ * @param {(string|list|range)} slr
+ *   This is the list to take element data from.
+ * @param {AlgoFn} algo_fn
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(slr, -1)]
+ *
+ * @returns {GetPpmrrairFn}
+ *   The ppmrrair function that the specified `algo_fn()` will call.
+ */
+function it_each(slr, algo_fn, birls=0, end_i=undef) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_precache(slr, birls, end_i) )
+  let ( _slr = _slr_cache(slr, birls, end_i) )
+  _it_each(slr, algo_fn, _slr[_SLR_BIRL], _slr[_SLR_END_I], _slr[_SLR_ELD])
+;
+
+function _it_each(slr, algo_fn, birl, end_i, _eld) =
+  let ( _ = verify_slr(slr) )
+  function(ppmrrair_fn)
+    param_count(ppmrrair_fn) == 1
+    ? algo_fn(birl, end_i)(
+        function(i) ppmrrair_fn(_eld(i))
+      )
+    : algo_fn(birl, end_i)(
+        function(i, o) ppmrrair_fn(_eld(i), o)
+      )
+;
+
+/**
+ * @callchain it_idxs(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
+ *
+ * This convenience function will execute function `algo_fn` as if it were used
+ * on a collection, `ppmrrair_fn` will still receive the *index*.  Uses the
+ * `slr` as a reference so that `birlsei` can be partially or fully omitted.
+ * The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
+ *
+ * **Example:**
+ *
+ * Normal usage:
+ * ```
+ * a = [1,2,3,4,5]
+ * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
+ * vs `it_idxs()` usage:
+ * ```
+ * a = [1,2,3,4,5]
+ * even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
+ * even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
+ *
+ * @param {(string|list|range)} slr
+ *   This is the list to take element data from.
+ * @param {AlgoFn} algo_fn
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(slr, -1)]
+ *
+ * @returns {GetPpmrrairFn}
+ *   The ppmrrair function that the specified `algo_fn()` will call.
+ */
+function it_idxs(slr, algo_fn, birls=0, end_i=undef) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_precache(slr, birls, end_i) )
+  let ( _slr = _slr_cache(slr, birls, end_i) )
+  algo_fn(_slr[_SLR_BIRL], _slr[_SLR_END_I])
+;
+
+/**
+ * @callchain it_enum(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
+ *
+ * This convenience function will execute function `algo_fn` as if it were used
+ * on a collection, remapping the first parameter being passed to `ppmrrair_fn`
+ * so that it receives *[index, element]* rather than the *index*.  Uses the
+ * `slr` as a reference so that `birlsei` can be partially or fully omitted.
+ * The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
+ *
+ * **Example:**
+ *
+ * Normal usage:
+ * ```
+ * a = [1,2,3,4,5]
+ * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
+ * vs `it_enum()` usage:
+ * ```
+ * a = [1,2,3,4,5]
+ * even_indices = it_enum(a, filter())(function(p) p[0] % 2);
+ * even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
+ * ```
+ *
+ * @param {(string|list|range)} slr
+ *   This is the list to take element data from.
+ * @param {AlgoFn} algo_fn
+ *   This is the operation function that is called. E.g. find(), filter(), etc.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(slr, -1)]
+ *
+ * @returns {GetPpmrrairFn}
+ *   The ppmrrair function that the specified `algo_fn()` will call.
+ */
+function it_enum(slr, algo_fn, birls=0, end_i=undef) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_precache(slr, birls, end_i) )
+  let ( _slr = _slr_cache(slr, birls, end_i) )
+  _it_enum(slr, algo_fn, _slr[_SLR_BIRL], _slr[_SLR_END_I], _slr[_SLR_ELD])
+;
+
+function _it_enum(slr, algo_fn, birl, end_i, _eld) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vbis(slr, birl, end_i) )
+  function(ppmrrair_fn)
+    param_count(ppmrrair_fn) == 1
+    ? algo_fn(birl, end_i)(
+        function(i) ppmrrair_fn([i, _eld(i)])
+      )
+    : algo_fn(birl, end_i)(
+        function(i, o) ppmrrair_fn([i, _eld(i)], o)
+      )
+;
+
+/** ### Treat All Indexables the Same */
+
+/**
+ * Will return the number of elements the string, list or range contains.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` to count how many elements it would iterate over.
+ *
+ * @returns {number}
+ *   The number of elements the `slr` contains.
+ */
+function slr_len(slr) =
+  is_list(slr) || is_string(slr)
+  ? len(slr)
+  : is_num(slr[0]) // range
+    ? assert(slr[1] != 0, "range step cannot be 0")
+      range_len(slr)
+    : assert(false, str("Not a valid slr (", slr, ")."))
+;
+
+/**
+ * If `i` is positive then returns `i`, otherwise add the slr's length to it so
+ * as to count backwards from the end of the slr.
+ *
+ * > NOTE:
+ * >
+ * > If not `-slr_len(slr) ≤ i < slr_len(slr)`, then using the returned value to
+ * > dereference the `slr` is **UB**.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` to get the index for.
+ * @param {number} i
+ *   The index of the element.  If value is negative, then goes backward from
+ *   end of slr, where -1 represents the last indexable index.
+ * @param {number} [_slr_len]
+ *   If passed, then use that cached value instead of calculating `len(slr)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {number}
+ *   The positive index.
+ */
+function idx(slr, i, _slr_len) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vi(slr, i, _slr_len) )
+  i >= 0
+  ? i
+  : i + (is_undef(_slr_len) ? slr_len(slr) : _slr_len)
+;
+
+/**
+ * Dereference `slr` at index `i`, allowing for negative indices to go backward
+ * from end.
+ *
+ * > NOTE:
+ * >
+ * > It is **UB** to dereference at an index that is not in the `slr`.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` to get the element from.
+ * @param {number} i
+ *   The index of the element.  If value is negative, then goes backward from
+ *   end of the `slr`.
+ *
+ * @returns {any}
+ *   The element at the index specified.
+ */
+function el(slr, i) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vi(slr, i) )
+  is_list(slr) || is_string(slr)
+  ? slr[i < 0 ? i + len(slr) : i]               // unrolled version of slr[idx(slr, i)]
+  : let ( b = slr[0], s = slr[1], e = slr[2] )  // unrolled version of range_el(slr, i)
+    b + s * (i < 0 ? i + (floor((e - b) / s) + 1) : i)
+;
+
+/**
+ * Dereference `slr` at index `i`, allowing only positive indices.
+ *
+ * > NOTE:
+ * >
+ * > It is **UB** to dereference at an index that is not in the `slr`.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` to get the element from.
+ * @param {number} i
+ *   The number iterations to have been done to get the return value.
+ *   Must be positive `(i >= 0)`.
+ *
+ * @returns {any}
+ *   The element at the index specified.
+ */
+function el_pos_idx(slr, i) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vpi(slr, i) )
+  is_list(slr) || is_string(slr)
+    ? slr[i]
+    : range_el_pos_idx(slr, i)
+;
+
+/**
+ * Gets a substring, sub-range or sub-elements of a string, list or range.
+ *
+ * > NOTE:
+ * >
+ * > To expand a range to a list, use `[ each range_to_expand ]`.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` to get the elements from.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(slr, -1)]
+ *
+ * @returns {(string|list|range)}
+ *   The elements at the indices specified or the substring.
+ */
+function els(slr, birls = 0, end_i = undef) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vbsis(slr, birls, end_i) )
+  let ( _slr = _slr_cache(slr, birls, end_i) )
+  _els(slr, _slr[_SLR_BIRL], _slr[_SLR_END_I])
+;
+
+function _els(slr, birl, end_i) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vbis(slr, birl, end_i) )
+  is_list(slr)
+  ? // LIST
+    map(birl, end_i)(
+      function(i)
+        slr[i]
+    )
+  : is_string(slr)
+    ? // STRING
+      reduce("", birl, end_i)(
+        function(i, acc)
+          str(acc, slr[i])
+      )
+    : // RANGE
+      _range_els(slr, birl, end_i)
+;
+
+echo("els: ", els([0,1,2,3,4,5], 1));
+echo("els: ", els([0,1,2,3,4,5], 1, 3));
+echo("els: ", els([0,1,2,3,4,5], range(3, -1, 1)));
+echo("els: ", els("hello", 2, 3));
+let (h = "hello") echo("els: ", els(h, rev_i(h)));
+echo("els: ", els(range(1, 2, 6), 1, 2));
+echo("els: ", els(range(1, 2, 6), range(2, -1, 1)));
+
+/**
+ * Optimised version of `els` for ranges.  Gets elements from a range as a range
+ * or list.
+ * - If the `birlsei` is a list, then the subset of the range `r` will be a
+ *   list.
+ * - Else a new range is computed
+ *
+ * Example:
+ *
+ *     range_els([1 : 10], [2 : 2 : 5])
+ *     //  1  2  3  4  5  6  7  8  9 10  // element of     [ 1 : 1 : 10 ]
+ *     //     2     3                    // indices        [ 2 : 2 :  5 ]
+ *     //     2     3                    // final elements [ 2 : 2 :  4 ]
+ *
+ *     range_els([1 : 2 : 15], [2 : 3 : 5])
+ *     //  1  3  5  7  9  11 13 15       // elements of    [ 1 : 2 : 15 ]
+ *     //        2         5             // indices        [ 2 : 3 :  5 ]
+ *     //        5        11             // final elements [ 5 : 6 : 11 ]
+ *
+ *     range_els([2 : 10], [1, 3, 6])
+ *     //  2  3  4  5  6  7  8  9 10     // elements of    [ 2 : 1 : 10 ]
+ *     //     1     4        6           // indices        [ 1, 3, 6 ]
+ *     //     3     5        8           // final elements [ 3, 5, 8 ]
+ *
+ * @param {range} r
+ *   The r to get the elements from.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(r, -1)]
+ *
+ * @returns {(range|list)}
+ *   The elements at the indices specified or the substring.
+ */
+function range_els(r, birls=0, end_i=undef) =
+  let ( _ = verify_r(r) )
+  let ( _ = verify_vbsis(r, birls, end_i) )
+  let ( _r = _slr_cache(r, birls, end_i) )
+  _range_els(r, _r[_SLR_BIRL], _r[_SLR_END_I], _r[_SLR_ELD], _r[_SLR_BLEN])
+;
+
+function _range_els(r, birl, end_i, _eld, _blen) =
+  let ( _ = verify_r(r) )
+  let ( _ = verify_vbis(r, birl, end_i) )
+  _blen
+  ? is_list(birl)
+    ? // LIST
+      map(birl, end_i)(
+        _eld
+      )
+    : is_num(birl)
+      ? // NUM, NUM
+        [  r[0] + birl * r[1] : r[1] : r[0] + end_i * r[1] ]
+      : // RANGE
+        [ r[0] + birl[0] * r[1] : r[1] * birl[1] : r[0] + birl[2] * r[1] ]
+  : [] // birlei is empty so nothing captured from r
+;
+
+/** ### Getting/Traversing Indices */
+
+/**
+ * Gets the indices from a `birlsei` as a list.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` to get the indices from.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(slr, -1)]
+ *
+ * @returns {list[number,...]}
+ *   The indices the `birlsei` would iterate over.
+ */
+function idxs(slr, birls=0, end_i=undef) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_precache(slr, birls, end_i) )
+  let ( _slr = _slr_cache(slr, birls, end_i) )
+  _idxs(slr, _slr[_SLR_BIRL], _slr[_SLR_END_I])
+;
+
+function _idxs(slr, birl, end_i) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vbis(slr, birl, end_i) )    
+  map(birl, end_i)(
+    function(i) i
+  )
+;
+
+/**
+ * Return a range representing indices to iterate over a list forwards.
+ *
+ * > NOTE:
+ * >
+ * > Dev is responsible for ensuring that when using start_offset / end_offset,
+ * > that they don't go out of bounds, or if they do, the underlying PPMRRAIR
+ * > function will handle it gracefully.
+ *
+ * @param {(string|list|range)} slr
+ *   slr to iterate over
+ * @param {number} [start_offset=0]
+ *   Offset to start the starting point from.
+ *   - Should prolly be positive to not give an undefined index.
+ * @param {number} [end_offset=0]
+ *   Offset to end the ending point to.
+ *   - Should prolly be negative to not give an undefined index.
+ * @param {number} [_slr_len]
+ *   If passed, then use that cached value instead of calculating `len(slr)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {range}
+ *   An ascending range that goes from `start_offset` to idx(slr, -1) +
+ *   end_offset.
+ */
+function fwd_i(slr, start_offset = 0, end_offset = 0, _slr_len) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vlen(slr, _slr_len) )
+  let (
+    _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len,
+    end_i = _slr_len ? idx(slr, -1) + end_offset : -1
+  )
+  start_offset <= end_i
+  ? [ start_offset : end_i ]
+  : []
+;
+
+/**
+ * Return a range representing indices to iterate over slr backwards.
+ *
+ * > NOTE:
+ * >
+ * > Dev is responsible for ensuring that when using start_offset / end_offset,
+ * > that they don't go out of bounds, or if they do, the underlying PPMRRAIR
+ * > function will handle it gracefully.
+ *
+ * @param {(string|list|range)} slr
+ *   slr to iterate over
+ * @param {number} [start_offset=0]
+ *   Offset to start the starting point from.
+ *   - Should prolly be negative to not give an undefined index.
+ * @param {number} [end_offset=0]
+ *   Offset to end the ending point to.
+ *   - Should prolly be positive to not give an undefined index.
+ * @param {number} [_slr_len]
+ *   If passed, then use that cached value instead of calculating `len(slr)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {range}
+ *   A descending range that goes from idx(slr, -1) + start_offset to
+ *   end_offset.
+ */
+function rev_i(slr, start_offset = 0, end_offset = 0, _slr_len) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vlen(slr, _slr_len) )
+  let (
+    _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len, 
+    begin_i = _slr_len ? idx(slr, -1) + start_offset : -1
+  )
+  end_offset <= begin_i
+  ? [ begin_i : -1 : end_offset ]
+  : []
+;
+
+let(
+  a=[1,2,3,4,5]
+)
+test_eq(
+  3,
+  find(rev_i(a))(function(i) a[i]%2==0)
+);
+
+/**
+ * Gets the next index, wrapping if goes to or beyond slr_len(slr).
+ *
+ * @param {(string|list|range)} slr
+ *   slr used for knowing when to wrap.
+ * @param {number} i
+ *   Index to start from.  Assumed: `0 <= i < slr_len(slr)`.
+ * @param {number} [inc=1]
+ *   Count to increase i by.
+ * @param {bool} [wrap_to_0=false]
+ *   If true, then when i+inc >= slr_len(slr), result is 0.  Otherwise, it wraps
+ *   to modulo slr_len(slr).
+ * @param {number} [_slr_len]
+ *   If passed, then use that cached value instead of calculating `len(slr)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {number}
+ *   Next element index in list.
+ */
+function next_in(slr, i, inc=1, wrap_to_0 = false, _slr_len) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_i(i) )
+  let ( _ = verify_vpi(slr, i, _slr_len) )
+  let ( _ = verify_i(inc) )
+  let ( _ = verify_vpi(inc) )
+  let (
+    i = i + inc,
+    _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len
+  )
+  i >= _slr_len
+  ? wrap_to_0
+    ? 0
+    : i % _slr_len
+  : i
+;
+
+/**
+ * Gets the prev index, wrapping if goes negative.
+ *
+ * @param {(string|list|range)} slr
+ *   slr used for knowing when to wrap.
+ * @param {number} i
+ *   Index to start from.  Assumed: `0 <= i < slr_len(slr)`.
+ * @param {number} [dec=1]
+ *   Count to decrease i by.
+ * @param {bool} [wrap_to_last=false]
+ *   If true, then when i-dec < 0, result is idx(slr, -1).  Otherwise, it wraps
+ *   to modulo slr_len(slr).
+ * @param {number} [_slr_len]
+ *   If passed, then use that cached value instead of calculating `len(slr)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {number}
+ *   Previous element index in list.
+ */
+function prev_in(slr, i, dec=1, wrap_to_last = false, _slr_len) =
+  let ( _ = verify_slr(slr) )
+  let ( _ = verify_vpi(slr, i, _slr_len) )
+  let ( _ = verify_i(dec) )
+  let ( _ = verify_vpi(dec) )
+  let ( i = i - dec )
+  i < 0
+  ? let (
+      _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len
+    )
+    wrap_to_last
+    ? _slr_len - 1
+    : let ( i = i % _slr_len )
+      i < 0 ? i + _slr_len : i
+  : i
+;
+
+/** ### Functions to Manipulate Strings and Lists */
+
+/**
+ * Push elements onto the head (which is after the last element) of the `sl`.
+ *
+ * @param {(string|list)} sl
+ *   sl to add to.
+ * @param {(string|list|range)} es
+ *   - if string, then
+ *     - a string of characters to append to string or
+ *     - list of characters to append to list.
+ *   - if list, then a list of elements to append to list.
+ *   - if range, then a range of elements to append to list.
+ *
+ * @returns {(string|list)}
+ *   The updated string or list.
+ */
+function push(sl, es) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_slr(es) )
+  is_string(sl)
+  ? assert(is_string(es), "A list cannot be pushed onto a string")
+    str(sl, es)
+  : [
+      each sl,
+      each es
+    ]
+;
+
+/**
+ * Pops 0 or more elements off the head (which are the last elements) of the
+ * `sl`.
+ *
+ * > NOTE:
+ * >
+ * > It is **UB** to pop off more elements than are available.
+ *
+ * @param {(string|list)} sl
+ *   sl to remove from.
+ * @param {number} [count=1]
+ *   Number of elements to pop off end of list.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {(string|list)}
+ *   The updated sl.
+ */
+function pop(sl, count=1, _sl_len) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_i(count) )
+  let ( _ = verify_vpie(sl, count, _sl_len) )
+  let ( _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len )
+  _els(sl, 0, _sl_len - count - 1)
+;
+
+/**
+ * Unshift elements onto the tail (which are before the beginning) of the `sl`.
+ *
+ * @param {(string|list)} sl
+ *   List to add to.
+ * @param {(string|list|range)} es
+ *   - if string, then
+ *     - a string of characters to prepend to string or
+ *     - list of characters to prepend to list.
+ *   - if list, then a list of elements to prepend to list.
+ *   - if range, then a range of elements to prepend to list.
+ *
+ * @returns {(string|list)}
+ *   The updated sl.
+ */
+function unshift(sl, es) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_slr(es) )
+  is_string(sl)
+  ? assert(is_string(es), "A list cannot be unshifted onto a string")
+    str(es, sl)
+  : [
+      each es,
+      each sl
+    ]
+;
+
+/**
+ * Shift elements off of the tail (which are at the beginning) of the `sl`.
+ *
+ * > NOTE:
+ * >
+ * > It is **UB** to shift off more elements than are available.
+ *
+ * @param {(string|list)} sl
+ *   sl to remove from.
+ * @param {number} [count=1]
+ *   Number of elements to shift off beginning of list.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {(string|list)}
+ *   The updated sl.
+ */
+function shift(sl, count=1, _sl_len) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_i(count) )
+  let ( _ = verify_vpie(sl, count, _sl_len) )
+  let ( _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len )
+  _els(sl, count, _sl_len - 1)
+;
+
+/**
+ * @callchain insert(sl, i, es, es_birls, es_end_i) : (string | list)
+ *
+ * Insert specified elements in `es` into `sl` starting at index `i`.
+ *
+ * @param {(string|list)} sl
+ *   String or list to insert into.
+ * @param {number} i
+ *   Index to insert into.
+ *   - `0` to insert at beginning of list (like unshift)
+ *   - `len(sl)` to insert at end of list (like push)
+ *   - Negative values will insert starting from the end.
+ *     - `-1` will insert between the second last element and the last element.
+ *     - `-len(sl)` will insert at the beginning of list (like unshift)
+ *     - **UB** if `i < -len(sl) or len(sl) < i`.
+ * @param {(string|list|range)} es
+ *   Elements to insert.
+ * @param {Birls} [es_birls=0]
+ * @param {EndI} [es_end_i=idx(es, -1)]
+ *
+ * @returns {(string|list)}
+ *   The updated sl.
+ */
+function insert(sl, i, es, es_birls=0, es_end_i=undef) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_vie(sl, i) )
+  let ( _ = verify_vbsis(es, es_birls, es_end_i) )
+  let ( _es = _slr_cache(es, es_birls, es_end_i) )
+  _insert(sl, i < 0 ? i + len(sl) : i, es, _es[_SLR_BIRL], _es[_SLR_END_I], _es[_SLR_ELD])
+;
+
+function _insert(sl, i, es, es_birl, es_end_i, _es_eld) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_vie(sl, i) )
+  let ( _ = verify_fn(_es_eld) )
+  let ( _ = verify_vbis(es, es_birl, es_end_i) )
+  let (
+    i = i < 0 ? i + len(sl) : i
+  )
+  is_string(sl)
+  ? // STRING
+    assert(is_string(es), "If sl is a string, so must es.")
+    str(
+      _els(sl,       0,       i-1),
+      _els(es, es_birl,  es_end_i),
+      _els(sl,       i, len(sl)-1)
+    )
+  : // LIST
+    [
+      each _els(sl,       0,       i-1),
+      each _els(es, es_birl,  es_end_i),
+      each _els(sl,       i, len(sl)-1)
+    ]
+;
+
+/**
+ * Removes a contiguous set of elements from a sl.
+ *
+ * > NOTE:
+ * >
+ * > `begin_i` and `end_i` accept negative values (`-1` is last element). Both
+ * > are first converted to their non-negative equivalents by adding `len(sl)`.
+ * > If the converted `end_i < begin_i`, nothing is removed. Otherwise the
+ * > inclusive range `[begin_i..end_i]` is removed.
+ * >
+ * > Unless `end_i < begin_i`, it is **UB** if `begin_i` or `end_i` don't
+ * > resolve to an index in the sl.
+ *
+ * @param {(string|list)} sl
+ *   List to remove elements from.
+ * @param {number} begin_i
+ *   The first index to remove. Can be negative to represent counting from end.
+ * @param {number} end_i
+ *   The last index to remove. Can be negative to represent counting from end.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {(string|list)}
+ *   The updated sl.
+ */
+function remove(sl, begin_i, end_i, _sl_len) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_iu(_sl_len) )
+  let ( _ = verify_biei(begin_i, end_i) )
+  let (
+    _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len,
+    begin_i = begin_i < 0 ? begin_i + _sl_len : begin_i,
+    end_i   = end_i   < 0 ? end_i   + _sl_len : end_i
+  )
+  let ( _ = verify_vbis(sl, begin_i, end_i, _sl_len) )
+  end_i < begin_i
+  ? sl
+  : is_string(sl)
+    ?
+      str(
+        _els(sl, 0, begin_i-1),
+        _els(sl, end_i+1, _sl_len-1)
+      )
+    : [
+        each _els(sl, 0, begin_i-1),
+        each _els(sl, end_i+1, _sl_len-1)
+      ]
+;
+
+/**
+ * @callback EqualFn
+ *
+ * Represents the equation `lhs == rhs`, but allows user to define what `==`
+ * means.  For a less strict equality check, try [`function_equal`](#function_equal).
+ *
+ * @param {any} lhs
+ *   The left hand side of the equality.
+ * @param {any} rhs
+ *   The right hand side of the equality.
+ *
+ * @returns {bool}
+ *   The result of the equality test.
+ */
+
+/**
+ * @callback GetEqualFn
+ *
+ * Gets the equality function and perform a function with it.
+ *
+ * @param {EqualFn} [equal_fn=function(a, b) a == b]
+ *   The equality function.
+ *
+ * @returns {any}
+ *   The resulting value when done.
+ */
+
+/**
+ * @typedef {GetEqualFn} RemoveAdjacentDupsFn
+ *
+ * Callback that removes the adjacent duplicates.
+ *
+ * @returns {(string|list)}
+ *   The resulting string/list with adjacent duplicates removed.
+ */
+
+/**
+ * @callchain remove_adjacent_dups(sl, wrap, _sl_len) (equal_fn) : (string | list)
+ *
+ * Removes the same consecutive values, where same is defined by `equal_fn`.
+ *
+ * @param {(string|list)} sl
+ *   List to remove duplicate consecutive elements from.
+ * @param {bool} [wrap=false]
+ *   If true, then will consider the first and last element consecutive.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {RemoveAdjacentDupsFn}
+ *   Callback that removes the adjacent duplicates.
+ */
+function remove_adjacent_dups(sl, wrap = false, _sl_len) =
+  let ( _ = verify_vlen(sl, _sl_len) )
+  function(equal_fn=function(a, b) a == b)
+    let ( _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len )
+    _sl_len
+    ? is_string(sl)
+      ? // STRING
+        let (
+          _new_sl = reduce(sl[0], 1, _sl_len-1)(
+            function(i, acc)
+              equal_fn(acc[len(acc)-1], sl[i])
+              ? acc
+              : str( acc, sl[i] )
+          ),
+          _new_sl_len = len(_new_sl)
+        )
+        wrap && _new_sl_len > 1
+        ? equal_fn(_new_sl[_new_sl_len-1], _new_sl[0])
+          ? _els(_new_sl, 0, _new_sl_len-2)
+          : _new_sl
+        : _new_sl
+      : // LIST
+        let (
+          _new_sl = reduce([sl[0]], 1, _sl_len-1)(
+            function(i, acc)
+              equal_fn(acc[len(acc)-1], sl[i])
+              ? acc
+              : [ each acc, sl[i] ]
+          ),
+          _new_sl_len = len(_new_sl)
+        )
+        wrap && _new_sl_len > 1
+        ? equal_fn(_new_sl[_new_sl_len-1], _new_sl[0])
+          ? _els(_new_sl, 0, _new_sl_len-2)
+          : _new_sl
+        : _new_sl
+    : sl
+;
+
+/**
+ * Removes each element indexed in the `birlsei`.
+ *
+ * > NOTE:
+ * >
+ * > **UB** if resulting `birlei` is not strictly increasing.
+ *
+ * @param {(string|list)} sl
+ *   List to remove elements from.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(sl, -1)]
+ *
+ * @returns {(string|list)}
+ *   The updated sl.
+ */
+function remove_each(sl, birls = 0, end_i = undef) =
+  let ( _ = verify_sl(sl) )
+  let ( _sl = _slr_cache(sl, birls, end_i) )
+  _remove_each(sl, _sl[_SLR_BIRL], _sl[_SLR_END_I], _sl[_SLR_IDX], _sl[_SLR_LEN], _sl[_SLR_BLEN])
+;
+
+function _remove_each(sl, birl, end_i, _idx, _len, _blen) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_vbinc(birl, end_i) )
+  let ( _ = verify_vbis(sl, birl, end_i) )
+  let ( _ = verify_fn(_idx) )
+  let ( _ = verify_i(_len) )
+  let ( _ = verify_i(_blen) )
+  is_num(birl)
+  ? // (NUM, NYM) Take out section in one shot
+    remove(sl, birl, end_i, _len)
+  : // LIST or RANGE
+    _blen
+    ? let (
+        _min = _idx(0),
+        _max = _idx(_blen-1)
+      )
+      _max - _min + 1 == _blen
+      ? // Take out section in one shot
+        remove(sl, _min, _max, _len)
+      : 
+        is_list(sl)
+        ? [
+            each _els(sl, 0, _idx(0)-1),
+            for (i = [1 : _blen-1])
+              each _els(sl, _idx(i-1)+1, _idx(i)-1),
+            each _els(sl, _idx(_blen-1)+1, _len-1)
+          ]
+        : // sl must be string.
+          // NOTE: Should work for list too if use push rather than str to
+          //       concatenate but list comprehension is prolly faster.
+          str(
+            reduce(_els(sl, 0, _idx(0)-1), 1, _blen-1)(
+              function(i, acc)
+                str(acc, _els(sl, _idx(i-1)+1, _idx(i)-1))
+            ),
+            _els(sl, _idx(_blen-1)+1, _len-1)
+          )
+    : sl // birlei is empty.  Nothing to do.
+;
+
+/**
+ * Replaces contiguous index set [`a_begin_i`, `a_end_i`] from list `a` with
+ * `birlsei` index set of list `b`.
+ *
+ * @param {(string|list)} a
+ *   List to have elements replaced.
+ * @param {number} a_begin_i
+ *   The starting index of a to replace.
+ * @param {number} a_end_i
+ *   The ending index of a to replace.
+ * @param {(string|list|range)} b
+ *   List to draw elements from to replace the a element range with.
+ * @param {Birls} [b_birls=0]
+ * @param {EndI} [b_end_i=idx(b, -1)]
+ *
+ * @returns {(string|list)}
+ *   This is the updated list of elements.
+ */
+function replace(a, a_begin_i, a_end_i, b, b_birls=0, b_end_i=undef) =
+  let ( _ = verify_sl(a) )
+  let ( _ = verify_slr(b) )
+  let ( _ = verify_biei(a_begin_i, a_end_i) )
+  let ( _ = verify_precache(b, b_birls, b_end_i) )
+  let ( _b = _slr_cache(b, b_birls, b_end_i) )
+  let ( a_len = len(a) )
+  a_begin_i < 0
+  ? a_end_i < 0
+    ? _replace(a, a_begin_i + a_len, a_end_i + a_len, b, _b[_SLR_BIRL], _b[_SLR_END_I], a_len, _b[_SLR_BLEN])
+    : _replace(a, a_begin_i + a_len, a_end_i,         b, _b[_SLR_BIRL], _b[_SLR_END_I], a_len, _b[_SLR_BLEN])
+  : a_end_i < 0
+    ? _replace(a, a_begin_i,         a_end_i + a_len, b, _b[_SLR_BIRL], _b[_SLR_END_I], a_len, _b[_SLR_BLEN])
+    : _replace(a, a_begin_i,         a_end_i,         b, _b[_SLR_BIRL], _b[_SLR_END_I], a_len, _b[_SLR_BLEN])
+;
+
+function _replace(a, a_begin_i, a_end_i, b, b_birl, b_end_i, _a_len, _b_blen) =
+  let ( _ = verify_sl(a) )
+  let ( _ = verify_slr(b) )
+  let ( _ = verify_biei(a_begin_i, a_end_i) )
+  let ( _ = verify_vbis(a, a_begin_i, a_end_i) )
+  let ( _ = verify_vbsis(b, b_birl, b_end_i) )
+  let ( _ = verify_vlen(a, _a_len) )
+  let ( _ = verify_vblen(b_birl, b_end_i, _b_blen) )
+  let ( a_end_i = a_end_i < a_begin_i ? a_begin_i - 1 : a_end_i )
+  _b_blen
+  ? is_string(a)
+    ? assert(is_string(b), "A list segment cannot replace a string segment.")
+      str(
+        _els(a, 0, a_begin_i-1),
+        _els(b, b_birl, b_end_i),
+        _els(a, a_end_i+1, _a_len-1)
+      )
+    : [
+        each _els(a, 0, a_begin_i-1),
+        each _els(b, b_birl, b_end_i),
+        each _els(a, a_end_i+1, _a_len-1)
+      ]
+  : a // b_birlei is empty, nothing to do.
+;
+
+/**
+ * @callback ReplaceEachFn
+ *
+ * @param {(string|list|range)} b
+ *   sl to have elements replaced.
+ * @param {Birls} [b_birls=0]
+ * @param {EndI} [b_end_i=idx(b, -1)]
+ *
+ * @returns {(string|list)}
+ *   This is the updated list of elements.
+ */
+
+/**
+ * @callchain replace_each(a, a_birl a_end_i) (b, b_birl b_end_i) : (string | list)
+ *
+ * Replaces each element specified by `a_birls, a_end_i` with each element
+ * specified by `b_birls, b_end_i`.
+ *
+ * > NOTE:
+ * >
+ * > `a_birlsei` must be strictly increasing.
+ *
+ * > NOTE:
+ * >
+ * > Both `birlsei`s MUST iterate over the same number of elements.
+ *
+ * @param {(string|list)} a
+ *   sl to have elements replaced.
+ * @param {Birls} [a_birls=0]
+ * @param {EndI} [a_end_i=idx(a, -1)]
+ *
+ * @returns {ReplaceEachFn}
+ *   Get the replacement set and execute replacement.
+ */
+function replace_each(a, a_birls=0, a_end_i=undef) =
+  let ( _ = verify_sl(a) )
+  let ( _ = verify_precache(a, a_birls, a_end_i) )
+  let ( _a = _slr_cache(a, a_birls, a_end_i) )
+  _replace_each(a, _a[_SLR_BIRL], _a[_SLR_END_I], _a[_SLR_LEN], _a[_SLR_IDX], _a[_SLR_BLEN], _a[_SLR_STR])
+;
+
+function _replace_each(a, a_birl, a_end_i, _a_len, _a_idx, _a_blen, _a_str) =
+  let ( _ = verify_vbis(a, a_birl, a_end_i, _a_len) )
+  let ( _ = verify_vbinc(a_birl, a_end_i) )
+  let ( _ = verify_fn(_a_idx) )
+  let ( _ = verify_fn(_a_str) )
+  let ( _ = verify_vblen(a_birl, a_end_i, _a_blen) )
+  _a_blen
+  ? // Nonempty birlei
+    let (
+      _a_begin_i = _a_idx(0),
+      _a_end_i   = _a_idx(_a_blen - 1)
+    )
+    _a_blen == _a_end_i - _a_begin_i + 1
+    ? // Replace contiguous region
+      let (
+        with_values =
+          function(b, b_birl, b_end_i, _b_blen, _b_str)
+            let ( _ = verify_vbis(b, b_birl, b_end_i) )
+            assert(_a_blen == _b_blen,
+              str("a_birlei (", _a_str(), ") and b_birlei (",
+                    _b_str(), ") are not the same length. (", _a_blen, " ≠ ",
+                    _b_blen, ")."))
+            
+            _replace(a, _a_begin_i, _a_end_i, b, b_birl, b_end_i, _a_len, _b_blen)
+      )
+      function(b, b_birls, b_end_i)
+        let ( _ = verify_slr(b) )
+        let ( _ = verify_vbsis(b, b_birls, b_end_i) )
+        let ( _b = _slr_cache(b, b_birls, b_end_i) )
+        with_values(b, _b[_SLR_BIRL], _b[_SLR_END_I], _b[_SLR_BLEN], _b[_SLR_STR])
+    : // Replace non-contiguous region
+      let (
+        with_values =
+          function(b, b_birl, b_end_i, _b_idx, _b_eli, _b_blen, _b_str)
+            let ( _ = verify_vbis(b, b_birl, b_end_i) )
+            let (
+              _ = Assert(
+                _a_blen == _b_blen,
+                function()
+                  str("a_birlei (", _a_str(), ") and b_birlei (", _b_str(), ") are not the same length. (", _a_blen,
+                    " ≠ ", _b_blen, ")."))
+            )
+            // [
+            //   [0    : a0-1], [b0],
+            //   [a0+1 : a1-1], [b1],
+            //   [a1+1 : a2-1], [b2],
+            //   ...
+            //   [aN+1 : -1],
+            // ]
+            is_list(a)
+            ? [
+                each _els(a, 0, _a_idx(0)-1),
+                _b_eli(0),
+                for (i = range(1, _a_blen-1))
+                  each concat(
+                    _els(a, _a_idx(i-1)+1, _a_idx(i)-1),
+                    [ _b_eli(i) ]
+                  ),
+                each _els(a, _a_idx(_a_blen-1)+1, _a_len-1)
+              ]
+            : // a must be string.
+              str(
+                reduce(str(_els(a, 0, _a_idx(0)-1), _b_eli(0)), 1, _a_blen-1)(
+                  function(i, acc)
+                    str(acc,
+                      _els(a, _a_idx(i-1)+1, _a_idx(i)-1),
+                      _b_eli(i)
+                    )
+                ),
+                _els(a, _a_idx(_a_blen-1)+1, _a_len-1)
+              )
+      )
+      function(b, b_birls, b_end_i)
+        let ( _ = verify_slr(b) )
+        let ( _ = verify_vbsis(b, b_birls, b_end_i) )
+        let ( _b = _slr_cache(b, b_birls, b_end_i) )
+        with_values(b, _b[_SLR_BIRL], _b[_SLR_END_I], _b[_SLR_IDX], _b[_SLR_ELI], _b[_SLR_BLEN], _b[_SLR_STR])
+  : // Empty birlei.  Do nothing, but still have to return a function and verify invariants.
+    let (
+      with_values =
+        function(b, b_birl, b_end_i, _b_blen, _b_str)
+          let ( _ = verify_vbis(b, b_birl, b_end_i) )
+          assert(_a_blen == _b_blen,
+            str("a_birlei (", _a_str(), ") and b_birlei (", _b_str(),
+                ") are not the same length. (", _a_blen, " ≠ ", _b_blen, ")."))
+          a
+      )
+      function(b, b_birls, b_end_i)
+        let ( _ = verify_slr(b) )
+        let ( _ = verify_vbsis(b, b_birls, b_end_i) )
+        let ( _b = _slr_cache(b, b_birls, b_end_i) )
+        with_values(b, _b[_SLR_BIRL], _b[_SLR_END_I], _b[_SLR_BLEN], _b[_SLR_STR])
+;
+
+/**
+ * Swap the elements between [begin_i1 : end_i1] and [begin_i2 : end_i2].
+ * Range must be nondecreasing or there will not be any elements in that
+ * range.  Negative values are normalised to positive by adding `len(sl)` to
+ * them.
+ *
+ * @param {(string|list)} sl
+ *   List to swap elements in.
+ * @param {number} begin_i1
+ *   Starting index of group 1.
+ * @param {number} end_i1
+ *   Ending index of group 1.
+ * @param {number} begin_i2
+ *   Starting index of group 2.
+ * @param {number} end_i2
+ *   Ending index of group 2.
+ *
+ * @returns {(string|list)}
+ *   List with ranges swapped.
+ */
+function swap(sl, begin_i1, end_i1, begin_i2, end_i2) =
+  let (
+    sl_len = len(sl),
+    begin_i1 = begin_i1 < 0 ? begin_i1 + sl_len : begin_i1,
+    begin_i2 = begin_i2 < 0 ? begin_i2 + sl_len : begin_i2,
+    end_i1 = end_i1 < 0 ? end_i1 + sl_len : end_i1,
+    end_i2 = end_i2 < 0 ? end_i2 + sl_len : end_i2
+  )
+
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_biei(begin_i1, end_i1) )
+  let ( _ = verify_biei(begin_i2, end_i2) )
+  let ( _ = verify_vbis(sl, begin_i1, end_i1) )
+  let ( _ = verify_vbis(sl, begin_i2, end_i2) )
+
+  is_string(sl)
+  ? end_i2 < begin_i1
+    ? // Not overlapping and group 2 is before group 1
+      //  [ a b2 e2 b b1 e1 c ]
+      str(
+        _els(sl,        0, begin_i2-1), // a
+        _els(sl, begin_i1, end_i1),     // new b2 e2
+        _els(sl, end_i2+1, begin_i1-1), // b
+        _els(sl, begin_i2, end_i2),     // new b1 e1
+        _els(sl, end_i1+1, sl_len-1)    // c
+      )
+    : end_i1 < begin_i2
+      ? // Not overlapping and group 1 is before group 2
+        //  [ a b1 e1 b b2 e2 c ]
+        str(
+          _els(sl,        0, begin_i1-1), // a
+          _els(sl, begin_i2, end_i2),     // new b1 e1
+          _els(sl, end_i1+1, begin_i2-1), // b
+          _els(sl, begin_i1, end_i1),     // new b2 e2
+          _els(sl, end_i2+1, sl_len-1)    // c
+        )
+      : assert(false, str("Groups ", birlei_to_indices(begin_i1, end_i1), " and ",
+          birlei_to_indices(begin_i2, end_i2), " cannot overlap."))
+        undef
+  : end_i2 < begin_i1
+    ? // Not overlapping and group 2 is before group 1
+      //  [ a b2 e2 b b1 e1 c ]
+      [
+        each _els(sl,        0, begin_i2-1), // a
+        each _els(sl, begin_i1, end_i1),     // new b2 e2
+        each _els(sl, end_i2+1, begin_i1-1), // b
+        each _els(sl, begin_i2, end_i2),     // new b1 e1
+        each _els(sl, end_i1+1, sl_len-1)    // c
+      ]
+    : end_i1 < begin_i2
+      ? // Not overlapping and group 1 is before group 2
+        //  [ a b1 e1 b b2 e2 c ]
+        [
+          each _els(sl,        0, begin_i1-1), // a
+          each _els(sl, begin_i2, end_i2),     // new b1 e1
+          each _els(sl, end_i1+1, begin_i2-1), // b
+          each _els(sl, begin_i1, end_i1),     // new b2 e2
+          each _els(sl, end_i2+1, sl_len-1)    // c
+        ]
+      : assert(false, str("Groups ", birlei_to_indices(begin_i1, end_i1), " and ",
+          birlei_to_indices(begin_i2, end_i2), " cannot overlap."))
+        undef
+;
+
+/**
+ * Does a left rotation of the elements in the `sl` so that the elements are
+ * reordered as if indices were `[i : len(sl)-1]` followed by `[0 : i - 1]`.
+ *
+ * @param {(string|list)} sl
+ *   This is the list to rotate.
+ * @param {number} i
+ *   - Number of elements to rotate left.
+ *   - If negative, rotates right.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {(string|list)}
+ *   Returns the rotated list.
+ */
+function rotate_left(sl, i, _sl_len) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_i(i) )
+  let ( _ = verify_vlen(sl, _sl_len) )
+  let ( _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len )
+  _sl_len
+  ? let (
+      i =
+        i < 0
+        ? i % _sl_len + _sl_len
+        : i % _sl_len
+    )
+    is_list(sl)
+    ? [
+        each _els(sl, i, _sl_len-1),
+        each _els(sl, 0, i-1)
+      ]
+    : str(
+        _els(sl, i, _sl_len-1),
+        _els(sl, 0, i-1)
+      )
+  : sl
+;
+
+/**
+ * Does a right rotation of the elements in the `sl` so that the elements are
+ * reordered as if indices were `[len(sl)-i : len(sl)-1]` followed by
+ * `[0 : len(sl)-i - 1]`.
+ *
+ * @param {(string|list)} sl
+ *   This is the list to rotate.
+ * @param {number} i
+ *   - Number of elements to rotate right.
+ *   - If negative, rotates left.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {(string|list)}
+ *   Returns the rotated list.
+ */
+function rotate_right(sl, i, _sl_len) =
+  rotate_left(sl, -i, _sl_len)
+;
+
+/**
+ * Gets the element at the head (which is the last element) of the `sl`.
+ *
+ * @param {(string|list)} sl
+ *   List to get from.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {any}
+ *   Object at the head of the list.
+ */
+function head(sl, _sl_len) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_vlen(sl, _sl_len) )
+  let ( _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len )
+  assert(len(sl) >= 1)
+  sl[_sl_len - 1]
+;
+
+/**
+ * Gets the elements at the head (which are the last elements) of the `sl`.
+ *
+ * @param {(string|list)} sl
+ *   List to get from.
+ * @param {number} i
+ *   Number of elements to retrieve from the head.
+ * @param {number} [_sl_len]
+ *   If passed, then use that cached value instead of calculating `len(sl)`.
+ *
+ *   > NOTE:
+ *   >
+ *   > This is a private parameter and it may disappear at any time in the
+ *   > future.  Use at your own peril!
+ *
+ * @returns {(string|list)}
+ *   Objects at the head of the list.
+ */
+function head_multi(sl, i, _sl_len) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_vpie(sl, i, _sl_len) )
+  let ( _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len )
+  _els(sl, _sl_len-i, _sl_len-1)
+;
+
+/**
+ * Gets the element at the tail (which is the first element) of the `sl`.
+ *
+ * @param {(string|list)} sl
+ *   List to get from.
+ *
+ * @returns {any}
+ *   Object at the tail of the list.
+ */
+function tail(sl) =
+  let ( _ = verify_sl(sl) )
+  assert(len(sl) >= 1)
+  sl[0]
+;
+
+/**
+ * Gets the elements at the tail (which are the first elements) of the `sl`.
+ *
+ * @param {(string|list)} sl
+ *   List to get from.
+ * @param {number} i
+ *   Number of elements to retrieve from the tail.
+ *
+ * @returns {(string|list)}
+ *   Objects at the tail of the list.
+ */
+function tail_multi(sl, i) =
+  let ( _ = verify_sl(sl) )
+  let ( _ = verify_vpie(sl, i) )
+  _els(sl, 0, i-1)
+;
+
+/**
+ * @typedef {GetEqualFn} SearchFn
+ *
+ * Perform search.
+ *
+ * @returns {(number|undef)}
+ *   The index where needle was found in haystack or undef if wasn't found.
+ */
+
+/**
+ * @callback SearchNeedleFn
+ *
+ * Gets the needle data.
+ *
+ * @param {(string|list)} needle
+ *   String or list of items being searched for.
+ * @param {Birls} [n_birls=0]
+ * @param {EndI} [n_end_i=idx(needle, -1)]
+ *
+ * @returns {SearchFn}
+ *   Callback to get the equality function.
+ */
+
+/**
+ * @callchain osearch(haystack, birls, end_i) (needle, n_birls, n_end_i) (equal_fn) : (undef | number)
+ *
+ * Searches for an ordered set of elements specified in needle that occurs as an
+ * ordered set of elements in haystack.  Similar to built-in search() function,
+ * but allows specifying an index range to search and exposes the equal()
+ * operator to allow for non-exact matches.
+ *
+ * @param {(string|list)} haystack
+ *   String or list of consecutive items to search through.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(haystack, -1)]
+ *
+ * @returns {SearchNeedleFn}
+ *   Curry function to get needle data.
+ */
+
+function osearch(haystack, birls=0, end_i=undef) =
+  let (
+    _h = _slr_cache(haystack, birls, end_i),
+    _h_eli  = _h[_SLR_ELI],
+    _h_blen = _h[_SLR_BLEN]
+  )
+  function(needle, n_birls=0, n_end_i=undef)
+    let (
+      _n = _slr_cache(needle, n_birls, n_end_i),
+      _n_eli  = _n[_SLR_ELI],
+      _n_blen = _n[_SLR_BLEN]
+    )
+    function(equal_fn = function(a, b) a == b)
+      let (
+        found = reduce_air(undef, 0, _h_blen-_n_blen)(
+          function(h_i, acc)
+            let (
+              _found = all(0, _n_blen-1)(
+                function(n_i)
+                  equal_fn(_h_eli(h_i + n_i), _n_eli(n_i))
+              )
+            )
+            [ !_found, h_i ]
+        )
+      )
+      found[0]
+      ? undef
+      : _h[_SLR_IDX](found[1])
+;
+
+/**
+ * @callchain csearch(haystack, birls, end_i) (needle, n_birls, n_end_i) (equal_fn) : (undef | number)
+ *
+ * Searches haystack for contiguous set of elements that starts from an ordered
+ * set of indices that match an ordered set of elements specified in needle.
+ * Similar to built-in search() function, but allows specifying an index range
+ * to search and exposes the equal() operator to allow for non-exact matches.
+ *
+ * @param {(string|list)} haystack
+ *   String or list of consecutive items to search through.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(haystack, -1)]
+ *
+ * @returns {SearchNeedleFn}
+ *   Curry function to get needle data.
+ */
+function csearch(haystack, birls=0, end_i=undef) =
+  let (
+    _h = _slr_cache(haystack, birls, end_i),
+    _h_len  = _h[_SLR_LEN],
+    _h_eld  = _h[_SLR_ELD],
+    _h_idx  = _h[_SLR_IDX],
+    _h_blen = _h[_SLR_BLEN]
+  )
+  function(needle, n_birls=0, n_end_i=undef)
+    let (
+      _n = _slr_cache(needle, n_birls, n_end_i),
+      _n_eli  = _n[_SLR_ELI],
+      _n_blen = _n[_SLR_BLEN]
+    )
+    function(equal_fn)
+      let (
+        found = reduce_air(undef, 0, _h_blen-1)(
+          function(h_i, acc)
+            let (
+              h_i = _h_idx(h_i)
+            )
+            _h_len < h_i + _n_blen
+            ? [ true, -1 ]
+            : let (
+                _found = all(0, _n_blen-1)(
+                  function(n_i)
+                    equal_fn(_h_eld(h_i + n_i), _n_eli(n_i))
+                )
+              )
+              [ !_found, h_i ]
+        )
+      )
+      found[0]
+      ? undef
+      : found[1]
+;
+
+// module tests_substr() {
+//   echo("search begin")
+//   echo("search end: ",
+//     let(
+//       s = "hello there out there.",
+//       i = csearch(s, "there"),
+//       i2 = csearch(s, "there", i + 1)
+//       ) [i, i2],
+//       let (
+//         s = "hello there out there."
+//       ) filter(function(i) !is_undef(csearch(s, "there", i, i)), fwd_i(s))
+//     );
+// }

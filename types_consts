@@ -1,0 +1,24 @@
+/** Enum for range type */
+RANGE   =  0;
+/** Enum for list type */
+LIST    =  1;
+/** Enum for string type */
+STR     =  2;
+/** Enum for unknown type */
+UNKNOWN =  3;
+/** Enum for slice type */
+SLICE   =  4;
+/** Enum for undef type */
+UNDEF   =  5;
+/** Enum for boolean type */
+BOOL    =  6;
+/** Enum for function type */
+FUNC    =  7;
+/** Enum for number type */
+NUM     =  8;
+/** Enum for integer type */
+INT     =  9;
+/** Enum for floating point type */
+FLOAT   = 10;
+/** Enum for NaN */
+NAN     = 11;

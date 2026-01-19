@@ -1,0 +1,6 @@
+/** The enum that represents showing only -ve and never +ve sign */
+SHOW_SIGN_NEG = 0;
+/** The enum that represents showing only -ve and +ve signs */
+SHOW_SIGN_POS_NEG = 1;
+/** The enum that represents showing only -ve and a space for +ve sign */
+SHOW_SIGN_SPC_NEG = 2;

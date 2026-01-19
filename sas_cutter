@@ -1,36 +1,37 @@
 use <helpers>
+include <helpers_consts>
 use <skin>
 use <base_algos>
 
 /**
  * Self aligning seam cutter aligned along edge a → b, with sinusoidal cutface.
  *
- * @param a (Point2D)
+ * @param {Point2D} a
  *   Starting point.
- * @param b (Point2D)
+ * @param {Point2D} b
  *   Ending point.
- * @param y_thickness (float)
+ * @param {float} y_thickness
  *   Thickness along y-axis of cutter from cutface to handle.
- * @param z_thickness (float)
+ * @param {float} z_thickness
  *   Hight of cutting tool (z-axis).
- * @param lat_wave_segs (int)
+ * @param {int} lat_wave_segs
  *   Number of segments to break up the wave into.
- * @param lat_wave_cycles (number)
+ * @param {number} lat_wave_cycles
  *   Number of complete wave_cycles to apply along cutting edge.
- * @param wave_amp (float)
+ * @param {float} wave_amp
  *   Amplitude of the wave on cutting edge (peek to peek).
- * @param long_wave_segs (int)
+ * @param {int} long_wave_segs
  *   Number of segments to break up the wave into.
- * @param long_wave_cycles (number)
+ * @param {number} long_wave_cycles
  *   Number of complete wave_cycles to apply perpendicular to the cutting edge.
- * @param cutedge_long_overflow (number)
+ * @param {number} cutedge_long_overflow
  *   Widens the cutter by this amount
  *        expanding from the centre.
- * @param cutedge_lat_overflow (number)
+ * @param {number} cutedge_lat_overflow
  *   Lengthens the cutter by this amount (rounded to the next segment length)
  *   expanding from the centre.
  *
- * @returns (SKIN object)
+ * @returns {SKIN object}
  */
 function sas_cutter(a, b, y_thickness, z_thickness,
   lat_wave_segs, lat_wave_cycles, wave_amp,
@@ -40,13 +41,13 @@ function sas_cutter(a, b, y_thickness, z_thickness,
   let (
     edge = vector_info(a, b),
     // Physical spans
-    L = edge[VI_LENGTH()],
+    L = edge[VI_LENGTH],
     H = z_thickness,
-    extra_segments = round(cutedge_lat_overflow / (edge[VI_LENGTH()]/lat_wave_segs) + 0.5)
+    extra_segments = round(cutedge_lat_overflow / (edge[VI_LENGTH]/lat_wave_segs) + 0.5)
   )
   echo(
     "cutedge_lat_overflow:", cutedge_lat_overflow,
-    "seg_len", L / lat_wave_segs, norm(edge[VI_VECTOR()] / lat_wave_segs),
+    "seg_len", L / lat_wave_segs, norm(edge[VI_VECTOR] / lat_wave_segs),
     "extra_segments:", extra_segments,
     "lat_wave_segs:", lat_wave_segs,
     "lat_percent: ", 1/lat_wave_segs
@@ -62,8 +63,8 @@ function sas_cutter(a, b, y_thickness, z_thickness,
         X = long_percent * norm(a-b),
         // start point along line ab
         pt = //echo("long_percent", long_percent)
-          a + edge[VI_VECTOR()] * long_percent,
-        handle   = pt + edge[VI_NORMAL()] * y_thickness
+          a + edge[VI_VECTOR] * long_percent,
+        handle   = pt + edge[VI_NORMAL] * y_thickness
       )
       each
       //          x            y                                  z
@@ -102,15 +103,15 @@ function sas_cutter(a, b, y_thickness, z_thickness,
  * TODO: a and b parameters are misleading.  They are only used for the length.
  *       Need to fix.
  *
- * @param a (Point2D)
+ * @param {Point2D} a
  *   Starting point.
- * @param b (Point2D)
+ * @param {Point2D} b
  *   Ending point.
- * @param y_thickness (float)
+ * @param {float} y_thickness
  *   Rhickness of cutter along y-axis from lowest part of cutface to handle.
- * @param z_thickness (float)
+ * @param {float} z_thickness
  *   hight of cutting tool (z-axis).
- * @param lat_wall_percent (float)
+ * @param {float} lat_wall_percent
  *        When transitioning from the each half cycle to the next point, and a
  *        point to each half cycle, this is % of a 1/4 cycle traveled along the
  *        latitude direction.  A value of 0 is a results in a "square wave".  A
@@ -121,24 +122,24 @@ function sas_cutter(a, b, y_thickness, z_thickness,
  *             /   \    |/   \            |   |   |   |           /\  /\
  *             |    \___/     \___/|      |   |___|   |___       |  \/  \/|
  *             |___________________|      |_______________|      |________|
- * @param lat_wave_cycles (number)
+ * @param {number} lat_wave_cycles
  *   number of complete wave_cycles to apply along cutting edge.
- * @param wave_amp (float)
+ * @param {float} wave_amp
  *   amplitude of the wave on cutting edge (peek to peek).
- * @param long_wave_segs (int)
+ * @param {int} long_wave_segs
  *   number of segments to break up the wave into.
- * @param long_wave_cycles (number)
+ * @param {number} long_wave_cycles
  *   number of complete wave_cycles to apply perpendicular to the cutting edge.
- * @param cutedge_long_overflow (number)
+ * @param {number} cutedge_long_overflow
  *   widens the cutter by this amount
  *        expanding from the centre.
- * @param cutedge_lat_overflow (number)
+ * @param {number} cutedge_lat_overflow
  *   lengthens the cutter by this amount
  *        (rounded to the next segment length) expanding from the centre.
- * @param x_phase_offset (number)
+ * @param {number} x_phase_offset
  *        The starting phase of the a point.  Value must be ∈ [0, 360).
  *
- * @returns (SKIN object)
+ * @returns {SKIN object}
  */
 function sas2_cutter(a, b, y_thickness, z_thickness,
   lat_wall_percent, lat_wave_cycles, wave_amp,
@@ -149,7 +150,7 @@ function sas2_cutter(a, b, y_thickness, z_thickness,
   let (
     edge = vector_info(a, b),
     // Physical spans
-    L = edge[VI_LENGTH()],
+    L = edge[VI_LENGTH],
     H = z_thickness,
     lat_wavelength = L / lat_wave_cycles,
     max_seg_len = lat_wavelength / 4,
@@ -207,17 +208,17 @@ function sas2_cutter(a, b, y_thickness, z_thickness,
           [ x, handle_y1, H + cutedge_long_overflow ]
         ],
     cutter = [
-      skin_extrude(cutter_excess(-cutedge_lat_overflow,  0), 0, segs, comment = str(comment, " pre-overflow"))
+      skin_extrude(0, segs, comment = str(comment, " pre-overflow"))(cutter_excess(-cutedge_lat_overflow,  0))
       ,
-      skin_extrude(                             cutter_tool, 0, len(x_map) * (lat_wave_cycles + 2), comment = comment)
+      skin_extrude(0, len(x_map) * (lat_wave_cycles + 2), comment = comment)(cutter_tool)
       ,
-      skin_extrude(cutter_excess(L, L+cutedge_lat_overflow), 0, segs, comment = str(comment, " post-overflow"))
+      skin_extrude(0, segs, comment = str(comment, " post-overflow"))(cutter_excess(L, L+cutedge_lat_overflow))
     ]
     // T = 
     // // identity(3)
     // reorient([[0,0,0], [L, 0, 0]], [a, b])
   )
-  //in_list(cutter, function_map(), function(e) skin_transform(e, T))
+  //it_each(cutter, map())(function(e) skin_transform(e, T))
   // skin_transform(cutter, T)
   cutter
 ;
@@ -230,30 +231,30 @@ skin_to_polyhedron(sas2_cutter([0, 0, 0], [10, 0, 0], 1, 1, .5, 10, .25, undef, 
  * Self connecting seam cutter aligned along edge a → b, with sinusoidal cutface.
  * INCOMPLETE!
  *
- * @param a (Point2D)
+ * @param {Point2D} a
  *   starting point.
- * @param b (Point2D)
+ * @param {Point2D} b
  *   ending point.
- * @param y_thickness (float)
+ * @param {float} y_thickness
  *   y_thickness of cutter from cutface to handle.
- * @param z_thickness (float)
+ * @param {float} z_thickness
  *   hight of cutting tool (z-axis).
- * @param lat_wave_segs (int)
+ * @param {int} lat_wave_segs
  *   number of segments to break up the wave into.
- * @param lat_wave_cycles (number)
+ * @param {number} lat_wave_cycles
  *   number of complete wave_cycles to apply
  *        along cutting edge.
- * @param wave_amp (float)
+ * @param {float} wave_amp
  *   amplitude of the wave on cutting edge (peek to peek).
- * @param long_wave_segs (int)
+ * @param {int} long_wave_segs
  *   number of segments to break up the wave into.
- * @param long_wave_cycles (number)
+ * @param {number} long_wave_cycles
  *   number of complete wave_cycles to apply
  *        perpendicular to the cutting edge.
- * @param cutedge_long_overflow (number)
+ * @param {number} cutedge_long_overflow
  *   widens the cutter by this amount
  *        expanding from the centre.
- * @param cutedge_lat_overflow (number)
+ * @param {number} cutedge_lat_overflow
  *   lengthens the cutter by this amount
  *        (rounded to the next segment length) expanding from the centre.
  */
@@ -265,13 +266,13 @@ function scs_cutter(a, b, y_thickness, z_thickness,
   let (
     edge = vector_info(a, b),
     // Physical spans
-    L = edge[VI_LENGTH()],
+    L = edge[VI_LENGTH],
     H = z_thickness,
-    extra_segments = round(cutedge_lat_overflow / (edge[VI_LENGTH()]/lat_wave_segs) + 0.5)
+    extra_segments = round(cutedge_lat_overflow / (edge[VI_LENGTH]/lat_wave_segs) + 0.5)
   )
   [ [ echo(
         "cutedge_lat_overflow:", cutedge_lat_overflow,
-        "seg_len", L / lat_wave_segs, norm(edge[VI_VECTOR()] / lat_wave_segs),
+        "seg_len", L / lat_wave_segs, norm(edge[VI_VECTOR] / lat_wave_segs),
         "extra_segments:", extra_segments,
         "long_wave_segs:", lat_wave_segs,
         "long_percent: ", 1/lat_wave_segs
@@ -286,8 +287,8 @@ function scs_cutter(a, b, y_thickness, z_thickness,
         X = long_percent * norm(a-b),
         // start point along line ab
         pt = //echo("long_percent", long_percent)
-          a + edge[VI_VECTOR()] * long_percent,
-        handle   = pt + edge[VI_NORMAL()] * y_thickness
+          a + edge[VI_VECTOR] * long_percent,
+        handle   = pt + edge[VI_NORMAL] * y_thickness
       )
       each
       //          x            y                                  z

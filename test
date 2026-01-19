@@ -1,14 +1,40 @@
 /**
- * Testing modules to help with TDD for libraries.
+ * ## test
+ * 
+ * ### Purpose
+ * 
+ * Used to generate code for using TDD methodology.  Tries to report useful
+ * error messages with an optional user configurable message.
+ * 
+ * ### Test Your Code!
  */
 use <helpers>
 
-/** Tests if `expected` is equal to `got`. */
+/** Tests if `expected` is equal to `got`.
+ *
+ * @param {any} expected
+ *   Expected value.
+ * @param {any} got
+ *   The value actually received.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_eq(expected, got, msg="") {
   assert(expected == got, str("\n  EXPECTED: ", expected, "\n       GOT: ", got, "\n", msg));
 }
 
-/** Tests if `expected` is approx equal to `got` within epsilon. */
+/** Tests if `expected` is approx equal to `got` within `epsilon`.
+ *
+ * @param {any} expected
+ *   Expected value.
+ * @param {any} got
+ *   The value actually received.
+ * @param {number} epsilon
+ *   How much tolerance to say that two numbers are equal.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
+
 module test_approx_eq(expected, got, epsilon, msg="") {
   assert(equal(expected, got, epsilon), str("\n  EXPECTED: ", expected, "\n       GOT: ", got, "\n", msg));
 }

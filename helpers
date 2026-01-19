@@ -1,52 +1,69 @@
+/**
+ * ## helpers
+ * 
+ * ### Purpose
+ * 
+ * Miscellaneous helper functions.
+ */
 use <base_algos>
 use <range>
 use <types>
-use <list>
+include <types_consts>
+use <indexable>
 use <test>
 use <transform>
+use <any_all>
 
-/** Convert radians to degrees
+/** ### Conversion functions */
+
+/**
+ * Convert radians to degrees.
  *
- * @param radians (number):
+ * @param {number} radians
  *   radians to convert.
  *
- * @returns (number):
+ * @returns {number}
  *   Equivalent degrees.
  */
 function r2d(radians) = radians * (180 / PI);
 
-/** Convert degrees to radians
+/**
+ * Convert degrees to radians.
  *
- * @param degrees (number):
+ * @param {number} degrees
  *   degrees to convert.
  *
- * @returns (number):
+ * @returns {number}
  *   Equivalent radians.
  */
 function d2r(degrees) = degrees * (PI / 180);
 
+/** ### Circular / Spherical Calculations */
 /**
- * Calculates the arc length between vectors A and B at radius R.
+ * Calculates the arc length between vectors A and B for a circle/sphere of
+ * radius R.  If A and B are the same magnitude, R can be omitted.
  *
- * @param A (list)
+ * @param {list} A
  *   First vector.
- * @param B (list)
+ * @param {list} B
  *   Second vector.
- * @param R (undef | number)
+ * @param {number} [R]
  *   Radius to use to measure the length along a sphere's great arc.
- *   - If undef then will use the magnitude of A. Asserts if magnitude of B is
- *     not the same.
+ *   - If not specified, then will use the magnitude of A. Asserts if magnitude
+ *     of B is not the same.
  *   - If R=1, then the result is equivalent to the arc angle in radians.
  *   - If R=180/PI, then the result is equivalent to the arc angle in degrees.
  *
- * @returns (number)
+ * @returns {number}
  *   The length of the great arc between the two vectors for a sphere of radius
  *   R.
  */
 function arc_len(A, B, R=undef) =
   (
     is_undef(R)
-    ? assert(abs(norm(A)-norm(B)) < 1e8, str("If not specifying R, A (", norm(A), ") and B (", norm(B), ") must be the same magnitude."))
+    ? assert(abs(norm(A)-norm(B)) < 1e-8,
+        str("If not specifying R, A (", norm(A), ") and B (", norm(B),
+            ") must be the same magnitude."))
       norm(A)
     : R
   )
@@ -54,14 +71,17 @@ function arc_len(A, B, R=undef) =
 ;
 
 /**
- * Central angle (degrees) from arc length on a circle.
- * θ_deg = (arc_len / radius) * (180/π)
+ * Given the length of an arc and the radius of a circle/sphere that it's
+ * traversing, returns the angle traversed in degrees.
+ * 
+ * `arc_len` and `radius` have the same units.
  *
- * @param arc_len (number)
+ * @param {number} arc_len
  *   Arc length along the circle.
- * @param radius (number)
+ * @param {number} radius
  *   Circle radius (must be non-zero).
- * @returns (number)
+ *
+ * @returns {number}
  *   Angle in degrees. Sign follows arc_len.
  */
 function arc_len_angle(arc_len, radius) =
@@ -72,18 +92,18 @@ function arc_len_angle(arc_len, radius) =
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Computes the intersection points of a line and a circle.
+ * Computes the intersection points of a line and a circle around the origin.
  *
  * The line is y = m*x + b and the circle is x^2 + y^2 = R^2.
  *
- * @param R (number):
+ * @param {number} R
  *   Radius of the circle.  Callers such as arc_len_for_shift pass R > 0.
- * @param m (number):
+ * @param {number} m
  *   Slope of the line (dy/dx).
- * @param b (number):
+ * @param {number} b
  *   Y-intercept of the line.
  *
- * @returns (list):
+ * @returns {list}
  *   [] if there is no real intersection, or [[x1, y1], [x2, y2]] where each
  *   [x, y] is a Cartesian intersection point.  For a tangent line both
  *   returned points are identical.
@@ -111,38 +131,38 @@ function _circle_line_intersections(R, m, b) =
  * _circle_line_intersections().  It chooses a single point on the right
  * half-plane according to a deterministic ordering.
  *
- * @param ptlist (list):
+ * @param {list} ptlist
  *   List of zero, one, or two points [[x1, y1], [x2, y2]].
  *
- * @returns (list|undef):
+ * @returns {(list|undef)}
  *   The selected point [x, y] or undef if no point has x >= 0.  Among
  *   points with x >= 0 it selects the one with the largest x; if x ties,
  *   it selects the point with the smaller y (the lower point).
  */
 function _pick_right(ptlist) =
-  len(ptlist)==0 ? undef :
+  len(ptlist)==0   ? undef :
   let(
     p0 = ptlist[0],
     p1 = ptlist[1],
     c0 = p0[0] >= 0,
     c1 = p1[0] >= 0
   )
-  (!c0 && !c1) ? undef :
-  ( c0 && !c1) ? p0   :
-  (!c0 &&  c1) ? p1   :
+  (!c0 && !c1)     ? undef :
+  ( c0 && !c1)     ? p0    :
+  (!c0 &&  c1)     ? p1    :
   // both x >= 0: choose larger x; tie-breaker: lower y
-  (p0[0] > p1[0]) ? p0 :
-  (p0[0] < p1[0]) ? p1 :
-  (p0[1] <= p1[1]) ? p0 : p1
+  (p0[0] > p1[0])  ? p0    :
+  (p0[0] < p1[0])  ? p1    :
+  (p0[1] <= p1[1]) ? p0    : p1
 ;
 
 /**
  * Computes the polar angle of a point on the circle in degrees.
  *
- * @param pt (list):
+ * @param {list} pt
  *   Point [x, y] in Cartesian coordinates.
  *
- * @returns (number):
+ * @returns {number}
  *   Angle in degrees measured from the +X axis using atan2(y, x), with the
  *   usual range (-180, 180].
  */
@@ -151,12 +171,12 @@ function _theta_deg(pt) = atan2(pt[1], pt[0]);
 /**
  * Computes the smallest signed difference between two angles in degrees.
  *
- * @param a1 (number):
+ * @param {number} a1
  *   First angle in degrees.
- * @param a2 (number):
+ * @param {number} a2
  *   Second angle in degrees.
  *
- * @returns (number):
+ * @returns {number}
  *   Signed difference a2 - a1 wrapped into the range (-180, 180].  This is
  *   the minimal rotation in degrees that moves a1 onto a2.
  */
@@ -172,21 +192,21 @@ function _wrap_diff_deg(a1, a2) =
 // ---------- Public API (Right-side tracking) ----------
 
 /**
- * Given a circle R = sqrt(x^2 + y^2) and a line y = m*x + (b + a),
- * compute the arc-length difference Δs along the circle between the
- * intersection of the original line y = m*x + b and the shifted line
- * y = m*x + (b + a). Only the right-side (x >= 0) intersection is tracked.
+ * Given a `circle R = sqrt(x^2 + y^2)` and a line `y = m*x + (b + a)`,
+ * compute the arc-length difference `Δs` along the circle between the
+ * intersection of the original line `y = m*x + b` and the shifted line
+ * `y = m*x + (b + a)`. Only the right-side `(x >= 0)` intersection is tracked.
  *
- * @param R (number)
+ * @param {number} R
  *   circle radius
- * @param m (number)
+ * @param {number} m
  *   slope (dy/dx)
- * @param a (number)
+ * @param {number} a
  *   vertical shift of the line relative to b
- * @param b (number)
+ * @param {number} b
  *   original y-intercept (default 0)
  *
- * @returns (number)
+ * @returns {number}
  *   Δs (nonnegative) or undef if the right-side intersection does not exist
  *   before or after the shift.
  */
@@ -198,7 +218,7 @@ function arc_len_for_shift(R, m, a, b = 0) =
     pts1 = _circle_line_intersections(R, m, b + a),
     p1   = _pick_right(pts1)
   )
-  (p0 == undef || p1 == undef) ? undef :
+  (is_undef(p0) || is_undef(p1)) ? undef :
   let(
     t0_deg  = _theta_deg(p0),
     t1_deg  = _theta_deg(p1),
@@ -209,22 +229,24 @@ function arc_len_for_shift(R, m, a, b = 0) =
 ;
 
 /**
- * Given a circle R = sqrt(x^2 + y^2) and an original line y = m*x + b,
- * find the vertical shift values a that would produce a specified arc-length
- * difference Δs between the original intersection and the shifted line
- * y = m*x + (b + a), tracking only the right-side (x >= 0) intersection.
+ * Given a circle `R = sqrt(x^2 + y^2)` and line `y = m*x + b`, compute the
+ * vertical (y-axis) shift values a that would produce a specified arc-length
+ * difference `Δs` between the original intersection and the shifted line
+ * `y = m*x + (b + a)`, tracking only the right-side `(x >= 0)` intersection.
  *
- * @param R (number)
+ * @param {number} R
  *   circle radius
- * @param m (number)
+ * @param {number} m
  *   slope (dy/dx)
- * @param delta_s (number)
+ * @param {number} delta_s
  *   desired arc length difference
- * @param b (number)
+ * @param {number} b
  *   original y-intercept (default 0)
  *
- * @returns [a_up_or_undef, a_down_or_undef]
- *   a_up ≥ 0, a_down ≤ 0.
+ * @returns {list[(number|undef),(number|undef)]}
+ *   Slot 0 is `a_up` and slot 1 is `a_down`, where:
+ *       (is_undef(a_up) or a_up ≥ 0) and (is_undef(a_down) or a_down ≤ 0)
+ *   They would be undef if there is no solution for that direction.
  */
 function shift_for_arc_len(R, m, delta_s, b = 0) =
   assert(R > 0, "R must be > 0.")
@@ -232,7 +254,7 @@ function shift_for_arc_len(R, m, delta_s, b = 0) =
     // Must have a right-side intersection to begin with
     p0 = _pick_right(_circle_line_intersections(R, m, b))
   )
-  (p0 == undef) ? [undef, undef] :
+  (is_undef(p0)) ? [undef, undef] :
   let(
     K     = R * sqrt(1 + m*m),
     u     = b / K,
@@ -248,63 +270,89 @@ function shift_for_arc_len(R, m, delta_s, b = 0) =
     // Keep only those that preserve a valid RIGHT-SIDE intersection after the shift
     p_up_cand   = _pick_right(_circle_line_intersections(R, m, b + a_plus)),
     p_down_cand = _pick_right(_circle_line_intersections(R, m, b + a_minus)),
-    a_up_raw    = (p_up_cand   == undef) ? undef : a_plus,
-    a_down_raw  = (p_down_cand == undef) ? undef : a_minus,
+    a_up_raw    = (is_undef(p_up_cand)) ? undef : a_plus,
+    a_down_raw  = (is_undef(p_down_cand)) ? undef : a_minus,
     // Enforce sign convention: up >= 0, down <= 0
-    a_up   = (a_up_raw   == undef) ? undef : (a_up_raw   >= 0 ? a_up_raw   : undef),
-    a_down = (a_down_raw == undef) ? undef : (a_down_raw <= 0 ? a_down_raw : undef)
+    a_up   = (is_undef(a_up_raw)) ? undef : (a_up_raw   >= 0 ? a_up_raw   : undef),
+    a_down = (is_undef(a_down_raw)) ? undef : (a_down_raw <= 0 ? a_down_raw : undef)
   )
   [a_up, a_down]
 ;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/** ### Miscellaneous */
+
+/**
+ * Wrap a lambda so that it negates its return value.
+ *
+ * @param {function(p: PredFn) : any} not_fn
+ *   The function to invert the boolean's (or equivalent truthy/falsy) value.
+ *
+ * @returns {function(p: PredFn) : bool}
+ *   Return the lambda that will invert a lambda's truth value.
+ */
+function not(not_fn) =
+  // echo("NOT: ", not_fn)
+  assert(is_function(not_fn))
+  function(p) !not_fn(p)
+;
+
 /**
  * Clamps a value between [lo, hi].
  *
- * @param v (number)
+ * @param {number} v
  *   Value to clamp.
- * @param lo (number)
+ * @param {number} lo
  *   Lowest value v should take.
- * @param hi (number)
+ * @param {number} hi
  *   Highest value v should take.
  *
- * @returns (number)
+ * @returns {number}
  *   Value v that is clamped between [lo, hi].
  */
 function clamp(v, lo, hi) = v < lo ? lo : v > hi ? hi : v;
 
 /**
- * @param a (Point2D)
+ * @typedef {list} VectorInfo
+ *
+ * Results of the [vector_info()](#f-vector_info) call.
+ *
+ * @slot {Point} VI_VECTOR
+ *   Direction of the ab vector.
+ * @slot {number} VI_LENGTH
+ *   Length of ab vector.
+ * @slot {Point} VI_DIR
+ *   Unit ab vector.
+ * @slot {Point} VI_NORMAL
+ *   A normal unit vector by swapping first two dimensions and then making the
+ *   resulting first dimension negative.
+ */
+
+/**
+ * Computes direction, length, unit vector and normal to unit vector, and puts
+ * them into an list.
+ *
+ * Add `include <helpers_consts>` to use the appropriate constants.
+ *
+ * @param {Point} a
  *   Starting point of vector
- * @param b (Point2D)
+ * @param {Point} b
  *   Ending point of vector
  *
- * @returns (Array[Point2D])
- *   result[VI_VECTOR()] = direction of ab
- *   result[VI_LENGTH()] = length of ab
- *   result[VI_DIR()   ] = unit ab vector
- *   result[VI_NORMAL()] = normal unit vector of ab
+ * @returns {VectorInfo}
+ *   Object containing the info of all the operations.  See `VectorInfo` type
+ *   for details.
  */
 function vector_info(a, b) =
   let(
-    edge_vec = b - a,                                 // direction and magnitude of a to b
-    edge_len = norm(edge_vec),                        // length of ab
-    edge_dir = edge_vec / edge_len,                   // unit ab vector
-    normal = [-edge_dir[1], edge_dir[0], edge_dir[2]] // normal unit vector of ab
+    edge_vec = b - a,                                  // direction and magnitude of a to b
+    edge_len = norm(edge_vec),                         // length of ab
+    edge_dir = edge_vec / edge_len,                    // unit ab vector
+    normal = [-edge_dir[1], edge_dir[0],
+              for (i=fwd_i(edge_dir, 2)) edge_dir[i] ] // normal unit vector of ab
   ) [ edge_vec, edge_len, edge_dir, normal ]
 ;
-
-// ### CONSTANTS ###
-
-/** Index of direction of ab */
-function VI_VECTOR() = 0;
-/** Index of length of ab */
-function VI_LENGTH() = 1;
-/** Index of unit ab vector */
-function VI_DIR()    = 2;
-/** Index of normal unit vector of ab */
-function VI_NORMAL() = 3;
 
 /**
  * Checks the equality of two items.  If v1 and v2 are lists of the same length,
@@ -312,14 +360,14 @@ function VI_NORMAL() = 3;
  * see if they are both equal to each other within an error of epsilon.  All
  * other types are done using the == operator.
  *
- * @param v1 (any)
+ * @param {any} v1
  *   First item to compare against.
- * @param v2 (any)
+ * @param {any} v2
  *   Second item to compare against.
- * @param epsilon (number)
+ * @param {number} epsilon
  *   The max error tolerated for a number.
  *
- * @returns (bool)
+ * @returns {bool}
  *   True if the objects are equal within tolerance.  False otherwise.
  */
 function equal(v1, v2, epsilon = 1e-6) =
@@ -327,20 +375,12 @@ function equal(v1, v2, epsilon = 1e-6) =
     ? abs(v1 - v2) <= epsilon
     : is_list(v1) && is_list(v2)
       ? len(v1) == len(v2)
-        ? // VAGUE BENCHMARKING
-          // 1. slightly slower than 2.  Perhaps call overhead?
-          all(function(i) equal(v1[i], v2[i], epsilon), 0, len(v1)-1)
-          
-          // 2. significantly slower than 3 (twice as slow).
-          // is_undef(find(function(i) !equal(v1[i], v2[i], epsilon), 0, len(v1)-1))
-
-          // 3. fastest, but has no epsilon testing.
-          // v1 == v2 
+        ? all(0, len(v1)-1)(function(i) equal(v1[i], v2[i], epsilon))
         : false
       : v1 == v2
 ;
 
-/** Hoists function into variable ns to be able to pass as a lambda */
+/** Hoists function into variable namespace to be able to be passed as a lambda. */
 function function_equal() =
   function(v1, v2, epsilon = 1e-6)
     equal(v1, v2, epsilon)
@@ -349,12 +389,12 @@ function function_equal() =
 /**
  * If v is undefined, then return the default value d.
  *
- * @param v (any)
+ * @param {any} v
  *   The value to test if defined.
- * @param d (any)
+ * @param {any} d
  *   The result to give if v is undefined.
  *
- * @returns (any)
+ * @returns {any}
  *   If v is defined, then return v, else d.
  */
 function default(v, d) =
@@ -368,19 +408,46 @@ function INCOMPLETE(x=undef) =
   assert(false, "This function is incomplete")
 ;
 
+
+/**
+ * Rotate vec so that the angle between ref_vec and vec increases by
+ * delta_angle_deg.
+ *
+ * Uses rotate(delta_angle_deg, cross(ref_vec, vec)) and applies it to vec.
+ *
+ * @param {Point} ref_vec
+ *   Reference vector.  Must have norm(ref_vec) > 0.
+ * @param {Point} vec
+ *   Vector to rotate.  Must have norm(vec) > 0 and must not be (anti)parallel to
+ *   ref_vec.
+ * @param {number} delta_angle_deg
+ *   Angle increase in degrees.
+ *
+ * @returns {Point}
+ *   The rotated vector.
+ */
+
+function offset_angle(ref_vec, vec, delta_angle_deg) =
+  assert(norm(ref_vec) > 0, str("ref_vec ", ref_vec, " needs a length > 0."))
+  assert(norm(    vec) > 0, str(    "vec ",     vec, " needs a length > 0."))
+  let ( n = cross(ref_vec, vec) )
+  assert(norm(n) > 1e-12, "vectors cannot be (anti)parallel")
+  rotate(delta_angle_deg, n) * vec
+;
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Create an arrow.  Primarily used for debugging.
+ * Create an arrow pointing up in the positive z direction.  Primarily used for
+ * debugging.
  *
- * @param l (number)
+ * @param {number} l
  *   Length of arrow.
- * @param t (number)
+ * @param {number} t
  *   Thickness of arrowhead shaft.
- * @param c (list | string | undef)
+ * @param {(list|string|undef)} c
  *   Same as color() module's first parameter. [r, g, b], [r, g, b, a],
  *   "color_name", "#hex_value".  If not defined, no colour is applied.
- * @param c (number)
+ * @param {number} a
  *   Same as color() module's optional second parameter.  Alpha value between
  *   [0, 1].
  */
@@ -399,6 +466,15 @@ module arrow(l, t=1, c, a) {
   }
 }
 
+/**
+ * Create 3 arrows aligning to x, y and z axis coloured red, green and blue
+ * respectively.
+ *
+ * @param {number} l
+ *   Length of arrow.
+ * @param {number} t
+ *   Thickness of arrowhead shaft.
+ */
 module axis(l, t=1) {
   rotate([0, 90, 0])
     arrow(l, t, "red");
@@ -406,3 +482,110 @@ module axis(l, t=1) {
     arrow(l, t, "green");
   arrow(l, t, "blue");
 }
+
+/**
+ * File line function to output something that looks like a file line to be able
+ * to jump to the file/line in VSCode easier.
+ *
+ * To make it easier in a file, create the following variable in that file:
+ *
+ *     _fl = function(l) fl("<this-file-name>", l);
+ *
+ * As a variable, it won't get exported.  Use that in your file.
+ *
+ * @param {string} f
+ *   Name of file.
+ * @param {number} l
+ *   Line number in file.
+ *
+ * @returns {string}
+ *   Returns a string which will allow you to ctrl-click on the string text from
+ *   the terminal window.
+ */
+function fl(f, l) =
+  str(" in file ", f, ", line ", l, "\n")
+;
+
+/**
+ * @callback IdentityFn
+ *
+ * Returns the value passed.
+ *
+ * @param {any} return_value
+ *
+ * @returns {any}
+ *   Returns `return_value`.
+ */
+
+/**
+ * @callchain 
+ * Asserts that `truth` is `true`.
+ *
+ * Currently, `assert()` will evaluate the parameters prior to testing the
+ * truthiness of `truth`.  If the `msg` is an expensive operation, this can have
+ * performance consequences.  This function allows the `msg` to be a function,
+ * preventing evaluation of the `msg` if not needed.
+ *
+ * This also returns an identity function which allows to embed this inside of
+ * an expression with minimal effort.
+ *
+ * > NOTE:
+ * >
+ * > There is an enhancement to potentially resolve this reported by me here:
+ * > https://github.com/openscad/openscad/issues/6240
+ *
+ * @param {bool} truth
+ *   - If truthy, returns function that takes a parameter  which it returns
+ *     unmodified.
+ * @param {(string|function(): string)} msg
+ *   - If truth is falsy, then
+ *     - If msg is a function, execute it to get the actual message.
+ *     - Otherwise pass msg unmolested.
+ *     - Assert fails with msg.
+ *
+ * @returns {IdentityFn}
+ *   Returns a function that returns the `return_value` unmolested.  This allows
+ *   to put the `Assert()` function in the middle of an expression if desired.
+ */
+function Assert(truth, msg = "") =
+  truth
+  ? function(x) x
+  : let (
+      _msg =
+        is_function(msg)
+        ? msg()
+        : msg
+    )
+    assert(truth, _msg)
+;
+
+/**
+ * Gets a list of `number_of_values` between `p0` and `p1`.
+ *
+ * > NOTE:
+ * >
+ * > `p0` and `p1` must be the same shape and must comprise of values that have
+ * > `+`, `-` and `/` operations defined for them.
+ *
+ * @example
+ *   interpolated_values(1, 2, 1) == [1.5]
+ *   interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
+ *
+ * @param {(number|list)} p0
+ *   Starting point.
+ * @param {(number|list)} p1
+ *   Ending point.
+ *
+ * @returns {(list[number|list])}
+ *   List of `number_of_values` that are the interpolated values between `p0`
+ *   and `p1`.
+ */
+function interpolated_values(p0, p1, number_of_values) =
+  let (
+    diff = p1 - p0
+  )
+  map(1, number_of_values)(
+    function(i)
+      i/(number_of_values+1)*diff + p0
+  )
+;

@@ -1,106 +1,47 @@
+/**
+ * ## types
+ * 
+ * ### Purpose
+ *
+ * This library allows representing types as enumerated values, strings or
+ * minimal strings for complex types.
+ */
 use <base_algos>
-use <list>
+use <indexable>
+use <any_all>
+include <types_consts>
 
-/** Enum for unknown type */
-function UNKNOWN() =  0;
-/** Enum for undef type */
-function UNDEF()   =  1;
-/** Enum for boolean type */
-function BOOL()    =  2;
-/** Enum for function type */
-function FUNC()    =  3;
-/** Enum for number type */
-function NUM()     =  4;
-/** Enum for integer type */
-function INT()     =  5;
-/** Enum for floating point type */
-function FLOAT()   =  6;
-/** Enum for NaN */
-function NAN()     =  7;
-/** Enum for range type */
-function RANGE()   =  8;
-/** Enum for string type */
-function STR()     =  9;
-/** Enum for list type */
-function LIST()    = 10;
+/** ### Tests */
 
 /**
- * The names of the types indexed by the type enums.
- */
-function TYPE_NAMES() = [
-    "*UNKNOWN*" //  0
-  , "undef"     //  1
-  , "bool"      //  2
-  , "func"      //  3
-  , "num"       //  4
-  , "int"       //  5
-  , "float"     //  6
-  , "NaN"       //  7
-  , "range"     //  8
-  , "str"       //  9
-  , "list"      // 10
-];
-
-/**
- * Function to get the type of an object as an enum.
+ * @typedef {number} type_enum
  *
- * @param o (any)
- *   The object to get the type from.
- *
- * @returns (number)
- *   The number corresponding to the type enum.
+ *   Number representing a type.  Use [type_enum_to_str](#type_enum_to_str) to
+ *   get name of type.
  */
-function type_enum(o, distinguish_float_from_int = false) =
-  is_undef(o)    ? UNDEF()  :
-  is_string(o)   ? STR()    :
-  is_list(o)     ? LIST()   :
-  is_num(o[0])   ? RANGE()  :
-  is_num(o)      ? distinguish_float_from_int
-                 ? floor(o) == o
-                   ? INT()
-                   : FLOAT()
-                 : NUM()    :
-  is_function(o) ? FUNC()   :
-  is_bool(o)     ? BOOL()   :
-  is_nan(o)      ? NAN()    :
-                   UNKNOWN();
-
+ 
 /**
  * States if a te (type_enum) represents an indexable type, either directly with
  * `sl[index]` or indirectly with `range_el(r, index)`.
  *
- * @param type_enum (number)
- *   Enum for type (see {@link type_enum})
+ * @param {type_enum} type_enum
+ *   Enum for type (See [type_enum](#type_enum))
  *
- * @returns (bool)
- *   Returns true if indexable, false otherwise.
+ * @returns {bool}
+ *   Returns `true` if indexable, `false` otherwise.
  */
 function is_indexable_te(type_enum) =
-  type_enum >= RANGE()
-;
-
-/**
- * States if a te (type_enum) represents an directly indexable type with
- * `sl[index]`.
- *
- * @param type_enum (number)
- *   Enum for type (see {@link type_enum})
- *
- * @returns (bool)
- *   Returns true if directly indexable, false otherwise.
- */
-function is_indexable_non_range_te(type_enum) =
-  type_enum >= STR()
+  type_enum < UNKNOWN
 ;
 
 /**
  * States if object is an integer (has no fractional part).
  *
- * @param o (any)
+ * @param {any} o
  *   Object to query.
  *
- * @returns (bool)
- *   Returns true if integer, false otherwise.
+ * @returns {bool}
+ *   Returns `true` if integer, `false` otherwise.
  */
 function is_int(o) =
   is_num(o) && floor(o) == o
@@ -109,11 +50,11 @@ function is_int(o) =
 /**
  * States if object is a float (has a fractional part).
  *
- * @param o (any)
+ * @param {any} o
  *   Object to query.
  *
- * @returns (bool)
- *   Returns true if float, false otherwise.
+ * @returns {bool}
+ *   Returns `true` if float, `false` otherwise.
  */
 function is_float(o) =
   is_num(o) && floor(o) != o
@@ -122,40 +63,91 @@ function is_float(o) =
 /**
  * States if object is a NaN object.
  *
- * @param o (any)
+ * @param {any} n
  *   Object to query.
  *
- * @returns (bool)
- *   Returns true if NaN, false otherwise.
+ * @returns {bool}
+ *   Returns `true` if NaN, `false` otherwise.
  */
 function is_nan(n) =
   n != n
 ;
 
+/** ### Type Introspection */
+
+/**
+ * @type {list[string]}
+ *
+ * The names of the types indexed by the type enums.
+ */
+_TYPE_NAMES = [
+    "range"     //  0
+  , "list"      //  1
+  , "str"       //  2
+  , "*UNKNOWN*" //  3
+  , "slice"     //  4
+  , "undef"     //  5
+  , "bool"      //  6
+  , "func"      //  7
+  , "num"       //  8
+  , "int"       //  9
+  , "float"     // 10
+  , "NaN"       // 11
+];
+
+/**
+ * Function to get the type of an object as an enum.
+ *
+ * @param {any} o
+ *   The object to get the type from.
+ * @param {bool} distinguish_float_from_int
+ *   Flag to indicate if to distinguish floats from integers rather than
+ *   grouping them together as numbers.
+ *
+ * @returns {number}
+ *   The number corresponding to the type enum.
+ */
+function type_enum(o, distinguish_float_from_int = false) =
+  is_string(o)   ? STR    :
+  is_list(o)     ? o[0] == "SLICE"
+                   ? SLICE
+                   : LIST :
+  is_num(o[0])   ? RANGE  :
+  is_undef(o)    ? UNDEF  :
+  is_num(o)      ? distinguish_float_from_int
+                 ? floor(o) == o
+                   ? INT
+                   : FLOAT
+                 : NUM    :
+  is_function(o) ? FUNC   :
+  is_bool(o)     ? BOOL   :
+  is_nan(o)      ? NAN    :
+                   UNKNOWN;
+
 /**
  * Convert the type enum to a string.
  *
- * @param (number)
+ * @param {number} i
  *   Type enum to convert.
  *
- * @returns (string)
+ * @returns {string}
  *   The string corresponding to the type enum.  If type enum is not recognised,
  *   return "*INVALID TYPE*".
  */
 function type_enum_to_str(i) =
   assert(is_num(i))
-  0 <= i && i < len(TYPE_NAMES())
-  ? TYPE_NAMES()[i]
+  0 <= i && i < len(_TYPE_NAMES)
+  ? _TYPE_NAMES[i]
   : "*INVALID TYPE*"
 ;
 
 /**
  * Gets a string representation of the type of `o`.
  *
- * @param o (any)
+ * @param {any} o
  *   Object to query.
  *
- * @returns (bool)
+ * @returns {bool}
  *   Returns string representation of `o`'s type.
  */
 function type(o, distinguish_float_from_int = false) =
@@ -172,10 +164,10 @@ function type(o, distinguish_float_from_int = false) =
  *   - else if not the same, then recursively simplify each element.
  * - else it's some other type, so will just output the type of the object.
  *
- * @param o (any)
+ * @param {any} o
  *   Gets the simplified type structure of o.
  *
- * @returns (string)
+ * @returns {string}
  *   This string is a representation of the type structure of o.
  */
 function type_structure(o) =
@@ -185,8 +177,8 @@ function type_structure(o) =
         let (
           et = type_enum(o)
         )
-        et == LIST()
-        ? // in_list(o, function_map(), function(e) gen_te_structure(e))
+        et == LIST
+        ? // it_each(o, map())(function(e) gen_te_structure(e))
           [ for (e = o) gen_te_structure(e) ] // same as above but is most likely more performant.
         : et
     ,
@@ -203,19 +195,20 @@ function type_structure(o) =
               )
               len_gt == 1
               ? concat( [ sub_tes ], [ " (1 element)" ] )
-              : all(function(i) type_structure[0] == type_structure[i], 1, len_gt-1)
+              : all(1, len_gt-1)(
+                  function(i) type_structure[0] == type_structure[i]
+                )
                 ? concat(
                     [ sub_tes ],
                     [ str(" ... (", len_gt, " elements)") ]
                   )
-                : // let (z =[ for (i = it_fwd_i(type_structure)) echo("i", i, type_structure[i], simplify(type_structure[i])) simplify(type_structure[i]) ] ) echo("z", z) z
-                  in_list(type_structure, function_map(), function(e) simplify(e))
+                : // let (z =[ for (i = fwd_i(type_structure)) echo("i", i, type_structure[i], simplify(type_structure[i])) simplify(type_structure[i]) ] ) echo("z", z) z
+                  it_each(type_structure, map())( function(e) simplify(e) )
           : type_structure
     ,
     indent = function(spaces, s = "")
       assert(is_num(spaces))
       assert(spaces >= 0)
-      1 ? "" :
       spaces == 0
       ? s
       : indent(spaces - 1, str(s, " "))
@@ -233,9 +226,11 @@ function type_structure(o) =
               "[ ",
               len(simplified_te_structure) > 1
               ? let (first = result_to_str(simplified_te_structure[0], depth+1))
-                in_list(simplified_te_structure, fn_reduce(first),
-                  function(e, acc) str(acc, ", ", indent(depth+1), result_to_str(e, depth+1)),
-                  1, el_idx(simplified_te_structure, -2))
+                it_each(simplified_te_structure, reduce(first),
+                    fwd_i(simplified_te_structure, 1, -2))(
+                  function(e, acc)
+                    str(acc, ", ", indent(depth+1), result_to_str(e))
+                )
               : "",
               last,
               indent(depth),
@@ -245,9 +240,8 @@ function type_structure(o) =
             let ( first = result_to_str(simplified_te_structure[0], depth+1) )
             str(
               "[ ",
-              in_list(simplified_te_structure, fn_reduce(first),
-                function(e, acc) str(acc, ", ", indent(depth+1), result_to_str(e)),
-                1),
+              it_each(simplified_te_structure, reduce(first), 1)(
+                function(e, acc) str(acc, ", ", indent(depth+1), result_to_str(e))),
               " ]"
             )
         : // not a list.  Must be a type enum.
@@ -265,10 +259,10 @@ function type_structure(o) =
 /**
  * Gives a string that outputs the type_structure and value of object passed in.
  *
- * @param o (any)
+ * @param {any} o
  *   The object to list information about.
  *
- * @returns (string)
+ * @returns {string}
  *   Give info for `o` as string.
  */
 function type_value(o) =

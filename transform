@@ -1,47 +1,113 @@
 /**
- * Transpose of a vector or matrix.
+ * ## transform
+ * 
+ * ### Purpose
+ * 
+ * This library is for matrix math for a verity of things.
+ */
+use <any_all>
+
+/** ### Generate Matrices for Vector Transforms */
+
+/**
+ * @typedef {list[list[number,...],...]} Matrix
  *
- * - Row vector [x,y,z] → column vector [[x],[y],[z]]
- * - Column vector [[x],[y],[z]] → row vector [x,y,z]
+ * Placeholder for NxM matrix.
+ */
+
+/**
+ * Transpose of a matrix.
+ *
  * - Matrix (list of equal-length rows) → transposed matrix
  *
- * @param A (list)
- *   The vector or matrix to transpose.
+ * > NOTE:
+ * >
+ * > There is no need to transpose a vector to a column vector.  When OpenSCAD
+ * > sees M * V or V * M, the vector V is automatically treated as a column or
+ * > row vector as appropriate.
  *
- * @returns (list)
- *   The transpose of vector or matrix A.
+ * @param {Matrix} A
+ *   The matrix to transpose.
+ *
+ * @returns {Matrix}
+ *   The transpose of matrix A.
  */
 function transpose(A) =
   assert(is_list(A), "transpose: input must be a list")
   len(A) == 0 ? [] :
-  // Matrix case (including column vector [[x],[y],...])
-  is_list(A[0]) ?
-    let(
-      row_lens = [for (r = A) len(r)],
-      nc = row_lens[0]
-    )
-    assert(min(row_lens) == nc && max(row_lens) == nc,
-           "transpose: non-rectangular matrix")
-    [ for (j = [0 : nc - 1])
-      [ for (i = [0 : len(A) - 1]) A[i][j] ]
-    ] :
-  // Row-vector case [x,y,...] -> column vector [[x],[y],...]
-  [ for (i = [0 : len(A) - 1]) [ A[i] ] ]
+  assert(is_list(A[0]), "A must be a matrix")
+  let(
+    row_lens = [for (r = A) len(r)],
+    nc = row_lens[0]
+  )
+  assert(min(row_lens) == nc && max(row_lens) == nc,
+          "transpose: non-rectangular matrix")
+  [ for (j = [0 : nc - 1])
+    [ for (i = [0 : len(A) - 1]) A[i][j] ]
+  ]
 ;
 
 /**
- * Make pts homogenous.  If a point's dimension is less than n-1, then zeros are
- * appended before adding a 1 to the end.
+ * @typedef {list} Point2D
  *
- * @param pts (list)
- *   A list of points.  Dimension must be less than n.
- * @param n (number)
- *   This is the homogenous dimension, which must be greater than the number of
- *   dimensions for each point in the pts list.
+ * A 2D point.
  *
- * @returns (list)
- *   A list of points which are all n dimensional, with the last dimension
- *   having a value of 1.
+ * @slot {number} 0
+ *   This is the dimension `0` or x dimension of the point.  Can also be accessed
+ *   by property `.x`.
+ * @slot {number} 1
+ *   This is the dimension `1` or y dimension of the point.  Can also be accessed
+ *   by property `.y`.
+ */
+
+/**
+ * @typedef {list} Point3D
+ *
+ * A 3D point.
+ *
+ * @slot {number} 0
+ *   This is the dimension `0` or x dimension of the point.  Can also be accessed
+ *   by property `.x`.
+ * @slot {number} 1
+ *   This is the dimension `1` or y dimension of the point.  Can also be accessed
+ *   by property `.y`.
+ * @slot {number} 2
+ *   This is the dimension `2` or z dimension of the point.  Can also be accessed
+ *   by property `.z`.
+ */
+
+/**
+ * @typedef {list} Point
+ *
+ * An ND point.
+ *
+ * @slot {number} 0
+ *   This is the dimension `0` or x dimension of the point.  Can also be accessed
+ *   by property `.x`.
+ * @slot {number} 1
+ *   This is the dimension `1` or y dimension of the point.  Can also be accessed
+ *   by property `.y`.
+ * @slot {number} 2
+ *   This is the dimension `2` or z dimension of the point.  Can also be accessed
+ *   by property `.z`.
+ * @slot {number} [n]
+ *   This is the dimension `n` dimension of the point.
+ */
+
+/**
+ * Convert points to homogeneous coordinates.
+ *
+ * Each point is padded with zeros up to dimension n-1, then a trailing 1 is
+ * appended.
+ *
+ * @param {list[Point,...]} pts
+ *   List of points.  Each point must have dimension < n.
+ * @param {number} n
+ *   Target homogeneous dimension.  Must be greater than the dimension of every
+ *   point in pts.
+ *
+ * @returns {list[Point,...]}
+ *   List of n-dimensional points with homogeneous coordinate 1 at index n-1.
  */
 function homogenise(pts, n=4) =
   let (result =
@@ -59,25 +125,34 @@ function homogenise(pts, n=4) =
 // echo("test homogenise:", homogenise([[2,3,4]], 4));
 
 /**
- * Remove homogenous dimension.  If a point's dimension - 1 is greater than n,
- * then the extra dimensions are truncated.  All coordinates are divided by
- * the homogeneous dimension.
+ * Dehomogenises a list of homogeneous points to Euclidean points.
  *
- * @param pts (list)
- *   A list of points.  Dimension must be greater than n.
- * @param n (number)
- *   This is the target dimension, which must be less than the number of
- *   dimensions for each point in the pts list.
+ * Each input point must have at least n+1 coordinates.  The homogeneous divisor w is the
+ * last coordinate of the point (index len(pt)-1).  This function returns the first n
+ * coordinates divided by w, and discards all remaining coordinates.
  *
- * @returns (list)
- *   A list of points which are all n dimensional.
+ * This is the companion to homogenise() when homogenise() places w at the last coordinate.  A
+ * typical pipeline is: homogenise points to match an M×M transform, multiply, then project
+ * back to N dimensions with dehomogenise(..., N).
+ *
+ * Preconditions (enforced by asserts):
+ * - Every point pt satisfies len(pt) > n.  (There must be a last coordinate to use as w.)
+ * - w != 0.  (Homogeneous projection is undefined for w == 0.)
+ *
+ * @param {list[Point,...]} pts
+ *   List of homogeneous points.
+ * @param {number} [n=3]
+ *   Number of Euclidean coordinates to return per point.
+ *
+ * @return (list[Point,...])
+ *   List of n-dimensional Euclidean points.
  */
 function dehomogenise(pts, n=3) =
   [ for (i = [0 : len(pts) - 1]) // iterate over each point in list of points
       let (
         homogeneous =
           assert(len(pts[i]) > n, "Points must have the more dimensions as n.")
-          pts[i][n]
+          pts[i][len(pts[i])-1]
       )
       assert(homogeneous != 0, "Homogeneous dimension can't have a value of 0.")
       [ for (j = [0 : n - 1]) // iterate over each dimension in each point
@@ -88,17 +163,25 @@ function dehomogenise(pts, n=3) =
 // echo("test dehomogenise:", dehomogenise(homogenise([[2,3,4]], 4), 4));
 
 /**
- * Takes a non-homogeneous transformation matrix and convert it into a
- * homogeneous one.
+ * Embed a non-homogeneous square transform into a larger homogeneous matrix.
  *
- * @param A (list[list[number]])
- *   An MxM transformation matrix.
- * @param n (number)
- *   The dimension to make homogeneous.  Must be > than the dimensions (M) of
- *   the transformation matrix A.
+ * Returns a **homogeneous column-vector** matrix H (n×n).  A is placed in the
+ * top-left block.
  *
- * @returns (list[list[number]])
- *   The homogenized matrix.
+ * Use:
+ * - If H is used as a transform matrix, apply it like any other homogeneous
+ *   column-vector matrix:
+ *   - Single point p: treat p as homogeneous when multiplying.
+ *   - Point list Ps: use transform(Ps, transpose(H)).
+ *
+ * @param {Matrix} A
+ *   Square M×M transform matrix.
+ * @param {number} n
+ *   Target homogeneous dimension.  Must satisfy M < n.
+ *
+ * @returns {Matrix}
+ *   Homogeneous matrix H (n×n) with A in the top-left block and identity
+ *   elsewhere.
  */
 function homogenise_transform(A, n=4) =
   let(
@@ -123,21 +206,104 @@ function homogenise_transform(A, n=4) =
 
 // ROTATION MATRIX
 // --- Rotation matrices (3D) -----------------------------------------------
-// Applies to row vectors: new_p = old_p * M
-// Matches rotate([rx, ry, rz]) order: X then Y then Z (degrees).
 
 /**
- * Builds a 3×3 rotation matrix for a rotation about the X axis.
+ * @typedef {list} Vector2D
  *
- * The matrix is intended for post-multiplying 3D row vectors:
- * new_p = old_p * rot_x(a).
+ * A bound 2D vector, which starts from the origin.
  *
- * @param a (number):
+ * @slot {number} 0
+ *   This is the dimension `0` or x dimension of the vector.  Can also be
+ *   accessed by property `.x`.
+ * @slot {number} 1
+ *   This is the dimension `1` or y dimension of the vector.  Can also be
+ *   accessed by property `.y`.
+ */
+
+/**
+ * @typedef {list} Vector3D
+ *
+ * A bound 3D vector, which starts from the origin.
+ *
+ * @slot {number} 0
+ *   This is the dimension `0` or x dimension of the vector.  Can also be
+ *   accessed by property `.x`.
+ * @slot {number} 1
+ *   This is the dimension `1` or y dimension of the vector.  Can also be
+ *   accessed by property `.y`.
+ * @slot {number} 2
+ *   This is the dimension `2` or z dimension of the vector.  Can also be
+ *   accessed by property `.z`.
+ */
+
+/**
+ * @typedef {list} Vector
+ *
+ * A bound ND vector, which starts from the origin.
+ *
+ * @slot {number} 0
+ *   This is the dimension `0` or x dimension of the vector.  Can also be
+ *   accessed by property `.x`.
+ * @slot {number} 1
+ *   This is the dimension `1` or y dimension of the vector.  Can also be
+ *   accessed by property `.y`.
+ * @slot {number} 2
+ *   This is the dimension `2` or z dimension of the vector.  Can also be
+ *   accessed by property `.z`.
+ * @slot {number} [n]
+ *   This is the dimension `n` dimension of the vector.
+ */
+
+/**
+ * @typedef {list[Point2D,Point2D]} BVector2D
+ *
+ * A bound 2D vector, which starts from point in slot 0 and goes to point in
+ * slot 1.
+ *
+ * @slot {Point2D} 0
+ *   This is the starting point for this bound vector.
+ * @slot {Point2D} 1
+ *   This is the ending point for this bound vector.
+ */
+
+/**
+ * @typedef {list[Point3D,Point3D]} BVector3D
+ *
+ * A bound 3D vector, which starts from point in slot 0 and goes to point in
+ * slot 1.
+ *
+ * @slot {Point3D} 0
+ *   This is the starting point for this bound vector.
+ * @slot {Point3D} 1
+ *   This is the ending point for this bound vector.
+ */
+
+/**
+ * @typedef {list[Point,Point]} BVector
+ *
+ * A bound ND vector, which starts from point in slot 0 and goes to point in
+ * slot 1.
+ *
+ * @slot {Point} 0
+ *   This is the starting point for this bound vector.
+ * @slot {Point} 1
+ *   This is the ending point for this bound vector.
+ */
+
+/**
+ * Rotation matrix about the X axis.
+ *
+ * Returns a **non-homogeneous column-vector** rotation matrix M (3×3).
+ *
+ * Use:
+ * - Single Point    p:  p' = M * p
+ * - List of Points Ps:  Ps' = Ps * transpose(M)
+ *
+ * @param {number} a
  *   Rotation angle in degrees.
  *
- * @returns (list):
- *   3×3 rotation matrix representing a rotation about the X axis through
- *   the origin by angle a.
+ * @returns {Matrix}
+ *   Column-vector rotation matrix M.
  */
 function rot_x(a) =
   [
@@ -148,17 +314,19 @@ function rot_x(a) =
 ;
 
 /**
- * Builds a 3×3 rotation matrix for a rotation about the Y axis.
+ * Rotation matrix about the Y axis.
  *
- * The matrix is intended for post-multiplying 3D row vectors:
- * new_p = old_p * rot_y(a).
+ * Returns a **non-homogeneous column-vector** rotation matrix M (3×3).
  *
- * @param a (number):
+ * Use:
+ * - Single Point    p:  p' = M * p
+ * - List of Points Ps:  Ps' = Ps * transpose(M)
+ *
+ * @param {number} a
  *   Rotation angle in degrees.
  *
- * @returns (list):
- *   3×3 rotation matrix representing a rotation about the Y axis through
- *   the origin by angle a.
+ * @returns {Matrix}
+ *   Column-vector rotation matrix M.
  */
 function rot_y(a) =
   [
@@ -169,17 +337,19 @@ function rot_y(a) =
 ;
 
 /**
- * Builds a 3×3 rotation matrix for a rotation about the Z axis.
+ * Rotation matrix about the Z axis.
  *
- * The matrix is intended for post-multiplying 3D row vectors:
- * new_p = old_p * rot_z(a).
+ * Returns a **non-homogeneous column-vector** rotation matrix M (3×3).
  *
- * @param a (number):
+ * Use:
+ * - Single Point    p:  p' = M * p
+ * - List of Points Ps:  Ps' = Ps * transpose(M)
+ *
+ * @param {number} a
  *   Rotation angle in degrees.
  *
- * @returns (list):
- *   3×3 rotation matrix representing a rotation about the Z axis through
- *   the origin by angle a.
+ * @returns {Matrix}
+ *   Column-vector rotation matrix M.
  */
 function rot_z(a) =
   [
@@ -190,19 +360,69 @@ function rot_z(a) =
 ;
 
 /**
- * Builds a 3×3 rotation matrix for an arbitrary axis-angle rotation.
+ * Checks if `o` has the shape of a vector of `dim` `number`s.
  *
- * The axis is normalised internally and the matrix is intended for
- * post-multiplying 3D row vectors: new_p = old_p * rot_axis(angle, axis).
+ * @param {any} o
+ *   Object to test.
+ * @param {number} [dim=3]
+ *   Number of dimensions the vector should represent.
  *
- * @param angle (number):
+ * @returns {bool}
+ *   True if has the shape of a point of `dim` `number`s.
+ */
+function is_point(o, dim=3) =
+  is_list(o) && len(o) == dim && all(0, len(o)-1)(function(i) is_num(o[i]))
+;
+
+/**
+ * Checks if `o` has the shape of a free vector of `dim` `number`s.
+ *
+ * @param {any} o
+ *   Object to test.
+ * @param {number} [dim=3]
+ *   Number of dimensions the vector should represent.
+ *
+ * @returns {bool}
+ *   True if has the shape of a free vector of `dim` `number`s.
+ */
+function is_vector(o, dim=3) =
+  is_list(o) && len(o) == dim && all(0, len(o)-1)(function(i) is_num(o[i]))
+;
+
+/**
+ * Checks if `o` has the shape of 2 bound points of `dim` `number`s.  This
+ * represents the starting and ending points of a bound vector.
+ *
+ * @param {any} o
+ *   Object to test.
+ * @param {number} [dim=3]
+ *   Number of dimensions the vector should represent.
+ *
+ * @returns {bool}
+ *   True if has the shape of 2 bound points of `dim` `number`s.
+ */
+function is_bound_vector(o, dim=3) =
+  is_list(o) && len(o) == 2 && is_point(o[0], dim) && is_point(o[1], dim)
+;
+
+/**
+ * Rotation matrix about an arbitrary axis.
+ *
+ * Returns a **non-homogeneous column-vector** rotation matrix M (3×3) that
+ * rotates around the specified vector 'axis' rooted in the origin of the
+ * coordinate system.
+ *
+ * Use:
+ * - Single Point    p:  p' = M * p
+ * - List of Points Ps:  Ps' = Ps * transpose(M)
+ *
+ * @param {number} angle
  *   Rotation angle in degrees.
- * @param axis (list):
- *   3-element axis vector [x, y, z].  The vector must be non-zero.
+ * @param {Vector3D} axis
+ *   Rotation axis vector (must be non-zero).
  *
- * @returns (list):
- *   3×3 rotation matrix representing a rotation of angle degrees about the
- *   given axis through the origin.
+ * @returns {Matrix}
+ *   Column-vector rotation matrix M.
  */
 function rot_axis(angle, axis) =
   let(
@@ -211,56 +431,96 @@ function rot_axis(angle, axis) =
   assert(n > 0, "axis vector must be non-zero")
   let(
     ux = axis[0]/n, uy = axis[1]/n, uz = axis[2]/n,
-    c = cos(angle), s = sin(angle), t = 1 - c
+    c = cos(angle), s = sin(angle), t = 1 - c,
+    rot_matrix =
+      [
+        [ t*ux*ux + c,     t*ux*uy - s*uz, t*ux*uz + s*uy ],
+        [ t*uy*ux + s*uz,  t*uy*uy + c,    t*uy*uz - s*ux ],
+        [ t*uz*ux - s*uy,  t*uz*uy + s*ux, t*uz*uz + c    ]
+      ]
   )
-  [
-    [ t*ux*ux + c,     t*ux*uy - s*uz, t*ux*uz + s*uy ],
-    [ t*uy*ux + s*uz,  t*uy*uy + c,    t*uy*uz - s*ux ],
-    [ t*uz*ux - s*uy,  t*uz*uy + s*ux, t*uz*uz + c    ]
-  ]
+  
 ;
 
 /**
- * Rotate matrix that parallel's module rotate.
+ * Rotation matrix that parallels OpenSCAD's rotate() module, with the
+ * additional feature that it can also take a `BVector3D` for `v`, meaning that
+ * it can rotate about the point stipulated by the point in slot 0 of the
+ * BVector.
  *
- * @param a (number | list)
- *   - If number and b is undef, then rotate CCW around z-axis.
- *   - If number and b is list, then rotate CCW around normal vector b.
- *   - If list, then a rotates x, y and z the degrees specified in indices 0, 1
- *     and 2 respectively, in that order.  b is ignored.
- * @param b (undef | list)
- *   - Only meaningful if a is a number.
- *   - If list, then it is the normal vector to rotate around.
- *   - If undef, then rotate around the z-axis.
+ * If `v` is a `Vector3D`, returns a **non-homogeneous column-vector** rotation
+ * matrix M (3×3) that rotates around the specified vector 'axis' rooted in the
+ * origin of the coordinate system.
  *
- * @returns (list[list[number]])
- *   Non-homogenous column-vector rotation matrix M.
- *   Use M * p to rotate a single point or Ps * transpose(M) to rotate a list of
- *   points.
+ * If `v` is a `BVector3D`, returns a **homogeneous column-vector** rotation
+ * matrix M (4x4) that rotates around the specified vector 'axis' (`v[1]-v[0]`)
+ * around point `v[0]`.
+ *
+ * To not have to worry about the matrix size, it's recommended that you use the
+ * [`transform()`](#f-transform) API.
+ *
+ * Use if `p` or elements of `Ps` are homogeneous/non-homogeneous as `M` is:
+ * - Single Point    p:  p' = M * p
+ * - List of Points Ps:  Ps' = Ps * transpose(M)
+ * or if don't want to worry about having to use
+ * [`homogenise()`](#f-homogenise)/[`dehomogenise()`](#f-dehomogenise)), use
+ * [`transform()`](#f-transform) API:
+ * - Single Point    p:  p' = transform([p], transpose(M))
+ * - List of Points Ps:  Ps' = transform(Ps, transpose(M))
+ *
+ * @param {(number|list[number,number,number])} a
+ *   - If `number` and `v` is not supplied: rotate CCW around Z.
+ *   - If `number` and `v` is a `Vector3D`: rotate CCW around axis defined by
+ *     `v`.
+ *   - If `list` `[rx,ry,rz]`: apply rotations about X then Y then Z (degrees).
+ *     (v is ignored.)
+ * @param {(Vector3D|BVector3D)} [v]
+ *   - If `a` is a number
+ *     - If `v` is a specified Vector3D, then this is the axis vector.
+ *     - If `v` is a specified BVector3D, then use direction for the axis vector
+ *       and `v[0]` as the rotation point.
+ *     - Otherwise axis vector is Z.
+ *
+ * @returns {Matrix}
+ *   Column-vector rotation matrix M.
+ *   - If `v` is a `BVector3D`, then returns a homogenised transform matrix
+ *     (4x4).
+ *   - If `v` is a `Vector3D`, then returns a non-homogenised transform matrix
+ *     (3x3).
  */
-function rotate(a, b=undef) =
+function rotate(a, v=undef) =
   is_num(a)
-    ? is_undef(b) ? rot_z(a)
-      : is_list(b)  ? rot_axis(a, b)
-      : assert(false, "rotate(angle, axis): axis must be a 3-vector") undef
-    : is_list(a) && len(a) == 3
-        ? rot_z(a[2]) * rot_y(a[1]) * rot_x(a[0])   // Rz * Ry * Rx
-        : assert(false, "rotate([rx,ry,rz]): need 3 components") undef
+  ? is_undef(v)
+    ? rot_z(a)
+    : is_vector(v)
+      ? rot_axis(a, v)
+      : is_bound_vector(v)
+        ? translate(v[0]) *
+          homogenise_transform(rot_axis(a, v[1]-v[0])) *
+          translate(-v[0])
+        : assert(false, "rotate(angle, axis): axis must be a Vector3D") undef
+  : is_list(a) && len(a) == 3
+      ? rot_z(a[2]) * rot_y(a[1]) * rot_x(a[0])   // Rz * Ry * Rx
+      : assert(false, "rotate([rx,ry,rz]): need 3 components") undef
 ;
 
 // echo(str("rotate test: ", [[1, 0, 0] ,[1, 0, 0]] * transpose(rotate([0,0,45]))));
 // echo(str("rotate test: ", rotate([0,0,45]) * [1, 0, 0]));
 
 /**
- * Translation matrix that parallel's module translate.
+ * Translation matrix that parallels OpenSCAD's translate() module.
  *
- * @param v (list)
- *   The vector to translate by.
+ * Returns a **homogeneous column-vector** translation matrix T (4×4).
  *
- * @returns (list[list[number]])
- *   Homogenous column-vector translation matrix M.
- *   Use M * p to rotate a single point or Ps * transpose(M) to rotate a list of
- *   points.
+ * Use:
+ * - Single 3D point p: treat p as [x,y,z,1] (homogeneous) when multiplying.
+ * - Point list Ps (3D): use transform(Ps, transpose(T)).  (Preferred.)
+ *
+ * @param {list[number]} v
+ *   Translation vector.
+ *
+ * @returns {Matrix}
+ *   Homogeneous column-vector translation matrix T.
  */
 function translate(v) =
   [
@@ -272,15 +532,19 @@ function translate(v) =
 ;
 
 /**
- * Scale matrix that parallel's module scale.
+ * Scale matrix that parallels OpenSCAD's scale() module.
  *
- * @param v (list)
- *   The vector to scale by.
+ * Returns a **non-homogeneous column-vector** scaling matrix S (3×3).
  *
- * @returns [list[list[number]]])
- *   Non-homogeneous column-vector scaling matrix M.
- *   Use M * p to rotate a single point or Ps * transpose(M) to scale a list of
- *   points.
+ * Use:
+ * - Single point p (3-vector):  p' = S * p
+ * - Point list Ps:              Ps' = Ps * transpose(S)
+ *
+ * @param {list[number]} v
+ *   Per-axis scale factors.
+ *
+ * @returns {Matrix}
+ *   Column-vector scaling matrix S.
  */
 function scale(v) =
   [
@@ -292,50 +556,27 @@ function scale(v) =
 // echo(str("translate test 1: ", translate([1.5, 2.5, 3.5]) * [1,1,1,1]));
 // echo(str("translate test 2: ", homogenise([[1,1,1]], 4) * transpose(translate([1.5, 2.5, 3.5]))));
 
-
 /**
- * This will move vec so that the angle between ref_vec and vec will increase by
- * delta_angle_deg.
+ * Transform a list of points using either a matrix or a point-mapping function.
  *
- * @param ref_vec (list)
- *   Reference vector.
- *   - Must have a magnitude > 0 or the angle is undefined.
- * @param vec (list)
- *   Vector to move.
- *   - Must have a magnitude > 0 or the angle is undefined.
- *   - Must not be parallel or anti-parallel to ref_vec, otherwise the rotation
- *     plane is undefined.
- * @param delta_angle_deg (number)
- *   The number of degrees to move vec away from ref_vec (origin is angle
- *   reference point).
+ * Points in pts are treated as **row vectors** (each point is a 1×d row).
  *
- * @returns new vector that is delta_angle_deg more away from ref_vec.
- */
-function offset_angle(ref_vec, vec, delta_angle_deg) =
-  assert(norm(ref_vec) > 0, str("ref_vec ", ref_vec, " needs a length > 0."))
-  assert(norm(    vec) > 0, str(    "vec ",     vec, " needs a length > 0."))
-  let ( n = cross(ref_vec, vec) )
-  assert(norm(n) > 1e-12, "vectors cannot be (anti)parallel")
-  rotate(delta_angle_deg, n) * vec
-;
-
-/**
- * Transforms a set of points with a matrix, or function that takes a point.
+ * - If `matrix_or_fn` is a `Matrix`, and since all matrices generated by this
+ *   library are column-vector matrices `M`, you must pass `transpose(M)` here.
  *
- * @param pts (list<list<number>)
- *   A list of points
- * @param matrix_or_function (list<list<number>>)
- *   A matrix to multiply each point with.
+ * - If matrix_or_fn is a homogeneous matrix (e.g.  4×4 for 3D points), this
+ *   function homogenises pts, multiplies, then dehomogenises back to the
+ *   original point dimension.
  *
- *   NOTE: It must be transposed compared to that when multiplying a single
- *         point.
+ * @param {list[Point]} pts
+ *   List of points (rows).  All points must have the same dimension.
+ * @param {(Matrix|function(pt: Point): Point)} matrix_or_fn
+ *   Either:
+ *   - a matrix in row-vector orientation (typically `transpose(M)`), or
+ *   - a function that maps a single point to a transformed point.
  *
- *   E.g.
- *      new_pt = T * pt;
- *      new_pts = pts * transpose(T); // this is how this function works.
- *
- * @returns (list<list<number>>)
- *    Transformed points.
+ * @returns {list[Point]}
+ *   Transformed points.
  */
 function transform(pts, matrix_or_fn) =
   is_function(matrix_or_fn)
@@ -346,232 +587,33 @@ function transform(pts, matrix_or_fn) =
       pts * matrix_or_fn
 ;
 
-////////////////////////////////////////////////////////////////////////////////
-// INVERT MATRIX
-
 /**
- * Inverts a square matrix using Gauss-Jordan elimination with
- * partial pivoting.
+ * Returns a homogeneous column-vector transform matrix T (4×4) that maps one
+ * line segment to another.
  *
- * @param A (matrix)
- *   Non-empty square numeric matrix (list of equal-length lists).
- * @param eps (number) [default=1e-12]
- *   Pivot tolerance.  Must be > 0.
+ * Use:
+ * - Single 3D point p: treat p as [x,y,z,1] (homogeneous) when multiplying.
+ * - Point list Ps (3D): use transform(Ps, transpose(T)).  (Preferred.)
  *
- * @returns (matrix)
- *   The inverse matrix A^{-1}.
+ * @param {(list[Point3D,Point3D]|list[Point3D,Point3D,Point3D]|list[Point3D,Point3D,Point3D,Point3D])} start_line_seg
+ *   The source line segment: `[P0, P1]`.
+ * @param {(list[Point3D,Point3D]|list[Point3D,Point3D,Point3D]|list[Point3D,Point3D,Point3D,Point3D])} end_line_seg
+ *   The target line segment: `[Q0, Q1]`.
+ * @param {bool} [scale_to_vectors=false]
+ *   Only affects the 2-point overload.  If true, also apply uniform scaling by
+ *   `|Q1-Q0|/|P1-P0|`.
  *
- * @throws
- *   Assertion failure if A is not a valid square numeric matrix or if any
- *   pivot has |pivot| < eps (numerically singular).
- *
- * @example
- *   invert([[4,7],[2,6]])  // -> [[0.6,-0.7],[-0.2,0.4]]
+ * @returns {Matrix}
+ *   Homogeneous column-vector transform matrix T.
+ *   - if start/end line_seg consist of 2 points, then
+ *     - Rigid reorientation.  If scale_to_vectors is true, also apply uniform
+ *       scaling.
+ *   - if start/end line_seg consist of 3 points, then
+ *     - Reorientation that maps one 2D basis (plus translation) to another.
+ *   - otherwise start/end line_seg consist of 4 points
+ *     - Reorientation that maps one 3D basis (plus translation) to another.
  */
-function invert(A, eps = 1e-12) =
-  assert(_is_square_matrix(A), "invert: A must be a non-empty square matrix")
-  assert(_all_numeric(A), "invert: all entries in A must be numeric")
-  let(
-    n   = len(A),
-    aug = augment(A, identity(n))    // [A | I]
-  )
-  let(
-    raug = row_reduction(aug, 0, n, eps)  // reduce to [I | A^{-1}]
-  )
-  _right_half(raug, n);
-
-/**
- * Performs Gauss-Jordan row reduction with partial pivoting on an
- * augmented matrix.
- *
- * @param aug (matrix)
- *   Augmented matrix of shape n×(2n), typically [A | I].
- * @param k (number)
- *   Current column index (0-based).  External callers pass 0.
- * @param n (number)
- *   Matrix order.  Must equal the row count of aug.
- * @param eps (number)
- *   Pivot tolerance.  Must be > 0.
- *
- * @returns (matrix)
- *   The reduced augmented matrix.  For a nonsingular A this is [I | A^{-1}].
- *
- * @throws
- *   Assertion failure if |pivot| < eps at any step.
- */
-function row_reduction(aug, k, n, eps) =
-  (k >= n) ? aug
-  : let(
-      r     = _argmax_abs_col(aug, k, k),
-      aug1  = (r == k) ? aug : _swap_rows(aug, k, r),
-      piv   = aug1[k][k]
-    )
-    assert(abs(piv) >= eps,
-           str("invert: singular/ill-conditioned at column ", k, " (|pivot| < eps)"))
-    let(
-      // Normalize pivot row to make pivot = 1
-      rowk  = [for (j = [0 : 2*n - 1]) aug1[k][j] / piv],
-      aug2  = [for (i = [0 : n - 1]) (i == k) ? rowk : aug1[i]],
-      // Eliminate column k in all other rows
-      aug3  = [for (i = [0 : n - 1])
-                (i == k) ? aug2[i]
-                         : let(f = aug2[i][k])
-                           [for (j = [0 : 2*n - 1]) aug2[i][j] - f * rowk[j]]
-              ]
-    )
-    row_reduction(aug3, k + 1, n, eps);
-
-// --- Helpers ---
-
-/**
- * Creates an n×n identity matrix.
- *
- * @param n (number)
- *   Matrix order.  Must be a positive integer.
- *
- * @returns (matrix)
- *   The identity matrix of order n.
- */
-function identity(n) =
-  assert(n > 0, "identity: n must be > 0")
-  [for (i = [0 : n - 1]) [for (j = [0 : n - 1]) (i == j) ? 1 : 0]];
-
-/**
- * Horizontally concatenates two matrices with the same row count.
- *
- * @param A (matrix)
- *   Left matrix with r rows.
- * @param B (matrix)
- *   Right matrix with r rows.
- *
- * @returns (matrix)
- *   The augmented matrix [A | B].
- *
- * @throws
- *   Assertion failure if A and B do not have the same non-zero row count.
- */
-function augment(A, B) =
-  assert(len(A) == len(B) && len(A) > 0,
-         "augment: A and B must have same row count and be non-empty")
-  [for (i = [0 : len(A) - 1]) concat(A[i], B[i])];
-
-/**
- * Extracts the right half (columns n..2n-1) of an n×(2n) augmented matrix.
- *
- * @param aug (matrix)
- *   Augmented matrix of shape n×(2n).
- * @param n (number)
- *   Left block width and row count.
- *
- * @returns (matrix)
- *   The right n×n block.
- */
-function _right_half(aug, n) =
-  [for (i = [0 : n - 1]) [for (j = [n : 2*n - 1]) aug[i][j]]];
-
-/**
- * Returns a copy of matrix M with rows i and j swapped.
- *
- * @param M (matrix)
- *   Input matrix.
- * @param i (number)
- *   First row index (0-based).
- * @param j (number)
- *   Second row index (0-based).
- *
- * @returns (matrix)
- *   Matrix with rows i and j exchanged.
- */
-function _swap_rows(M, i, j) =
-  [for (r = [0 : len(M) - 1]) (r == i) ? M[j] : (r == j) ? M[i] : M[r]];
-
-/**
- * Finds the row index r ∈ [start..n-1] that maximizes |aug[r][col]|.
- * Ties resolve to the first occurrence.
- *
- * @param aug (matrix)
- *   Matrix to scan.
- * @param col (number)
- *   Column index to examine.
- * @param start (number)
- *   First row index to consider (inclusive).
- *
- * @returns (number)
- *   The row index of the maximal absolute entry in the given column slice.
- */
-function _argmax_abs_col(aug, col, start) =
-  let(
-    n    = len(aug),
-    mags = [for (r = [start : n - 1]) abs(aug[r][col])],
-    mval = max(mags),
-    idx0 = search(mval, mags)[0]
-  ) start + idx0;
-
-/**
- * Tests whether M is a rectangular list-of-lists with consistent row length.
- * Returns a boolean.
- *
- * @param M (any)
- *   Candidate matrix.
- *
- * @returns (bool)
- *   true if M is a non-empty list of rows with equal positive length.
- */
-function _is_rect_matrix(M) =
-  is_list(M) && (len(M) > 0) && is_list(M[0]) &&
-  (let(c = len(M[0]))
-     (c > 0) &&
-     (min([for (row = M) (is_list(row) && len(row) == c) ? 1 : 0]) == 1));
-
-/**
- * Tests whether M is a square matrix (rectangular and rows == columns).
- * Returns a boolean.
- *
- * @param M (any)
- *   Candidate matrix.
- *
- * @returns (bool)
- *   true if M is rectangular and len(M) == len(M[0]).
- */
-function _is_square_matrix(M) =
-  _is_rect_matrix(M) && (len(M) == len(M[0]));
-
-/**
- * Tests whether all entries of M are numeric.  Returns a boolean.
- *
- * @param M (any)
- *   Candidate matrix.
- *
- * @returns (bool)
- *   true if every element in every row is numeric.
- */
-function _all_numeric(M) =
-  (min([for (row = M) min([for (x = row) is_num(x) ? 1 : 0])]) == 1);
-
-/**
- * Create a homogeneous transform that maps one segment/frame to another.
- *
- * @overload reorient([P0,P1], [Q0,Q1]) => matrix 4x4
- *   Rigid reorientation + uniform scaling: maps P0→Q0, aligns P1−P0 to Q1−Q0,
- *   and scales by |Q1−Q0| / |P1−P0|.
- *
- * @overload reorient([P0,P1,P2], [Q0,Q1,Q2]) => matrix 4x4
- *   Planar frame reorientation + in-plane scaling/shear:
- *   L maps {P1−P0, P2−P0, nŜ} → {Q1−Q0, Q2−Q0, nÊ}; T = T(Q0)·H(L)·T(−P0).
- *
- * @overload reorient([P0,P1,P2,P3], [Q0,Q1,Q2,Q3]) => matrix 4x4
- *   Full 3D ("cubic") frame reorientation with anisotropic scale/shear:
- *   Let V = [v1 v2 v3] with vk = Pk−P0, and W = [w1 w2 w3] with wk = Qk−Q0.
- *   L = W · invert(V) sends each basis vector exactly: L·v_k = w_k.
- *   T = T(Q0) · H(L) · T(−P0).
- *
- * @param start_line_seg (Array[Point3D,...])
- * @param end_line_seg   (Array[Point3D,...])
- *
- * @returns (matrix 4x4)
- *   Homogeneous transform T.  Apply to a point p (as [x,y,z,1]): p' = T * p.
- */
-function reorient(start_line_seg, end_line_seg, scale_to_vectors) =
+function reorient(start_line_seg, end_line_seg, scale_to_vectors = false) =
   let(nA = len(start_line_seg), nB = len(end_line_seg))
   assert((nA == 2 || nA == 3 || nA == 4) && nA == nB,
          "reorient: both inputs must have length 2, 3, or 4, and match")
@@ -681,79 +723,203 @@ function reorient(start_line_seg, end_line_seg, scale_to_vectors) =
       )
 ;
 
+////////////////////////////////////////////////////////////////////////////////
+// INVERT MATRIX
 
-let (
-  start = [[1, 2, 3], [4, 5, 6]],
-  end = [[7, 8, 9], [10, 11, 13]],
-  T = reorient(start, end),
-  r = dehomogenise([T * homogenise(start)[0]])[0],
-  output = str(
-    "\n  T: ", T,
-    "\n  start: ", start,
-    "\n  r: ", r,
-    "\n  diff: ", r - end)
-)
-echo(output)
-assert(equal(r, end[0]), "Single point reorientation didn't work.");
-    
-// let (
-//   start = [[1, 2, 3], [4, 5, 6]],
-//   end = [[7, 8, 9], [10, 11, 13]],
-//   T = reorient(start, end),
-//   TT = transpose(T),
-//   r = dehomogenise(homogenise(start) * TT),
-//   output = str(
-//     "\n  T: ", T,
-//     "\n  TT: ", TT,
-//     "\n  start: ", start,
-//     "\n  r: ", r,
-//     "\n  diff: ", r - end)
-// )
-// echo(output)
-// assert(equal(r, end), "Multi point reorientation didn't work.");
+/** ### Matrix Math */
+/**
+ * Invert a square matrix using Gauss-Jordan elimination with partial pivoting.
+ *
+ * @param {Matrix} A
+ *   Non-empty square numeric matrix (list of equal-length lists).
+ * @param {number} [eps=1e-12]
+ *   Pivot tolerance.  Must be > 0.
+ *
+ * @returns {Matrix}
+ *   The inverse matrix A^{-1}.
+ *
+ * @throws
+ *   Assertion failure if A is not a valid square numeric matrix or if any pivot
+ *   has |pivot| < eps (numerically singular).
+ *
+ * @example
+ *   invert([[4,7],[2,6]])  // -> [[0.6,-0.7],[-0.2,0.4]]
+ */
+function invert(A, eps = 1e-12) =
+  assert(_is_square_matrix(A), "invert: A must be a non-empty square matrix")
+  assert(_all_numeric(A), "invert: all entries in A must be numeric")
+  let(
+    n   = len(A),
+    aug = augment(A, identity(n))    // [A | I]
+  )
+  let(
+    raug = row_reduction(aug, 0, n, eps)  // reduce to [I | A^{-1}]
+  )
+  _right_half(raug, n);
 
-let (
-  start = [[1, 2, 3], [4, 5, 6], [14, 15, 19]],
-  end = [[7, 8, 9], [10, 11, 13], [17, 18, 19]],
-  T = reorient(start, end),
-  TT = transpose(T),
-  r = dehomogenise(homogenise(start) * TT),
-  output = str(
-    "\n  T: ", T,
-    "\n  TT: ", TT,
-    "\n  start: ", start,
-    "\n  r: ", r,
-    "\n  diff: ", r - end)
-)
-echo(output)
-assert(equal(r, end), "Multi point reorientation didn't work.");
+/**
+ * Performs Gauss-Jordan row reduction with partial pivoting on an augmented
+ * matrix.
+ *
+ * @param {Matrix} aug
+ *   Augmented matrix of shape n×(2n), typically [A | I].
+ * @param {number} k
+ *   Current column index (0-based).  External callers pass 0.
+ * @param {number} n
+ *   Matrix order.  Must equal the row count of aug.
+ * @param {number} eps
+ *   Pivot tolerance.  Must be > 0.
+ *
+ * @returns {Matrix}
+ *   The reduced augmented matrix.  For a nonsingular A this is [I | A^{-1}].
+ *
+ * @throws
+ *   Assertion failure if |pivot| < eps at any step.
+ */
+function row_reduction(aug, k, n, eps) =
+  (k >= n) ? aug
+  : let(
+      r     = _argmax_abs_col(aug, k, k),
+      aug1  = (r == k) ? aug : _swap_rows(aug, k, r),
+      piv   = aug1[k][k]
+    )
+    assert(abs(piv) >= eps,
+           str("invert: singular/ill-conditioned at column ", k, " (|pivot| < eps)"))
+    let(
+      // Normalise pivot row to make pivot = 1
+      rowk  = [for (j = [0 : 2*n - 1]) aug1[k][j] / piv],
+      aug2  = [for (i = [0 : n - 1]) (i == k) ? rowk : aug1[i]],
+      // Eliminate column k in all other rows
+      aug3  = [for (i = [0 : n - 1])
+                (i == k) ? aug2[i]
+                         : let(f = aug2[i][k])
+                           [for (j = [0 : 2*n - 1]) aug2[i][j] - f * rowk[j]]
+              ]
+    )
+    row_reduction(aug3, k + 1, n, eps);
 
-// TODO:  reorient doesn't seem to work for 4 point setup.  Fix later.
-let (
-  start = [[1, 2, 3], [-4, 5, 6], [14, 15, 19], [20, 21, 27]],
-  end = [[7, 8, 9], [10, 11, 13], [17, 18, 19], [23, 24, 25]]
-)
-{
-  cs = [0, "red", "green", "blue"];
-  o = start[0];
-  for (i = it_fwd_i(start, 1)) {
-    pt = start[i];
-    v = (pt - o)/norm(pt - o);
-    T = reorient([[0,0,0], [0,0,1]], [o, v]);
-    multmatrix(T) 
-    arrow(norm(v), .1, cs[i], 0.15);
-  }
-  // let(
-  //   T = reorient(start, end),
-  //   TT = transpose(T),
-  //   r = dehomogenise(homogenise(start) * TT),
-  //   output = str("AAA",
-  //     "\n  T: ", T,
-  //     "\n  TT: ", TT,
-  //     "\n  start: ", start,
-  //     "\n  r: ", r,
-  //     "\n  diff: ", r - end)
-  // )
-  // echo(output)
-  // assert(equal(r, end), "Multi point reorientation didn't work.");
-}
+// --- Helpers ---
+
+/**
+ * Creates an n×n identity matrix.
+ *
+ * @param {number} n
+ *   Matrix order.  Must be > 0.
+ *
+ * @returns {Matrix}
+ *   The identity matrix of order n.
+ */
+function identity(n) =
+  assert(n > 0, "identity: n must be > 0")
+  [for (i = [0 : n - 1]) [for (j = [0 : n - 1]) (i == j) ? 1 : 0]];
+
+/**
+ * Horizontally concatenates two matrices with the same row count.
+ *
+ * @param {Matrix} A
+ *   Left matrix with r rows.
+ * @param {Matrix} B
+ *   Right matrix with r rows.
+ *
+ * @returns {Matrix}
+ *   The augmented matrix [A | B].
+ *
+ * @throws
+ *   Assertion failure if A and B do not have the same non-zero row count.
+ */
+function augment(A, B) =
+  assert(len(A) == len(B) && len(A) > 0,
+         "augment: A and B must have same row count and be non-empty")
+  [for (i = [0 : len(A) - 1]) concat(A[i], B[i])];
+
+/**
+ * Extracts the right half (columns n..2n-1) of an n×(2n) augmented matrix.
+ *
+ * @param {Matrix} aug
+ *   Augmented matrix of shape n×(2n).
+ * @param {number} n
+ *   Left block width and row count.
+ *
+ * @returns {Matrix}
+ *   The right n×n block.
+ */
+function _right_half(aug, n) =
+  [for (i = [0 : n - 1]) [for (j = [n : 2*n - 1]) aug[i][j]]];
+
+/**
+ * Returns a copy of matrix M with rows i and j swapped.
+ *
+ * @param {Matrix} M
+ *   Input matrix.
+ * @param {number} i
+ *   First row index (0-based).
+ * @param {number} j
+ *   Second row index (0-based).
+ *
+ * @returns {Matrix}
+ *   Matrix with rows i and j exchanged.
+ */
+function _swap_rows(M, i, j) =
+  [for (r = [0 : len(M) - 1]) (r == i) ? M[j] : (r == j) ? M[i] : M[r]];
+
+/**
+ * Finds the row index r ∈ [start..n-1] that maximises |aug[r][col]|.
+ * Ties resolve to the first occurrence.
+ *
+ * @param {Matrix} aug
+ *   Matrix to scan.
+ * @param {number} col
+ *   Column index to examine.
+ * @param {number} start
+ *   First row index to consider (inclusive).
+ *
+ * @returns {number}
+ *   Row index of the maximal absolute entry in the given column slice.
+ */
+function _argmax_abs_col(aug, col, start) =
+  let(
+    n    = len(aug),
+    mags = [for (r = [start : n - 1]) abs(aug[r][col])],
+    mval = max(mags),
+    idx0 = search(mval, mags)[0]
+  ) start + idx0;
+
+/**
+ * Tests whether M is a rectangular list-of-lists with consistent row length.
+ *
+ * @param {any} M
+ *   Candidate matrix.
+ *
+ * @returns {bool}
+ *   true if M is a non-empty list of rows with equal positive length.
+ */
+function _is_rect_matrix(M) =
+  is_list(M) && (len(M) > 0) && is_list(M[0]) &&
+  (let(c = len(M[0]))
+     (c > 0) &&
+     (min([for (row = M) (is_list(row) && len(row) == c) ? 1 : 0]) == 1));
+
+/**
+ * Tests whether M is a square matrix (rectangular and rows == columns).
+ *
+ * @param {any} M
+ *   Candidate matrix.
+ *
+ * @returns {bool}
+ *   true if M is rectangular and len(M) == len(M[0]).
+ */
+function _is_square_matrix(M) =
+  _is_rect_matrix(M) && (len(M) == len(M[0]));
+
+/**
+ * Tests whether all entries of M are numeric.
+ *
+ * @param {any} M
+ *   Candidate matrix.
+ *
+ * @returns {bool}
+ *   true if every element in every row is numeric.
+ */
+function _all_numeric(M) =
+  (min([for (row = M) min([for (x = row) is_num(x) ? 1 : 0])]) == 1);
+

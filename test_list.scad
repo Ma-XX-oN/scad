@@ -1,5 +1,5 @@
 use <test>
-use <list>
+use <indexable>
 use <range>
 use <base_algos>
 
@@ -9,8 +9,8 @@ module tests_list_el_and_el_idx() {
   test_eq(40, el(a, -1));
   test_eq(30, el(a, -2));
 
-  test_eq(0, el_idx(a, 0));
-  test_eq(3, el_idx(a, -1));
+  test_eq(0, idx(a, 0));
+  test_eq(3, idx(a, -1));
 }
 
 module tests_list_push_pop_shift_unshift_head_tail() {
@@ -50,39 +50,14 @@ module tests_list_insert_remove_replace() {
   a_rep = replace([1, 2, 3], 1, 1, [20]);
   test_eq([1, 20, 3], a_rep);
 
-  a_rep_each = replace_each([1, 2, 3, 4], range(1, 2, 3), undef, [20, 40]);
-  test_eq([1, 20, 3, 40], a_rep_each);
-}
-
-module tests_list_any_all() {
-  a = [1, 2, 3, 4];
-
-  test_eq(2, fn_in_list(a, fn_find())(function(e) e == 3));
-  test_eq(undef, fn_in_list(a, fn_find())(function(e) e == 5));
-
-  test_eq([2, 4], fn_in_list(a, fn_filter())(function(e, v) v ? e : e % 2 == 0));
-  test_eq([1, 2, 3, 4], fn_in_list(a, fn_filter())(function(e, v) v ? e : e > 0));
-  test_eq(0, fn_in_list(a, fn_find())(function(e) e > 0));
-
-  // function_* wrappers for higher-order use.
-  idxs = fn_in_list(a, fn_reduce([]), 1)(
-    function(e, idxs) e % 2 == 0 ? concat(idxs, e) : idxs
-  );
-  test_eq([2, 4], idxs);
-}
-
-module tests_list_existing() {
-  // Call your original comprehensive tests.
-  tests_lists();
-  tests_any_all("unit");
+  a_rep_each = replace_each([11, 12, 13, 14], range(1, 2, 3))([20, 40]);
+  test_eq([11, 20, 13, 40], a_rep_each);
 }
 
 module tests_list() {
   tests_list_el_and_el_idx();
   tests_list_push_pop_shift_unshift_head_tail();
   tests_list_insert_remove_replace();
-  tests_list_any_all();
-  tests_list_existing();
 }
 
 tests_list();

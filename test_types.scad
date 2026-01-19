@@ -1,32 +1,33 @@
 use <test>
 use <types>
+include <types_consts>
 
 module tests_types_constants_and_names() {
   // Basic enum values must map into TYPE_NAMES correctly.
-  test_eq("*UNKNOWN*", TYPE_NAMES()[UNKNOWN()]);
-  test_eq("undef"    , TYPE_NAMES()[UNDEF()]);
-  test_eq("bool"     , TYPE_NAMES()[BOOL()]);
-  test_eq("str"      , TYPE_NAMES()[STR()]);
-  test_eq("list"     , TYPE_NAMES()[LIST()]);
-  test_eq("range"    , TYPE_NAMES()[RANGE()]);
-  test_eq("func"     , TYPE_NAMES()[FUNC()]);
-  test_eq("num"      , TYPE_NAMES()[NUM()]);
-  test_eq("int"      , TYPE_NAMES()[INT()]);
-  test_eq("float"    , TYPE_NAMES()[FLOAT()]);
-  test_eq("NaN"      , TYPE_NAMES()[NAN()]);
+  test_eq("*UNKNOWN*", TYPE_NAMES()[UNKNOWN]);
+  test_eq("undef"    , TYPE_NAMES()[UNDEF]);
+  test_eq("bool"     , TYPE_NAMES()[BOOL]);
+  test_eq("str"      , TYPE_NAMES()[STR]);
+  test_eq("list"     , TYPE_NAMES()[LIST]);
+  test_eq("range"    , TYPE_NAMES()[RANGE]);
+  test_eq("func"     , TYPE_NAMES()[FUNC]);
+  test_eq("num"      , TYPE_NAMES()[NUM]);
+  test_eq("int"      , TYPE_NAMES()[INT]);
+  test_eq("float"    , TYPE_NAMES()[FLOAT]);
+  test_eq("NaN"      , TYPE_NAMES()[NAN]);
 
   // type_enum_to_str must agree with TYPE_NAMES.
-  test_eq("*UNKNOWN*", type_enum_to_str(UNKNOWN()));
-  test_eq("undef"    , type_enum_to_str(UNDEF()));
-  test_eq("bool"     , type_enum_to_str(BOOL()));
-  test_eq("str"      , type_enum_to_str(STR()));
-  test_eq("list"     , type_enum_to_str(LIST()));
-  test_eq("range"    , type_enum_to_str(RANGE()));
-  test_eq("func"     , type_enum_to_str(FUNC()));
-  test_eq("num"      , type_enum_to_str(NUM()));
-  test_eq("int"      , type_enum_to_str(INT()));
-  test_eq("float"    , type_enum_to_str(FLOAT()));
-  test_eq("NaN"      , type_enum_to_str(NAN()));
+  test_eq("*UNKNOWN*", type_enum_to_str(UNKNOWN));
+  test_eq("undef"    , type_enum_to_str(UNDEF));
+  test_eq("bool"     , type_enum_to_str(BOOL));
+  test_eq("str"      , type_enum_to_str(STR));
+  test_eq("list"     , type_enum_to_str(LIST));
+  test_eq("range"    , type_enum_to_str(RANGE));
+  test_eq("func"     , type_enum_to_str(FUNC));
+  test_eq("num"      , type_enum_to_str(NUM));
+  test_eq("int"      , type_enum_to_str(INT));
+  test_eq("float"    , type_enum_to_str(FLOAT));
+  test_eq("NaN"      , type_enum_to_str(NAN));
 
   // Out of range type index.
   test_eq("*INVALID TYPE*", type_enum_to_str(-1));
@@ -36,22 +37,22 @@ module tests_types_constants_and_names() {
 module tests_types_type_enum_basic() {
   nan = (1/0) - (1/0);
 
-  test_eq(UNDEF(), type_enum(undef));
-  test_eq(BOOL() , type_enum(true));
-  test_eq(BOOL() , type_enum(false));
-  test_eq(STR()  , type_enum("hi"));
-  test_eq(LIST() , type_enum([1, 2, 3]));
+  test_eq(UNDEF, type_enum(undef));
+  test_eq(BOOL , type_enum(true));
+  test_eq(BOOL , type_enum(false));
+  test_eq(STR  , type_enum("hi"));
+  test_eq(LIST , type_enum([1, 2, 3]));
 
   // Numeric without int/float distinction.
-  test_eq(NUM(), type_enum(5));
-  test_eq(NUM(), type_enum(5.5));
+  test_eq(NUM, type_enum(5));
+  test_eq(NUM, type_enum(5.5));
 
   // With int/float distinction.
-  test_eq(INT()  , type_enum(5, true));
-  test_eq(FLOAT(), type_enum(5.5, true));
+  test_eq(INT  , type_enum(5, true));
+  test_eq(FLOAT, type_enum(5.5, true));
 
   // NaN path.
-  test_eq(NAN(), type_enum(nan));
+  test_eq(NAN, type_enum(nan));
 }
 
 module tests_types_predicates() {

@@ -55,12 +55,12 @@ module tests_slice() {
 }
 
 module tests_range_fns(el) {
-  test_eq(4, lr_len([0:3:10]));
-  test_eq(4, lr_len([10:-3:0]));
-  test_eq(3, lr_len([0:5:10]));
-  // assert(is_undef(lr_len([0:-1:10]))); // These work, but generate warnings.
-  // assert(is_undef(lr_len([10:1:0])));  // These work, but generate warnings.
-  let(r=[1:10]) test_eq(10, lr_len(r));
+  test_eq(4, slr_len([0:3:10]));
+  test_eq(4, slr_len([10:-3:0]));
+  test_eq(3, slr_len([0:5:10]));
+  // assert(is_undef(slr_len([0:-1:10]))); // These work, but generate warnings.
+  // assert(is_undef(slr_len([10:1:0])));  // These work, but generate warnings.
+  let(r=[1:10]) test_eq(10, slr_len(r));
   let(r=[1:10]) test_eq(1, el(r, 0));
   let(r=[1:10]) test_eq(2, el(r, 1));
   let(r=[1:10]) test_eq(3, el(r, 2));
@@ -72,14 +72,14 @@ module tests_range_fns(el) {
   let(r=[1:10]) test_eq(9, el(r, 8));
   let(r=[1:10]) test_eq(10, el(r, 9));
 
-  let(r=[1:2:10]) test_eq(5, lr_len(r));
+  let(r=[1:2:10]) test_eq(5, slr_len(r));
   let(r=[1:2:10]) test_eq(1, el(r, 0));
   let(r=[1:2:10]) test_eq(3, el(r, 1));
   let(r=[1:2:10]) test_eq(5, el(r, 2));
   let(r=[1:2:10]) test_eq(7, el(r, 3));
   let(r=[1:2:10]) test_eq(9, el(r, 4));
 
-  let(r=[10:-2:1]) test_eq(5, lr_len(r));
+  let(r=[10:-2:1]) test_eq(5, slr_len(r));
   let(r=[10:-2:1]) test_eq(10, el(r, 0));
   let(r=[10:-2:1]) test_eq(8, el(r, 1));
   let(r=[10:-2:1]) test_eq(6, el(r, 2));
@@ -91,7 +91,7 @@ module tests_range_existing() {
   // Call existing test modules from range.scad so they still run
   // even if you later strip the auto-calls inside that file.
   tests_range_fns(function(r, i) range_el(r, i));
-  tests_range_fns(function(lr, i) lr_el(lr, i));
+  tests_range_fns(function(lr, i) el(lr, i));
   tests_slice();
 }
 

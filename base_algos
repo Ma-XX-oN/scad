@@ -1,66 +1,258 @@
-use <list>
+/**
+ * ## base_algos
+ *
+ * ### How to Import
+ *     use <base_algos>
+ * 
+ * ### Purpose
+ * 
+ * The purpose of this library is to provide the minimum number of abstracted
+ * composable algorithms to be able to make coding easier, both when reading and
+ * writing.  They are quite fast, and although you could prolly make faster hand
+ * rolled implementations, IMHO this makes it easier to read and rationalise as
+ * to intent.  Also, the pattern used is repeated everywhere, making it easier
+ * to learn how to use.
+ * 
+ * ### FYI: Functions and Iterating are Abound!
+ * 
+ * There is a lot of currying and passing of functions in this library.  (Mmmmmm
+ * curry!)  No, not that type of curry.  Currying relates to having a function
+ * return a function and using that function immediately.  For instance.  Say I
+ * want to find the first instance of the letter "t" in a string.  Using this
+ * library, the following could be done:
+ * 
+ * ```
+ * s = "Hello there!";
+ * i = find(fwd_i(s))(function(i)
+ *       s[i] == "t"
+ *     );
+ * ```
+ * 
+ * Or it could be done using the algorithm adaptor `it_each` (See
+ * [Algorithm Adaptors](#algorithm-adaptors)):
+ * 
+ * ```
+ * s = "Hello there!";
+ * i = it_each(s, find())(function(c)
+ *       c == "t"
+ *     );
+ * ```
+ * 
+ * You'll notice the occurrence of `)(`.  This ends the algorithm or adaptor
+ * call and start the next call which takes a function to test each element.
+ * Also, observe that when the algorithm's `birlei` parameter is omitted, a
+ * `function(birl, end_i)` is returned, which in this case is `find()`.  The
+ * adaptor needs this function signature to be passed to it so that it can apply
+ * the algorithm while passing the element to the `PPMRRAIR` function.
+ * 
+ * These 2 basic patterns are used everywhere in the library set, and though it
+ * might look odd at first, you'll find that it becomes natural quite quickly.
+ * 
+ * ### Iterators:
+ * 
+ * The algorithms are index, not element centric, which means that a physical
+ * container (i.e. a list) is *not* needed.  A virtual container (i.e. function)
+ * is all that is required.  The indices act as iterators as one might find in
+ * C++.  However, unlike C++ and python ranges, which are half open ranges
+ * `[begin, end)`, these are closed ranges `[begin, end]`, meaning that the end
+ * item is the last item in the range, not one past the end.
+ * 
+ * For each of these algorithms, the `birl` parameter (formally
+ * `begin_i_range_or_list`, but it became too much to type) state either:
+ * 
+ * 1. Starting index (number)
+ *    - Implies that a second `end_i` parameter will indicate the inclusive end
+ *      index (number), conforming to OpenSCAD's closed range paradigm.
+ * 2. Indices (range)
+ *    - Will go through each item in the range and use them as indices to pass
+ *      to the algorithm.  `end_i` must be `undef`.
+ * 3. Indices (list)
+ *    - Will go through each element in the list and use them as indices to pass
+ *      to the algorithm.  `end_i` must be `undef`.
+ * 
+ * ### Algorithms
+ * 
+ * There are 4 basic algorithms (`reduce`, `reduce_air`, `filter` and `map`),
+ * from which most other algorithms can be built.  For optimisation purposes,
+ * `reduce_air` adds the ability to `A`llow an `I`ncomplete `R`eduction (hence
+ * the `_air` suffix) over the range and filter adds a hybrid filter/map
+ * feature.
+ * 
+ * A few others (`find`, `find_upper`, `find_lower`) could have been implemented
+ * with `reduce_air` but have been optimised with their own implementations.
+ * 
+ * The `find*` and `reduce*` algorithms rely on recursive descent, but conform
+ * to TCO (Tail Call Optimisation) so don't have a maximum depth.  The `filter`
+ * and `map` algorithms use list comprehension so also have no limit to their
+ * range size.
+ *
+ * > TTA:
+ * >
+ * > Should reduce_air's `init` param be `[ start, init ]` instead?  This would
+ * > allow it to do nothing without the need for a special ternary check
+ * > preceding it.
+ * >
+ * > A: I've yet not seen a good reason to do this.
+ *
+ * ### Algorithm Signatures
+ * 
+ * All of the algorithms have a compatible signature that have a `birlei` (one
+ * or two parameters, a `birl` and optional `end_i`).  When you call the
+ * algorithm without the `birlei` parameter, it returns a function that takes
+ * only a `birlei` parameter.  This is used with the
+ * [Algorithms Adaptor](#algorithm-adaptors), potentially simplifying your code.
+ * When it's passed a `birlei`, it returns a function that requires a PPMRRAIR
+ * function.  That function that is then called by the algorithm on each index
+ * that the `birlei` refers to.
+ * 
+ * ### PPMRRAIR functions
+ * 
+ * Named after the 4 function types: `P`redicate, `P`redicate/`M`ap, `R`eduction
+ * and `R`eduction that `A`llows for `I`ncomplete `R`eduction, these functions
+ * are passed to the algorithms where the algorithms then call them iteratively
+ * over each `birlei` element:
+ * 
+ * #### **Predicate** (`function(i) : result`)
+ *
+ * - A binary predicate is used by `find`, `filter` and `map`.  It has 2
+ *   results, truthy or falsely.
+ * - A trinary predicate is used with `find_lower` and `find_upper`.  It has 3
+ *   results: less than 0, equal to 0 and greater than 0.  This is akin to the
+ *   spaceship operator in c++20.
+ *
+ * #### **Predicate/Map** (`function(i, v) : any`)
+ *
+ * - Optionally used by `filter`.
+ * - If v is not passed then it has a falsy value (`undef`) indicating that the
+ *   function is to act like a binary predicate.  Otherwise, if passed a true
+ *   value, then it the function usually returns the element at that index,
+ *   though can return anything which is to be placed in the resulting list.
+ * - This 2 parameter function is a performance and memory allocation
+ *   optimisation, allowing `filter` to do a `map` in the same step.
+ *
+ * #### **Reduction** (`function(i, acc) : acc`)
+ *
+ * > NOTE:
+ * >
+ * > `acc` **is the second parameter** which is different from most languages.
+ * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
+ * > and this library in general.  You have been warned.
+ * 
+ * - Used by `reduce`.
+ * - Takes in the index and the previous accumulated object and returns the
+ *   new accumulated object.
+ * - This is roughly equivalent to a for_each loop in C++.
+ *
+ * #### **Reduction, Allow Incomplete Reduction** (`function(i, acc) : [cont, acc]`)
+ *
+ * > NOTE:
+ * >
+ * > `acc` **is the second parameter** which is different from most languages.
+ * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
+ * > and this library in general.  You have been warned.
+ * 
+ * - Used by `reduce_air`.
+ * - Takes in the index and the previous accumulated object and returns a
+ *   list `[ cont, new_acc ]`, where `cont` states if to continue looping if not
+ *   finished iterating over the `birlei`.
+ * - This is roughly equivalent to a for loop in C++.
+ * 
+ * **See also** [Algorithm Adaptors](#algorithm-adaptors).
+ */
+use <indexable>
 use <types>
+include <types_consts>
 use <range>
 use <test>
 use <birlei>
 use <function>
 
-/**
- * Negate a lambda's return value
- *
- * @param not_fn (function (p) : any)
- *   The function to invert the boolean's (or equivalent truthy/falsy) value.
- *
- * @returns (function (p) : bool)
- *   Return the lambda that will invert a lambda's truth value.
- */
-function not(not_fn) =
-  // echo("NOT: ", not_fn)
-  assert(is_function(not_fn))
-  function(p) !not_fn(p)
-;
+/** ### The Base Algorithms */
 
 /**
- * @overload find_lower(spaceship_fn, begin_i, end_i) : (number | undef)
- * @overload find_lower(spaceship_fn, range_is) : (number | undef)
- * @overload find_lower(spaceship_fn, list_is) : (number | undef)
+ * @callback BoundIndexFn
+ * @param {SpaceshipFn} spaceship_fn
  *
- * Like C++ lower_bound: returns the first index i for which spaceship_fn(i) >=
- * 0.
+ * @returns {(number|undef)}
+ *   Index of the selected bound, or `undef` if no such index exists.
  *
- * NOTE: The specified range or list of indices must be such that
- *       spaceship_fn(i) is monotonically nondecreasing over the searched
- *       indices; otherwise results are undefined.
- *
- * @param spaceship_fn (function(i) : number)
- *   This is a trinary predicate where if the element i is less than the
- *   searched value, then it would return a value < 0.  If the element i is
- *   equal to the searched value, then it should be equal to 0.  Otherwise it
- *   should be > 0.
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param begin_i (number)
- *   - Start index to check.
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     spaceship_fn is never called, making this function return undef.
- * @param range_is (range)
- *   - Range of indices to check.
- * @param list_is (list)
- *   - List of indices to check.
- *
- * @returns (number | undef)
- *   First index where spaceship_fn(i) >= 0.  If none are found, returns undef.
- *
- *   NOTE: The reason for returning undef rather than end_i+1, is because birl
- *         could be a noncontiguous range or list of indices.
+ *   > NOTE:
+ *   >
+ *   > `undef` is returned rather than `end_i+1` because the searched indices
+ *   > can be noncontiguous (range/list selectors).
  */
-function find_lower(spaceship_fn, birl, end_i) =
-  let (
-    _find_binary = function(_spaceship_fn, begin_i, end_i)
-      begin_i == end_i
+
+/**
+ * @typedef {BoundIndexFn} FindLowerFn
+ * Returns the first index `i` where `spaceship_fn(i) >= 0`.
+ */
+
+/**
+ * @typedef {BoundIndexFn} FindUpperFn
+ * Returns the first index `i` where `spaceship_fn(i) > 0`.
+ */
+
+/**
+ * @typedef {(number|range|list|undef)} OptionalBirl
+ * - If `number`, start index to iterate over
+ * - If `range`, indices to iterate over
+ * - If `list`, indices to iterate over
+ * - If `undef`, then tells function to return a curried version of itself,
+ *   that only takes parameters of types `Birl` and `EndI`.
+ */
+
+/**
+ * @callback AlgoFn
+ *
+ * Executes the algorithm.
+ *
+ * @param {Birl} birl
+ * @param {EndI} [end_i]
+ *
+ * @returns {any}
+ *   Returned value is based on the result of the function doing the iterating.
+ */
+ 
+/**
+ * @typedef {AlgoFn} FindLowerBirleiFn
+ *
+ * @returns {FindLowerFn}
+ *   First index where `spaceship_fn(i) >= 0`.  If none are found, returns
+ *   `undef`.
+ *
+ *   > NOTE:
+ *   >
+ *   > The reason for returning `undef` rather than `end_i+1`, is because `birl`
+ *   > could be a noncontiguous `range` or `list` of indices.
+ */
+
+/**
+ * @callchain find_lower(birl, end_i)    (spaceship_fn) : (number|undef)
+ * @callchain find_lower() (birl, end_i) (spaceship_fn) : (number|undef)
+ *
+ * Like C++'s `lower_bound`: returns the first index `i` for which
+ * `spaceship_fn(i) >= 0`.
+ *
+ * > NOTE:
+ * >
+ * > The specified `birlei` of indices must be such that `spaceship_fn(i)`
+ * > is monotonically nondecreasing over the searched indices; or the results
+ * > are **UB**.
+ *
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
+ *
+ * @returns {(FindLowerFn|FindLowerBirleiFn)}
+ *   - If `birl` is omitted, then will return type `FindLowerBirleiFn`.
+ *   - Else returns type `FindLowerFn`.
+ */
+function find_lower(birl, end_i) =
+  assert(!is_function(birl))
+  is_undef(birl)
+  ? function(birl, end_i) find_lower(birl, end_i)
+  : let (
+      _find_binary = function(_spaceship_fn, begin_i, end_i)
+        begin_i == end_i
         ? begin_i
         : let (
             mid_i = floor((begin_i + end_i) / 2),
@@ -69,109 +261,80 @@ function find_lower(spaceship_fn, birl, end_i) =
           result >= 0
             ? _find_binary(_spaceship_fn, begin_i,   mid_i)  // first-true lies at/before mid_i
             : _find_binary(_spaceship_fn, mid_i + 1, end_i)  // still false at mid_i -> go right
-
-  )
-  birlei_to_begin_i_end_i(
-    function(_spaceship_fn, begin_i, end_i, map_back_fn)
-      end_i < begin_i || _spaceship_fn(end_i) < 0
-      ? undef
-      : map_back_fn(_find_binary(_spaceship_fn, begin_i, end_i)),
-    spaceship_fn, birl, end_i)
+    )
+    function(spaceship_fn)
+      birlei_to_begin_i_end_i(
+        function(_spaceship_fn, begin_i, end_i, map_back_fn)
+          end_i < begin_i || _spaceship_fn(end_i) < 0
+          ? undef
+          : map_back_fn(_find_binary(_spaceship_fn, begin_i, end_i)),
+        spaceship_fn, birl, end_i)
 ;
 
-/** Hoists function into variable ns to be able to pass as a lambda */
-function function_find_lower() =
-  function(spaceship_fn, birl, end_i)
-    find_lower(spaceship_fn, birl, end_i)
-;
+let (v = 0) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+let (v = 2) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+let (v = 1) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+let (v = 3) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+let (v = 4) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+let (v = 5) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+let (v = 7) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4,5,6,7], find_lower())(function(e) e-v));
+let (v = 2) test_eq(    2, echo(str("Searching for ", v)) it_each([0,1,2,2,4],       find_lower())(function(e) e-v));
+let (v = 2) test_eq(    2, echo(str("Searching for ", v)) it_each([0,1,2,2,2],       find_lower())(function(e) e-v));
+let (v = 2) test_eq(    1, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_lower())(function(e) e-v));
+let (v = 3) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_lower())(function(e) e-v));
 
 /**
- * @overload fn_find_lower(begin_i, end_i) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find_lower(range_is) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find_lower(list_is) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find_lower() : (function(ppmrrair_fn, birl, end_i) : (number | undef))
+ * @callback FindUpperFn
  *
- * Give a compatible function signature that can be used in in_list or allows
- * the spaceship_fn to be placed after the birl/end_i parameters for clarity.
- *
- * @param init (any)
- *   This is the initial value that will be passed to reduce.
- * @param birl (number | range | list | undef)
- *   - If undef, then returns function(spaceship_fn, birl, end_i) : any,
- *     otherwise returns function(spaceship_fn) : any.  This allows for
- *     placing the range at the top of the function call to make code easier to
- *     read.
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     spaceship_fn is never called, making this function return init.
- *
- * @returns (function(spaceship_fn, birl, end_i) : any |
- *           function(spaceship_fn) : any)
- *   Function to pass to in_list, or to allow placing the PPMRAIR function
- *   after the birl/end_i for easier reading.
- */
-function fn_find_lower(birl=undef, end_i=undef) =
-  birl == undef
-  ? function(spaceship_fn, birl, end_i) find_lower(spaceship_fn, birl, end_i)
-  : function(spaceship_fn)              find_lower(spaceship_fn, birl, end_i)
-;
+ * @callchain FindUpperFn(spaceship_fn) : (number|undef)
 
-let (v = 0) test_eq(v, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_lower(), function(e) e-v));
-let (v = 1) test_eq(v, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_lower(), function(e) e-v));
-let (v = 2) test_eq(v, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_lower(), function(e) e-v));
-let (v = 3) test_eq(v, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_lower(), function(e) e-v));
-let (v = 4) test_eq(v, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_lower(), function(e) e-v));
-let (v = 5) test_eq(undef, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_lower(), function(e) e-v));
-let (v = 7) test_eq(v, echo(str("Searching for ", v)) in_list([0,1,2,3,4,5,6,7], function_find_lower(), function(e) e-v));
-let (v = 2) test_eq(2, echo(str("Searching for ", v)) in_list([0,1,2,2,4], function_find_lower(), function(e) e-v));
-let (v = 2) test_eq(2, echo(str("Searching for ", v)) in_list([0,1,2,2,2], function_find_lower(), function(e) e-v));
-let (v = 2) test_eq(1, echo(str("Searching for ", v)) in_list([0,2,2,2,2], function_find_lower(), function(e) e-v));
-let (v = 3) test_eq(undef, echo(str("Searching for ", v)) in_list([0,2,2,2,2], function_find_lower(), function(e) e-v));
+ * @param {SpaceshipFn} spaceship_fn
+ * @returns {(number|undef)}
+ *   First index where `spaceship_fn(i) > 0`.  If none are found, returns
+ *   `undef`.
+ *
+ *   > NOTE:
+ *   >
+ *   > The reason for returning `undef` rather than `end_i+1`, is because `birl`
+ *   > could be a noncontiguous `range` or `list` of indices.
+ */
 
 /**
- * @overload find_upper(spaceship_fn, begin_i, end_i) : (number | undef)
- * @overload find_upper(spaceship_fn, range_is) : (number | undef)
- * @overload find_upper(spaceship_fn, list_is) : (number | undef)
+ * @typedef {AlgoFn} FindUpperBirleiFn
  *
- * Like C++ upper_bound: returns the first index i for which spaceship_fn(i) >
- * 0.
+ * @callchain FindUpperBirleiFn(birl, end_i) (spaceship_fn) : (number|undef)
  *
- * NOTE: The specified range or list of indices must be such that
- *       spaceship_fn(i) is monotonically nondecreasing over the searched
- *       indices; otherwise results are undefined.
- *
- * @param spaceship_fn (function(i) : number)
- *   This is a trinary predicate where if the element i is less than the
- *   searched value, then it would return a value < 0.  If the element i is
- *   equal to the searched value, then it should be equal to 0.  Otherwise it
- *   should be > 0.
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param begin_i (number)
- *   - Start index to check.
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     spaceship_fn is never called, making this function return undef.
- * @param range_is (range)
- *   - Range of indices to check.
- * @param list_is (list)
- *   - List of indices to check.
- *
- * @returns (number | undef)
- *   First index where spaceship_fn(i) > 0.  If none are found, returns undef.
- *
- *   NOTE: The reason for returning undef rather than end_i+1, is because birl
- *         could be a noncontiguous range or list of indices.
+ * @returns {FindUpperFn}
+ *   Function that gives the final result.
  */
-function find_upper(spaceship_fn, birl, end_i) =
-  let (
-    _find_binary = function(_spaceship_fn, begin_i, end_i)
-      begin_i == end_i
+
+/**
+ * @callchain find_upper(birl, end_i)    (spaceship_fn) : (number|undef)
+ * @callchain find_upper() (birl, end_i) (spaceship_fn) : (number|undef)
+ *
+ * Like C++'s `upper_bound`: returns the first index `i` for which
+ * `spaceship_fn(i) > 0`.
+ *
+ * > NOTE:
+ * >
+ * > The specified `birlei` of indices must be such that `spaceship_fn(i)`
+ * > is monotonically nondecreasing over the searched indices; or the results
+ * > are **UB**.
+ *
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
+ *
+ * @returns {(FindUpperFn|FindUpperBirleiFn)}
+ *   - If `birl` is omitted, then will return type `FindUpperBirleiFn`.
+ *   - Else returns type `FindUpperFn`.
+ */
+function find_upper(birl, end_i) =
+  assert(!is_function(birl))
+  is_undef(birl)
+  ? function(birl, end_i) find_upper(birl, end_i)
+  : let (
+      _find_binary = function(_spaceship_fn, begin_i, end_i)
+        begin_i == end_i
         ? begin_i
         : let (
             mid_i = floor((begin_i + end_i) / 2),
@@ -182,96 +345,71 @@ function find_upper(spaceship_fn, birl, end_i) =
             : _find_binary(_spaceship_fn, mid_i + 1, end_i)  // still <= 0 at mid_i -> go right
           )
   )
-  birlei_to_begin_i_end_i(
-    function(_spaceship_fn, begin_i, end_i, map_back_fn)
-      end_i < begin_i || _spaceship_fn(end_i) <= 0
-      ? undef
-      : map_back_fn(_find_binary(_spaceship_fn, begin_i, end_i)),
-    spaceship_fn, birl, end_i)
+  function(spaceship_fn)
+    birlei_to_begin_i_end_i(
+      function(_spaceship_fn, begin_i, end_i, map_back_fn)
+        end_i < begin_i || _spaceship_fn(end_i) <= 0
+        ? undef
+        : map_back_fn(_find_binary(_spaceship_fn, begin_i, end_i)),
+      spaceship_fn, birl, end_i)
 ;
 
-/** Hoists function into variable ns to be able to pass as a lambda */
-function function_find_upper() =
-  function(spaceship_fn, birl, end_i)
-    find_upper(spaceship_fn, birl, end_i)
-;
+let (v = 0) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+let (v = 1) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+let (v = 2) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+let (v = 3) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+let (v = 4) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+let (v = 7) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4,5,6,7], find_upper())(function(e) e-v));
+let (v = 5) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+let (v = 2) test_eq(    4, echo(str("Searching for ", v)) it_each([0,1,2,2,4],       find_upper())(function(e) e-v));
+let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,2,2],       find_upper())(function(e) e-v));
+let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_upper())(function(e) e-v));
 
 /**
- * @overload fn_find_upper(begin_i, end_i) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find_upper(range_is) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find_upper(list_is) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find_upper() : (function(ppmrrair_fn, birl, end_i) : (number | undef))
+ * @callback FindFn
+ * @param {PredFn} pred_fn
+ * @returns {(number|undef)}
+ *   First index where `pred_fn(i)` is `true`.  If none are found, returns
+ *   `undef`.
  *
- * Give a compatible function signature that can be used in in_list or allows
- * the spaceship_fn to be placed after the birl/end_i parameters for clarity.
- *
- * @param init (any)
- *   This is the initial value that will be passed to reduce.
- * @param birl (number | range | list | undef)
- *   - If undef, then returns function(spaceship_fn, birl, end_i) : any,
- *     otherwise returns function(spaceship_fn) : any.  This allows for
- *     placing the range at the top of the function call to make code easier to
- *     read.
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     spaceship_fn is never called, making this function return init.
- *
- * @returns (function(spaceship_fn, birl, end_i) : any |
- *           function(spaceship_fn) : any)
- *   Function to pass to in_list, or to allow placing the PPMRAIR function
- *   after the birl/end_i for easier reading.
+ *   > NOTE:
+ *   >
+ *   > The reason for returning `undef` rather than `end_i+1`, is because `birl`
+ *   > could be a noncontiguous `range` or `list` of indices.
  */
-function fn_find_upper(birl=undef, end_i=undef) =
-  birl == undef
-  ? function(spaceship_fn, birl, end_i) find_upper(spaceship_fn, birl, end_i)
-  : function(spaceship_fn)              find_upper(spaceship_fn, birl, end_i)
-;
-
-let (v = 0) test_eq(v+1, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_upper(), function(e) e-v));
-let (v = 1) test_eq(v+1, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_upper(), function(e) e-v));
-let (v = 2) test_eq(v+1, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_upper(), function(e) e-v));
-let (v = 3) test_eq(v+1, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_upper(), function(e) e-v));
-let (v = 4) test_eq(undef, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_upper(), function(e) e-v));
-let (v = 7) test_eq(undef, echo(str("Searching for ", v)) in_list([0,1,2,3,4,5,6,7], function_find_upper(), function(e) e-v));
-let (v = 5) test_eq(undef, echo(str("Searching for ", v)) in_list([0,1,2,3,4], function_find_upper(), function(e) e-v));
-let (v = 2) test_eq(4, echo(str("Searching for ", v)) in_list([0,1,2,2,4], function_find_upper(), function(e) e-v));
-let (v = 2) test_eq(undef, echo(str("Searching for ", v)) in_list([0,1,2,2,2], function_find_upper(), function(e) e-v));
-let (v = 2) test_eq(undef, echo(str("Searching for ", v)) in_list([0,2,2,2,2], function_find_upper(), function(e) e-v));
 
 /**
- * @overload find(pred_fn, begin_i, end_i) : (number | undef)
- * @overload find(pred_fn, range_is) : (number | undef)
- * @overload find(pred_fn, list_is) : (number | undef)
+ * @typedef {AlgoFn} FindBirleiFn
  *
- * Returns the first index that results in pred_fn(i) returning a truthy
+ * @returns {FindFn}
+ *   First index where `pred_fn(i)` is `true`.  If none are found, returns
+ *   `undef`.
+ *
+ *   > NOTE:
+ *   >
+ *   > The reason for returning `undef` rather than `end_i+1`, is because `birl`
+ *   > could be a noncontiguous `range` or `list` of indices.
+ */
+
+/**
+ * @callchain find(birl, end_i)    (pred_fn) : (number|undef)
+ * @callchain find() (birl, end_i) (pred_fn) : (number|undef)
+ *
+ * Returns the first index that results in `pred_fn(i)` returning a truthy
  * result.
  *
- * @param pred_fn (function(i) : bool)
- *   Where i is an index, if returns a truthy value, will stop searching and
- *   return i.
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param begin_i (number)
- *   - Start index to check.
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     pred_fn is never called, making this function return undef.
- * @param range_is (range)
- *   - Range of indices to check.
- * @param list_is (list)
- *   - List of indices to check.
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
  *
- * @returns (number | undef)
- *   If a call to pred_fn(i) returns truthy, will return i.  Otherwise
- *   will return undef.
+ * @returns {(FindFn|FindBirleiFn)}
+ *   - If `birl` is omitted, then will return type `FindBirleiFn`.
+ *   - Else returns type `FindFn`.
  */
-function find(pred_fn, birl, end_i) =
-  let (
+function find(birl, end_i) =
+  assert(!is_function(birl))
+  is_undef(birl)
+  ? function(birl, end_i) find(birl, end_i)
+  : let (
     _find_linear = function(_pred_fn, begin_i, end_i)
       begin_i <= end_i
       ? // echo("find_helper linear: ", begin_i, _pred_fn)
@@ -280,235 +418,125 @@ function find(pred_fn, birl, end_i) =
         : _find_linear(_pred_fn, begin_i + 1, end_i)
       : undef
   )
-  birlei_to_begin_i_end_i(
-    function(_pred_fn, begin_i, end_i, map_back_fn)
-      end_i < begin_i
-      ? undef
-      : map_back_fn(_find_linear(_pred_fn, begin_i, end_i)),
-    pred_fn, birl, end_i)
-;
-
-/** Hoists function into variable ns to be able to pass as a lambda */
-function function_find() =
-  function(pred_fn, birl, end_i)
-    find(pred_fn, birl, end_i)
+  function(pred_fn)
+    birlei_to_begin_i_end_i(
+      function(_pred_fn, begin_i, end_i, map_back_fn)
+        end_i < begin_i
+        ? undef
+        : map_back_fn(_find_linear(_pred_fn, begin_i, end_i)),
+      pred_fn, birl, end_i)
 ;
 
 /**
- * @overload fn_find(begin_i, end_i) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find(range_is) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find(list_is) : (function(ppmrrair_fn) : (number | undef))
- * @overload fn_find() : (function(ppmrrair_fn, birl, end_i) : (number | undef))
- *
- * Give a compatible function signature that can be used in in_list or allows
- * the pred_fn to be placed after the birl/end_i parameters for clarity.
- *
- * @param init (any)
- *   This is the initial value that will be passed to reduce.
- * @param birl (number | range | list | undef)
- *   - If undef, then returns function(pred_fn, birl, end_i) : any,
- *     otherwise returns function(pred_fn) : any.  This allows for placing
- *     the range at the top of the function call to make code easier to read.
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     pred_fn is never called, making this function return init.
- *
- * @returns (function(pred_fn, birl, end_i) : any |
- *           function(pred_fn) : any)
- *   Function to pass to in_list, or to allow placing the PPMRAIR function
- *   after the birl/end_i for easier reading.
+ * @callback ReduceFn
+ * @param {ReductionFn} reduction_fn
+ * @returns {any}
+ *   Final value of accumulator.
  */
-function fn_find(birl=undef, end_i=undef) =
-  birl == undef
-  ? function(pred_fn, birl, end_i) find(pred_fn, birl, end_i)
-  : function(pred_fn)              find(pred_fn, birl, end_i)
-;
 
 /**
- * @overload reduce(op_fn, init, begin_i, end_i) : init_result
- * @overload reduce(op_fn, init, range_is) : init_result
- * @overload reduce(op_fn, init, list_is) : init_result
+ * @typedef {AlgoFn} ReduceBirleiFn
+ *
+ * @returns {ReduceFn}
+ *   Final value of accumulator.
+ */
+
+/**
+ * @callchain reduce(init, birl, end_i)  (op_fn) : result
+ * @callchain reduce(init) (birl, end_i) (op_fn) : result
  *
  * Reduces (a.k.a. folds) a set of indices to produce some value/object based on
  * the indices.
  *
- * @param op_fn (function(i, acc) : any)
- *   Reduction callback, where `i` is the index and `acc` is the accumulator.
- *   Returns new accumulator value.
+ * @param {any} init
+ *   This is the initial value that is passed to the first iteration of `op_fn`
+ *   as the accumulator.
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
  *
- *   NOTE: acc IS THE SECOND PARAMETER which is different from most languages.
- *         This is to keep it consistent with the rest of the PPMRRAIR
- *         functions and this library in general.  You have been warned.
- *
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     op_fn is never called, making this function return init.
- *
- * @returns (any)
- *   Final value of accumulator.
+ * @returns {(ReduceFn|ReduceBirleiFn)}
+ *   - If `birl` is omitted, then will return type `ReduceBirleiFn`.
+ *   - Else returns type `ReduceFn`.
  */
-function reduce(op_fn, init, birl, end_i) =
-  // echo(str("reduce:\n  ", op_fn, "\n  ", type_value(init), "\n  ", birl, ", ", end_i ))
-  let (
-    _reduce_linear = function(op_fn, acc, begin_i, end_i)
-      end_i > begin_i
-      ?
-        assert(param_count(op_fn) == 2, op_fn)
-        assert(param_count(_reduce_linear) == 4)
-        let( result = op_fn(begin_i, acc) )
-        _reduce_linear(op_fn, result, begin_i + 1, end_i)
-      : op_fn(begin_i, acc)
-  )
-  birlei_to_begin_i_end_i(
-    function (op_fn, begin_i, end_i, map_back_fn)
-      assert(param_count(op_fn) == 2, op_fn)
-      end_i < begin_i
-      ? init
-      : _reduce_linear(op_fn, init, begin_i, end_i),
-    op_fn, birl, end_i)
-;
-
-/** Hoists function into variable ns to be able to pass as a lambda */
-function function_reduce() =
-  function(op_fn, init, birl, end_i)
-    reduce(op_fn, init, birl, end_i)
+ function reduce(init, birl, end_i) =
+  assert(!is_function(birl))
+  is_undef(birl)
+  ? function(birl, end_i) reduce(init, birl, end_i)
+  : // echo(str("reduce:\n  ", op_fn, "\n  ", type_value(init), "\n  ", birl, ", ", end_i ))
+    let (
+      _reduce_linear = function(op_fn, acc, begin_i, end_i)
+        end_i > begin_i
+        ?
+          // assert(param_count(op_fn) == 2, op_fn)
+          // assert(param_count(_reduce_linear) == 4)
+          let( result = op_fn(begin_i, acc) )
+          _reduce_linear(op_fn, result, begin_i + 1, end_i)
+        : op_fn(begin_i, acc)
+    )
+    function(op_fn)
+      birlei_to_begin_i_end_i(
+        function(op_fn, begin_i, end_i, map_back_fn)
+          assert(param_count(op_fn) == 2, op_fn)
+          end_i < begin_i
+          ? init
+          : _reduce_linear(op_fn, init, begin_i, end_i),
+        op_fn, birl, end_i)
 ;
 
 /**
- * @overload fn_reduce(init, begin_i, end_i) : (function(ppmrrair_fn) : init_result)
- * @overload fn_reduce(init, range_is) : (function(ppmrrair_fn) : init_result)
- * @overload fn_reduce(init, list_is) : (function(ppmrrair_fn) : init_result)
- * @overload fn_reduce(init) : (function(ppmrrair_fn, birl, end_i) : init_result)
- *
- * Give a compatible function signature that can be used in in_list by setting
- * the initial value of init or allows the op_fn to be placed after the
- * birl/end_i parameters for clarity.
- *
- * @param init (any)
- *   This is the initial value that will be passed to reduce.
- * @param birl (number | range | list | undef)
- *   - If undef, then returns function(op_fn, birl, end_i) : any,
- *     otherwise returns function(op_fn) : any.  This allows for placing
- *     the range at the top of the function call to make code easier to read.
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     op_fn is never called, making this function return init.
- *
- * @returns (function(op_fn, birl, end_i) : any |
- *           function(op_fn) : any)
- *   Function to pass to in_list, or to allow placing the PPMRAIR function
- *   after the birl/end_i for easier reading.
- *
- *   NOTE: op_fn expects that acc IS THE SECOND PARAMETER which is
- *         different from most languages.
- *         This is to keep it consistent with the rest of the PPMRRAIR
- *         functions and this library in general.  You have been warned.
+ * @callback ReduceAirFn
+ * @param {ReductionAirFn} reduction_fn
+ * @returns {list[bool,any]}
+ *   Last continue value and the final value of accumulator.  If the original
+ *  `birlei` was empty will contain `[true, init]`.
  */
-function fn_reduce(init, birl=undef, end_i=undef) =
-  birl == undef
-  ? function(op_fn, birl, end_i) reduce(op_fn, init, birl, end_i)
-  : function(op_fn)              reduce(op_fn, init, birl, end_i)
-;
 
 /**
- * @overload reduce_air(op_fn, init, begin_i, end_i) : [cont, init_result]
- * @overload reduce_air(op_fn, init, range_is) : [cont, init_result]
- * @overload reduce_air(op_fn, init, list_is) : [cont, init_result]
+ * @typedef {AlgoFn} ReduceAirBirleiFn
+ *
+ * @returns {ReduceAirFn}
+ *   Last continue value and the final value of accumulator.  If the original
+ *  `birlei` was empty will contain `[true, init]`.
+ */
+
+/**
+ * @callchain reduce_air(init, birl, end_i)  (op_fn) : [cont, init_result]
+ * @callchain reduce_air(init) (birl, end_i) (op_fn) : [cont, init_result]
  *
  * Reduces (a.k.a. folds) a set of indices to produce some value/object based on
  * the indices.  This Reduction Allows for Incomplete Reduction.
  *
- * @param op_fn (function(i, acc) : list)
- *   Reduction callback, where `i` is the index and `acc` is the accumulator.
- *   Returns a list where element 0 is true if to continue to next iteration or
- *   false if to stop.  Element 1 is the new accumulator value.
+ * @param {any} init
+ *   This is the initial value that is passed to the first iteration of `op_fn`
+ *   as the accumulator.
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
  *
- *   NOTE: acc IS THE SECOND PARAMETER which is different from most languages.
- *         This is to keep it consistent with the rest of the PPMRRAIR
- *         functions and this library in general.  You have been warned.
- *
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     op_fn is never called, making this function return init.
- *
- * @returns (list)
- *   Index 0 is a boolean. truthy indicates the entire range was processed.
- *   Index 1 is the final value of accumulator.
+ * @returns {(ReduceAirFn|ReductionAirFn)}
+ *   - If `birl` is omitted, then will return type `ReduceAirBirleiFn`.
+ *   - Else returns type `ReduceAirFn`.
  */
-function reduce_air(op_fn, init, birl, end_i) =
-  // echo(str("reduce:\n  ", op_fn, "\n  ", init, "\n  ", birl, ", ", end_i ))
-  let (
-    _reduce_linear = function(op_fn, acc, begin_i, end_i)
-      end_i > begin_i
-      ? let (result = op_fn(begin_i, acc))
-        result[0]
-        ? _reduce_linear(op_fn, result[1], begin_i + 1, end_i)
-        : result
-      : op_fn(begin_i, acc)
-  )
-  birlei_to_begin_i_end_i(
-    function (op_fn, begin_i, end_i, map_back_fn)
-      end_i < begin_i
-      ? init
-      : _reduce_linear(op_fn, init, begin_i, end_i),
-    op_fn, birl, end_i)
-;
-
-/** Hoists function into variable ns to be able to pass as a lambda */
-function function_reduce_air() =
-  function(op_fn, init, birl, end_i)
-    reduce_air(op_fn, init, birl, end_i)
-;
-
-/**
- * @overload fn_reduce_air(init, begin_i, end_i) : (function(ppmrrair_fn) : [cont, init_result])
- * @overload fn_reduce_air(init, range_is) : (function(ppmrrair_fn) : [cont, init_result])
- * @overload fn_reduce_air(init, list_is) : (function(ppmrrair_fn) : [cont, init_result])
- * @overload fn_reduce_air(init) : (function(ppmrrair_fn, birl, end_i) : [cont, init_result])
- *
- * Give a compatible function signature that can be used in in_list by setting
- * the initial value of init.
- *
- * @param init (any)
- *   This is the initial value that will be passed to reduce_air.
- * @param birl (number | range | list | undef)
- *   - If undef, then returns function(op_fn, birl, end_i) : any,
- *     otherwise returns function(op_fn) : any.  This allows for placing
- *     the range at the top of the function call to make code easier to read.
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     op_fn is never called, making this function return init.
- *
- * @returns (function(op_fn, birl, end_i) : any)
- *   Function to pass to in_list, or to allow placing the PPMRRAIR function
- *   after the birl/end_i for easier reading.
- *
- *   NOTE: op_fn expects that acc IS THE SECOND PARAMETER which is
- *         different from most languages.
- *         This is to keep it consistent with the rest of the PPMRRAIR
- *         functions and this library in general.  You have been warned.
- */
-function fn_reduce_air(init, birl, end_i) =
-  birl == undef
-  ? function(op_fn, birl, end_i) reduce_air(op_fn, init, birl, end_i)
-  : function(op_fn)              reduce_air(op_fn, init, birl, end_i)
+function reduce_air(init, birl, end_i) =
+  assert(!is_function(birl))
+  is_undef(birl)
+  ? function(birl, end_i) reduce_air(init, birl, end_i)
+  : // echo(str("reduce:\n  ", op_fn, "\n  ", init, "\n  ", birl, ", ", end_i ))
+    let (
+      _reduce_linear = function(op_fn, acc, begin_i, end_i)
+        end_i > begin_i
+        ? let (result = op_fn(begin_i, acc))
+          result[0]
+          ? _reduce_linear(op_fn, result[1], begin_i + 1, end_i)
+          : result
+        : op_fn(begin_i, acc)
+    )
+    function(op_fn)
+      birlei_to_begin_i_end_i(
+        function(op_fn, begin_i, end_i, map_back_fn)
+          end_i < begin_i
+          ? [ true, init ]
+          : _reduce_linear(op_fn, init, begin_i, end_i),
+        op_fn, birl, end_i)
 ;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -516,153 +544,91 @@ function fn_reduce_air(init, birl, end_i) =
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @overload filter(ppm_fn, begin_i, end_i) : list
- * @overload filter(ppm_fn, range_is) : list
- * @overload filter(ppm_fn, list_is) : list
+ * @callback FilterFn
+ * @param {(PredFn|PredMapFn)} reduction_fn
+ * @returns {list[any,...]}
+ *   A list of elements where the predicate returned true.
+ */
+
+/**
+ * @typedef {AlgoFn} FilterBirleiFn
+ *
+ * @returns {FilterFn}
+ *   A list of elements where the predicate returned true.
+ */
+
+/**
+ * @callchain filter(birl, end_i)    (ppm_fn) : list
+ * @callchain filter() (birl, end_i) (ppm_fn) : list
  *
  * Filter function.
  *
- * @param ppm_fn (function(i) : bool | function(i, v) : bool)
- *   - If this takes 1 parameter, then if it return a truthy value, add the
- *     index to the list.
- *   - If this takes 2 parameters, then if passed only 1 parameter needs to call
- *     with a truthy as the second parameter and adds the returned value to the
- *     list.
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i is less than birl,
- *     then ppm_fn() is never called, so filter will return an empty
- *     list.
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
  *
- * @returns (list)
- *   Returns a list of all indices or elements where ppm_fn returned
- *   a truthy value.
+ * @returns {(FilterFn|FilterBirleiFn)}
+ *   - If `birl` is omitted, then will return type `FilterBirleiFn`.
+ *   - Else returns type `FilterFn`.
  */
-function filter(ppm_fn, birl, end_i) =
-  let (
-    indices = birlei_to_indices(birl, end_i),
-    pc = param_count(ppm_fn)
-  )
-  assert(pc == 1 || pc == 2, str("ppm_fn must be a function with 1 or 2 params, not ", pc, "."))
-  pc == 1
-  ? [
-    for (i = indices) if (ppm_fn(i)) i
-  ]
-  : [
-    for (i = indices) if (ppm_fn(i)) ppm_fn(i, true)
-  ]
-;
-
-/** Hoists function into variable ns to be able to pass as a lambda */
-function function_filter() =
-  function(ppm_fn, birl, end_i)
-    filter(ppm_fn, birl, end_i)
+function filter(birl, end_i) =
+  assert(!is_function(birl))
+  is_undef(birl)
+  ? function(birl, end_i) filter(birl, end_i)
+  : let (
+      indices = birlei_to_indices(birl, end_i)
+    )
+    function(ppm_fn)
+      let (
+        pc = param_count(ppm_fn)
+      )
+      assert(pc == 1 || pc == 2, str("ppm_fn must be a function with 1 or 2 params, not ", pc, "."))
+      pc == 1
+      ? [
+        for (i = indices) if (ppm_fn(i)) i
+      ]
+      : [
+        for (i = indices) if (ppm_fn(i)) ppm_fn(i, true)
+      ]
 ;
 
 /**
- * @overload fn_filter(begin_i, end_i) : (function(ppmrrair_fn) : list)
- * @overload fn_filter(range_is) : (function(ppmrrair_fn) : list)
- * @overload fn_filter(list_is) : (function(ppmrrair_fn) : list)
- * @overload fn_filter() : (function(ppmrrair_fn, birl, end_i) : list)
- *
- * Give a compatible function signature that can be used in in_list or allows
- * the ppm_fn to be placed after the birl/end_i parameters for clarity.
- *
- * @param init (any)
- *   This is the initial value that will be passed to reduce.
- * @param birl (number | range | list | undef)
- *   - If undef, then returns function(ppm_fn, birl, end_i) : any,
- *     otherwise returns function(ppm_fn) : any.  This allows for
- *     placing the range at the top of the function call to make code easier to
- *     read.
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     ppm_fn is never called, making this function return init.
- *
- * @returns (function(ppm_fn, birl, end_i) : any |
- *           function(ppm_fn) : any)
- *   Function to pass to in_list, or to allow placing the PPMRAIR function
- *   after the birl/end_i for easier reading.
+ * @callback MapFn
+ * @param {MapperFn} map_fn
+ * @returns {list[any,...]}
+ *   A list of elements that were mapped.
  */
-function fn_filter(birl=undef, end_i=undef) =
-  birl == undef
-  ? function(ppm_fn, birl, end_i) filter(ppm_fn, birl, end_i)
-  : function(ppm_fn)              filter(ppm_fn, birl, end_i)
-;
 
 /**
- * @overload map(map_fn, begin_i, end_i) : list
- * @overload map(map_fn, range_is) : list
- * @overload map(map_fn, list_is) : list
+ * @typedef {AlgoFn} MapBirleiFn
  *
- * Map values to indices or array elements, producing an array that has as many
+ * @returns {MapFn}
+ *   A list of elements that were mapped.
+ */
+
+/**
+ * @callchain map(birl, end_i)    (map_fn) : list
+ * @callchain map() (birl, end_i) (map_fn) : list
+ *
+ * Map indices or list elements to values, producing an list that has as many
  * elements as indices provided.
  *
- * @param map_fn (function (i) : any)
- *   Function to take an index and return the remapped value/object.
- * @param birl (number | range | list)
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i is less than birl,
- *     then map_fn() is never called, so map will return an empty list.
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
  *
- * @returns (list)
- *   A new mapped list.
+ * @returns {(MapFn|MapBirleiFn)}
+ *   - If `birl` is omitted, then will return type `MapBirleiFn`.
+ *   - Else returns type `MapFn`.
  */
-function map(map_fn, birl, end_i) =
-  // echo(str("map birl: ", birl, " end_i: ", end_i))
-  let (indices = birlei_to_indices(birl, end_i))
-  // echo("indices: ", indices)
-  [ for (i = indices)
-      // echo("map", i)
-      map_fn(i)
-  ]
-;
-
-/** Hoists function into variable ns to be able to pass as a lambda */
-function function_map() =
-  function(map_fn, birl, end_i)
-    map(map_fn, birl, end_i)
-;
-
-/**
- * @overload fn_map(begin_i, end_i) : (function(ppmrrair_fn) : list)
- * @overload fn_map(range_is) : (function(ppmrrair_fn) : list)
- * @overload fn_map(list_is) : (function(ppmrrair_fn) : list)
- * @overload fn_map() : (function(ppmrrair_fn, birl, end_i) : list)
- *
- * Give a compatible function signature that can be used in in_list or allows
- * the map_fn to be placed after the birl/end_i parameters for clarity.
- *
- * @param init (any)
- *   This is the initial value that will be passed to reduce.
- * @param birl (number | range | list | undef)
- *   - If undef, then returns function(map_fn, birl, end_i) : any,
- *     otherwise returns function(map_fn) : any.  This allows for
- *     placing the range at the top of the function call to make code easier to
- *     read.
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param end_i (number | undef)
- *   - If birl is a number, end index to check.  If end_i < birl then
- *     map_fn is never called, making this function return init.
- *
- * @returns (function(map_fn, birl, end_i) : any |
- *           function(map_fn) : any)
- *   Function to pass to in_list, or to allow placing the PPMRAIR function
- *   after the birl/end_i for easier reading.
- */
-function fn_map(birl=undef, end_i=undef) =
-  birl == undef
-  ? function(map_fn, birl, end_i) map(map_fn, birl, end_i)
-  : function(map_fn)              map(map_fn, birl, end_i)
+function map(birl, end_i) =
+  assert(!is_function(birl))
+  is_undef(birl)
+  ? function(birl, end_i) map(birl, end_i)
+  : function(map_fn)
+      // echo(str("map birl: ", birl, " end_i: ", end_i))
+      let (indices = birlei_to_indices(birl, end_i))
+      // echo("indices: ", indices)
+      [ for (i = indices)
+          // echo("map", i)
+          map_fn(i)
+      ]
 ;

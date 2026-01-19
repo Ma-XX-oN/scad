@@ -1,0 +1,625 @@
+/**
+ * ### Purpose
+ *
+ * These functions do a minimal check to see if the parameters passed are what
+ * are expected.
+ *
+ * As this library is to be as fast as possible, the way this is done is by
+ * adding to the beginning of the function a `let ( verify_... )` for each
+ * parameter.  In this way, all parameter checks can be turned off by running:
+ *
+ *     find . -maxdepth 1 -type f ! -name '*.*' -print0 |
+ *       while IFS= read -r -d '' f; do
+ *         gawk '{ pattern = /^(\s+)(let \( _ = verify_)/;
+ *                 print gensub(pattern, "\\1// \\2", 1) }' "$f" > "$f.tmp" && \
+ *           mv "$f.tmp" "$f" && \
+ *           echo "Update to $f succeeded" || \
+ *           echo "Failed to update $f"
+ *       done
+ *
+ * And turned on by running:
+ *
+ *     find . -maxdepth 1 -type f ! -name '*.*' -print0 |
+ *       while IFS= read -r -d '' f; do
+ *         gawk '{ pattern = /^(\s+)\/\/ (let \( _ = verify_)/;
+ *                 print gensub(pattern, "\\1\\2", 1) }' "$f" > "$f.tmp" && \
+ *           mv "$f.tmp" "$f" && \
+ *           echo "Update to $f succeeded" || \
+ *           echo "Failed to update $f"
+ *       done
+ *
+ * Although this modifies the library, this will result in disable parameter
+ * checks having 0 effect on runtime performance.
+ *
+ * Can make two libraries, one debug with parameter checking turned on and one
+ * release with it turned off.
+ */
+use <range>
+use <base_algos>
+use <indexable>
+use <types>
+
+/**
+ * ### Type Checks
+ *
+ * These check that the types are what they are expected to be.  They don't
+ * check values.
+ */
+
+/**
+ * Verifies the `slr` type is either a string, list or range.
+ *
+ * @param {(string|list|range)} slr
+ *   Value to check.
+ */
+function verify_slr(slr) =
+  assert(is_string(slr) || is_list(slr) || is_num(slr[0]),
+         str("Invalid slr.  Got: ", slr))
+;
+
+/**
+ * Verifies the `sl` type is either a string or list.
+ *
+ * @param {(string|list)} sl
+ *   Value to check.
+ */
+function verify_sl(sl) =
+  assert(is_string(sl) || is_list(sl),
+         str("Invalid sl.  Got: ", sl))
+;
+
+/**
+ * Verifies the `s` type is a string.
+ *
+ * @param {string} s
+ *   Value to check.
+ */
+function verify_s(s) =
+  assert(is_string(s),
+         str("Invalid s.  Got: ", s))
+;
+
+/**
+ * Verifies the `l` type is a list.
+ *
+ * @param {list} l
+ *   Value to check.
+ */
+function verify_l(l) =
+  assert(is_list(l),
+         str("Invalid l.  Got: ", l))
+;
+
+/**
+ * Verifies the `r` type is a range.
+ *
+ * @param {range} r
+ *   Value to check.
+ */
+function verify_r(r) =
+  assert(!is_string(r) && !is_list(r) && is_num(r[0]),
+         str("Invalid r.  Got: ", r))
+;
+
+/**
+ * Verifies the `u` type is undef.
+ *
+ * @param {undef} u
+ *   Value to check.
+ */
+function verify_u(u) =
+  assert(is_num(u),
+         str("Invalid u.  Got: ", u))
+;
+
+/**
+ * Verifies the `i` type is a number.
+ *
+ * @param {number} i
+ *   Value to check.
+ */
+function verify_i(i) =
+  assert(is_num(i),
+         str("Invalid i.  Got: ", i))
+;
+
+/**
+ * Verifies the `iu` type is either a number or undef.
+ *
+ * @param {(number|undef)} iu
+ *   Value to check.
+ */
+function verify_iu(iu) =
+  assert(is_num(iu) || is_undef(iu),
+         str("Invalid iu.  Got: ", iu))
+;
+
+/**
+ * Verifies the `lu` type is either a list or undef.
+ *
+ * @param {(list|undef)} lu
+ *   Value to check.
+ */
+function verify_lu(lu) =
+  assert(is_list(lu) || is_undef(lu),
+         str("Invalid lu.  Got: ", lu))
+;
+
+/**
+ * Verifies `u` is undef.
+ *
+ * @param {undef} u
+ *   Value to check.
+ */
+function verify_u(u) =
+  assert(is_undef(u),
+    str("Invalid u.  Got: ", u))
+;
+
+/**
+ * Verifies `fn` is function.
+ *
+ * @param {function(...): any} fn
+ *   Value to check.
+ */
+function verify_fn(fn) =
+  assert(is_function(fn),
+    str("Invalid fn.  Got: ", fn))
+;
+
+/**
+ * Verifies the `birls` and `end_i` are both undef.
+ *
+ * @param {(number|list|range|slice)} birls
+ *   Value to check.
+ * @param {(number|undef)} end_i
+ *   Value to check.
+ */
+function verify_uu(birls, end_i) =
+  assert(is_undef(birls) && is_undef(end_i),
+    "Both birls and end_i must be undef when passed an slr_cache object.")
+;
+
+/**
+ * Verifies the `slc` type is a slice.
+ *
+ * @param {slice} slc
+ *   Value to check.
+ */
+function verify_slice(slc) =
+  assert(is_list(slc) && slc[0] == "SLICE",
+         str("Invalid slc.  Got: ", slc))
+;
+
+/**
+ * Verifies the `birl` types are either a number, list or range and `end_i`
+ * is either a number or undef as appropriate.
+ *
+ * > NOTE:
+ * >
+ * > A normalised `birlsei` is a `birlei`.
+ *
+ * > TTA:
+ * >
+ * > List check doesn't check to see if all values are numbers yet.  Necessary?
+ *
+ * @param {(number|list|range)} birl
+ *   Value to check.
+ * @param {(number|undef)} end_i
+ *   Value to check.
+ */
+function verify_birlei(birl, end_i) =
+  assert(
+    is_num(birl) && (
+      is_num(end_i)                   // (NUM, NUM)
+    ) ||
+    is_undef(end_i) && (
+      is_list(birl) && (
+        !len(birl) || is_num(birl[0]) // (LIST, UNDEF)
+      ) ||
+      is_num(birl[0])                 // (RANGE, UNDEF)
+    ),
+    str("Invalid birlei.  Got: (", birl, ", ", end_i, ")")
+  )
+;
+
+/**
+ * Verifies the `birls` type are either a number, list or range or slice
+ * and `end_i` is either a number or undef as appropriate.
+ *
+ * @param {(number|list|range|slice)} birls
+ *   Value to check.
+ * @param {(number|undef)} end_i
+ *   Value to check.
+ */
+function verify_birlsei(birls, end_i) =
+  assert(
+    is_num(birls) && (
+      is_num(end_i) ||                    // (NUM, NUM)
+      is_undef(end_i)                     // (NUM, UNDEF)
+    ) ||
+    is_undef(end_i) && (
+      is_list(birls) && (
+        !len(birls) || is_num(birls[0]) || // (LIST, UNDEF)
+        birls[0] == "SLICE"                // (SLICE, UNDEF)
+      ) ||
+      is_num(birls[0])                     // (RANGE, UNDEF)
+    ),
+    str("Invalid birlsei.  Got: (", birls, ", ", end_i, ")")
+  )
+;
+
+/**
+ * Verifies the `begin_i` and `end_i` types are both numbers.
+ *
+ * @param {number} begin_i
+ *   Value to check.
+ * @param {number} end_i
+ *   Value to check.
+ */
+function verify_biei(begin_i, end_i) =
+  assert(is_num(begin_i) && is_num(end_i),
+         str("Invalid biei.  Got: [ ", begin_i, " : ", end_i, " ]"))
+;
+
+/**
+ * ### Value Checks
+ *
+ * These check the birlsei and slr_cache.
+ */
+
+/**
+ * Verifies the `slr` is a slr and that `birls` and `end_i` are the right type
+ * and contain only positive values that are valid indices for the `slr`.
+ *
+ * @param {(string|list|range)} slr
+ *   slr to check against.
+ * @param {(number|list|range|slice)} birls
+ *   Value to check.
+ * @param {(number|undef)} end_i
+ *   Value to check.
+ */
+function verify_precache(slr, birls, end_i) =
+  let ( __ = verify_slr(slr) )
+  let ( __ = verify_birlsei(birls, end_i) )
+  let ( __ = verify_vbsis(slr, birls, end_i) )
+  undef
+;
+
+/**
+ * ### Value Checks
+ *
+ * These check that the values are within bounds.
+ */
+
+/**
+ * Verifies valid birlei indices.  I.e. `0 <= i < slr_len` where `i ∈ birlei`.
+ *
+ * @param {(string|list|range)} slr
+ *   Value to reference.
+ * @param {(number|list|range)} birl
+ *   Value to check.
+ * @param {(number|undef)} end_i
+ *   Value to check.
+ * @param {(number|undef)} _slr_len
+ *   Value to check.
+ */
+function verify_vbis(slr, birl, end_i, _slr_len) =
+  let ( __ = verify_slr(slr) )
+  let ( __ = verify_vlen(slr, _slr_len) )
+  let (
+    _slr_len = _get_slr_len(slr, _slr_len)
+  )
+  is_num(birl) && is_num(end_i)
+  ? // (NUM, NUM)
+    assert(is_num(end_i), str("end_i (", end_i, ") is not a number"))
+    assert((0 <= birl && birl <= end_i && end_i < _slr_len) || end_i < birl,
+           str("One or more values in range [", birl, " : ", end_i,
+               "] are out of bounds"))
+  : assert(is_undef(end_i), "If birl not a number, then end_i must be undef.")
+    is_list(birl)
+    ? // LIST
+      let (
+        i = find(0, len(birl)-1)(
+          function(i)
+            !(is_num(birl[i]) && 0 <= birl[i] && birl[i] < _slr_len))
+      )
+      assert(is_undef(i),
+             str("Found out of bound value (", birl[i], ") at index ", i,
+                 " for birlei ", birl))
+    : is_num(birl[0])
+      ? // RANGE
+        let (
+          last_idx = range_el(birl, -1)
+        )
+        birl[1] < 0
+        ? // iterating backwards
+          assert(0 <= last_idx && birl[0]  < _slr_len,
+                 str("One or more values in range ", birl,
+                     " are out of bounds for length ", _slr_len))
+        : // iterating forwards
+          assert(0 <= birl[0]  && last_idx < _slr_len,
+                 str("One or more values in range ", birl,
+                     " are out of bounds for length ", _slr_len))
+      : assert(is_num(birl[0]),
+               str("birl (", birl, ") is not a number, list or range."))
+;
+
+/**
+ * Verifies valid birlsei indices.  I.e. `0 <= i < slr_len(slr)` where
+ * `i ∈ birlsei`.
+ *
+ * @param {(string|list|range)} slr
+ *   Value to reference.
+ * @param {(number|list|range|slice)} birls
+ *   Value to check.
+ * @param {(number|undef)} end_i
+ *   Value to check.
+ * @param {(number|undef)} _slr_len
+ *   Value to check.
+ */
+function verify_vbsis(slr, birls, end_i, _slr_len) =
+  let (
+    _slr_len = _get_slr_len(slr, _slr_len)
+  )
+  is_num(birls)
+  ? is_num(end_i)
+    ? // (NUM, NUM)
+      assert(is_num(end_i), str("end_i (", end_i, ") is not a number"))
+      assert((0 <= birls && birls <= end_i && end_i < _slr_len) || end_i < birls,
+            str("One or more values in range [", birls, " : ", end_i,
+                "] are out of bounds. ", type_value(slr)))
+    : // (NUM, UNDEF)
+      assert(is_undef(end_i), "end_i must be a number or undef")
+      assert(0 <= birls, str("birls (", birls, ") must be ≥ 0 when end_i is undef"))
+  : assert(is_undef(end_i), "If birls not a number, then end_i must be undef.")
+    is_list(birls)
+    ? birls[0] == "SLICE"
+      ? // SLICE
+        let (
+          birls = slice_to_range(birls, slr, _slr_len)
+        )
+        is_list(birls)
+        ? undef // an empty set of indices means that all indices are valid
+        : // SLICE as RANGE
+          let (
+            last_idx = range_el(birls, -1)
+          )
+          birls[1] < 0
+          ? assert(0 <= last_idx && birls[0]  < _slr_len,
+                  str("One or more values in range ", birls,
+                      " are out of bounds for length ", _slr_len))
+          : assert(0 <= birls[0]  && last_idx < _slr_len,
+                  str("One or more values in range ", birls,
+                      " are out of bounds for length ", _slr_len))
+      : // LIST
+        let (
+          i = find(0, len(birls)-1)(
+            function(i)
+              !(is_num(birls[i]) && 0 <= birls[i] && birls[i] < _slr_len))
+        )
+        assert(is_undef(i),
+              str("Found out of bound value (", birls[i], ") at index ", i,
+                  " for birlei ", birls))
+    : is_num(birls[0])
+      ? // RANGE
+        let (
+          last_idx = range_el(birls, -1)
+        )
+        birls[1] < 0
+        ? assert(0 <= last_idx && birls[0]  < _slr_len,
+                 str("One or more values in range ", birls,
+                     " are out of bounds for length ", _slr_len))
+        : assert(0 <= birls[0]  && last_idx < _slr_len,
+                 str("One or more values in range ", birls,
+                     " are out of bounds for length ", _slr_len))
+      : assert(is_num(birls[0]),
+               str("birls (", birls, ") is not a number, list, range or slice."))
+;
+
+/**
+ * Verifies that `_slr_len` is undef or it is the same as `slr_len(slr)`.
+ *
+ * @param {(string|list|range)} slr
+ *   Value to reference.
+ * @param {(number|undef)} _slr_len
+ *   - If number, then checked against actual `slr_len(slr)` value.
+ *   - If undef, then ignored.
+ *
+ * @returns {number}
+ *   Length of `slr`.
+ */
+function _get_slr_len(slr, _slr_len) =
+  let (
+    __slr_len = slr_len(slr)
+  )
+  is_undef(_slr_len)
+  ? __slr_len
+  : assert(_slr_len == __slr_len,
+      str("Cached _slr_len (", _slr_len, ") is not valid. Actual: ", __slr_len))
+    __slr_len
+;
+
+/**
+ * Verifies valid `i`.  I.e. `-slr_len <= i < slr_len`.
+ *
+ * @param {(string|list|range)} slr
+ *   Value to reference.
+ * @param {number} i
+ *   Value to check.
+ * @param {(number|undef)} _slr_len
+ *   Cache value to check.
+ */
+function verify_vi(slr, i, _slr_len) =
+  let ( __ = verify_slr(slr) )
+  let ( __ = verify_i(i) )
+  let (
+    _slr_len = _get_slr_len(slr, _slr_len)
+  )
+  assert(-_slr_len <= i && i < _slr_len,
+    str("i (", i, ") is out of bounds. slr length: ", _slr_len))
+;
+
+/**
+ * Verifies valid `i`.  I.e. `-slr_len(slr) <= i <= slr_len(slr)`.
+ * Like `verify_vi()` but allows `i` to be equal to `slr_len(slr)`.
+ *
+ * @param {(string|list|range)} slr
+ *   Value to reference.
+ * @param {number} i
+ *   Value to check.
+ * @param {(number|undef)} _slr_len
+ *   Cache value to check.
+ */
+function verify_vie(slr, i, _slr_len) =
+  let ( __ = verify_slr(slr) )
+  let (
+    _slr_len = _get_slr_len(slr, _slr_len)
+  )
+  assert(-_slr_len <= i && i <= _slr_len,
+    str("i (", i, ") is out of bounds. slr length: ", _slr_len))
+;
+
+/**
+ * @callchain verify_vpi(i)
+ * @callchain verify_vpi(slr_or_i, i)
+ * @callchain verify_vpi(slr_or_i, i, _slr_len)
+ *
+ * Verifies valid positive `i`.
+ * - If 1 parameter, then `0 ≤ i`.
+ * - If 2+ parameters, `0 ≤ i < slr_len(slr_or_i)`.  
+ *
+ * @param {(string|list|range|number)} slr_or_i
+ *   - If slr, then this is the value to reference.
+ *   - If number, then this is the value to check.
+ * @param {(number|undef)} i
+ *   - If number, then this is the value to check.
+ *   - If undef, then this is ignored.
+ * @param {(number|undef)} _slr_len
+ *   - If number, then checked against actual `slr_len(slr_or_i)` value.
+ *   - If undef, then ignored.
+ */
+function verify_vpi(slr_or_i, i, _slr_len) =
+  is_num(slr_or_i)
+  ? 
+    assert(0 <= slr_or_i, str("i (", slr_or_i, ") must be ≥ 0."))
+    assert(is_undef(i), "Since slr_or_len is a number, i must be undefined.")
+  :
+    let ( __ = verify_slr(slr_or_i) )
+    let (
+      _slr_len = _get_slr_len(slr_or_i, _slr_len)
+    )
+    assert(0 <= i && i < _slr_len,
+      str("i (", i, ") is out of bounds. slr length: ", _slr_len))
+;
+
+/**
+ * @callchain verify_vpie(slr, i)
+ * @callchain verify_vpie(slr, i, _slr_len)
+ *
+ * Verifies valid positive `i`. E.g. `0 ≤ i ≤ slr_len(slr)`.
+ * Like `verify_vpi()` but allows `i` to be equal to `slr_len(slr)`.
+ *
+ * @param {(string|list|range)} slr
+ *   Value to reference.
+ * @param {number} i
+ *   Value to check.
+ * @param {(number|undef)} _slr_len
+ *   - If number, then checked against actual `slr_len(slr)` value.
+ *   - If undef, then ignored.
+ */
+function verify_vpie(slr, i, _slr_len) =
+  let (
+    _slr_len = _get_slr_len(slr, _slr_len)
+  )
+  assert(0 <= i && i <= _slr_len,
+    str("i (", i, ") is out of bounds. slr length: ", _slr_len))
+;
+
+/**
+ * Verifies `is_undef(_slr_len) || _slr_len == slr_len(slr)`
+ *
+ * @param {(string|list|range)} slr
+ *   Value to reference.
+ * @param {(number|undef)} _slr_len
+ *   - If number, then checked against actual `slr_len(slr)` value.
+ *   - If undef, then ignored.
+ */
+function verify_vlen(slr, _slr_len) =
+  let (
+    __slr_len = _get_slr_len(slr, _slr_len)
+  )
+  undef
+;
+
+/**
+ * Verifies birlei length is equal to `birlei_len`.
+ *
+ * @param {(number|list|range)} birl
+ *   Value to reference.
+ * @param {(number|undef)} end_i
+ *   Value to reference.
+ * @param {number} birlei_len
+ *   Value to check.
+ */
+function verify_vblen(birl, end_i, birlei_len) =
+  let ( _ = verify_i(birlei_len) )
+  is_num(birl) && is_num(end_i)
+  ? // (NUM, NUM) birlei
+    let ( _birlei_len = max(end_i - birl + 1, 0) )
+    assert(birlei_len == _birlei_len,
+      str("birlei_len (", birlei_len, ") is not valid. Actual: ", _birlei_len))
+  : assert(is_undef(end_i), str("birl not num so end_i (", end_i, ") must be undef."))
+    is_list(birl)
+    ? // LIST birlei
+      let ( _birlei_len = len(birl) )
+      assert(birlei_len == _birlei_len,
+        str("birlei_len (", birlei_len, ") is not valid. Actual: ", _birlei_len))
+    : is_num(birl[0])
+      ? // RANGE birlei
+        let ( _birlei_len = range_len(birl) )
+        assert(birlei_len == _birlei_len,
+          str("birlei_len (", birlei_len, ") is not valid. Actual: ", _birlei_len))
+      : assert(is_num(birl[0]),
+               str("birlei (", birl, ", ", end_i, ") is not a num num, list or range."))
+  undef
+;
+
+/**
+ * Verifies valid increasing `birlei`.
+ *
+ * @param {(number|list|range)} birl
+ *   Value to check.
+ * @param {(number|undef)} end_i
+ *   Value to check.
+ */
+function verify_vbinc(birl, end_i) =
+  is_list(birl)
+  ? len(birl)
+    ? assert(is_num(birl[0]),
+             str("element 0 (", birl[0], ") in list is not a number"))
+      // birlei is LIST
+      let (
+        i = find(1, len(birl)-1)(
+          function(i)
+            !is_num(birl[i]) || birl[i-1] >= birl[i]
+        )
+      )
+      assert(is_undef(i),
+            str("Found non-increasing value (", birl[i], ") at index ", i,
+                " for birlei ", birl))
+    : undef // empty LIST is fine
+  : assert(is_num(birl) && is_num(end_i) ||                  // (NUM, NUM) test
+          !is_list(birl) && is_num(birl[0]) && birl[1] > 0,  // RANGE test
+          str("Found a non-increasing birlei.  Got: (", birl, ")"))
+;
+
+/**
+ * Verifies `v` is not `0`.
+ *
+ * @param {number} v
+ *   Value to check.
+ */
+function verify_vnz(v) =
+  assert(is_num(v) && v, "Must be a non-zero number.")
+;
