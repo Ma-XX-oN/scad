@@ -1,5 +1,3 @@
-`abc `[`def`](#ghi)`: jkl`
-<code>abc [def](#ghi): jkl</code>
 # OpenSCAD Standard Library (OSL) (potential)
 
 ## Purpose
