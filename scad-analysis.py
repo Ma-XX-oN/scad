@@ -959,7 +959,13 @@ class Doc:
       
       if self.doc_type == "nontype":
         sym_id = content[doc_item[DOC_S_ID_SLC]]
-        symbols.nontype_dict[sym_id] = self
+        sig = content[doc_item[DOC_S_SIG_SLC]]
+        if sig.startswith("function "):
+          symbols.function_dict[sym_id] = self
+        elif sig.startswith("module "):
+          symbols.module_dict[sym_id] = self
+        else:
+          symbols.value_dict[sym_id] = self
 
     elif self.items["header"]:
         sym_id = self.items["header"][0][Doc.ID]
@@ -995,6 +1001,99 @@ class Doc:
       # - Lazy or don't wan to document
       print(f"WARNING: Symbol {self.content[doc_item[DOC_S_ID_SLC]]} isn't not documenting all callable parameters.",
             file=sys.stderr)
+
+  RE_FUNC = regex.compile(
+    r"""
+    function\((?<params>(?&chars_mtws))\)\s*+
+    (?: : \s*+(?<rets>.*+))?+
+    |""" + RES_LIB, regex.VERBOSE
+  )
+  """ split up function types """
+  RE_PARAMS = regex.compile(
+    r"""
+    \s*+
+    (?:
+      (?<id>  (?&symbol))
+      : \s*+
+    )?+
+      (?<type>.(?&param_chars_mtws))
+    (?:,|$)
+    |""" + RES_LIB, regex.VERBOSE
+  )
+  """ split up parameter types """
+
+  def _link_type(self, type_name: str, use_full_fn_type: bool) -> str:
+    type_name = type_name.strip()
+
+    if type_name.startswith("function"):
+      matched = Doc.RE_FUNC.match(type_name)
+      if not matched:
+        return type_name
+
+      s = "function"
+      if use_full_fn_type:
+        s += "("
+        for i, p_matched in enumerate(Doc.RE_PARAMS.finditer(matched["params"])):
+          if i:
+            s += ", "
+          if p_matched["id"]:
+            s += p_matched["id"].rstrip() + ": "
+          s += self.link_types(p_matched["type"].rstrip(), use_full_fn_type)
+        s += ")"
+
+        if matched["rets"]:
+          s += ": "
+          rets = matched["rets"]
+          if rets.startswith("("):
+            rets = rets.rstrip()[1:-1]
+          else:
+            rets = rets.rstrip()
+          rets = "(" + rets + ")"
+          s += self.link_types(rets, use_full_fn_type)
+
+      return s
+
+    if type_name not in BUILTIN_TYPES:
+      assert type_name in symbols.type_dict, (
+        f"{self.filename}:{self.id or ''} uses type '{type_name}' "
+        "which has not been defined yet."
+      )
+      symbols.type_refed.add(type_name)
+      return f'<a href="#t-{type_name}">{type_name}</a>'
+
+    return type_name
+
+  RE_SEP_TYPES = regex.compile(
+    r"""
+    \G(?<type>(?&type_chars_mtws))[|)]
+    |""" + RES_LIB, regex.VERBOSE
+  )
+  """ split up union types """
+  RE_SEP_LIST_TYPES = regex.compile(
+    r"""
+    \G(?<type>(?&param_chars_mtws))[,\]]
+    |""" + RES_LIB, regex.VERBOSE
+  )
+  """ split up list types """
+
+  def link_types(self, type_group: str, use_full_fn_type: bool = True) -> str:
+    type_group = type_group.rstrip()
+
+    if type_group.startswith("("):
+      ids: list[str] = []
+      for id_matched in Doc.RE_SEP_TYPES.finditer(type_group, 1):
+        ids.append(self.link_types(id_matched["type"].strip(), use_full_fn_type))
+
+      from itertools import groupby
+      return "|".join(str(k) for k, _ in groupby(ids))
+
+    if type_group.startswith("list["):
+      ids: list[str] = []
+      for id_matched in Doc.RE_SEP_LIST_TYPES.finditer(type_group, 5):
+        ids.append(self.link_types(id_matched["type"], use_full_fn_type))
+      return "list[" + ",".join(ids) + "]"
+
+    return self._link_type(type_group, use_full_fn_type)
 
   def output_sig(self, output_lines: list[str], id_override: Optional[str]):
     """
@@ -1348,21 +1447,19 @@ class Symbols:
   Stores the Symbol info collected from the files.
   """
   def __init__(self) -> None:
-    # type symbol -> doc
     self.type_dict: dict[str, Doc] = {}
-    # nontype symbol -> doc
-    self.nontype_dict: dict[str, Doc] = {}
-    # type symbol docs in order that they appear in source.
+    "type symbol -> doc"
     self.type_list: list[Doc] = []
-    # If type symbol set here, then it's been referenced in the documentation
-    # somewhere, excludes typedefs.
+    "type symbol docs in order that they appear in source."
     self.type_refed: set[str] = set()
-    # function defined
-    self.function:   set[str] = set()
-    # module defined
-    self.module:     set[str] = set()
-    # value defined
-    self.value:      set[str] = set()
+    """If type symbol set here, then it's been referenced in the documentation
+    somewhere, excludes typedefs."""
+    self.function_dict:   dict[str, Doc] = {}
+    "function symbol -> doc"
+    self.module_dict:     dict[str, Doc] = {}
+    "module symbol -> doc"
+    self.value_dict:      dict[str, Doc] = {}
+    "value symbol -> doc"
     
   def get_callchains(self, symbol_name: str, require_curry: bool = False) -> str:
     symbol_name = symbol_name.rstrip()
@@ -1370,10 +1467,10 @@ class Symbols:
       return ""
     if symbol_name in BUILTIN_TYPES:
       return ""
-    if symbol_name not in self.type_dict and symbol_name not in self.nontype_dict:
+    if symbol_name not in self.type_dict and symbol_name not in self.function_dict:
       return ""
 
-    obj = self.type_dict.get(symbol_name) or self.nontype_dict.get(symbol_name)
+    obj = self.type_dict.get(symbol_name) or self.function_dict.get(symbol_name)
     if obj and obj.items["callchain"]:
       return "\n".join(
         "    " + cc_desc for _, _, cc_desc in obj.items["callchain"] if cc_desc
@@ -1902,7 +1999,7 @@ symbols = Symbols()
 
 #       output_lines.append("<hr/>\n")
 
-def render_md(filename: str, content: str, output_lines: list[str], items: list[ItemInfo]):
+def render_md(filename: str, content: str, output_lines: list[str], items: list[ItemInfo], show_private: bool):
   types_start = len(symbols.type_list)
   type_refed = symbols.type_refed.copy()
 
@@ -1912,11 +2009,15 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
       assert doc.doc_type != "nontype", \
         "Nontypes should have occurred in `if is_sym_with_doc(item):` branch"
       if doc.doc_type == "file":
+        if doc.id and doc.id.startswith("_") and not show_private:
+          continue
         doc.output_doc(output_lines)
       # else:
       # Types are printed at the end
     elif is_sym_with_doc(item):
       doc = Doc(filename, content, item)
+      if doc.id and doc.id.startswith("_") and not show_private:
+        continue
       doc.output_doc(output_lines)
 
   # dry run so that types that reference callbacks will allow callbacks to show
@@ -2038,7 +2139,7 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
 
     if options["show"] in ("md", "md-with-private"):
       assert output_lines is not None
-      render_md(filename, content, output_lines, items)
+      render_md(filename, content, output_lines, items, options["show"] == "md-with-private")
     else:
 
       for item in items:
