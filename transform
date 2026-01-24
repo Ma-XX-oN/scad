@@ -1,8 +1,8 @@
 /**
  * ## transform
- * 
+ *
  * ### Purpose
- * 
+ *
  * This library is for matrix math for a verity of things.
  */
 use <any_all>
@@ -23,7 +23,7 @@ use <any_all>
  * > NOTE:
  * >
  * > There is no need to transpose a vector to a column vector.  When OpenSCAD
- * > sees M * V or V * M, the vector V is automatically treated as a column or
+ * > sees M \* V or V \* M, the vector V is automatically treated as a column or
  * > row vector as appropriate.
  *
  * @param {Matrix} A
@@ -136,6 +136,7 @@ function homogenise(pts, n=4) =
  * back to N dimensions with dehomogenise(..., N).
  *
  * Preconditions (enforced by asserts):
+ *
  * - Every point pt satisfies len(pt) > n.  (There must be a last coordinate to use as w.)
  * - w != 0.  (Homogeneous projection is undefined for w == 0.)
  *
@@ -144,7 +145,7 @@ function homogenise(pts, n=4) =
  * @param {number} [n=3]
  *   Number of Euclidean coordinates to return per point.
  *
- * @return (list[Point,...])
+ * @returns {list[Point,...]}
  *   List of n-dimensional Euclidean points.
  */
 function dehomogenise(pts, n=3) =
@@ -169,6 +170,7 @@ function dehomogenise(pts, n=3) =
  * top-left block.
  *
  * Use:
+ *
  * - If H is used as a transform matrix, apply it like any other homogeneous
  *   column-vector matrix:
  *   - Single point p: treat p as homogeneous when multiplying.
@@ -296,6 +298,7 @@ function homogenise_transform(A, n=4) =
  * Returns a **non-homogeneous column-vector** rotation matrix M (3×3).
  *
  * Use:
+ *
  * - Single Point    p:  p' = M * p
  * - List of Points Ps:  Ps' = Ps * transpose(M)
  *
@@ -319,6 +322,7 @@ function rot_x(a) =
  * Returns a **non-homogeneous column-vector** rotation matrix M (3×3).
  *
  * Use:
+ *
  * - Single Point    p:  p' = M * p
  * - List of Points Ps:  Ps' = Ps * transpose(M)
  *
@@ -342,6 +346,7 @@ function rot_y(a) =
  * Returns a **non-homogeneous column-vector** rotation matrix M (3×3).
  *
  * Use:
+ *
  * - Single Point    p:  p' = M * p
  * - List of Points Ps:  Ps' = Ps * transpose(M)
  *
@@ -413,6 +418,7 @@ function is_bound_vector(o, dim=3) =
  * coordinate system.
  *
  * Use:
+ *
  * - Single Point    p:  p' = M * p
  * - List of Points Ps:  Ps' = Ps * transpose(M)
  *
@@ -439,7 +445,7 @@ function rot_axis(angle, axis) =
         [ t*uz*ux - s*uy,  t*uz*uy + s*ux, t*uz*uz + c    ]
       ]
   )
-  
+  rot_matrix
 ;
 
 /**
@@ -460,13 +466,14 @@ function rot_axis(angle, axis) =
  * [`transform()`](#f-transform) API.
  *
  * Use if `p` or elements of `Ps` are homogeneous/non-homogeneous as `M` is:
+ *
  * - Single Point    p:  p' = M * p
  * - List of Points Ps:  Ps' = Ps * transpose(M)
  * or if don't want to worry about having to use
- * [`homogenise()`](#f-homogenise)/[`dehomogenise()`](#f-dehomogenise)), use
+ * [`homogenise()`](#f-homogenise)/[`dehomogenise()`](#f-dehomogenise), use
  * [`transform()`](#f-transform) API:
- * - Single Point    p:  p' = transform([p], transpose(M))
- * - List of Points Ps:  Ps' = transform(Ps, transpose(M))
+ * - Single Point    p:  `p' = transform([p], transpose(M))`
+ * - List of Points Ps:  `Ps' = transform(Ps, transpose(M))`
  *
  * @param {(number|list[number,number,number])} a
  *   - If `number` and `v` is not supplied: rotate CCW around Z.
@@ -483,6 +490,7 @@ function rot_axis(angle, axis) =
  *
  * @returns {Matrix}
  *   Column-vector rotation matrix M.
+ *
  *   - If `v` is a `BVector3D`, then returns a homogenised transform matrix
  *     (4x4).
  *   - If `v` is a `Vector3D`, then returns a non-homogenised transform matrix
@@ -513,8 +521,9 @@ function rotate(a, v=undef) =
  * Returns a **homogeneous column-vector** translation matrix T (4×4).
  *
  * Use:
- * - Single 3D point p: treat p as [x,y,z,1] (homogeneous) when multiplying.
- * - Point list Ps (3D): use transform(Ps, transpose(T)).  (Preferred.)
+ *
+ * - Single 3D point `p`: `p` must be as homogeneous (`[x,y,z,1]`) when multiplying.
+ * - Point list `Ps` (3D): use `transform(Ps, transpose(T))`.
  *
  * @param {list[number]} v
  *   Translation vector.
@@ -537,6 +546,7 @@ function translate(v) =
  * Returns a **non-homogeneous column-vector** scaling matrix S (3×3).
  *
  * Use:
+ *
  * - Single point p (3-vector):  p' = S * p
  * - Point list Ps:              Ps' = Ps * transpose(S)
  *
@@ -572,6 +582,7 @@ function scale(v) =
  *   List of points (rows).  All points must have the same dimension.
  * @param {(Matrix|function(pt: Point): Point)} matrix_or_fn
  *   Either:
+ *
  *   - a matrix in row-vector orientation (typically `transpose(M)`), or
  *   - a function that maps a single point to a transformed point.
  *
@@ -592,8 +603,9 @@ function transform(pts, matrix_or_fn) =
  * line segment to another.
  *
  * Use:
- * - Single 3D point p: treat p as [x,y,z,1] (homogeneous) when multiplying.
- * - Point list Ps (3D): use transform(Ps, transpose(T)).  (Preferred.)
+ *
+ * - Single 3D point `p`: `p` must be as homogeneous (`[x,y,z,1]`) when multiplying.
+ * - Point list `Ps` (3D): use `transform(Ps, transpose(T))`.
  *
  * @param {(list[Point3D,Point3D]|list[Point3D,Point3D,Point3D]|list[Point3D,Point3D,Point3D,Point3D])} start_line_seg
  *   The source line segment: `[P0, P1]`.
@@ -605,6 +617,7 @@ function transform(pts, matrix_or_fn) =
  *
  * @returns {Matrix}
  *   Homogeneous column-vector transform matrix T.
+ *
  *   - if start/end line_seg consist of 2 points, then
  *     - Rigid reorientation.  If scale_to_vectors is true, also apply uniform
  *       scaling.
@@ -736,14 +749,14 @@ function reorient(start_line_seg, end_line_seg, scale_to_vectors = false) =
  *   Pivot tolerance.  Must be > 0.
  *
  * @returns {Matrix}
- *   The inverse matrix A^{-1}.
+ *   The inverse matrix `A⁻¹`.
  *
- * @throws
- *   Assertion failure if A is not a valid square numeric matrix or if any pivot
- *   has |pivot| < eps (numerically singular).
+ *   Assertion failure if `A` is not a valid square numeric matrix or if any
+ *   pivot has `|pivot| < eps`.
  *
- * @example
- *   invert([[4,7],[2,6]])  // -> [[0.6,-0.7],[-0.2,0.4]]
+ *   Example
+ *
+ *       invert([[4,7],[2,6]])  // -> [[0.6,-0.7],[-0.2,0.4]]
  */
 function invert(A, eps = 1e-12) =
   assert(_is_square_matrix(A), "invert: A must be a non-empty square matrix")
@@ -753,7 +766,7 @@ function invert(A, eps = 1e-12) =
     aug = augment(A, identity(n))    // [A | I]
   )
   let(
-    raug = row_reduction(aug, 0, n, eps)  // reduce to [I | A^{-1}]
+    raug = row_reduction(aug, 0, n, eps)  // reduce to [I | A⁻¹]
   )
   _right_half(raug, n);
 
@@ -762,7 +775,7 @@ function invert(A, eps = 1e-12) =
  * matrix.
  *
  * @param {Matrix} aug
- *   Augmented matrix of shape n×(2n), typically [A | I].
+ *   Augmented matrix of shape `n×(2n)`, typically `[A | I]`.
  * @param {number} k
  *   Current column index (0-based).  External callers pass 0.
  * @param {number} n
@@ -771,10 +784,9 @@ function invert(A, eps = 1e-12) =
  *   Pivot tolerance.  Must be > 0.
  *
  * @returns {Matrix}
- *   The reduced augmented matrix.  For a nonsingular A this is [I | A^{-1}].
+ *   The reduced augmented matrix.  For a non-singular A this is `[I | A⁻¹]`.
  *
- * @throws
- *   Assertion failure if |pivot| < eps at any step.
+ *   Assertion failure if `|pivot| < eps` at any step.
  */
 function row_reduction(aug, k, n, eps) =
   (k >= n) ? aug
@@ -822,9 +834,8 @@ function identity(n) =
  *   Right matrix with r rows.
  *
  * @returns {Matrix}
- *   The augmented matrix [A | B].
+ *   The augmented matrix `[A | B]`.
  *
- * @throws
  *   Assertion failure if A and B do not have the same non-zero row count.
  */
 function augment(A, B) =
@@ -833,7 +844,7 @@ function augment(A, B) =
   [for (i = [0 : len(A) - 1]) concat(A[i], B[i])];
 
 /**
- * Extracts the right half (columns n..2n-1) of an n×(2n) augmented matrix.
+ * Extracts the right half (columns `n..2n-1`) of an `n × (2n)` augmented matrix.
  *
  * @param {Matrix} aug
  *   Augmented matrix of shape n×(2n).
@@ -863,7 +874,7 @@ function _swap_rows(M, i, j) =
   [for (r = [0 : len(M) - 1]) (r == i) ? M[j] : (r == j) ? M[i] : M[r]];
 
 /**
- * Finds the row index r ∈ [start..n-1] that maximises |aug[r][col]|.
+ * Finds the row index `r ∈ [start..n-1]` that maximises `|aug[r][col]|`.
  * Ties resolve to the first occurrence.
  *
  * @param {Matrix} aug
@@ -906,7 +917,7 @@ function _is_rect_matrix(M) =
  *   Candidate matrix.
  *
  * @returns {bool}
- *   true if M is rectangular and len(M) == len(M[0]).
+ *   true if M is rectangular and `len(M) == len(M[0])`.
  */
 function _is_square_matrix(M) =
   _is_rect_matrix(M) && (len(M) == len(M[0]));

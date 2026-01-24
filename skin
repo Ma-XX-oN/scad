@@ -2,14 +2,13 @@
  * ## skin
  *
  * ### Purpose
- * 
+ *
  * The built in extrude module isn't powerful or flexible enough so this library
  * was made.  It creates a skin by making layers of polygons with the same
  * number of vertices and then skins them by putting faces between layers.
- * 
- * 
+ *
  * ### Design
- * 
+ *
  * This requires keeping track of a bunch of data, which was put into a list.
  */
 use <base_algos>
@@ -170,11 +169,12 @@ function layer_pts(pts_in_layer, pt_offset_and_layer_list)
  *   on a layer.
  *
  *   E.g.
- *     - [1] will have all diagonals go one way.
- *     - [1,0] will alternate.
- *     - [0,1] will alternate the opposite way to [1,0].
- *     - [0,0,1] will have it go one way for 2 consecutive 4 point face, and
- *       then the other way, and then repeat.
+ *
+ *   - `[1]` will have all diagonals go one way.
+ *   - `[1,0]` will alternate.
+ *   - `[0,1]` will alternate the opposite way to `[1,0]`.
+ *   - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
+ *     then the other way, and then repeat.
  *
  * @returns {list[Face]}
  *   A list of triangle layer_i forming the side walls.
@@ -201,7 +201,7 @@ function layer_side_faces(pts_in_layer, layers = 1, wall_diagonal = [0, 1])
 /**
  * @type {function}
  *
- * Given a set of points and an index, returns a face if pts[pt_is[i..i+2]]
+ * Given a set of points and an index, returns a face if `pts[pt_is[i..i+2]]`
  * are convex, or undef if concave or colinear.
  *
  * This is for clockwise polygons when looking towards -z.
@@ -240,7 +240,9 @@ _ear_cw = function(pts, pt_i0, pt_i1, pt_i2, eps = 1e-6)
 ;
 
 /**
- * Given a set of points and an index, returns a face if pts[pt_is[i..i+2]]
+ * @type {function}
+ *
+ * Given a set of points and an index, returns a face if `pts[pt_is[i..i+2]]`
  * are convex, or undef if concave or colinear.
  *
  * This is for counter-clockwise polygons when looking towards -z.
@@ -296,8 +298,8 @@ function _pt_in_triangle(pt, pt0, pt1, pt2, _v0, _v1, _v2, _cross_1020, eps = 1e
 ;
 
 /**
- * Checks if any point indexed by pt_is that is not pt_i{0, 1, 2} is inclusively
- * bounded by the triangle pts[pt_is[pt_i{0, 1, 2}]]
+ * Checks if any point indexed by pt_is that is not `pt_i{0, 1, 2}` is inclusively
+ * bounded by the triangle `pts[pt_is[pt_i{0, 1, 2}]]`.
  */
 function _any_point_in_ear(pts, pt_is, pt_i0, pt_i1, pt_i2, eps = 1e-6) =
   let (
@@ -324,8 +326,10 @@ function _any_point_in_ear(pts, pt_is, pt_i0, pt_i1, pt_i2, eps = 1e-6) =
  *
  * Parameters starting with _ will not be set by the external caller.
  *
+ * @param {list[Point3D,...]} pts
+ *   Points that `pt_is` references.
  * @param {list[number,...]} pt_is
- *   Point indices.
+ *   Point indices to dereference `pts` with.
  * @param {(function(pts, pt_i0, pt_i1, pt_i2, eps = 1e-6): (list[number]|undef))} create_ear_fn
  *   Callback that when given the set of point indices, return a new face or
  *   undef if not an ear.
@@ -561,7 +565,7 @@ function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID;
  *   number of points per layer (must be ≥ 3)
  * @param {number} layers
  *   Number of wall segments (requires `layers + 1` total point layers).
- * @param {list of [x, y, z]} pts3d
+ * @param {list[Point3D,...]} pts3d
  *   The full list of points arranged in stacked layers.
  * @param {string} comment
  *   Usually a string, this is just a comment for reading and debugging purposes.
@@ -575,12 +579,13 @@ function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID;
  *   on a layer.
  *
  *   E.g.
- *     - [1] will have all diagonals go one way.
- *     - [1,0] will alternate.
- *     - [0,1] will alternate the opposite way to [1,0].
- *     - [0,0,1] will have it go one way for 2 consecutive squares, and then the
- *       other way, and then repeat.
- * @param {list[list[Point3D]]} debug_axes
+ *
+ *   - `[1]` will have all diagonals go one way.
+ *   - `[1,0]` will alternate.
+ *   - `[0,1]` will alternate the opposite way to `[1,0]`.
+ *   - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
+ *     then the other way, and then repeat.
+ * @param {list[list[Point3D,...],...]} debug_axes
  *   This is a list of point groups.  When rendering, arrows will be drawn from
  *   the first point to each succeeding point in list.  When debugging, call
  *   skin_show_debug_axis().
@@ -589,11 +594,30 @@ function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID;
  *   >
  *   > INCOMPLETE and UNTESTED.
  *
- * @returns {skin object}
+ * @returns {skin}
  */
 function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_diagonal, debug_axes) =
   [ SKIN_ID, pt_count_per_layer, layers, pts3d, debug_axes, comment, operation, wall_diagonal ]
 ;
+
+/**
+ * @callback SkinExtrude
+ *
+ * @param {function(i: number) list_of_points} pts_fn
+ *   Function that returns a list of points for layer i.  It's fine to have
+ *   duplicate points in list as degenerate triangles will be filtered when
+ *   calling skin_to_polyhedron.
+ *
+ *   > NOTE:
+ *   >
+ *   > Points **MUST** wind in clockwise order when looking into object from
+ *   > starting layer towards next layer.
+ *   >
+ *   > Non-coplanar points on a layer may result in **UB**. Especially on end caps.
+ *
+ * @returns {skin}
+ *   The skin object.
+ */
 
 /**
  * @callchain skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes) (pts_fn) : skin
@@ -621,50 +645,59 @@ function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_di
  *   on a layer.
  *
  *   E.g.
- *     - [1] will have all diagonals go one way.
- *     - [1,0] will alternate.
- *     - [0,1] will alternate the opposite way to [1,0].
- *     - [0,0,1] will have it go one way for 2 consecutive squares, and then the
- *       other way, and then repeat.
- * @param {function(i: number) list_of_points} pts_fn
- *   Function that returns a list of points for layer i.  It's fine to have
- *   duplicate points in list as degenerate triangles will be filtered when
- *   calling skin_to_polyhedron.
  *
- *   > NOTE:
- *   >
- *   > Points **MUST** wind in clockwise order when looking into object from
- *   > starting layer towards next layer.
- *   >
- *   > Non-coplanar points on a layer may result in **UB**. Especially on end caps.
+ *   - `[1]` will have all diagonals go one way.
+ *   - `[1,0]` will alternate.
+ *   - `[0,1]` will alternate the opposite way to `[1,0]`.
+ *   - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
+ *     then the other way, and then repeat.
+ * @param {list[list[Point3D,...],...]} debug_axes
+ *   This is a list of point groups.  When rendering, arrows will be drawn from
+ *   the first point to each succeeding point in list.  When debugging, call
+ *   skin_show_debug_axis().
  *
- * @returns {skin object}
+ *   > WARNING:
+ *   >
+ *   > INCOMPLETE and UNTESTED.
+ *
+ * @returns {SkinExtrude}
+ *   Lambda that takes a function that returns one layer of points.
  */
 function skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes) =
-  function(pts_fn)
-    let (
-      layer_is = birlei_to_indices(birl, end_i),
-      layer_count = slr_len(layer_is),
-      layer_0 = pts_fn(el(layer_is, 0)),
-      pts_in_layer = len(layer_0)
-    )
-    let ( layer_is = _els(layer_is, 1, len(layer_is)-1) )
-    assert(layer_count > 1, "Need 2 or more layers to make a volume.")
-    skin_new(pts_in_layer, layer_count - 1,
-      [ 
-        each layer_0,
-        // Which is better?  each before or after for?
-        // each for (i = layer_is) pts_fn(i)
-        for (i = layer_is) each pts_fn(i)
-      ], comment, operation, wall_diagonal, debug_axes
-    )
+    is_undef(birl)
+    ? function(birl, end_i)
+        skin_extrude(comment, operation, wall_diagonal, debug_axes, birl, end_i)
+    : function(pts_fn)
+        let ( _ = verify_birlei(birl, end_i) )
+        let (
+          layer_is = birlei_to_indices(birl, end_i),
+          layer_0 = pts_fn(el(layer_is, 0)),
+          pts_in_layer = len(layer_0),
+          layer_count = slr_len(layer_is)
+        )
+        echo("birlei = ", birl, end_i, layer_is)
+        echo("layer_count", layer_count)
+        let ( layer_is = _els(layer_is, 1, slr_len(layer_is)-1) )
+        echo("layer_is", layer_is)
+        assert(layer_count > 1, "Need 2 or more layers to make a volume.")
+        skin_new(pts_in_layer, layer_count - 1,
+          [
+            each layer_0,
+            // Which is better?  each before or after for?
+            // each for (i = layer_is)
+            //   pts_fn(i)
+            for (i = layer_is)
+              each pts_fn(i)
+          ], comment, operation, wall_diagonal, debug_axes
+        )
 ;
 
 /**
  * Generates face layer_i to skin a layered structure, including:
- *   - bottom cap (layer 0)
- *   - top cap (layer = layers)
- *   - side wall faces between adjacent layers
+ *
+ * - bottom cap (layer 0)
+ * - top cap (layer = layers)
+ * - side wall faces between adjacent layers
  *
  * Assumes that points are stored in a flat array, with `pts_in_layer`
  * points per layer, and layers stored consecutively. Points within each
@@ -673,7 +706,7 @@ function skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes
  * @param {skin} skin
  *   The skin object generating the faces from.
  *
- * @returns {list of [int, int, int]}
+ * @returns {list[Face]}
  *   A list of triangle face definitions.
  */
 function skin_create_faces(skin) =
@@ -698,14 +731,15 @@ function skin_create_faces(skin) =
 /**
  * Performs a transformation on the points stored in the skin object.
  *
- * @param {skin object} obj
+ * @param {skin} obj_or_objs
  *   The skin object where the points are coming from to transform.
+ *   TODO: Update doc to state `list[skin]`
  * @param {(Matrix|function(pt: Point3D): Point3D)} matrix_or_fn
  *   The matrix or function to do the transformation with.  If the
  *   transformation is homogenous, then will convert the points to a homogeneous
  *   basis, perform the transformation and then remove the basis.
  *
- * @returns {skin object}
+ * @returns {skin}
  *   A new skin object with the points transformed.
  */
 function skin_transform(obj_or_objs, matrix_or_fn) =
@@ -729,7 +763,7 @@ function skin_transform(obj_or_objs, matrix_or_fn) =
  * @param {(skin|list[skin,...])} obj_or_objs
  *   The skin object or list of skin objects to make into a polyhedron.
  *
- * @returns {skin object}
+ * @returns {skin}
  *   A new skin object with the points transformed.
  */
 module skin_to_polyhedron(obj_or_objs) {
@@ -751,7 +785,7 @@ module skin_to_polyhedron(obj_or_objs) {
     is = filter(0, len(objs)-1)(function(i)
         // filter out any index that does have an operation in the previous index.
         i == 0 || !is_skin(objs[i-1]) || objs[i-1][SKIN_OPERATION] == undef);
-        
+
     for (i = is) {
       obj = objs[i];
       if (is_skin(obj)) {
@@ -803,6 +837,7 @@ module skin_to_polyhedron(obj_or_objs) {
  *   Negative numbers are treated as 0.
  *
  *   E.g.
+ *
  *   - 0 or less means add no additional layers.
  *   - 1 means add another layer that is half way in between the current and
  *     next layer.
@@ -886,12 +921,126 @@ function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
 ;
 
 /**
+ * @typedef {list} ColourLst
+ *
+ * @slot {number} 0
+ *   Red value between `[0,1]`.
+ * @slot {number} 1
+ *   Green value between `[0,1]`.
+ * @slot {number} 2
+ *   Blue value between `[0,1]`.
+ * @slot {number} [3=1.0]
+ *   Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
+ */
+
+/**
+ * @typedef {string} ColourStr
+ *
+ * Can be specified in 4 different formats:
+ *
+ * - `"#rgb"`
+ * - `"#rgba"`
+ * - `"#rrggbb"`
+ * - `"#rrggbbaa"`
+ *
+ * Alpha value between `["0","f"]` or `["00","ff"]`, where `"f"` or `"ff"` means
+ * solid and `"0"` or `"00"` is transparent.
+ */
+
+/**
+ * @typedef {string} ColourName
+ *
+ * The available color names are taken from the World Wide Web consortium's SVG
+ * color list. A chart of the color names is as follows, (note that both
+ * spellings of grey/gray including slategrey/slategray etc are valid):
+ *
+ * |                        |                        |                        |
+ * |------------------------|------------------------|------------------------|
+ * | **Purples**            | **Reds**               | **Browns**             |
+ * | - Lavender             | - IndianRed            | - Cornsilk             |
+ * | - Thistle              | - LightCoral           | - BlanchedAlmond       |
+ * | - Plum                 | - Salmon               | - Bisque               |
+ * | - Violet               | - DarkSalmon           | - NavajoWhite          |
+ * | - Orchid               | - LightSalmon          | - Wheat                |
+ * | - Fuchsia              | - Red                  | - BurlyWood            |
+ * | - Magenta              | - Crimson              | - Tan                  |
+ * | - MediumOrchid         | - FireBrick            | - RosyBrown            |
+ * | - MediumPurple         | - DarkRed              | - SandyBrown           |
+ * | - BlueViolet           |                        | - Goldenrod            |
+ * | - DarkViolet           | **Greens**             | - DarkGoldenrod        |
+ * | - DarkOrchid           | - GreenYellow          | - Peru                 |
+ * | - DarkMagenta          | - Chartreuse           | - Chocolate            |
+ * | - Purple               | - LawnGreen            | - SaddleBrown          |
+ * | - Indigo               | - Lime                 | - Sienna               |
+ * | - DarkSlateBlue        | - LimeGreen            | - Brown                |
+ * | - SlateBlue            | - PaleGreen            | - Maroon               |
+ * | - MediumSlateBlue      | - LightGreen           |                        |
+ * |                        | - MediumSpringGreen    | **Whites**             |
+ * | **Pinks**              | - SpringGreen          | - White                |
+ * | - Pink                 | - MediumSeaGreen       | - Snow                 |
+ * | - LightPink            | - SeaGreen             | - Honeydew             |
+ * | - HotPink              | - ForestGreen          | - MintCream            |
+ * | - DeepPink             | - Green                | - Azure                |
+ * | - MediumVioletRed      | - DarkGreen            | - AliceBlue            |
+ * | - PaleVioletRed        | - YellowGreen          | - GhostWhite           |
+ * |                        | - OliveDrab            | - WhiteSmoke           |
+ * | **Blues**              | - Olive                | - Seashell             |
+ * | - Aqua                 | - DarkOliveGreen       | - Beige                |
+ * | - Cyan                 | - MediumAquamarine     | - OldLace              |
+ * | - LightCyan            | - DarkSeaGreen         | - FloralWhite          |
+ * | - PaleTurquoise        | - LightSeaGreen        | - Ivory                |
+ * | - Aquamarine           | - DarkCyan             | - AntiqueWhite         |
+ * | - Turquoise            | - Teal                 | - Linen                |
+ * | - MediumTurquoise      |                        | - LavenderBlush        |
+ * | - DarkTurquoise        | **Oranges**            | - MistyRose            |
+ * | - CadetBlue            | - LightSalmon          |                        |
+ * | - SteelBlue            | - Coral                | **Grays**              |
+ * | - LightSteelBlue       | - Tomato               | - Gainsboro            |
+ * | - PowderBlue           | - OrangeRed            | - LightGrey            |
+ * | - LightBlue            | - DarkOrange           | - Silver               |
+ * | - SkyBlue              | - Orange               | - DarkGray             |
+ * | - LightSkyBlue         |                        | - Gray                 |
+ * | - DeepSkyBlue          | **Yellows**            | - DimGray              |
+ * | - DodgerBlue           | - Gold                 | - LightSlateGray       |
+ * | - CornflowerBlue       | - Yellow               | - SlateGray            |
+ * | - RoyalBlue            | - LightYellow          | - DarkSlateGray        |
+ * | - Blue                 | - LemonChiffon         | - Black                |
+ * | - MediumBlue           | - LightGoldenrodYellow |                        |
+ * | - DarkBlue             | - PapayaWhip           |                        |
+ * | - Navy                 | - Moccasin             |                        |
+ * | - MidnightBlue         | - PeachPuff            |                        |
+ * |                        | - PaleGoldenrod        |                        |
+ * |                        | - Khaki                |                        |
+ * |                        | - DarkKhaki            |                        |
+ */
+
+/**
+ * @typedef {list} DebugStyle
+ *
+ * Style for a debug vector.
+ *
+ * @slot {(ColourStr|ColourLst|ColourName)} 0
+ *   - If a string, then the name of a colour, or the hex representation of one.
+ *   - If a number, the the value of the hex value.
+ * @slot {number} 1
+ *   Alpha value between `[0, 1]`.
+ *
+ *   > TODO:
+ *   >
+ *   > Need to verify if undef is allowed, otherwise this will always take
+ *   > precedence, even if alpha is specified in the ColourLst or ColourStr
+ *   > style specifications.
+ * @slot {number} 2
+ *   Thickness that is passed to [`arrow()`](#m-arrow) module.
+ */
+
+/**
  * UNTESTED!
  * Shows the debug axes to verify where you think things should be.
  *
  * @param {skin} obj
  *   Object to show debug axes for.
- * @param {list<list<color, alpha, thickness>>} styles
+ * @param {list[DebugStyle]} styles
  *   Contains a list of styles that are reused when the number of points in a
  *   debug group exceeds the the number of styles.
  *
@@ -948,6 +1097,11 @@ module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
 
 /**
  * Interpolates value between v0 and v1?
+ *
+ * > TODO:
+ * >
+ * > This function is deprecated and should be replaced with
+ * > [`interpolated_values()`](#f-interpolated_values).
  */
 function interpolate(v0, v1, v) =
   (v - v0[0]) / (v1[0] - v0[0]) * (v1[1] - v0[1]) + v0[1]
@@ -957,7 +1111,7 @@ function interpolate(v0, v1, v) =
  * INCOMPLETE!
  * Truncates the beginning, end or both of the extrusion.
  *
- * @param {skin object} obj
+ * @param {skin} obj
  *   Object to remove values before in points.  Value extracted from points MUST
  *   BE monotonically nondecreasing over the points list.
  * @param {function(pt: Point3D): extracted_value} extract_order_value_fn
@@ -968,7 +1122,7 @@ function interpolate(v0, v1, v) =
  * @param {number} [end=extract_order_value_fn(el(obj[SKIN_PTS], -1))]
  *   The value to compare against the extracted value from a point.
  *
- * @returns {skin object}
+ * @returns {skin}
  *   Updated skin object with all of the points before value removed.  If
  *   extracted value is not EXACTLY value, then will linearly interpolated to
  *   cup off EXACTLY at value.
@@ -1092,8 +1246,9 @@ function skin_verify(obj, disp_all_pts = false) =
  *   point of the current layer and `p1` is the first point of the next layer.
  *   Will return a value that states the distance between layers.
  *
- * @returns {function(i: number): number_of_layers_to_add}
- *   Function that can be used with skin_add_layer_if().
+ * @returns {function(i: number): number}
+ *   Function that can be used with skin_add_layer_if() and returns the number
+ *   of layers to add.
  */
 function skin_max_layer_distance_fn(obj, max_diff, diff_fn = function(p0, p1) p1.x - p0.x) =
   let (
@@ -1136,7 +1291,7 @@ module skin_example1() {
     [ i, 0, 1 ]
   ];
 
-  test_skin = 
+  test_skin =
     skin_extrude(0, 3)(rectangular_prism_fn)
   ;
   echo("test_skin: ", skin_to_string(test_skin));
@@ -1188,7 +1343,7 @@ module skin_example3() {
   hybrid_fn = function(i)
     i < 0 ? triangular_prism_fn(i) : rectangular_prism_fn(i)
   ;
-  test_skin = 
+  test_skin =
     skin_extrude(-3, 3)(hybrid_fn)
   ;
   echo("test_skin: ", skin_to_string(test_skin, false));

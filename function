@@ -1,10 +1,10 @@
 /**
  * ## function
- * 
+ *
  * ### Purpose
- * 
+ *
  * Allows doing things with functions using introspection.
- * 
+ *
  * ### Function Introspection
  */
 use <base_algos>

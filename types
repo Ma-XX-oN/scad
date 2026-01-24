@@ -1,6 +1,6 @@
 /**
  * ## types
- * 
+ *
  * ### Purpose
  *
  * This library allows representing types as enumerated values, strings or
@@ -16,16 +16,16 @@ include <types_consts>
 /**
  * @typedef {number} type_enum
  *
- *   Number representing a type.  Use [type_enum_to_str](#type_enum_to_str) to
- *   get name of type.
+ * Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
+ * to get name of type.
  */
- 
+
 /**
  * States if a te (type_enum) represents an indexable type, either directly with
  * `sl[index]` or indirectly with `range_el(r, index)`.
  *
  * @param {type_enum} type_enum
- *   Enum for type (See [type_enum](#type_enum))
+ *   Enum for type (See [type_enum](#t-type_enum))
  *
  * @returns {bool}
  *   Returns `true` if indexable, `false` otherwise.

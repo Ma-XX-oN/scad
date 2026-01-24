@@ -2,64 +2,61 @@
  * ## base_algos
  *
  * ### How to Import
+ *
  *     use <base_algos>
- * 
+ *
  * ### Purpose
- * 
+ *
  * The purpose of this library is to provide the minimum number of abstracted
  * composable algorithms to be able to make coding easier, both when reading and
  * writing.  They are quite fast, and although you could prolly make faster hand
  * rolled implementations, IMHO this makes it easier to read and rationalise as
  * to intent.  Also, the pattern used is repeated everywhere, making it easier
  * to learn how to use.
- * 
+ *
  * ### FYI: Functions and Iterating are Abound!
- * 
+ *
  * There is a lot of currying and passing of functions in this library.  (Mmmmmm
  * curry!)  No, not that type of curry.  Currying relates to having a function
  * return a function and using that function immediately.  For instance.  Say I
  * want to find the first instance of the letter "t" in a string.  Using this
  * library, the following could be done:
- * 
- * ```
- * s = "Hello there!";
- * i = find(fwd_i(s))(function(i)
- *       s[i] == "t"
- *     );
- * ```
- * 
+ *
+ *     s = "Hello there!";
+ *     i = find(fwd_i(s))(function(i)
+ *           s[i] == "t"
+ *         );
+ *
  * Or it could be done using the algorithm adaptor `it_each` (See
  * [Algorithm Adaptors](#algorithm-adaptors)):
- * 
- * ```
- * s = "Hello there!";
- * i = it_each(s, find())(function(c)
- *       c == "t"
- *     );
- * ```
- * 
+ *
+ *     s = "Hello there!";
+ *     i = it_each(s, find())(function(c)
+ *           c == "t"
+ *         );
+ *
  * You'll notice the occurrence of `)(`.  This ends the algorithm or adaptor
  * call and start the next call which takes a function to test each element.
  * Also, observe that when the algorithm's `birlei` parameter is omitted, a
  * `function(birl, end_i)` is returned, which in this case is `find()`.  The
  * adaptor needs this function signature to be passed to it so that it can apply
  * the algorithm while passing the element to the `PPMRRAIR` function.
- * 
+ *
  * These 2 basic patterns are used everywhere in the library set, and though it
  * might look odd at first, you'll find that it becomes natural quite quickly.
- * 
+ *
  * ### Iterators:
- * 
+ *
  * The algorithms are index, not element centric, which means that a physical
  * container (i.e. a list) is *not* needed.  A virtual container (i.e. function)
  * is all that is required.  The indices act as iterators as one might find in
  * C++.  However, unlike C++ and python ranges, which are half open ranges
  * `[begin, end)`, these are closed ranges `[begin, end]`, meaning that the end
  * item is the last item in the range, not one past the end.
- * 
+ *
  * For each of these algorithms, the `birl` parameter (formally
  * `begin_i_range_or_list`, but it became too much to type) state either:
- * 
+ *
  * 1. Starting index (number)
  *    - Implies that a second `end_i` parameter will indicate the inclusive end
  *      index (number), conforming to OpenSCAD's closed range paradigm.
@@ -69,18 +66,18 @@
  * 3. Indices (list)
  *    - Will go through each element in the list and use them as indices to pass
  *      to the algorithm.  `end_i` must be `undef`.
- * 
+ *
  * ### Algorithms
- * 
+ *
  * There are 4 basic algorithms (`reduce`, `reduce_air`, `filter` and `map`),
  * from which most other algorithms can be built.  For optimisation purposes,
  * `reduce_air` adds the ability to `A`llow an `I`ncomplete `R`eduction (hence
  * the `_air` suffix) over the range and filter adds a hybrid filter/map
  * feature.
- * 
+ *
  * A few others (`find`, `find_upper`, `find_lower`) could have been implemented
  * with `reduce_air` but have been optimised with their own implementations.
- * 
+ *
  * The `find*` and `reduce*` algorithms rely on recursive descent, but conform
  * to TCO (Tail Call Optimisation) so don't have a maximum depth.  The `filter`
  * and `map` algorithms use list comprehension so also have no limit to their
@@ -95,7 +92,7 @@
  * > A: I've yet not seen a good reason to do this.
  *
  * ### Algorithm Signatures
- * 
+ *
  * All of the algorithms have a compatible signature that have a `birlei` (one
  * or two parameters, a `birl` and optional `end_i`).  When you call the
  * algorithm without the `birlei` parameter, it returns a function that takes
@@ -104,14 +101,14 @@
  * When it's passed a `birlei`, it returns a function that requires a PPMRRAIR
  * function.  That function that is then called by the algorithm on each index
  * that the `birlei` refers to.
- * 
+ *
  * ### PPMRRAIR functions
- * 
+ *
  * Named after the 4 function types: `P`redicate, `P`redicate/`M`ap, `R`eduction
  * and `R`eduction that `A`llows for `I`ncomplete `R`eduction, these functions
  * are passed to the algorithms where the algorithms then call them iteratively
  * over each `birlei` element:
- * 
+ *
  * #### **Predicate** (`function(i) : result`)
  *
  * - A binary predicate is used by `find`, `filter` and `map`.  It has 2
@@ -137,7 +134,7 @@
  * > `acc` **is the second parameter** which is different from most languages.
  * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
  * > and this library in general.  You have been warned.
- * 
+ *
  * - Used by `reduce`.
  * - Takes in the index and the previous accumulated object and returns the
  *   new accumulated object.
@@ -150,13 +147,13 @@
  * > `acc` **is the second parameter** which is different from most languages.
  * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
  * > and this library in general.  You have been warned.
- * 
+ *
  * - Used by `reduce_air`.
  * - Takes in the index and the previous accumulated object and returns a
  *   list `[ cont, new_acc ]`, where `cont` states if to continue looping if not
  *   finished iterating over the `birlei`.
  * - This is roughly equivalent to a for loop in C++.
- * 
+ *
  * **See also** [Algorithm Adaptors](#algorithm-adaptors).
  */
 use <indexable>
@@ -212,7 +209,7 @@ use <function>
  * @returns {any}
  *   Returned value is based on the result of the function doing the iterating.
  */
- 
+
 /**
  * @typedef {AlgoFn} FindLowerBirleiFn
  *

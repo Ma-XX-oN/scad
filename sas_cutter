@@ -118,7 +118,7 @@ function sas_cutter(a, b, y_thickness, z_thickness,
  *        value of 1 would result in a "sawtooth wave".
  *
  *        E.g.          latitude travel   Square wave           Sawtooth wave
- *              ___     |↔|__              ___     ___                 
+ *              ___     |↔|__              ___     ___
  *             /   \    |/   \            |   |   |   |           /\  /\
  *             |    \___/     \___/|      |   |___|   |___       |  \/  \/|
  *             |___________________|      |_______________|      |________|
@@ -179,7 +179,7 @@ function sas2_cutter(a, b, y_thickness, z_thickness,
         //         +--------                  ^          < 0 - cutedge_long_overflow
         //                                    0 or centre line of cutter
         [
-            // was seeing the cutter not cutting a itty bitty piece between 0 
+            // was seeing the cutter not cutting a itty bitty piece between 0
             // line and handle_y0, so I moved handle_y0 to 0 so that the cut
             // flair would envelop the piece.
             [ x, cutter_y == 0 ? 0 : handle_y0, H ]
@@ -214,7 +214,7 @@ function sas2_cutter(a, b, y_thickness, z_thickness,
       ,
       skin_extrude(0, segs, comment = str(comment, " post-overflow"))(cutter_excess(L, L+cutedge_lat_overflow))
     ]
-    // T = 
+    // T =
     // // identity(3)
     // reorient([[0,0,0], [L, 0, 0]], [a, b])
   )

@@ -575,9 +575,11 @@ class Doc:
   RE_FN_DOC = regex.compile(
     r'''
     \A
-      (?:(?<CC_MATCHED>(?&CALLCHAIN)))*+ (?# 0..N callchains, must be contiguous )
-      (?(CC_MATCHED)\r?+\n)              (?# requires a blank between last callchain and next item )
-      (?:(?&HEADER))?+                   (?# 0..1 header, must be at char 0 if present )
+      (?:(?<HEADER_MATCHED>(?&HEADER)))?+(?# 0..1 header, must be at char 0 if present )
+      (?:(?<CC_MATCHED>
+        (?(HEADER_MATCHED)(?&empty_line))
+        (?&CALLCHAIN)))*+                (?# 0..N callchains, must be contiguous )
+      (?(CC_MATCHED)(?&empty_line))      (?# consume blank lines after callchains if present )
       (?:(?&DOC_DESC))?+                 (?# 0..1 doc-level description block )
       (?:
           (?(CC_MATCHED)(?!))            (?# if has callchain, then can't be slotted object )
@@ -594,7 +596,7 @@ class Doc:
     (?<line_tail_mtws>[^\r\n]*+)
 
     (?<ws>[\t ]++)
-    (?<eat_optional_empty_line>(?:\r?+\n)?+)
+    (?<empty_line>(?:\r?+\n))
     
     (?# recognised tag sentinel used to stop description blocks )
     (?<is_recognised_tag>@(?:type|callback|typedef|callchain|slot|param|returns)[\t ])
@@ -631,23 +633,32 @@ class Doc:
         could start with `{`
     )
     (?<DOC_DESC>  (?<tag>)                  (?<type>)             (?<id>)
-      (?&eat_optional_empty_line)
-      (?<desc>(?&to_rec_tag1))
+      (?&empty_line)?+
+      (?<desc>(?&to_rec_tag0))
     )
 
     (?<SLOT>
-      (?&at_bol) @(?<tag>slot)      (?&ws) (?&type_opt) (?&ws)?+  (?<id>(?&symbol)) (?&eol)
-      (?&eat_optional_empty_line)(?<desc>(?&to_rec_tag0))
+      (?&at_bol) @(?<tag>slot)      (?&ws) (?&type_opt) (?&ws)?+
+      (?:
+          \[ (?<id>(?&symbol)|\d++) \s*+ (?: = \s*+ (?&id_chars_mtws))?+ \s*+ \] (?# optional slot )
+           | (?<id>(?&symbol)|\d++)                                              (?# required slot )
+      ) (?&eol)
+      (?&empty_line)?+(?<desc>(?&to_rec_tag0))
     )
 
     (?<PARAM>
-      (?&at_bol) @(?<tag>param)     (?&ws) (?&type_opt) (?&ws)?+  (?<id>(?&symbol)) (?&eol)
-      (?&eat_optional_empty_line)(?<desc>(?&to_rec_tag0))
+      (?&at_bol) @(?<tag>param)     (?&ws) (?&type_opt) (?&ws)?+
+      (?:
+        \[ \s*+ (?<id>(?&symbol)) \s*+ (?: = \s*+ (?&id_chars_mtws))?+ \s*+ \] (?# optional param with or without default)
+      | (?<id>(?&symbol))                                                      (?# required param)
+      )
+      (?&eol)
+      (?&empty_line)?+(?<desc>(?&to_rec_tag0))
     )
 
     (?<RETURNS>
       (?&at_bol) @(?<tag>returns)   (?&ws) (?&type_opt) (?&ws)?+  (?<id>)           (?&eol)
-      (?&eat_optional_empty_line)(?<desc>(?&to_rec_tag0))
+      (?&empty_line)?+(?<desc>(?&to_rec_tag0))
     )
     ''' + RES_LIB, regex.VERBOSE
   )
@@ -884,6 +895,15 @@ class Doc:
   def e(self, msg: str):
     return f"{self.filename}{f':{self.id}' if self.id else ''}{get_lines(self.doc_item[DOC_SLC], line_char_index)}: {msg}"
 
+  # TODO: Add icons to messages of warrant.
+  ICONS = {
+    "WARNING": "> ⚠️ WARNING:",
+    "NOTE":    "> ℹ️ NOTE:",
+    "TTA":     "> 🤔 TO THINK ABOUT:",
+    "TODO":    "> 📌 TO DO:"
+  }
+
+  RE_WARN = regex.compile("> WARNING:")
   def __init__(self, filename: str, content: str, doc_item: ItemInfo) -> None:
     self.filename = filename
     self.content  = content
@@ -905,6 +925,10 @@ class Doc:
     doc: str = content[doc_item[DOC_S_DOC_SLC]] if sym_and_doc else content[doc_item[DOC_SLC]]
     # remove line leading "/**", " * ", " */"
     doc = RE_J_DOC_BOX.sub("", doc)
+
+    for find, replace in Doc.ICONS.items():
+      doc = doc.replace(f"> {find}:", replace)
+
     m = self.RE_FN_DOC.match(doc, partial=True)
 
     assert m, self.e(f"Failed to parse any of:\n`{doc}`.")
@@ -942,7 +966,8 @@ class Doc:
         assert Doc.is_doc_type(header_tag)
         self.doc_type = header_tag
         tag = "header"
-        self.id = m.captures("id")[i]
+        if not self.id:
+          self.id = m.captures("id")[i]
       else:
         tag = tags[i] if tags[i] else "desc"
 
@@ -992,14 +1017,14 @@ class Doc:
          self.e(f"ERROR: Symbol {self.content[doc_item[DOC_S_ID_SLC]]}"
            " is documenting more callable parameters than are available.")
 
-    for (_, doc_param, _), (declared_param, _) in zip(documented_params, declared_params):
+    for i, ((_, doc_param, _), (declared_param, _)) in enumerate(zip(documented_params, declared_params)):
       assert declared_param == doc_param, \
-        f"ERROR: Symbol {self.content[doc_item[DOC_S_ID_SLC]]} named declared param {declared_param} doesn't match documented param {doc_param}."
+        f"ERROR: Symbol '{self.filename}::{self.content[doc_item[DOC_S_ID_SLC]]}' named declared param '{declared_param}' at pos {i}, doesn't match documented param '{doc_param}'."
 
     if len(documented_params) < len(declared_params):
       # Not all parameters are documented.  Possible legit reasons:
       # - Lazy or don't wan to document
-      print(f"WARNING: Symbol {self.content[doc_item[DOC_S_ID_SLC]]} isn't not documenting all callable parameters.",
+      print(f"WARNING: Symbol {self.filename}::{self.content[doc_item[DOC_S_ID_SLC]]} isn't not documenting all callable parameters.",
             file=sys.stderr)
 
   RE_FUNC = regex.compile(
@@ -1055,11 +1080,11 @@ class Doc:
 
     if type_name not in BUILTIN_TYPES:
       assert type_name in symbols.type_dict, (
-        f"{self.filename}:{self.id or ''} uses type '{type_name}' "
+        f"ERROR: Symbol '{self.filename}::{self.id}' uses type '{type_name}' "
         "which has not been defined yet."
       )
       symbols.type_refed.add(type_name)
-      return f'<a href="#t-{type_name}">{type_name}</a>'
+      return make_anchor("t", type_name) #f'<a href="#t-{type_name}">{type_name}</a>'
 
     return type_name
 
@@ -1079,6 +1104,13 @@ class Doc:
   def link_types(self, type_group: str, use_full_fn_type: bool = True) -> str:
     type_group = type_group.rstrip()
 
+    if type_group.startswith("list["):
+      ids: list[str] = []
+      for id_matched in Doc.RE_SEP_LIST_TYPES.finditer(type_group, 5):
+        ids.append(self.link_types(id_matched["type"], use_full_fn_type))
+      # Prevent markdown linter from complaining about no link definition found
+      return "list\\[" + ",".join(ids) + "]"
+
     if type_group.startswith("("):
       ids: list[str] = []
       for id_matched in Doc.RE_SEP_TYPES.finditer(type_group, 1):
@@ -1086,12 +1118,6 @@ class Doc:
 
       from itertools import groupby
       return "|".join(str(k) for k, _ in groupby(ids))
-
-    if type_group.startswith("list["):
-      ids: list[str] = []
-      for id_matched in Doc.RE_SEP_LIST_TYPES.finditer(type_group, 5):
-        ids.append(self.link_types(id_matched["type"], use_full_fn_type))
-      return "list[" + ",".join(ids) + "]"
 
     return self._link_type(type_group, use_full_fn_type)
 
@@ -1168,16 +1194,111 @@ class Doc:
     id_override : Optional[str]
         Used with typedef to override the id for a callback.
     """
-    if is_sym_with_doc(self.doc_item):
-      pass
-    elif is_symbol(self.doc_item):
-      pass
-    elif self.doc_type == "callback":
-      pass
+    id = id_override if id_override else self.id
+
+    if self.doc_type == "callback":
+      # callback signature from params and returns
+      sig = f"*callback* {id}("
+      params = []
+      for (ptype, pid, _) in self.items["param"]:
+        param_str = f"{pid.replace("_", "\\_")}"
+        if ptype:
+          param_str += f": {self.link_types(ptype, False)}"
+        params.append(param_str)
+      sig += ", ".join(params) + ")"
+
+      if self.items["returns"] and self.items["returns"][0][Doc.TYPE]:
+        ret_type = self.items["returns"][0][Doc.TYPE]
+        sig += f" : {self.link_types(ret_type)}"
+
+      output_lines.append(f"<code>{sig}</code>")
+
     elif self.doc_type == "typedef":
-      pass
-    
-    pass
+      # check if aliasing a single callback
+      type_name = self.items["header"][0][Doc.TYPE] if self.items["header"] else ""
+      if type_name and type_name in symbols.type_dict:
+        aliased = symbols.type_dict[type_name]
+        if aliased.doc_type == "callback":
+          # output as callback with id_override
+          aliased.output_sig(output_lines, id)
+          return
+
+      # regular typedef
+      sig = f"*type* {id}"
+      if type_name:
+        sig += f" = {self.link_types(type_name)}"
+      output_lines.append(f"<code>{sig}</code>")
+
+    elif self.doc_type == "type":
+      # @type for a value
+      sig = f"*value* {id}"
+      if self.items["header"] and self.items["header"][0][Doc.TYPE]:
+        type_name = self.items["header"][0][Doc.TYPE]
+        sig += f" : {self.link_types(type_name)}"
+      else:
+        sig += " : ???"
+      output_lines.append(f"<code>{sig}</code>")
+
+    elif is_sym_with_doc(self.doc_item):
+      # function/module/value with doc
+      sig_text = self.content[self.doc_item[DOC_S_SIG_SLC]]
+
+      if sig_text.startswith("function "):
+        sig = f"*function* {id}("
+      elif sig_text.startswith("module "):
+        sig = f"*module* {id}("
+      else:
+        # value
+        sig = f"*value* {id}"
+        if self.items["header"] and self.items["header"][0][Doc.TYPE]:
+          type_name = self.items["header"][0][Doc.TYPE]
+          sig += f" : {self.link_types(type_name)}"
+        else:
+          sig += " : ???"
+        output_lines.append(f"<code>{sig}</code>")
+        return
+
+      # build params for function/module
+      params = []
+      doc_params = self.items["param"]
+      for (ptype, pid, _) in doc_params:
+        param_str = f"{pid.replace("_", "\\_")}"
+        if ptype:
+          param_str += f": {self.link_types(ptype, False)}"
+        params.append(param_str)
+
+      sig += ", ".join(params) + ")"
+
+      # add return type for functions
+      if sig_text.startswith("function ") and self.items["returns"] and self.items["returns"][0][Doc.TYPE]:
+        ret_type = self.items["returns"][0][Doc.TYPE]
+        sig += f" : {self.link_types(ret_type)}"
+
+      output_lines.append(f"<code>{sig}</code>")
+
+    elif is_symbol(self.doc_item):
+      # symbol without doc
+      sig_text = self.content[self.doc_item[DOC_S_SIG_SLC]]
+      assert id
+
+      if sig_text.startswith("function "):
+        sig = f"*function* {id.replace("_", "\\_")}("
+      elif sig_text.startswith("module "):
+        sig = f"*module* {id.replace("_", "\\_")}("
+      else:
+        # value without doc
+        sig = f"*value* {id.replace("_", "\\_")} : ???"
+        output_lines.append(f"<code>{sig}</code>")
+        return
+
+      # Extract param names from the parsed param list
+      params = []
+      if self.doc_item[DOC_S_PARAM_LST] is not None:
+        for (param_name, _) in self.doc_item[DOC_S_PARAM_LST]:
+          params.append(param_name.replace("_", "\\_"))
+
+      sig += ", ".join(params) + ")"
+      output_lines.append(f"<code>{sig}</code>")
   
   def output_callchains(self, output_lines: list[str], id_override: Optional[str]):
     """
@@ -1201,41 +1322,249 @@ class Doc:
     id_override : Optional[str]
         Used with typedef to override the id for a callback.
     """
-    assert is_sym_with_doc(self.doc_item)
     if self.items["callchain"]:
       for (_, _, callchain) in self.items["callchain"]:
-        if id_override:
+        if id_override and is_sym_with_doc(self.doc_item):
           output_lines.append(f"    {callchain}".replace(self.content[self.doc_item[DOC_S_ID_SLC]], id_override, 1))
         else:
           output_lines.append(f"    {callchain}")
     elif self.doc_type == "typedef":
-      type_name = self.items["header"][0][Doc.TYPE]
-      type = symbols.type_dict.get(type_name)
-      if type:
-        type.output_callchains(output_lines, id_override)
+      type_name = self.items["header"][0][Doc.TYPE] if self.items["header"] else ""
+      if type_name:
+        type = symbols.type_dict.get(type_name)
+        if type:
+          type.output_callchains(output_lines, id_override)
   
   def output_slots(self, output_lines: list[str]):
-    pass
+    """
+    Outputs slot documentation for typedef types.
+    Slots are displayed as formatted text (not headings) within a details block.
+    """
+    if not self.items["slot"]:
+      return
+
+    # output_lines.append("")
+    output_lines.append("<details><summary>slots</summary>")
+    # output_lines.append("")
+
+    for (slot_type, slot_id, slot_desc) in self.items["slot"]:
+      line = f"<code><b>{slot_id}</b></code>"
+      if slot_type:
+        line += f": <code>{self.link_types(slot_type)}</code>\n"
+      output_lines.append(line)
+
+      if slot_desc:
+        # Remove leading indentation from description
+        desc_lines = Doc.RE_INDENT.sub("", slot_desc)
+        desc_lines = Doc.RE_TRAILING_EMPTY_LINES.sub("", desc_lines)
+        output_lines.append(desc_lines+"\n")
+      else:
+        # No description?  See if the type has one and use it.
+        type = symbols.type_dict.get(slot_type)
+        if type:
+          type.output_desc(output_lines)
+
+    # output_lines.append("")
+    output_lines.append("</details>")
+    output_lines.append("")
   
   def output_params(self, output_lines: list[str]):
-    pass
-  
-  def output_rets(self, output_lines: list[str]):
-    pass
-  
-  def output_doc(self, output_lines: list[str]):
-    # ### symbol id
-    # `sig`
-    #
-    #     callchains
-    #
-    # slots | params and returns
+    """
+    Outputs parameter documentation for functions/modules/callbacks.
+    Parameters are displayed as formatted text (not headings) within a details block.
+    """
+    if not self.items["param"]:
+      return
+
+    # output_lines.append("")
+    output_lines.append("<details><summary>parameters</summary>")
+    output_lines.append("")
+
+    # Get actual parameter defaults from the signature if available
+    param_defaults = {}
     if is_sym_with_doc(self.doc_item):
-      output_lines.append(f"### {self.content[self.doc_item[DOC_S_ID_SLC]]}")
-      if self.doc_type == "typedef":
-        pass
+      param_list = self.doc_item[DOC_S_PARAM_LST]
+      if param_list is not None:
+        for (param_name, param_default) in param_list:
+          if param_default:
+            param_defaults[param_name] = param_default
+
+    for (param_type, param_id, param_desc) in self.items["param"]:
+      line = f"**<code>{param_id}</code>**"
+      if param_type:
+        line += f": <code>{self.link_types(param_type, False)}</code>\n"
+
+      # TODO: Missing Optional
+
+      # Check if param has a default value
+      if param_id in param_defaults:
+        line += f" *(Default: `{param_defaults[param_id]}`)*\n"
+
+      output_lines.append(line)
+
+      if param_desc:
+        # Remove leading indentation from description
+        desc_lines = Doc.RE_INDENT.sub("", param_desc)
+        desc_lines = Doc.RE_TRAILING_EMPTY_LINES.sub("", desc_lines)
+        output_lines.append(desc_lines+"\n")
       else:
-        pass
+        # No description?  See if the type has one and use it.
+        type = symbols.type_dict.get(param_type)
+        if type:
+          type.output_desc(output_lines)
+
+    # output_lines.append("")
+    output_lines.append("</details>")
+    output_lines.append("")
+    
+  RE_INDENT = regex.compile("^  ", regex.MULTILINE)
+  RE_TRAILING_EMPTY_LINES = regex.compile(
+    r"(?:\r?+\n)++$"
+  )
+  def output_rets(self, output_lines: list[str]):
+    """
+    Outputs return type documentation for functions/callbacks.
+    Returns info is displayed as formatted text (not a heading) within a details block.
+    """
+    if not self.items["returns"]:
+      return
+
+    (ret_type, _, ret_desc) = self.items["returns"][0]
+
+    # output_lines.append("")
+    output_lines.append("<details><summary>returns</summary>")
+    output_lines.append("")
+
+    if ret_type:
+      output_lines.append(f"**Returns**: <code>{self.link_types(ret_type)}</code>\n")
+    else:
+      output_lines.append("**Returns**\n")
+
+    if ret_desc:
+      # Remove leading indentation from description
+      desc_lines = Doc.RE_INDENT.sub("", ret_desc)
+      desc_lines = Doc.RE_TRAILING_EMPTY_LINES.sub("", desc_lines)
+      output_lines.append(desc_lines+"\n")
+
+    # output_lines.append("")
+    output_lines.append("</details>")
+    output_lines.append("")
+  
+  SymbolType : TypeAlias = Literal["function", "module-test", "module-build", "value", "type", "callback"]
+  SYMBOL_RENDERING_INFO : dict[SymbolType, tuple[str, str]] = {
+    "function":     ("⚙️",   "f"),
+    "module-test":  ("🧪",   "m"),
+    "module-build": ("🧊",   "m"),
+    "value":        ("💠",   "v"),
+    "type":         ("🧩",   "t"),
+    "callback":     ("🧩⚙️", "t"), # callbacks are still types
+  }
+
+  def output_desc(self, output_lines: list[str]):
+    if self.items["desc"]:
+      for (_, _, desc) in self.items["desc"]:
+        if desc:
+          output_lines.append(Doc.RE_TRAILING_EMPTY_LINES.sub("", desc))
+          output_lines.append("")
+
+  def output_doc(self, output_lines: list[str]):
+    """
+    Outputs the complete documentation for this item.
+
+    Structure:
+      #### symbol id (with anchor)
+      `sig`
+
+          callchains (if any)
+
+      description
+
+      slots (for typedef) OR params + returns (for functions/modules/callbacks)
+    """
+    # File-level documentation (no symbol)
+    if self.doc_type == "file":
+      if self.items["desc"]:
+        for (_, _, desc) in self.items["desc"]:
+          if desc:
+            output_lines.append(desc.strip() + "\n")
+      return
+
+    # Type definitions (typedef, callback, type)
+    if self.doc_type in ("typedef", "callback", "type"):
+      assert self.id is not None, "Type definitions must have an id"
+      link_prefix = "t"  # types
+
+      text_prefix = Doc.SYMBOL_RENDERING_INFO[
+        "value" if self.doc_type == "type" else "type"][0]
+      # output_lines.append("")
+      output_lines.append(f"#### {text_prefix}{self.id.replace("_", "\\_")}{make_anchor(link_prefix, self.id)}")
+      output_lines.append("")
+
+      # Signature
+      self.output_sig(output_lines, None)
+      output_lines.append("")
+
+      # Callchains (for callbacks and typedefs to callbacks)
+      if self.items["callchain"] or (self.doc_type == "typedef" and self.items["header"]):
+        self.output_callchains(output_lines, None)
+        if output_lines and output_lines[-1].strip():
+          output_lines.append("")
+
+      # Description
+      self.output_desc(output_lines)
+
+      # Slots for typedefs
+      if self.doc_type == "typedef":
+        self.output_slots(output_lines)
+
+      # Params and returns for callbacks
+      if self.doc_type == "callback":
+        self.output_params(output_lines)
+        self.output_rets(output_lines)
+
+      return
+
+    # Symbol with or without doc (function/module/value)
+    if is_sym_with_doc(self.doc_item) or is_symbol(self.doc_item):
+      assert self.id is not None, "Symbols must have an id"
+      sig_text = self.content[self.doc_item[DOC_S_SIG_SLC]]
+
+      # Determine prefix for anchor based on symbol type
+      if sig_text.startswith("function "):
+        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["function"]
+      elif sig_text.startswith("module test_"):
+        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["module-test"]
+      elif sig_text.startswith("module "):
+        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["module-build"]
+      else:
+        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["value"]
+
+      # output_lines.append("")
+      output_lines.append(f"#### {text_prefix}{self.id.replace("_", "\\_")}{make_anchor(link_prefix, self.id)}")
+      output_lines.append("")
+
+      # Signature
+      self.output_sig(output_lines, None)
+      output_lines.append("")
+
+      # Only output description and details if doc exists
+      if is_sym_with_doc(self.doc_item):
+        # Description
+        if self.items["desc"]:
+          for (_, _, desc) in self.items["desc"]:
+            if desc:
+              output_lines.append(desc.strip())
+              output_lines.append("")
+
+        # Callchains (for functions that return callbacks)
+        if self.items["callchain"]:
+          self.output_callchains(output_lines, None)
+          if output_lines and output_lines[-1].strip():
+            output_lines.append("")
+
+        # Params and returns
+        self.output_params(output_lines)
+        self.output_rets(output_lines)
   
 # class Outputable(ABC):
 #   def __init__(self, filename, id) -> None:
@@ -2024,28 +2353,43 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
   for type in symbols.type_list[types_start : ]:
     type.output_doc([])
   new_refed = symbols.type_refed - type_refed
+
   # actual output
   temp_output_lines = []
+  types_output : set[str] = set()
+  for type in symbols.type_list[types_start : ]:
+    id = type.id
+    assert id
+    types_output.add(id)
+    type.output_doc(temp_output_lines)
+
   # in case type that was declared in a previous file which wasn't referenced
   # directly, is.
-  for type_name in new_refed:
-    symbols.type_dict[type_name].output_doc(temp_output_lines)
+  temp_pre_output_lines = []
+  for type_name in new_refed - types_output:
+    symbols.type_dict[type_name].output_doc(temp_pre_output_lines)
 
-  for type in symbols.type_list[types_start : ]:
-    type.output_doc(temp_output_lines)
-    
   # no file header if no output generated
   if temp_output_lines:
-    output_lines.append(f"\n### {filename} types")
+    output_lines.append(f"### {filename} types\n")
     output_lines += temp_output_lines
 
   # Prepend emojis to header markers.
   RE_H2 = regex.compile(r"^(## )(.*)", regex.MULTILINE)
   RE_H3 = regex.compile(r"^(### )(.*)", regex.MULTILINE)
+
+  def add_h2_emoji_anchor(m):
+    return f"{m.group(1)}<span style=\"font-size: 1.1em; color: yellow\">📘{m.group(2)}</span>{make_anchor('file', m.group(2))}"
+
+  def add_h3_emoji_and_anchor(m):
+    heading_text = m.group(2)
+    assert isinstance(heading_text, str)
+    return f"{m.group(1)}<i>📑{heading_text}</i>{make_anchor(f'{filename}-ch', heading_text)}"
+
   for i in range(len(output_lines)):
     tmp = output_lines[i]
-    tmp = RE_H2.sub(r'\1<span style="font-size: 1.1em; color: yellow">📘\2</span>' + make_anchor("file", r'\2'), tmp)
-    tmp = RE_H3.sub(r'\1<span style="font-style: italic">📑\2</span>' + make_anchor("ch", r'\2'), tmp)
+    tmp = RE_H2.sub(add_h2_emoji_anchor, tmp)
+    tmp = RE_H3.sub(add_h3_emoji_and_anchor, tmp)
     output_lines[i] = tmp
 
 def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = False) -> Optional[Track]:
@@ -2220,6 +2564,14 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
     if output_lines is not None:
       out_text = "\n".join(output_lines)
 
+      # This makes sure that the heading for the next file will be separated by
+      # a will be separated by a will be separated by an empty line.  A Side
+      # effect of this is that the end of the file will contain 2 consecutive
+      # blank lines, causing the markdown linter to complain.
+      if not out_text.endswith("\n\n"):
+        out_text += "\n"
+
+  assert out_text == "" or out_text.endswith("\n\n")
   # Output phase
   # from_stdin is always combined with write_ext=None (enforced above).
   if write_ext is None:

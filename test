@@ -1,11 +1,11 @@
 /**
  * ## test
- * 
+ *
  * ### Purpose
- * 
+ *
  * Used to generate code for using TDD methodology.  Tries to report useful
  * error messages with an optional user configurable message.
- * 
+ *
  * ### Test Your Code!
  */
 use <helpers>

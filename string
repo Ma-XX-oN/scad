@@ -114,7 +114,7 @@ function float_to_string(v, left_justified=true, show_sign=SHOW_SIGN_NEG, pad_ch
         reduce_air([
             "",                         // init string
             round(abs(v)*10^precision), // init value to convert
-            precision                   // init number of digits to output     
+            precision                   // init number of digits to output
           ], 0, precision + 100 // Overkill. Number will never need 100+ chars.
         )(
           function(i, acc)
@@ -172,7 +172,7 @@ test_eq("   NaN",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG, min_wi
  *   Object to print.
  * @param {(function(obj): (string|undef))} [fmt_fn=function(obj) undef]
  *   Formatting callback to convert obj to string if obj is recognised or undef
- *   if not. 
+ *   if not.
  *   - obj (any) - Obj to attempt to convert.
  *
  *   @returns {(string|undef)}
@@ -312,12 +312,12 @@ echo(to_csv([["hello", "th,ere", "ou\nt", "th\"ere"]]));
  * each row.
  *
  * E.g.  If row_length were 3 then we'd get something like this:
- * ```
- * [
- *    a, b, c,
- *    d, e, f
- * ]
- * ```
+ *
+ *     [
+ *        a, b, c,
+ *        d, e, f
+ *     ]
+ *
  *
  * If the row_length doesn't evenly divide into the length of the list, it will
  * be padded with undef at the end.
@@ -373,6 +373,7 @@ function list_to_string(list, row_length = 0, fmt_el_fn = fmt_list_fn(),
         output_row_fn(0, "[\n"),
         len(list) > row_length
         ? str(
+            echo(str("len(list) > row_length * 2 = ", len(list), " > ", row_length, " * ", 2))
             len(list) > row_length * 2
             ? str(",\n", indent, new_indent, "...\n")
             : ",\n",

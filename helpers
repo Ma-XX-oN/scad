@@ -1,8 +1,8 @@
 /**
  * ## helpers
- * 
+ *
  * ### Purpose
- * 
+ *
  * Miscellaneous helper functions.
  */
 use <base_algos>
@@ -49,6 +49,7 @@ function d2r(degrees) = degrees * (PI / 180);
  *   Second vector.
  * @param {number} [R]
  *   Radius to use to measure the length along a sphere's great arc.
+ *
  *   - If not specified, then will use the magnitude of A. Asserts if magnitude
  *     of B is not the same.
  *   - If R=1, then the result is equivalent to the arc angle in radians.
@@ -73,7 +74,7 @@ function arc_len(A, B, R=undef) =
 /**
  * Given the length of an arc and the radius of a circle/sphere that it's
  * traversing, returns the angle traversed in degrees.
- * 
+ *
  * `arc_len` and `radius` have the same units.
  *
  * @param {number} arc_len
@@ -104,8 +105,8 @@ function arc_len_angle(arc_len, radius) =
  *   Y-intercept of the line.
  *
  * @returns {list}
- *   [] if there is no real intersection, or [[x1, y1], [x2, y2]] where each
- *   [x, y] is a Cartesian intersection point.  For a tangent line both
+ *   `[]` if there is no real intersection, or `[[x1, y1], [x2, y2]]` where each
+ *   `[x, y]` is a Cartesian intersection point.  For a tangent line both
  *   returned points are identical.
  */
 function _circle_line_intersections(R, m, b) =
@@ -132,10 +133,10 @@ function _circle_line_intersections(R, m, b) =
  * half-plane according to a deterministic ordering.
  *
  * @param {list} ptlist
- *   List of zero, one, or two points [[x1, y1], [x2, y2]].
+ *   List of zero, one, or two points `[[x1, y1], [x2, y2]]`.
  *
  * @returns {(list|undef)}
- *   The selected point [x, y] or undef if no point has x >= 0.  Among
+ *   The selected point `[x, y]` or undef if no point has x >= 0.  Among
  *   points with x >= 0 it selects the one with the largest x; if x ties,
  *   it selects the point with the smaller y (the lower point).
  */
@@ -160,7 +161,7 @@ function _pick_right(ptlist) =
  * Computes the polar angle of a point on the circle in degrees.
  *
  * @param {list} pt
- *   Point [x, y] in Cartesian coordinates.
+ *   Point `[x, y]` in Cartesian coordinates.
  *
  * @returns {number}
  *   Angle in degrees measured from the +X axis using atan2(y, x), with the
@@ -299,7 +300,7 @@ function not(not_fn) =
 ;
 
 /**
- * Clamps a value between [lo, hi].
+ * Clamps a value between `[lo, hi]`.
  *
  * @param {number} v
  *   Value to clamp.
@@ -309,7 +310,7 @@ function not(not_fn) =
  *   Highest value v should take.
  *
  * @returns {number}
- *   Value v that is clamped between [lo, hi].
+ *   Value v that is clamped between `[lo, hi]`.
  */
 function clamp(v, lo, hi) = v < lo ? lo : v > hi ? hi : v;
 
@@ -445,11 +446,11 @@ function offset_angle(ref_vec, vec, delta_angle_deg) =
  * @param {number} t
  *   Thickness of arrowhead shaft.
  * @param {(list|string|undef)} c
- *   Same as color() module's first parameter. [r, g, b], [r, g, b, a],
- *   "color_name", "#hex_value".  If not defined, no colour is applied.
+ *   Same as color() module's first parameter. `[r, g, b]`, `[r, g, b, a]`,
+ *   `"color_name"`, `"#hex_value"`.  If not defined, no colour is applied.
  * @param {number} a
  *   Same as color() module's optional second parameter.  Alpha value between
- *   [0, 1].
+ *   `[0, 1]`.
  */
 module arrow(l, t=1, c, a) {
   if (is_undef(c)) {
@@ -518,7 +519,8 @@ function fl(f, l) =
  */
 
 /**
- * @callchain 
+ * @callchain Assert(truth, msg) (value) : any
+ *
  * Asserts that `truth` is `true`.
  *
  * Currently, `assert()` will evaluate the parameters prior to testing the
@@ -532,7 +534,7 @@ function fl(f, l) =
  * > NOTE:
  * >
  * > There is an enhancement to potentially resolve this reported by me here:
- * > https://github.com/openscad/openscad/issues/6240
+ * > <https://github.com/openscad/openscad/issues/6240>
  *
  * @param {bool} truth
  *   - If truthy, returns function that takes a parameter  which it returns
@@ -567,16 +569,17 @@ function Assert(truth, msg = "") =
  * > `p0` and `p1` must be the same shape and must comprise of values that have
  * > `+`, `-` and `/` operations defined for them.
  *
- * @example
- *   interpolated_values(1, 2, 1) == [1.5]
- *   interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
+ * Example
+ *
+ *     interpolated_values(1, 2, 1) == [1.5]
+ *     interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
  *
  * @param {(number|list)} p0
  *   Starting point.
  * @param {(number|list)} p1
  *   Ending point.
  *
- * @returns {(list[number|list])}
+ * @returns {list[(number|list)]}
  *   List of `number_of_values` that are the interpolated values between `p0`
  *   and `p1`.
  */

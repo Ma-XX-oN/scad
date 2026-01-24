@@ -2,12 +2,14 @@
  * ## range
  *
  * ### How to Import
+ *
  *     use <range>
  *
  * ### Purpose
- * 
+ *
  * A range is a structure that can be iterated over, like one can do with a
  * list.  However, unlike in python, it:
+ *
  * 1. Doesn't have the ability to index an element in the range
  * 2. Doesn't have a simple means to determine if an object is a range object.
  * 3. Doesn't have a way to interrogate it for its length.
@@ -43,7 +45,8 @@ use <param_check>
  *
  * > NOTE:
  * >
- * > `len()` doesn't work on a range.  Use [`range_len()`](#range_len) instead.
+ * > `len()` doesn't work on a range.  Use [`range_len()`](#f-range_len)
+ * > instead.
  *
  * @slot {number} 0
  *   Beginning value.
@@ -108,7 +111,7 @@ function range(count_or_begin_i, step_or_end_i, end_i) =
       ? count_or_begin_i <= end_i
         ? [ count_or_begin_i : step_or_end_i : end_i ]
         : []
-      : 
+      :
         let ( _ = verify_vnz(step_or_end_i) )
         end_i <= count_or_begin_i
         ? [ count_or_begin_i : step_or_end_i : end_i ]
@@ -120,7 +123,7 @@ function range(count_or_begin_i, step_or_end_i, end_i) =
  *
  * > NOTE:
  * >
- * > Assumes range was created with [`range()`](#range), so that the elements
+ * > Assumes range was created with [`range()`](#f-range), so that the elements
  * > must be valid. E.g. `[ -B : +S : -E ]` will never occur as it would have
  * > been converted to `[]`.
  *

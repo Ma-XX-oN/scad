@@ -2,6 +2,7 @@
  * ## indexable
  *
  * ### How to Import
+ *
  *     use <indexable>
  *
  * ### Purpose
@@ -105,7 +106,7 @@
  * >
  * >   Iteration rules then follow the range rules above (based on `step` and
  * >   the ordering of `begin_i` and `end_i`).
- * > 
+ * >
  * > </details>
  */
  /*
@@ -144,7 +145,7 @@ include <indexable_consts>
 
 /**
  * ### Slices
- * 
+ *
  * A `slice` is an object similar to a `range`, but it's not a realised
  * indexable object until it is paired with an `slr`.
  */
@@ -165,7 +166,7 @@ function is_slice(o) =
 /**
  * @typedef {list} slice
  * Slice is an unresolved range that works with an indexable.  It itself is
- * **not indexable**.  Use [`slice_to_range`](#slice_to_range) to convert to an
+ * **not indexable**.  Use [`slice_to_range`](#f-slice_to_range) to convert to an
  * indexable range.
  *
  * > NOTE:
@@ -292,7 +293,9 @@ function slice_to_range(slice, slr, _slr_len) =
  *   Type enum of `slr`.
  * @slot {function(i: number): any} _SLR_ELD
  *   `i` is the index to dereference the `slr` (Direct addressing).
+ *
  *   Returns roughly `slr[i]`, where `0 <= i < slr_len`.
+ *
  *   - If backward indexing is wanted, manually calculating it by the formula
  *     `slr_len - i` is required.  This maximises throughput for most common
  *     case.
@@ -302,12 +305,14 @@ function slice_to_range(slice, slr, _slr_len) =
  *   `j` is the index to dereference the normalised `birlsei` to index the `slr`
  *   (Indirect addressing).  Returns roughly `slr[birlei[j]]`, where
  *   `0 <= j < birlei_len`.
+ *
  *   - If backward indexing is wanted, manually calculating it by the formula
  *     `birlei_len - j` is required.  This maximises throughput for most common
  *     case.
  * @slot {function(k: number): number} _SLR_IDX
  *   `k` is the index to dereference the normalised `birlsei`.  Returns roughly
  *   `birlei[k]`, where `0 <= k < birlei_len`.
+ *
  *   - If backward indexing is wanted, manually calculating it by the formula
  *     `birlei_len - k` is required.  This maximises throughput for most common
  *     case.
@@ -329,9 +334,9 @@ function slice_to_range(slice, slr, _slr_len) =
  *
  * > NOTE:
  * >
- * >   The `birlei` can represent only positive indices.
+ * > The `birlei` can represent only positive indices.
  *
- * The returned array can be dereferenced using the _SLR_* constants, which can
+ * The returned array can be dereferenced using the \_SLR_* constants, which can
  * be included using the command `include<indexable_consts>` (DO NOT USE
  * `use<>`).
  *
@@ -348,7 +353,7 @@ function slice_to_range(slice, slr, _slr_len) =
  * > Answer:
  * >
  * > I would think that testing using is_num(birls), is_list(birls) and
- * > is_num(birls[0]) would be faster than using a stored _SLR_BTE, unless
+ * > is_num(`birls[0]`) would be faster than using a stored \_SLR\_BTE, unless
  * > considering using a dispatch table, which would require function call
  * > overhead, so is prolly not worth it.
  *
@@ -358,7 +363,7 @@ function slice_to_range(slice, slr, _slr_len) =
  * > negative?  Can we just make it house just positive values?
  * >
  * > Answer:
- * >    
+ * >
  * > No, if that's really needed, just add the `birlei` length to the index
  * > needed.  Don't want to slow things down in the most common case.
  *
@@ -369,7 +374,7 @@ function slice_to_range(slice, slr, _slr_len) =
  *
  * @returns {slr_cache}
  *  Normalised values:
- *  [ header, slr_len, slr_te, eld_fn, blen, eli_fn, idx_fn, str_fn, birl, end_i ]
+ *  `[ header, slr_len, slr_te, eld_fn, blen, eli_fn, idx_fn, str_fn, birl, end_i ]`
  *
  *  > MICRO OPTIMIZATION:
  *  >
@@ -656,13 +661,14 @@ function _slr_cache(slr, birls=0, end_i=undef) =
 
 /**
  * ### Algorithm Adaptors
- * 
+ *
  * The `PPMRRAIR` functions usually are passed an integer as it's first
  * parameter, referring to the current index.  For convenience, there are
  * adaptor functions which allow referencing a `slr`'s element values.
- *   - [`it_each`](#it_each): passes `slr_element`.
- *   - [`it_enum`](#it_enum): passes `[index, slr_element]`.
- *   - [`it_idxs`](#it_idxs): passes `index`.
+ *
+ * - [`it_each`](#f-it_each): passes `slr_element`.
+ * - [`it_enum`](#f-it_enum): passes `[index, slr_element]`.
+ * - [`it_idxs`](#f-it_idxs): passes `index`.
  *
  * Using these adaptors allows the use the length of the `slr` as reference if
  * the `birlsei` is partially or fully omitted.
@@ -671,7 +677,7 @@ function _slr_cache(slr, birls=0, end_i=undef) =
 /**
  * @callback GetPpmrrairFn
  *
- * Gets the PPMRRAIR function to apply the [AlgoFn](#algofn) to.
+ * Gets the PPMRRAIR function to apply the [AlgoFn](#t-AlgoFn) to.
  *
  * @param {PpmrrairFn} ppmrrair_fn
  *   The PPMRRAIR function to iterate with.
@@ -685,24 +691,24 @@ function _slr_cache(slr, birls=0, end_i=undef) =
  *
  * This convenience function will execute function `algo_fn` as if it were used
  * on a collection, remapping the first parameter being passed to `ppmrrair_fn`
- * so that it receives the *element* rather than the *index*.  Uses the `slr` as
- * a reference so that `birlsei` can be partially or fully omitted.  The
- * `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
+ * so that it receives the <i>`element`</i> rather than the *index*.  Uses the
+ * `slr` as a reference so that `birlsei` can be partially or fully omitted.
+ * The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
  *
  * **Example:**
  *
  * Normal usage:
- * ```
- * a = [1,2,3,4,5]
- * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
- * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
- * ```
+ *
+ *     a = [1,2,3,4,5]
+ *     even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ *     even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ *
  * vs `it_each()` usage:
- * ```
- * a = [1,2,3,4,5]
- * even_indices = it_each(a, filter())(function(e) e % 2);
- * even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
- * ```
+ *
+ *     a = [1,2,3,4,5]
+ *     even_indices = it_each(a, filter())(function(e) e % 2);
+ *     even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
+ *
  *
  * @param {(string|list|range)} slr
  *   This is the list to take element data from.
@@ -744,17 +750,17 @@ function _it_each(slr, algo_fn, birl, end_i, _eld) =
  * **Example:**
  *
  * Normal usage:
- * ```
- * a = [1,2,3,4,5]
- * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
- * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
- * ```
+ *
+ *     a = [1,2,3,4,5]
+ *     even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ *     even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ *
  * vs `it_idxs()` usage:
- * ```
- * a = [1,2,3,4,5]
- * even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
- * even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
- * ```
+ *
+ *     a = [1,2,3,4,5]
+ *     even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
+ *     even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
+ *
  *
  * @param {(string|list|range)} slr
  *   This is the list to take element data from.
@@ -778,24 +784,24 @@ function it_idxs(slr, algo_fn, birls=0, end_i=undef) =
  *
  * This convenience function will execute function `algo_fn` as if it were used
  * on a collection, remapping the first parameter being passed to `ppmrrair_fn`
- * so that it receives *[index, element]* rather than the *index*.  Uses the
- * `slr` as a reference so that `birlsei` can be partially or fully omitted.
+ * so that it receives <i>`[index, element]`</i> rather than the *index*.  Uses
+ * the `slr` as a reference so that `birlsei` can be partially or fully omitted.
  * The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
  *
  * **Example:**
  *
  * Normal usage:
- * ```
- * a = [1,2,3,4,5]
- * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
- * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
- * ```
+ *
+ *     a = [1,2,3,4,5]
+ *     even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ *     even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ *
  * vs `it_enum()` usage:
- * ```
- * a = [1,2,3,4,5]
- * even_indices = it_enum(a, filter())(function(p) p[0] % 2);
- * even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
- * ```
+ *
+ *     a = [1,2,3,4,5]
+ *     even_indices = it_enum(a, filter())(function(p) p[0] % 2);
+ *     even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
+ *
  *
  * @param {(string|list|range)} slr
  *   This is the list to take element data from.
@@ -982,6 +988,7 @@ echo("els: ", els(range(1, 2, 6), range(2, -1, 1)));
 /**
  * Optimised version of `els` for ranges.  Gets elements from a range as a range
  * or list.
+ *
  * - If the `birlsei` is a list, then the subset of the range `r` will be a
  *   list.
  * - Else a new range is computed
@@ -1057,7 +1064,7 @@ function idxs(slr, birls=0, end_i=undef) =
 
 function _idxs(slr, birl, end_i) =
   let ( _ = verify_slr(slr) )
-  let ( _ = verify_vbis(slr, birl, end_i) )    
+  let ( _ = verify_vbis(slr, birl, end_i) )
   map(birl, end_i)(
     function(i) i
   )
@@ -1076,9 +1083,11 @@ function _idxs(slr, birl, end_i) =
  *   slr to iterate over
  * @param {number} [start_offset=0]
  *   Offset to start the starting point from.
+ *
  *   - Should prolly be positive to not give an undefined index.
  * @param {number} [end_offset=0]
  *   Offset to end the ending point to.
+ *
  *   - Should prolly be negative to not give an undefined index.
  * @param {number} [_slr_len]
  *   If passed, then use that cached value instead of calculating `len(slr)`.
@@ -1117,9 +1126,11 @@ function fwd_i(slr, start_offset = 0, end_offset = 0, _slr_len) =
  *   slr to iterate over
  * @param {number} [start_offset=0]
  *   Offset to start the starting point from.
+ *
  *   - Should prolly be negative to not give an undefined index.
  * @param {number} [end_offset=0]
  *   Offset to end the ending point to.
+ *
  *   - Should prolly be positive to not give an undefined index.
  * @param {number} [_slr_len]
  *   If passed, then use that cached value instead of calculating `len(slr)`.
@@ -1137,7 +1148,7 @@ function rev_i(slr, start_offset = 0, end_offset = 0, _slr_len) =
   let ( _ = verify_slr(slr) )
   let ( _ = verify_vlen(slr, _slr_len) )
   let (
-    _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len, 
+    _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len,
     begin_i = _slr_len ? idx(slr, -1) + start_offset : -1
   )
   end_offset <= begin_i
@@ -1359,6 +1370,7 @@ function shift(sl, count=1, _sl_len) =
  *   String or list to insert into.
  * @param {number} i
  *   Index to insert into.
+ *
  *   - `0` to insert at beginning of list (like unshift)
  *   - `len(sl)` to insert at end of list (like push)
  *   - Negative values will insert starting from the end.
@@ -1463,7 +1475,8 @@ function remove(sl, begin_i, end_i, _sl_len) =
  * @callback EqualFn
  *
  * Represents the equation `lhs == rhs`, but allows user to define what `==`
- * means.  For a less strict equality check, try [`function_equal`](#function_equal).
+ * means.  For a less strict equality check, try
+ * [`function_equal`](#f-function_equal).
  *
  * @param {any} lhs
  *   The left hand side of the equality.
@@ -1594,7 +1607,7 @@ function _remove_each(sl, birl, end_i, _idx, _len, _blen) =
       _max - _min + 1 == _blen
       ? // Take out section in one shot
         remove(sl, _min, _max, _len)
-      : 
+      :
         is_list(sl)
         ? [
             each _els(sl, 0, _idx(0)-1),
@@ -1616,7 +1629,7 @@ function _remove_each(sl, birl, end_i, _idx, _len, _blen) =
 ;
 
 /**
- * Replaces contiguous index set [`a_begin_i`, `a_end_i`] from list `a` with
+ * Replaces contiguous index set \[`a_begin_i`, `a_end_i`] from list `a` with
  * `birlsei` index set of list `b`.
  *
  * @param {(string|list)} a
@@ -1737,7 +1750,7 @@ function _replace_each(a, a_birl, a_end_i, _a_len, _a_idx, _a_blen, _a_str) =
               str("a_birlei (", _a_str(), ") and b_birlei (",
                     _b_str(), ") are not the same length. (", _a_blen, " ≠ ",
                     _b_blen, ")."))
-            
+
             _replace(a, _a_begin_i, _a_end_i, b, b_birl, b_end_i, _a_len, _b_blen)
       )
       function(b, b_birls, b_end_i)
@@ -1810,7 +1823,7 @@ function _replace_each(a, a_birl, a_end_i, _a_len, _a_idx, _a_blen, _a_str) =
 ;
 
 /**
- * Swap the elements between [begin_i1 : end_i1] and [begin_i2 : end_i2].
+ * Swap the elements between \[begin_i1 : end_i1] and \[begin_i2 : end_i2].
  * Range must be nondecreasing or there will not be any elements in that
  * range.  Negative values are normalised to positive by adding `len(sl)` to
  * them.
