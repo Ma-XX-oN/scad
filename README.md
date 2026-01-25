@@ -32,7 +32,7 @@ library folder and then import files by relative path from there.  OpenSCAD
 exposes the library folder location via **File → Show Library Folder...**.
 OpenSCAD User Manual - Libraries (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
 
-### Importing this library
+### Importing Library Files
 
 - For `*_consts` files: use the `include <>` idiom.
 - For all other files: use the `use <>` idiom.
@@ -129,7 +129,7 @@ Many parameters names imply the types that they accept.
   non-number is used for the `birl`/`birls` then this parameter can just be
   omitted.
 
-### Files
+#### Synopses of Files
 
 There are several files in this library set.
 
@@ -993,7 +993,7 @@ return "*INVALID TYPE*".
 
 #### ⚙️type<a id='f-type'></a>
 
-<code>*function* type(o: any) : bool</code>
+<code>*function* type(o: any, distinguish\_float\_from\_int: bool) : string</code>
 
 Gets a string representation of the type of `o`.
 
@@ -1003,11 +1003,16 @@ Gets a string representation of the type of `o`.
 
 Object to query.
 
+**<code>distinguish_float_from_int</code>**: <code>bool</code>
+ *(Default: `false`)*
+
+States if to distinguish a float from an int when detecting a number.
+
 </details>
 
 <details><summary>returns</summary>
 
-**Returns**: <code>bool</code>
+**Returns**: <code>string</code>
 
 Returns string representation of `o`'s type.
 
@@ -4472,45 +4477,156 @@ A user message to append to failure message.
 
 #### 🧪test\_ne<a id='m-test_ne'></a>
 
-<code>*module* test_ne()</code>
+<code>*module* test_ne(not\_expected: any, got: any, msg: string)</code>
 
 Tests if `not_expected` is not equal to `got`.
 
+<details><summary>parameters</summary>
+
+**<code>not_expected</code>**: <code>any</code>
+
+Value that wasn't expected.
+
+**<code>got</code>**: <code>any</code>
+
+The value actually received.
+
+**<code>msg</code>**: <code>string</code>
+ *(Default: `""`)*
+
+A user message to append to failure message.
+
+</details>
+
 #### 🧪test\_lt<a id='m-test_lt'></a>
 
-<code>*module* test_lt()</code>
+<code>*module* test_lt(lhs: any, rhs: any, msg: string)</code>
 
 Tests if `lhs < rhs`.
 
+<details><summary>parameters</summary>
+
+**<code>lhs</code>**: <code>any</code>
+
+Left hand side value to test.
+
+**<code>rhs</code>**: <code>any</code>
+
+Right hand side value to test.
+
+**<code>msg</code>**: <code>string</code>
+ *(Default: `""`)*
+
+A user message to append to failure message.
+
+</details>
+
 #### 🧪test\_le<a id='m-test_le'></a>
 
-<code>*module* test_le()</code>
+<code>*module* test_le(lhs: any, rhs: any, msg: string)</code>
 
 Tests if `lhs ≤ rhs`.
 
+<details><summary>parameters</summary>
+
+**<code>lhs</code>**: <code>any</code>
+
+Left hand side value to test.
+
+**<code>rhs</code>**: <code>any</code>
+
+Right hand side value to test.
+
+**<code>msg</code>**: <code>string</code>
+ *(Default: `""`)*
+
+A user message to append to failure message.
+
+</details>
+
 #### 🧪test\_gt<a id='m-test_gt'></a>
 
-<code>*module* test_gt()</code>
+<code>*module* test_gt(lhs: any, rhs: any, msg: string)</code>
 
 Tests if `lhs > rhs`.
 
+<details><summary>parameters</summary>
+
+**<code>lhs</code>**: <code>any</code>
+
+Left hand side value to test.
+
+**<code>rhs</code>**: <code>any</code>
+
+Right hand side value to test.
+
+**<code>msg</code>**: <code>string</code>
+ *(Default: `""`)*
+
+A user message to append to failure message.
+
+</details>
+
 #### 🧪test\_ge<a id='m-test_ge'></a>
 
-<code>*module* test_ge()</code>
+<code>*module* test_ge(lhs: any, rhs: any, msg: string)</code>
 
 Tests if `lhs ≥ rhs`.
 
+<details><summary>parameters</summary>
+
+**<code>lhs</code>**: <code>any</code>
+
+Left hand side value to test.
+
+**<code>rhs</code>**: <code>any</code>
+
+Right hand side value to test.
+
+**<code>msg</code>**: <code>string</code>
+ *(Default: `""`)*
+
+A user message to append to failure message.
+
+</details>
+
 #### 🧪test\_truthy<a id='m-test_truthy'></a>
 
-<code>*module* test_truthy()</code>
+<code>*module* test_truthy(val: any, msg: string)</code>
 
 Tests if `val` is a truthy value
 
+<details><summary>parameters</summary>
+
+**<code>val</code>**: <code>any</code>
+
+Value to test.
+
+**<code>msg</code>**: <code>string</code>
+ *(Default: `""`)*
+
+A user message to append to failure message.
+
+</details>
+
 #### 🧪test\_falsy<a id='m-test_falsy'></a>
 
-<code>*module* test_falsy()</code>
+<code>*module* test_falsy(val: any, msg: string)</code>
 
 Tests if `val` is a falsy value
+
+<details><summary>parameters</summary>
+
+**<code>val</code>**: <code>any</code>
+
+Value to test.
+
+**<code>msg</code>**: <code>string</code>
+ *(Default: `""`)*
+
+A user message to append to failure message.
+
+</details>
 
 
 ## <span style="font-size: 1.1em; color: yellow">📘transform</span><a id='file-transform'></a>
@@ -5933,7 +6049,7 @@ Gets a list of `number_of_values` between `p0` and `p1`.
 
 > ℹ️ NOTE:
 >
-> `p0` and `p1` must be the same shape and must comprise of values that have
+> `p0` and `p1` must be the same shape and must consist of values that have
 > `+`, `-` and `/` operations defined for them.
 
 Example

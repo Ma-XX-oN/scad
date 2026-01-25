@@ -32,7 +32,7 @@ library folder and then import files by relative path from there.  OpenSCAD
 exposes the library folder location via **File → Show Library Folder...**.
 OpenSCAD User Manual - Libraries (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
 
-### Importing this library
+### Importing Library Files
 
 - For `*_consts` files: use the `include <>` idiom.
 - For all other files: use the `use <>` idiom.
@@ -129,7 +129,7 @@ Many parameters names imply the types that they accept.
   non-number is used for the `birl`/`birls` then this parameter can just be
   omitted.
 
-### Files
+#### Synopses of Files
 
 There are several files in this library set.
 

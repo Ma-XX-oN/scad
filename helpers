@@ -566,7 +566,7 @@ function Assert(truth, msg = "") =
  *
  * > NOTE:
  * >
- * > `p0` and `p1` must be the same shape and must comprise of values that have
+ * > `p0` and `p1` must be the same shape and must consist of values that have
  * > `+`, `-` and `/` operations defined for them.
  *
  * Example

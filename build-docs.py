@@ -147,7 +147,7 @@ with open(header, "r", encoding="utf-8") as in_f:
 
 re_file_section = regex.compile(
   r'''
-  ^\#\#\#\ Files\r?+\n
+  ^\#\#\#\#\ Synopses\ of\ Files\r?+\n
   (?:(?!\s*+\d++\.\s).*+(?:\n|$))*+
   ((?:(?!\#).*+(?:\n|$))*+)
   ''', regex.MULTILINE | regex.VERBOSE

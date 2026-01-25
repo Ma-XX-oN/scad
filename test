@@ -1,11 +1,11 @@
 /**
  * ## test
- *
+ * 
  * ### Purpose
- *
+ * 
  * Used to generate code for using TDD methodology.  Tries to report useful
  * error messages with an optional user configurable message.
- *
+ * 
  * ### Test Your Code!
  */
 use <helpers>
@@ -39,37 +39,89 @@ module test_approx_eq(expected, got, epsilon, msg="") {
   assert(equal(expected, got, epsilon), str("\n  EXPECTED: ", expected, "\n       GOT: ", got, "\n", msg));
 }
 
-/** Tests if `not_expected` is not equal to `got`. */
+/** Tests if `not_expected` is not equal to `got`.
+ *
+ * @param {any} not_expected
+ *   Value that wasn't expected.
+ * @param {any} got
+ *   The value actually received.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_ne(not_expected, got, msg="") {
   assert(not_expected != got, str("\n  SHOULD NOT HAVE GOTTEN: \"", got, "\"\n", msg));
 }
 
-/** Tests if `lhs < rhs`. */
+/** Tests if `lhs < rhs`.
+ *
+ * @param {any} lhs
+ *   Left hand side value to test.
+ * @param {any} rhs
+ *   Right hand side value to test.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_lt(lhs, rhs, msg="") {
   assert(lhs < rhs, str("\n  ", lhs, " < ", rhs, " IS FALSE!\n", msg));
 }
 
-/** Tests if `lhs ≤ rhs`. */
+/** Tests if `lhs ≤ rhs`.
+ *
+ * @param {any} lhs
+ *   Left hand side value to test.
+ * @param {any} rhs
+ *   Right hand side value to test.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_le(lhs, rhs, msg="") {
   assert(lhs <= rhs, str("\n  ", lhs, " ≤ ", rhs, " IS FALSE!\n", msg));
 }
 
-/** Tests if `lhs > rhs`. */
+/** Tests if `lhs > rhs`.
+ *
+ * @param {any} lhs
+ *   Left hand side value to test.
+ * @param {any} rhs
+ *   Right hand side value to test.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_gt(lhs, rhs, msg="") {
   assert(lhs > rhs, str("\n  ", lhs, " > ", rhs, " IS FALSE!\n", msg));
 }
 
-/** Tests if `lhs ≥ rhs`. */
+/** Tests if `lhs ≥ rhs`.
+ *
+ * @param {any} lhs
+ *   Left hand side value to test.
+ * @param {any} rhs
+ *   Right hand side value to test.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_ge(lhs, rhs, msg="") {
   assert(lhs >= rhs, str("\n  ", lhs, " ≥ ", rhs, " IS FALSE!\n", msg));
 }
 
-/** Tests if `val` is a truthy value */
+/** Tests if `val` is a truthy value
+ *
+ * @param {any} val
+ *   Value to test.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_truthy(val, msg="") {
   assert(val, str("\n  ", val, " IS NOT TRUTHY!\n", msg));
 }
 
-/** Tests if `val` is a falsy value */
+/** Tests if `val` is a falsy value
+ *
+ * @param {any} val
+ *   Value to test.
+ * @param {string} [msg=""]
+ *   A user message to append to failure message.
+ */
 module test_falsy(val, msg="") {
   assert(!val, str("\n  !", val, " IS NOT FALSY!\n", msg));
 }
