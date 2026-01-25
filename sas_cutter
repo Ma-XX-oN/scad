@@ -13,13 +13,13 @@ use <base_algos>
  * @param {number} y_thickness
  *   Thickness along y-axis of cutter from cutface to handle.
  * @param {number} z_thickness
- *   Hight of cutting tool (z-axis).
+ *   Height of cutting tool (z-axis).
  * @param {number} lat_wave_segs
  *   Number of segments to break up the wave into.
  * @param {number} lat_wave_cycles
  *   Number of complete wave_cycles to apply along cutting edge.
  * @param {number} wave_amp
- *   Amplitude of the wave on cutting edge (peek to peek).
+ *   Amplitude of the wave on cutting edge (peak-to-peak).
  * @param {number} long_wave_segs
  *   Number of segments to break up the wave into.
  * @param {number} long_wave_cycles
@@ -112,7 +112,7 @@ function _ignored(x) = x;
  * @param {number} y_thickness
  *   Thickness of cutter along y-axis from lowest part of cutface to handle.
  * @param {number} z_thickness
- *   hight of cutting tool (z-axis).
+ *   Height of cutting tool (z-axis).
  * @param {number} lat_wall_percent
  *        When transitioning from the each half cycle to the next point, and a
  *        point to each half cycle, this is % of a 1/4 cycle traveled along the
@@ -127,7 +127,7 @@ function _ignored(x) = x;
  * @param {number} lat_wave_cycles
  *   number of complete wave_cycles to apply along cutting edge.
  * @param {number} wave_amp
- *   amplitude of the wave on cutting edge (peek to peek).
+ *   amplitude of the wave on cutting edge (peak-to-peak).
  * @param {number} [long_wave_segs=*ignored*]
  *   number of segments to break up the wave into.
  * @param {number} [long_wave_cycles=*ignored*]
@@ -239,14 +239,14 @@ skin_to_polyhedron(sas2_cutter([0, 0, 0], [10, 0, 0], 1, 1, .5, 10, .25, undef, 
  * @param {number} y_thickness
  *   y_thickness of cutter from cutface to handle.
  * @param {number} z_thickness
- *   hight of cutting tool (z-axis).
+ *   Height of cutting tool (z-axis).
  * @param {number} lat_wave_segs
  *   number of segments to break up the wave into.
  * @param {number} lat_wave_cycles
  *   number of complete wave_cycles to apply
  *        along cutting edge.
  * @param {number} wave_amp
- *   amplitude of the wave on cutting edge (peek to peek).
+ *   amplitude of the wave on cutting edge (peak-to-peak).
  * @param {number} long_wave_segs
  *   number of segments to break up the wave into.
  * @param {number} long_wave_cycles
