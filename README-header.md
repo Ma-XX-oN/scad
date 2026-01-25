@@ -16,18 +16,6 @@ not fast enough, optimisation is always an option.  Code readability and
 maintainability are the primary goal of this library.  Speed is secondary
 (though performance was also considered and it is quite fast).
 
-> ℹ️ **NOTE:**
->
-> Currently, to import libraries in OpenSCAD there are two methods, `use<>` and
-> `include<>`.  This library uses both methods. For `*_consts` files, use the
-> `include<>` idiom.  For all other files, use the `use<>` idiom.  This is
-> because non-function symbols are not exported when using `use<>`, and the
-> `*_consts` files only contain such symbols.
-
-> ℹ️ **NOTE:**
->
-> All of these files have no extension, that is by design.
-
 ## Installation
 
 OpenSCAD finds `use <>` / `include <>` targets in a small set of library
@@ -66,7 +54,8 @@ intentionally extensionless (similar to C++ standard library headers).
 
 ## Licence
 
-This project is licensed under the **BSD 3-Clause License**.  See `LICENSE`.
+This project is licensed under the **BSD 3-Clause License**.  See
+[`LICENSE`](./LICENSE).
 
 ### Reading the Documentation
 

@@ -13,20 +13,49 @@ Although you may be able to write faster specific implementations of many of
 these functions, they give an abstraction layer that makes it easier to code and
 read.  From there, once you've created whatever code you want and you feel it's
 not fast enough, optimisation is always an option.  Code readability and
-mantainabilty are the primary goal of this library.  Speed is secondary (though
-performance was also considered and it is quite fast).
+maintainability are the primary goal of this library.  Speed is secondary
+(though performance was also considered and it is quite fast).
 
-> ℹ️ **NOTE:**
->
-> Currently, to import libraries in OpenSCAD there are two methods, `use<>` and
-> `include<>`.  This library uses both methods. For `*_consts` files, use the
-> `include<>` idiom.  For all other files, use the `use<>` idiom.  This is
-> because non-function symbols are not exported when using `use<>`, and the
-> `*_consts` files only contain such symbols.
+## Installation
 
-> ℹ️ **NOTE:**
->
-> All of these files have no extension, that is by design.
+OpenSCAD finds `use <>` / `include <>` targets in a small set of library
+locations.  In particular, library files are searched for:
+
+- in the same folder as the design file you opened,
+- in the library folder of the OpenSCAD installation, and
+- in folders listed by the `OPENSCADPATH` environment variable.  (See the
+  OpenSCAD manual for the full details.)  OpenSCAD User Manual - Include
+  Statement (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Include_Statement)
+
+A practical way to use this library is to place (or clone) it into your user
+library folder and then import files by relative path from there.  OpenSCAD
+exposes the library folder location via **File → Show Library Folder...**.
+OpenSCAD User Manual - Libraries (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
+
+### Importing this library
+
+- For `*_consts` files: use the `include <>` idiom.
+- For all other files: use the `use <>` idiom.
+
+The include path must match the actual file names.  These files are
+intentionally extensionless (similar to C++ standard library headers).
+
+## Compatibility
+
+- Intended to work across OpenSCAD versions.
+- Known limitation: OpenSCAD **2021.01** has problems with some of the string
+  formatting code paths due to incorrect recursion detection.  Upgrading to a
+  newer OpenSCAD build avoids that issue.
+
+## Status
+
+- **Stable:** everything except `skin` and `sas_cutter`.
+- **In development:** `skin`, `sas_cutter`.
+
+## Licence
+
+This project is licensed under the **BSD 3-Clause License**.  See
+[`LICENSE`](./LICENSE).
 
 ### Reading the Documentation
 
@@ -101,6 +130,7 @@ Many parameters names imply the types that they accept.
   omitted.
 
 ### Files
+
 There are several files in this library set.
 
  1. [range](#file-range)
@@ -4487,7 +4517,7 @@ Tests if `val` is a falsy value
 
 ### <i>📑Purpose</i><a id='transform-ch-Purpose'></a>
 
-This library is for matrix math for a verity of things.
+This library is for matrix math for a variety of things.
 
 ### <i>📑Generate Matrices for Vector Transforms</i><a id='transform-ch-Generate Matrices for Vector Transforms'></a>
 
@@ -6810,7 +6840,7 @@ Thickness along y-axis of cutter from cutface to handle.
 
 **<code>z_thickness</code>**: <code>number</code>
 
-Hight of cutting tool (z-axis).
+Height of cutting tool (z-axis).
 
 **<code>lat_wave_segs</code>**: <code>number</code>
 
@@ -6822,7 +6852,7 @@ Number of complete wave_cycles to apply along cutting edge.
 
 **<code>wave_amp</code>**: <code>number</code>
 
-Amplitude of the wave on cutting edge (peek to peek).
+Amplitude of the wave on cutting edge (peak-to-peak).
 
 **<code>long_wave_segs</code>**: <code>number</code>
  *(Default: `4`)*
@@ -6882,7 +6912,7 @@ Thickness of cutter along y-axis from lowest part of cutface to handle.
 
 **<code>z_thickness</code>**: <code>number</code>
 
-hight of cutting tool (z-axis).
+Height of cutting tool (z-axis).
 
 **<code>lat_wall_percent</code>**: <code>number</code>
 
@@ -6903,7 +6933,7 @@ number of complete wave_cycles to apply along cutting edge.
 
 **<code>wave_amp</code>**: <code>number</code>
 
-amplitude of the wave on cutting edge (peek to peek).
+amplitude of the wave on cutting edge (peak-to-peak).
 
 **<code>long_wave_segs</code>**: <code>number</code>
  *(Default: `_ignored(4)`)*
@@ -6963,7 +6993,7 @@ y_thickness of cutter from cutface to handle.
 
 **<code>z_thickness</code>**: <code>number</code>
 
-hight of cutting tool (z-axis).
+Height of cutting tool (z-axis).
 
 **<code>lat_wave_segs</code>**: <code>number</code>
 
@@ -6976,7 +7006,7 @@ number of complete wave_cycles to apply
 
 **<code>wave_amp</code>**: <code>number</code>
 
-amplitude of the wave on cutting edge (peek to peek).
+amplitude of the wave on cutting edge (peak-to-peak).
 
 **<code>long_wave_segs</code>**: <code>number</code>
  *(Default: `4`)*
