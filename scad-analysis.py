@@ -142,31 +142,6 @@ RES_LIB = r'''
   (?<module>(?&module_sig) \s*+ \{ (?<body>(?&chars_mtws)) \})
 '''
 
-# regexes to breakdown values, functions and modules.
-# breakdown_types = {
-#   "value":
-#     regex.compile(r'''
-#       (?# signature: symbol name
-#           id       : symbol name
-#           body     : expression assigned with no leading = or trailing ; )
-#       (?<sig>(?<id>(?&symbol)))\s*+=\s*+(?<body>(?&cmd_chars_mtws));
-#       | ''' + RES_LIB, regex.VERBOSE),
-#   "function":
-#     regex.compile(r'''
-#       (?# signature: function signature
-#           id       : symbol name
-#           body     : expression assigned with no leading = or trailing ; )
-#       (?<sig>function\s++(?<id>(?&symbol))\s*+\((?&chars_mtws)\))\s*+=\s*+(?<body>(?&cmd_chars_mtws));
-#       | ''' + RES_LIB, regex.VERBOSE),
-#   "module":
-#     regex.compile(r'''
-#       (?# signature: module signature
-#           id       : module name
-#           body     : module body with no surrounding braces )
-#       (?<sig>module\s++(?<id>(?&symbol))\s*+\((?&chars_mtws)\))\s*+\{\s*+(?<body>(?&chars_mtws))\}
-#       | ''' + RES_LIB, regex.VERBOSE)
-# }
-
 def mtime_to_utc(mtime: float) -> str:
   """
   Retrieves the modification time of a file and converts it to a UTC datetime object.
@@ -1082,7 +1057,7 @@ class Doc:
         "which has not been defined yet."
       )
       symbols.type_refed.add(type_name)
-      return make_anchor("t", type_name) #f'<a href="#t-{type_name}">{type_name}</a>'
+      return f'<a href="#t-{type_name}">{type_name}</a>'
 
     return type_name
 
@@ -1504,9 +1479,12 @@ class Doc:
 
       # Callchains (for callbacks and typedefs to callbacks)
       if self.items["callchain"] or (self.doc_type == "typedef" and self.items["header"]):
-        self.output_callchains(output_lines, None)
-        if output_lines and output_lines[-1].strip():
-          output_lines.append("")
+        callchain_lines = []
+        self.output_callchains(callchain_lines, None)
+        if callchain_lines:
+          callchain_lines.append("")
+          output_lines.append("Possible callchains:\n")
+          output_lines += callchain_lines
 
       # Description
       self.output_desc(output_lines)
@@ -1547,18 +1525,21 @@ class Doc:
 
       # Only output description and details if doc exists
       if is_sym_with_doc(self.doc_item):
+        # Callchains (for functions that return callbacks)
+        if self.items["callchain"]:
+          callchain_lines = []
+          self.output_callchains(callchain_lines, None)
+          if callchain_lines:
+            callchain_lines.append("")
+            output_lines.append("Possible callchains:\n")
+            output_lines += callchain_lines
+
         # Description
         if self.items["desc"]:
           for (_, _, desc) in self.items["desc"]:
             if desc:
               output_lines.append(desc.strip())
               output_lines.append("")
-
-        # Callchains (for functions that return callbacks)
-        if self.items["callchain"]:
-          self.output_callchains(output_lines, None)
-          if output_lines and output_lines[-1].strip():
-            output_lines.append("")
 
         # Params and returns
         self.output_params(output_lines)
@@ -1901,10 +1882,9 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
       out_text = "\n".join(output_lines)
 
       # This makes sure that the heading for the next file will be separated by
-      # a will be separated by a will be separated by an empty line.  A Side
-      # effect of this is that the end of the file will contain 2 consecutive
-      # blank lines, causing the markdown linter to complain.
-      if not out_text.endswith("\n\n"):
+      # an empty line.  A side effect of this is that the end of the file will
+      # contain 2 consecutive blank lines, causing the markdown linter to complain.
+      if out_text and not out_text.endswith("\n\n"):
         out_text += "\n"
 
   assert out_text == "" or out_text.endswith("\n\n")
