@@ -273,6 +273,8 @@ use <param_check>
  *   - If passed undef, returns undef.
  */
 
+/** ### Functions */
+
 /**
  * Helper which calls `algo_fn` but remaps signature `function(fn, birl, end_i)`
  * to signature `function(fn, begin_i, end_i, map_back_fn)`.

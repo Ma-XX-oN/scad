@@ -10,17 +10,17 @@ use <base_algos>
  *   Starting point.
  * @param {Point2D} b
  *   Ending point.
- * @param {float} y_thickness
+ * @param {number} y_thickness
  *   Thickness along y-axis of cutter from cutface to handle.
- * @param {float} z_thickness
+ * @param {number} z_thickness
  *   Hight of cutting tool (z-axis).
- * @param {int} lat_wave_segs
+ * @param {number} lat_wave_segs
  *   Number of segments to break up the wave into.
  * @param {number} lat_wave_cycles
  *   Number of complete wave_cycles to apply along cutting edge.
- * @param {float} wave_amp
+ * @param {number} wave_amp
  *   Amplitude of the wave on cutting edge (peek to peek).
- * @param {int} long_wave_segs
+ * @param {number} long_wave_segs
  *   Number of segments to break up the wave into.
  * @param {number} long_wave_cycles
  *   Number of complete wave_cycles to apply perpendicular to the cutting edge.
@@ -31,7 +31,7 @@ use <base_algos>
  *   Lengthens the cutter by this amount (rounded to the next segment length)
  *   expanding from the centre.
  *
- * @returns {SKIN object}
+ * @returns {skin}
  */
 function sas_cutter(a, b, y_thickness, z_thickness,
   lat_wave_segs, lat_wave_cycles, wave_amp,
@@ -94,6 +94,8 @@ function sas_cutter(a, b, y_thickness, z_thickness,
   )
 ;
 
+function _ignored(x) = x;
+
 /**
  * Self aligning seam cutter 2 aligned along edge a → b, with sinusoidal cutface.
  *
@@ -107,11 +109,11 @@ function sas_cutter(a, b, y_thickness, z_thickness,
  *   Starting point.
  * @param {Point2D} b
  *   Ending point.
- * @param {float} y_thickness
- *   Rhickness of cutter along y-axis from lowest part of cutface to handle.
- * @param {float} z_thickness
+ * @param {number} y_thickness
+ *   Thickness of cutter along y-axis from lowest part of cutface to handle.
+ * @param {number} z_thickness
  *   hight of cutting tool (z-axis).
- * @param {float} lat_wall_percent
+ * @param {number} lat_wall_percent
  *        When transitioning from the each half cycle to the next point, and a
  *        point to each half cycle, this is % of a 1/4 cycle traveled along the
  *        latitude direction.  A value of 0 is a results in a "square wave".  A
@@ -124,11 +126,11 @@ function sas_cutter(a, b, y_thickness, z_thickness,
  *             |___________________|      |_______________|      |________|
  * @param {number} lat_wave_cycles
  *   number of complete wave_cycles to apply along cutting edge.
- * @param {float} wave_amp
+ * @param {number} wave_amp
  *   amplitude of the wave on cutting edge (peek to peek).
- * @param {int} long_wave_segs
+ * @param {number} [long_wave_segs=*ignored*]
  *   number of segments to break up the wave into.
- * @param {number} long_wave_cycles
+ * @param {number} [long_wave_cycles=*ignored*]
  *   number of complete wave_cycles to apply perpendicular to the cutting edge.
  * @param {number} cutedge_long_overflow
  *   widens the cutter by this amount
@@ -139,12 +141,11 @@ function sas_cutter(a, b, y_thickness, z_thickness,
  * @param {number} x_phase_offset
  *        The starting phase of the a point.  Value must be ∈ [0, 360).
  *
- * @returns {SKIN object}
+ * @returns {skin}
  */
 function sas2_cutter(a, b, y_thickness, z_thickness,
   lat_wall_percent, lat_wave_cycles, wave_amp,
-  ignored1 = undef, ignored2 = undef,
-  // long_wave_segs = 4, long_wave_cycles = 0.5,
+  long_wave_segs = _ignored(4), long_wave_cycles = _ignored(0.5),
   cutedge_long_overflow = 1e-4, cutedge_lat_overflow = 1, x_phase_offset = 0, comment)
 =
   let (
@@ -235,18 +236,18 @@ skin_to_polyhedron(sas2_cutter([0, 0, 0], [10, 0, 0], 1, 1, .5, 10, .25, undef, 
  *   starting point.
  * @param {Point2D} b
  *   ending point.
- * @param {float} y_thickness
+ * @param {number} y_thickness
  *   y_thickness of cutter from cutface to handle.
- * @param {float} z_thickness
+ * @param {number} z_thickness
  *   hight of cutting tool (z-axis).
- * @param {int} lat_wave_segs
+ * @param {number} lat_wave_segs
  *   number of segments to break up the wave into.
  * @param {number} lat_wave_cycles
  *   number of complete wave_cycles to apply
  *        along cutting edge.
- * @param {float} wave_amp
+ * @param {number} wave_amp
  *   amplitude of the wave on cutting edge (peek to peek).
- * @param {int} long_wave_segs
+ * @param {number} long_wave_segs
  *   number of segments to break up the wave into.
  * @param {number} long_wave_cycles
  *   number of complete wave_cycles to apply

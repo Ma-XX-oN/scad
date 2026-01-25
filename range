@@ -56,6 +56,8 @@ use <param_check>
  *   Stop value.
  */
 
+/** ### Test */
+
 /**
  * Tests if the object is a range object.
  *
@@ -68,6 +70,8 @@ use <param_check>
 function is_range(o) =
   !is_list(o) && !is_string(o) && is_num(o[0])
 ;
+
+/** ### Functions */
 
 /**
  * Creates a range object.

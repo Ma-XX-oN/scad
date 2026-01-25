@@ -16,7 +16,7 @@ not fast enough, optimisation is always an option.  Code readability and
 mantainabilty are the primary goal of this library.  Speed is secondary (though
 performance was also considered and it is quite fast).
 
-> **NOTE:**
+> ℹ️ **NOTE:**
 >
 > Currently, to import libraries in OpenSCAD there are two methods, `use<>` and
 > `include<>`.  This library uses both methods. For `*_consts` files, use the
@@ -24,17 +24,44 @@ performance was also considered and it is quite fast).
 > because non-function symbols are not exported when using `use<>`, and the
 > `*_consts` files only contain such symbols.
 
-> **NOTE:**
+> ℹ️ **NOTE:**
 >
 > All of these files have no extension, that is by design.
 
 ### Reading the Documentation
 
-There will be **NOTES:** scattered about to bring attention to things for the
-reader.
+#### Callout Blocks
 
-There are also **TTA:** item which means `T`o `T`hink `A`bout, and are notes to
-tell me (the library dev) that this item should have more thought brought to it.
+Throughout the documentation, you'll find callout blocks with emojis:
+
+| Callout                | Meaning                                                                  |
+| ---------------------- | ------------------------------------------------------------------------ |
+| ℹ️ **NOTE:**           | Information to bring attention to the reader.                            |
+| ⚠️ **WARNING:**        | Important warning about potential issues or pitfalls.                    |
+| 🤔 **TO THINK ABOUT:** | Notes for the library developer about items needing more consideration.  |
+| 📌 **TO DO:**          | Planned work or improvements.                                            |
+
+#### Section Emojis
+
+The Table of Contents and documentation sections use these emojis:
+
+| Emoji | Meaning                 |
+| ----- | ----------------------- |
+| 📘    | File section header.    |
+| 📑    | Chapter within a file.  |
+
+#### Symbol Emojis
+
+Each documented symbol is prefixed with an emoji indicating its type:
+
+| Emoji | Symbol Type                                   |
+| ----- | --------------------------------------------- |
+| ⚙️    | Function                                      |
+| 🧊    | Module (builds geometry)                      |
+| 🧪    | Module (test module, prefixed with `test_`)   |
+| 💠    | Value                                         |
+| 🧩    | Type definition (`@typedef`)                  |
+| 🧩⚙️  | Callback type (`@callback`)                   |
 
 ### Signature Specifications
 
@@ -569,7 +596,7 @@ Returns `true` if object is a range, otherwise `false`.
 
 #### ⚙️range<a id='f-range'></a>
 
-<code>*function* range(count\_or\_begin\_i: number, step\_or\_end\_i: number, end\_i: number) : <a id='t-range'></a>|list</code>
+<code>*function* range(count\_or\_begin\_i: number, step\_or\_end\_i: number, end\_i: number) : <a href="#t-range">range</a>|list</code>
 
 Creates a range object.
 
@@ -601,7 +628,7 @@ Creates a range object.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-range'></a>|list</code>
+**Returns**: <code><a href="#t-range">range</a>|list</code>
 
 This is the range to iterate over.  If `step < 0 and begin_i < end_i or
 step > 0 and begin_i > end_i or count <= 0`, then returns an empty list.
@@ -610,7 +637,7 @@ step > 0 and begin_i > end_i or count <= 0`, then returns an empty list.
 
 #### ⚙️range\_len<a id='f-range_len'></a>
 
-<code>*function* range_len(r: <a id='t-range'></a>) : number</code>
+<code>*function* range_len(r: <a href="#t-range">range</a>) : number</code>
 
 Will return the number of elements the range will return.
 
@@ -622,7 +649,7 @@ Will return the number of elements the range will return.
 
 <details><summary>parameters</summary>
 
-**<code>r</code>**: <code><a id='t-range'></a></code>
+**<code>r</code>**: <code><a href="#t-range">range</a></code>
 
 The range to count how many indices it will iterate over.
 
@@ -638,7 +665,7 @@ The number of indices the range contains.
 
 #### ⚙️range\_el<a id='f-range_el'></a>
 
-<code>*function* range_el(r: <a id='t-range'></a>, i: number, \_r\_len: number|undef) : number</code>
+<code>*function* range_el(r: <a href="#t-range">range</a>, i: number, \_r\_len: number|undef) : number</code>
 
 Will return the element that would have been returned if left to iterate `i`
 times.
@@ -649,7 +676,7 @@ times.
 
 <details><summary>parameters</summary>
 
-**<code>r</code>**: <code><a id='t-range'></a></code>
+**<code>r</code>**: <code><a href="#t-range">range</a></code>
 
 The range to get index from if left to iterate `i` times.
 
@@ -679,7 +706,7 @@ The index to have retrieved if iterated over `i` times.
 
 #### ⚙️range\_el\_pos\_idx<a id='f-range_el_pos_idx'></a>
 
-<code>*function* range_el_pos_idx(r: <a id='t-range'></a>, i: number) : number</code>
+<code>*function* range_el_pos_idx(r: <a href="#t-range">range</a>, i: number) : number</code>
 
 Dereference range at index `i`, allowing only positive indices.
 
@@ -689,7 +716,7 @@ Dereference range at index `i`, allowing only positive indices.
 
 <details><summary>parameters</summary>
 
-**<code>r</code>**: <code><a id='t-range'></a></code>
+**<code>r</code>**: <code><a href="#t-range">range</a></code>
 
 The range to get index from if left to iterate `i` times.
 
@@ -710,14 +737,14 @@ The index to have retrieved if iterated over `i` times.
 
 #### ⚙️range\_idx<a id='f-range_idx'></a>
 
-<code>*function* range_idx(r: <a id='t-range'></a>, i: number, \_r\_len: number|undef) : number</code>
+<code>*function* range_idx(r: <a href="#t-range">range</a>, i: number, \_r\_len: number|undef) : number</code>
 
 Gets the index for an range.  Allows for negative values to reference
 elements starting from the end going backwards.
 
 <details><summary>parameters</summary>
 
-**<code>r</code>**: <code><a id='t-range'></a></code>
+**<code>r</code>**: <code><a href="#t-range">range</a></code>
 
 The range to get the index for.
 
@@ -794,14 +821,14 @@ minimal strings for complex types.
 
 #### ⚙️is\_indexable\_te<a id='f-is_indexable_te'></a>
 
-<code>*function* is_indexable_te(type\_enum: <a id='t-type_enum'></a>) : bool</code>
+<code>*function* is_indexable_te(type\_enum: <a href="#t-type_enum">type_enum</a>) : bool</code>
 
 States if a te (type_enum) represents an indexable type, either directly with
 `sl[index]` or indirectly with `range_el(r, index)`.
 
 <details><summary>parameters</summary>
 
-**<code>type_enum</code>**: <code><a id='t-type_enum'></a></code>
+**<code>type_enum</code>**: <code><a href="#t-type_enum">type_enum</a></code>
 
 Enum for type (See [type_enum](#t-type_enum))
 
@@ -1045,7 +1072,7 @@ faster.
 
 #### ⚙️birlei\_to\_begin\_i\_end\_i<a id='f-birlei_to_begin_i_end_i'></a>
 
-<code>*function* birlei_to_begin_i_end_i(algo\_fn: function, ppmrrair\_fn: <a id='t-PpmrrairFn'></a>, birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*function* birlei_to_begin_i_end_i(algo\_fn: function, ppmrrair\_fn: <a href="#t-PpmrrairFn">PpmrrairFn</a>, birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 Helper which calls `algo_fn` but remaps signature `function(fn, birl, end_i)`
 to signature `function(fn, begin_i, end_i, map_back_fn)`.
@@ -1069,17 +1096,17 @@ Function with `(fn, begin_i, end_i, map_back_fn)` signature to call, where:
   - If this function is passed `undef`, it returns `undef` for
     convenience.
 
-**<code>ppmrrair_fn</code>**: <code><a id='t-PpmrrairFn'></a></code>
+**<code>ppmrrair_fn</code>**: <code><a href="#t-PpmrrairFn">PpmrrairFn</a></code>
 
 - Takes index or element and possibly a second param and returns a value.
 
-**<code>birl</code>**: <code><a id='t-Birl'></a></code>
+**<code>birl</code>**: <code><a href="#t-Birl">Birl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1098,19 +1125,19 @@ Result of `algo_fn()`.
 
 #### ⚙️birlei\_to\_indices<a id='f-birlei_to_indices'></a>
 
-<code>*function* birlei_to_indices(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : list|<a id='t-range'></a></code>
+<code>*function* birlei_to_indices(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : list|<a href="#t-range">range</a></code>
 
 Helper to convert birlei parameters to an lr to traverse.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a id='t-Birl'></a></code>
+**<code>birl</code>**: <code><a href="#t-Birl">Birl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1121,7 +1148,7 @@ Helper to convert birlei parameters to an lr to traverse.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list|<a id='t-range'></a></code>
+**Returns**: <code>list|<a href="#t-range">range</a></code>
 
 Returns a list or range describing the indices to traverse.
 
@@ -1131,7 +1158,7 @@ Returns a list or range describing the indices to traverse.
 
 #### 🧩Birl<a id='t-Birl'></a>
 
-<code>*type* Birl = number|<a id='t-range'></a>|list</code>
+<code>*type* Birl = number|<a href="#t-range">range</a>|list</code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1425,7 +1452,7 @@ Value that was mapped given the probe.
 
 #### 🧩PpmrrairFn<a id='t-PpmrrairFn'></a>
 
-<code>*type* PpmrrairFn = <a id='t-SpaceshipFn'></a>|<a id='t-PredFn'></a>|<a id='t-ReductionFn'></a>|<a id='t-ReductionAirFn'></a>|<a id='t-PredMapFn'></a>|<a id='t-MapperFn'></a></code>
+<code>*type* PpmrrairFn = <a href="#t-SpaceshipFn">SpaceshipFn</a>|<a href="#t-PredFn">PredFn</a>|<a href="#t-ReductionFn">ReductionFn</a>|<a href="#t-ReductionAirFn">ReductionAirFn</a>|<a href="#t-PredMapFn">PredMapFn</a>|<a href="#t-MapperFn">MapperFn</a></code>
 
 The exact meaning depends on the type expected.  For more info, go to the
 type you are interested in.
@@ -1618,7 +1645,12 @@ over each `birlei` element:
 
 #### ⚙️find\_lower<a id='f-find_lower'></a>
 
-<code>*function* find_lower(birl: <a id='t-OptionalBirl'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-FindLowerFn'></a>|<a id='t-FindLowerBirleiFn'></a></code>
+<code>*function* find_lower(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FindLowerFn">FindLowerFn</a>|<a href="#t-FindLowerBirleiFn">FindLowerBirleiFn</a></code>
+
+Possible callchains:
+
+    find_lower(birl, end_i)    (spaceship_fn) : (number|undef)
+    find_lower() (birl, end_i) (spaceship_fn) : (number|undef)
 
 Like C++'s `lower_bound`: returns the first index `i` for which
 `spaceship_fn(i) >= 0`.
@@ -1629,12 +1661,9 @@ Like C++'s `lower_bound`: returns the first index `i` for which
 > is monotonically nondecreasing over the searched indices; or the results
 > are **UB**.
 
-    find_lower(birl, end_i)    (spaceship_fn) : (number|undef)
-    find_lower() (birl, end_i) (spaceship_fn) : (number|undef)
-
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a id='t-OptionalBirl'></a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1642,7 +1671,7 @@ Like C++'s `lower_bound`: returns the first index `i` for which
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1653,16 +1682,26 @@ Like C++'s `lower_bound`: returns the first index `i` for which
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-FindLowerFn'></a>|<a id='t-FindLowerBirleiFn'></a></code>
+**Returns**: <code><a href="#t-FindLowerFn">FindLowerFn</a>|<a href="#t-FindLowerBirleiFn">FindLowerBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FindLowerBirleiFn`.
 - Else returns type `FindLowerFn`.
+
+Possible callchains:
+
+    FindLowerFn(spaceship_fn) : (number|undef)
+    FindLowerBirleiFn(birl, end_i) (spaceship_fn) : (number|undef)
 
 </details>
 
 #### ⚙️find\_upper<a id='f-find_upper'></a>
 
-<code>*function* find_upper(birl: <a id='t-OptionalBirl'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-FindUpperFn'></a>|<a id='t-FindUpperBirleiFn'></a></code>
+<code>*function* find_upper(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FindUpperFn">FindUpperFn</a>|<a href="#t-FindUpperBirleiFn">FindUpperBirleiFn</a></code>
+
+Possible callchains:
+
+    find_upper(birl, end_i)    (spaceship_fn) : (number|undef)
+    find_upper() (birl, end_i) (spaceship_fn) : (number|undef)
 
 Like C++'s `upper_bound`: returns the first index `i` for which
 `spaceship_fn(i) > 0`.
@@ -1673,12 +1712,9 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 > is monotonically nondecreasing over the searched indices; or the results
 > are **UB**.
 
-    find_upper(birl, end_i)    (spaceship_fn) : (number|undef)
-    find_upper() (birl, end_i) (spaceship_fn) : (number|undef)
-
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a id='t-OptionalBirl'></a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1686,7 +1722,7 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1697,26 +1733,33 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-FindUpperFn'></a>|<a id='t-FindUpperBirleiFn'></a></code>
+**Returns**: <code><a href="#t-FindUpperFn">FindUpperFn</a>|<a href="#t-FindUpperBirleiFn">FindUpperBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FindUpperBirleiFn`.
 - Else returns type `FindUpperFn`.
+
+Possible callchains:
+
+    FindUpperFn(spaceship_fn) : (number|undef)
+    FindUpperBirleiFn(birl, end_i) (spaceship_fn) : (number|undef)
 
 </details>
 
 #### ⚙️find<a id='f-find'></a>
 
-<code>*function* find(birl: <a id='t-OptionalBirl'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-FindFn'></a>|<a id='t-FindBirleiFn'></a></code>
+<code>*function* find(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FindFn">FindFn</a>|<a href="#t-FindBirleiFn">FindBirleiFn</a></code>
 
-Returns the first index that results in `pred_fn(i)` returning a truthy
-result.
+Possible callchains:
 
     find(birl, end_i)    (pred_fn) : (number|undef)
     find() (birl, end_i) (pred_fn) : (number|undef)
 
+Returns the first index that results in `pred_fn(i)` returning a truthy
+result.
+
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a id='t-OptionalBirl'></a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1724,7 +1767,7 @@ result.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1735,22 +1778,29 @@ result.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-FindFn'></a>|<a id='t-FindBirleiFn'></a></code>
+**Returns**: <code><a href="#t-FindFn">FindFn</a>|<a href="#t-FindBirleiFn">FindBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FindBirleiFn`.
 - Else returns type `FindFn`.
+
+Possible callchains:
+
+    FindFn(pred_fn) : (number|undef)
+    FindBirleiFn(birl, end_i) (pred_fn) : (number|undef)
 
 </details>
 
 #### ⚙️reduce<a id='f-reduce'></a>
 
-<code>*function* reduce(init: any, birl: <a id='t-OptionalBirl'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-ReduceFn'></a>|<a id='t-ReduceBirleiFn'></a></code>
+<code>*function* reduce(init: any, birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReduceFn">ReduceFn</a>|<a href="#t-ReduceBirleiFn">ReduceBirleiFn</a></code>
 
-Reduces (a.k.a. folds) a set of indices to produce some value/object based on
-the indices.
+Possible callchains:
 
     reduce(init, birl, end_i)  (op_fn) : result
     reduce(init) (birl, end_i) (op_fn) : result
+
+Reduces (a.k.a. folds) a set of indices to produce some value/object based on
+the indices.
 
 <details><summary>parameters</summary>
 
@@ -1759,7 +1809,7 @@ the indices.
 This is the initial value that is passed to the first iteration of `op_fn`
 as the accumulator.
 
-**<code>birl</code>**: <code><a id='t-OptionalBirl'></a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1767,7 +1817,7 @@ as the accumulator.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1778,22 +1828,29 @@ as the accumulator.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-ReduceFn'></a>|<a id='t-ReduceBirleiFn'></a></code>
+**Returns**: <code><a href="#t-ReduceFn">ReduceFn</a>|<a href="#t-ReduceBirleiFn">ReduceBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `ReduceBirleiFn`.
 - Else returns type `ReduceFn`.
+
+Possible callchains:
+
+    ReduceFn(reduction_fn) : any
+    ReduceBirleiFn(birl, end_i) (reduction_fn) : any
 
 </details>
 
 #### ⚙️reduce\_air<a id='f-reduce_air'></a>
 
-<code>*function* reduce_air(init: any, birl: <a id='t-OptionalBirl'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-ReduceAirFn'></a>|<a id='t-ReductionAirFn'></a></code>
+<code>*function* reduce_air(init: any, birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReductionAirFn">ReductionAirFn</a></code>
 
-Reduces (a.k.a. folds) a set of indices to produce some value/object based on
-the indices.  This Reduction Allows for Incomplete Reduction.
+Possible callchains:
 
     reduce_air(init, birl, end_i)  (op_fn) : [cont, init_result]
     reduce_air(init) (birl, end_i) (op_fn) : [cont, init_result]
+
+Reduces (a.k.a. folds) a set of indices to produce some value/object based on
+the indices.  This Reduction Allows for Incomplete Reduction.
 
 <details><summary>parameters</summary>
 
@@ -1802,7 +1859,7 @@ the indices.  This Reduction Allows for Incomplete Reduction.
 This is the initial value that is passed to the first iteration of `op_fn`
 as the accumulator.
 
-**<code>birl</code>**: <code><a id='t-OptionalBirl'></a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1810,7 +1867,7 @@ as the accumulator.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1821,25 +1878,32 @@ as the accumulator.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-ReduceAirFn'></a>|<a id='t-ReductionAirFn'></a></code>
+**Returns**: <code><a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReductionAirFn">ReductionAirFn</a></code>
 
 - If `birl` is omitted, then will return type `ReduceAirBirleiFn`.
 - Else returns type `ReduceAirFn`.
+
+Possible callchains:
+
+    ReduceAirFn(reduction_fn) : list[bool,any]
+    ReductionAirFn(probe, accumulator) : list[bool,any]
 
 </details>
 
 #### ⚙️filter<a id='f-filter'></a>
 
-<code>*function* filter(birl: <a id='t-OptionalBirl'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-FilterFn'></a>|<a id='t-FilterBirleiFn'></a></code>
+<code>*function* filter(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FilterFn">FilterFn</a>|<a href="#t-FilterBirleiFn">FilterBirleiFn</a></code>
 
-Filter function.
+Possible callchains:
 
     filter(birl, end_i)    (ppm_fn) : list
     filter() (birl, end_i) (ppm_fn) : list
 
+Filter function.
+
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a id='t-OptionalBirl'></a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1847,7 +1911,7 @@ Filter function.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1858,26 +1922,33 @@ Filter function.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-FilterFn'></a>|<a id='t-FilterBirleiFn'></a></code>
+**Returns**: <code><a href="#t-FilterFn">FilterFn</a>|<a href="#t-FilterBirleiFn">FilterBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FilterBirleiFn`.
 - Else returns type `FilterFn`.
+
+Possible callchains:
+
+    FilterFn(reduction_fn) : list[any,...]
+    FilterBirleiFn(birl, end_i) (reduction_fn) : list[any,...]
 
 </details>
 
 #### ⚙️map<a id='f-map'></a>
 
-<code>*function* map(birl: <a id='t-OptionalBirl'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-MapFn'></a>|<a id='t-MapBirleiFn'></a></code>
+<code>*function* map(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-MapFn">MapFn</a>|<a href="#t-MapBirleiFn">MapBirleiFn</a></code>
 
-Map indices or list elements to values, producing an list that has as many
-elements as indices provided.
+Possible callchains:
 
     map(birl, end_i)    (map_fn) : list
     map() (birl, end_i) (map_fn) : list
 
+Map indices or list elements to values, producing an list that has as many
+elements as indices provided.
+
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a id='t-OptionalBirl'></a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1885,7 +1956,7 @@ elements as indices provided.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1896,10 +1967,15 @@ elements as indices provided.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-MapFn'></a>|<a id='t-MapBirleiFn'></a></code>
+**Returns**: <code><a href="#t-MapFn">MapFn</a>|<a href="#t-MapBirleiFn">MapBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `MapBirleiFn`.
 - Else returns type `MapFn`.
+
+Possible callchains:
+
+    MapFn(map_fn) : list[any,...]
+    MapBirleiFn(birl, end_i) (map_fn) : list[any,...]
 
 </details>
 
@@ -1907,11 +1983,11 @@ elements as indices provided.
 
 #### 🧩BoundIndexFn<a id='t-BoundIndexFn'></a>
 
-<code>*callback* BoundIndexFn(spaceship\_fn: <a id='t-SpaceshipFn'></a>) : number|undef</code>
+<code>*callback* BoundIndexFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
 <details><summary>parameters</summary>
 
-**<code>spaceship_fn</code>**: <code><a id='t-SpaceshipFn'></a></code>
+**<code>spaceship_fn</code>**: <code><a href="#t-SpaceshipFn">SpaceshipFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -1951,19 +2027,19 @@ Index of the selected bound, or `undef` if no such index exists.
 
 #### 🧩FindLowerFn<a id='t-FindLowerFn'></a>
 
-<code>*callback* FindLowerFn(spaceship\_fn: <a id='t-SpaceshipFn'></a>) : number|undef</code>
+<code>*callback* FindLowerFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
 Returns the first index `i` where `spaceship_fn(i) >= 0`.
 
 #### 🧩FindUpperFn<a id='t-FindUpperFn'></a>
 
-<code>*callback* FindUpperFn(spaceship\_fn: <a id='t-SpaceshipFn'></a>) : number|undef</code>
+<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
 Returns the first index `i` where `spaceship_fn(i) > 0`.
 
 #### 🧩OptionalBirl<a id='t-OptionalBirl'></a>
 
-<code>*type* OptionalBirl = number|<a id='t-range'></a>|list|undef</code>
+<code>*type* OptionalBirl = number|<a href="#t-range">range</a>|list|undef</code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1973,19 +2049,19 @@ Returns the first index `i` where `spaceship_fn(i) > 0`.
 
 #### 🧩AlgoFn<a id='t-AlgoFn'></a>
 
-<code>*callback* AlgoFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* AlgoFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 Executes the algorithm.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a id='t-Birl'></a></code>
+**<code>birl</code>**: <code><a href="#t-Birl">Birl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2004,17 +2080,19 @@ Returned value is based on the result of the function doing the iterating.
 
 #### 🧩FindLowerBirleiFn<a id='t-FindLowerBirleiFn'></a>
 
-<code>*callback* FindLowerBirleiFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* FindLowerBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 #### 🧩FindUpperFn<a id='t-FindUpperFn'></a>
 
-<code>*callback* FindUpperFn(spaceship\_fn: <a id='t-SpaceshipFn'></a>) : number|undef</code>
+<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
+
+Possible callchains:
 
     FindUpperFn(spaceship_fn) : (number|undef)
 
 <details><summary>parameters</summary>
 
-**<code>spaceship_fn</code>**: <code><a id='t-SpaceshipFn'></a></code>
+**<code>spaceship_fn</code>**: <code><a href="#t-SpaceshipFn">SpaceshipFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -2055,17 +2133,19 @@ First index where `spaceship_fn(i) > 0`.  If none are found, returns
 
 #### 🧩FindUpperBirleiFn<a id='t-FindUpperBirleiFn'></a>
 
-<code>*callback* FindUpperBirleiFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* FindUpperBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+
+Possible callchains:
 
     FindUpperBirleiFn(birl, end_i) (spaceship_fn) : (number|undef)
 
 #### 🧩FindFn<a id='t-FindFn'></a>
 
-<code>*callback* FindFn(pred\_fn: <a id='t-PredFn'></a>) : number|undef</code>
+<code>*callback* FindFn(pred\_fn: <a href="#t-PredFn">PredFn</a>) : number|undef</code>
 
 <details><summary>parameters</summary>
 
-**<code>pred_fn</code>**: <code><a id='t-PredFn'></a></code>
+**<code>pred_fn</code>**: <code><a href="#t-PredFn">PredFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -2106,15 +2186,15 @@ First index where `pred_fn(i)` is `true`.  If none are found, returns
 
 #### 🧩FindBirleiFn<a id='t-FindBirleiFn'></a>
 
-<code>*callback* FindBirleiFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* FindBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 #### 🧩ReduceFn<a id='t-ReduceFn'></a>
 
-<code>*callback* ReduceFn(reduction\_fn: <a id='t-ReductionFn'></a>) : any</code>
+<code>*callback* ReduceFn(reduction\_fn: <a href="#t-ReductionFn">ReductionFn</a>) : any</code>
 
 <details><summary>parameters</summary>
 
-**<code>reduction_fn</code>**: <code><a id='t-ReductionFn'></a></code>
+**<code>reduction_fn</code>**: <code><a href="#t-ReductionFn">ReductionFn</a></code>
 
 Mutates the accumulator given a derived comparison value.
 
@@ -2155,15 +2235,15 @@ Final value of accumulator.
 
 #### 🧩ReduceBirleiFn<a id='t-ReduceBirleiFn'></a>
 
-<code>*callback* ReduceBirleiFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* ReduceBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 #### 🧩ReduceAirFn<a id='t-ReduceAirFn'></a>
 
-<code>*callback* ReduceAirFn(reduction\_fn: <a id='t-ReductionAirFn'></a>) : list\[bool,any]</code>
+<code>*callback* ReduceAirFn(reduction\_fn: <a href="#t-ReductionAirFn">ReductionAirFn</a>) : list\[bool,any]</code>
 
 <details><summary>parameters</summary>
 
-**<code>reduction_fn</code>**: <code><a id='t-ReductionAirFn'></a></code>
+**<code>reduction_fn</code>**: <code><a href="#t-ReductionAirFn">ReductionAirFn</a></code>
 
 Mutates the accumulator given a derived comparison value.
 
@@ -2205,15 +2285,15 @@ Last continue value and the final value of accumulator.  If the original
 
 #### 🧩ReduceAirBirleiFn<a id='t-ReduceAirBirleiFn'></a>
 
-<code>*callback* ReduceAirBirleiFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* ReduceAirBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 #### 🧩FilterFn<a id='t-FilterFn'></a>
 
-<code>*callback* FilterFn(reduction\_fn: <a id='t-PredFn'></a>|<a id='t-PredMapFn'></a>) : list\[any,...]</code>
+<code>*callback* FilterFn(reduction\_fn: <a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a>) : list\[any,...]</code>
 
 <details><summary>parameters</summary>
 
-**<code>reduction_fn</code>**: <code><a id='t-PredFn'></a>|<a id='t-PredMapFn'></a></code>
+**<code>reduction_fn</code>**: <code><a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a></code>
 
 </details>
 
@@ -2227,15 +2307,15 @@ A list of elements where the predicate returned true.
 
 #### 🧩FilterBirleiFn<a id='t-FilterBirleiFn'></a>
 
-<code>*callback* FilterBirleiFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* FilterBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 #### 🧩MapFn<a id='t-MapFn'></a>
 
-<code>*callback* MapFn(map\_fn: <a id='t-MapperFn'></a>) : list\[any,...]</code>
+<code>*callback* MapFn(map\_fn: <a href="#t-MapperFn">MapperFn</a>) : list\[any,...]</code>
 
 <details><summary>parameters</summary>
 
-**<code>map_fn</code>**: <code><a id='t-MapperFn'></a></code>
+**<code>map_fn</code>**: <code><a href="#t-MapperFn">MapperFn</a></code>
 
 Maps a probed value to a list.
 
@@ -2268,7 +2348,7 @@ A list of elements that were mapped.
 
 #### 🧩MapBirleiFn<a id='t-MapBirleiFn'></a>
 
-<code>*callback* MapBirleiFn(birl: <a id='t-Birl'></a>, end\_i: <a id='t-EndI'></a>) : any</code>
+<code>*callback* MapBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 
 ## <span style="font-size: 1.1em; color: yellow">📘indexable</span><a id='file-indexable'></a>
@@ -2410,7 +2490,7 @@ Object to check.
 
 #### ⚙️slice<a id='f-slice'></a>
 
-<code>*function* slice(begin\_i: number, step\_or\_end\_i: number, end\_i: number|undef) : <a id='t-slice'></a></code>
+<code>*function* slice(begin\_i: number, step\_or\_end\_i: number, end\_i: number|undef) : <a href="#t-slice">slice</a></code>
 
 Create a `slice` object.
 
@@ -2437,7 +2517,7 @@ backward from end of slr being referred to.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-slice'></a></code>
+**Returns**: <code><a href="#t-slice">slice</a></code>
 
 Returns a slice object.
 
@@ -2445,20 +2525,22 @@ Returns a slice object.
 
 #### ⚙️slice\_to\_range<a id='f-slice_to_range'></a>
 
-<code>*function* slice_to_range(slice: <a id='t-slice'></a>, slr: string|list|<a id='t-range'></a>, \_slr\_len: number) : <a id='t-range'></a>|list</code>
+<code>*function* slice_to_range(slice: <a href="#t-slice">slice</a>, slr: string|list|<a href="#t-range">range</a>, \_slr\_len: number) : <a href="#t-range">range</a>|list</code>
 
-Converts a slice to a range when given a particular `slr`.
+Possible callchains:
 
     slice_to_range(slice, slr)
     slice_to_range(slice, slr, _slr_len)
 
+Converts a slice to a range when given a particular `slr`.
+
 <details><summary>parameters</summary>
 
-**<code>slice</code>**: <code><a id='t-slice'></a></code>
+**<code>slice</code>**: <code><a href="#t-slice">slice</a></code>
 
 The slice being converted.
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 The `slr` used as reference.
 
@@ -2475,7 +2557,7 @@ If passed, then use that cached value instead of calculating `len(slr)`.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-range'></a>|list</code>
+**Returns**: <code><a href="#t-range">range</a>|list</code>
 
 A range that corresponds to what the slice is to do given an `slr`.
 If the slice is completely before or after the slr, returns [].
@@ -2497,7 +2579,11 @@ the `birlsei` is partially or fully omitted.
 
 #### ⚙️it\_each<a id='f-it_each'></a>
 
-<code>*function* it_each(slr: string|list|<a id='t-range'></a>, algo\_fn: <a id='t-AlgoFn'></a>, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-GetPpmrrairFn'></a></code>
+<code>*function* it_each(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-AlgoFn">AlgoFn</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+
+Possible callchains:
+
+    it_each(slr, algo_fn, birls, end_i) (ppmrrair_fn) : any
 
 This convenience function will execute function `algo_fn` as if it were used
 on a collection, remapping the first parameter being passed to `ppmrrair_fn`
@@ -2519,19 +2605,17 @@ vs `it_each()` usage:
     even_indices = it_each(a, filter())(function(e) e % 2);
     even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
 
-    it_each(slr, algo_fn, birls, end_i) (ppmrrair_fn) : any
-
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 This is the list to take element data from.
 
-**<code>algo_fn</code>**: <code><a id='t-AlgoFn'></a></code>
+**<code>algo_fn</code>**: <code><a href="#t-AlgoFn">AlgoFn</a></code>
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -2539,7 +2623,7 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -2551,15 +2635,23 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-GetPpmrrairFn'></a></code>
+**Returns**: <code><a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
 
 The ppmrrair function that the specified `algo_fn()` will call.
+
+Possible callchains:
+
+    GetPpmrrairFn(ppmrrair_fn) : any
 
 </details>
 
 #### ⚙️it\_idxs<a id='f-it_idxs'></a>
 
-<code>*function* it_idxs(slr: string|list|<a id='t-range'></a>, algo\_fn: <a id='t-AlgoFn'></a>, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-GetPpmrrairFn'></a></code>
+<code>*function* it_idxs(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-AlgoFn">AlgoFn</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+
+Possible callchains:
+
+    it_idxs(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
 
 This convenience function will execute function `algo_fn` as if it were used
 on a collection, `ppmrrair_fn` will still receive the *index*.  Uses the
@@ -2580,19 +2672,17 @@ vs `it_idxs()` usage:
     even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
     even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
 
-    it_idxs(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
-
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 This is the list to take element data from.
 
-**<code>algo_fn</code>**: <code><a id='t-AlgoFn'></a></code>
+**<code>algo_fn</code>**: <code><a href="#t-AlgoFn">AlgoFn</a></code>
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -2600,7 +2690,7 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -2612,15 +2702,23 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-GetPpmrrairFn'></a></code>
+**Returns**: <code><a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
 
 The ppmrrair function that the specified `algo_fn()` will call.
+
+Possible callchains:
+
+    GetPpmrrairFn(ppmrrair_fn) : any
 
 </details>
 
 #### ⚙️it\_enum<a id='f-it_enum'></a>
 
-<code>*function* it_enum(slr: string|list|<a id='t-range'></a>, algo\_fn: <a id='t-AlgoFn'></a>, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-GetPpmrrairFn'></a></code>
+<code>*function* it_enum(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-AlgoFn">AlgoFn</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+
+Possible callchains:
+
+    it_enum(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
 
 This convenience function will execute function `algo_fn` as if it were used
 on a collection, remapping the first parameter being passed to `ppmrrair_fn`
@@ -2642,19 +2740,17 @@ vs `it_enum()` usage:
     even_indices = it_enum(a, filter())(function(p) p[0] % 2);
     even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
 
-    it_enum(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
-
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 This is the list to take element data from.
 
-**<code>algo_fn</code>**: <code><a id='t-AlgoFn'></a></code>
+**<code>algo_fn</code>**: <code><a href="#t-AlgoFn">AlgoFn</a></code>
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -2662,7 +2758,7 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -2674,9 +2770,13 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-GetPpmrrairFn'></a></code>
+**Returns**: <code><a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
 
 The ppmrrair function that the specified `algo_fn()` will call.
+
+Possible callchains:
+
+    GetPpmrrairFn(ppmrrair_fn) : any
 
 </details>
 
@@ -2684,13 +2784,13 @@ The ppmrrair function that the specified `algo_fn()` will call.
 
 #### ⚙️slr\_len<a id='f-slr_len'></a>
 
-<code>*function* slr_len(slr: string|list|<a id='t-range'></a>) : number</code>
+<code>*function* slr_len(slr: string|list|<a href="#t-range">range</a>) : number</code>
 
 Will return the number of elements the string, list or range contains.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 The `slr` to count how many elements it would iterate over.
 
@@ -2706,7 +2806,7 @@ The number of elements the `slr` contains.
 
 #### ⚙️idx<a id='f-idx'></a>
 
-<code>*function* idx(slr: string|list|<a id='t-range'></a>, i: number, \_slr\_len: number) : number</code>
+<code>*function* idx(slr: string|list|<a href="#t-range">range</a>, i: number, \_slr\_len: number) : number</code>
 
 If `i` is positive then returns `i`, otherwise add the slr's length to it so
 as to count backwards from the end of the slr.
@@ -2718,7 +2818,7 @@ as to count backwards from the end of the slr.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 The `slr` to get the index for.
 
@@ -2748,7 +2848,7 @@ The positive index.
 
 #### ⚙️el<a id='f-el'></a>
 
-<code>*function* el(slr: string|list|<a id='t-range'></a>, i: number) : any</code>
+<code>*function* el(slr: string|list|<a href="#t-range">range</a>, i: number) : any</code>
 
 Dereference `slr` at index `i`, allowing for negative indices to go backward
 from end.
@@ -2759,7 +2859,7 @@ from end.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 The `slr` to get the element from.
 
@@ -2780,7 +2880,7 @@ The element at the index specified.
 
 #### ⚙️el\_pos\_idx<a id='f-el_pos_idx'></a>
 
-<code>*function* el_pos_idx(slr: string|list|<a id='t-range'></a>, i: number) : any</code>
+<code>*function* el_pos_idx(slr: string|list|<a href="#t-range">range</a>, i: number) : any</code>
 
 Dereference `slr` at index `i`, allowing only positive indices.
 
@@ -2790,7 +2890,7 @@ Dereference `slr` at index `i`, allowing only positive indices.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 The `slr` to get the element from.
 
@@ -2811,7 +2911,7 @@ The element at the index specified.
 
 #### ⚙️els<a id='f-els'></a>
 
-<code>*function* els(slr: string|list|<a id='t-range'></a>, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : string|list|<a id='t-range'></a></code>
+<code>*function* els(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : string|list|<a href="#t-range">range</a></code>
 
 Gets a substring, sub-range or sub-elements of a string, list or range.
 
@@ -2821,11 +2921,11 @@ Gets a substring, sub-range or sub-elements of a string, list or range.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 The `slr` to get the elements from.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -2833,7 +2933,7 @@ The `slr` to get the elements from.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -2845,7 +2945,7 @@ The `slr` to get the elements from.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>string|list|<a id='t-range'></a></code>
+**Returns**: <code>string|list|<a href="#t-range">range</a></code>
 
 The elements at the indices specified or the substring.
 
@@ -2853,7 +2953,7 @@ The elements at the indices specified or the substring.
 
 #### ⚙️range\_els<a id='f-range_els'></a>
 
-<code>*function* range_els(r: <a id='t-range'></a>, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-range'></a>|list</code>
+<code>*function* range_els(r: <a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-range">range</a>|list</code>
 
 Optimised version of `els` for ranges.  Gets elements from a range as a range
 or list.
@@ -2881,11 +2981,11 @@ Example:
 
 <details><summary>parameters</summary>
 
-**<code>r</code>**: <code><a id='t-range'></a></code>
+**<code>r</code>**: <code><a href="#t-range">range</a></code>
 
 The r to get the elements from.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -2893,7 +2993,7 @@ The r to get the elements from.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -2905,7 +3005,7 @@ The r to get the elements from.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-range'></a>|list</code>
+**Returns**: <code><a href="#t-range">range</a>|list</code>
 
 The elements at the indices specified or the substring.
 
@@ -2915,17 +3015,17 @@ The elements at the indices specified or the substring.
 
 #### ⚙️idxs<a id='f-idxs'></a>
 
-<code>*function* idxs(slr: string|list|<a id='t-range'></a>, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : list\[number,...]</code>
+<code>*function* idxs(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : list\[number,...]</code>
 
 Gets the indices from a `birlsei` as a list.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 The `slr` to get the indices from.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -2933,7 +3033,7 @@ The `slr` to get the indices from.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -2953,7 +3053,7 @@ The indices the `birlsei` would iterate over.
 
 #### ⚙️fwd\_i<a id='f-fwd_i'></a>
 
-<code>*function* fwd_i(slr: string|list|<a id='t-range'></a>, start\_offset: number, end\_offset: number, \_slr\_len: number) : <a id='t-range'></a></code>
+<code>*function* fwd_i(slr: string|list|<a href="#t-range">range</a>, start\_offset: number, end\_offset: number, \_slr\_len: number) : <a href="#t-range">range</a></code>
 
 Return a range representing indices to iterate over a list forwards.
 
@@ -2965,7 +3065,7 @@ Return a range representing indices to iterate over a list forwards.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 slr to iterate over
 
@@ -2996,7 +3096,7 @@ If passed, then use that cached value instead of calculating `len(slr)`.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-range'></a></code>
+**Returns**: <code><a href="#t-range">range</a></code>
 
 An ascending range that goes from `start_offset` to idx(slr, -1) +
 end_offset.
@@ -3005,7 +3105,7 @@ end_offset.
 
 #### ⚙️rev\_i<a id='f-rev_i'></a>
 
-<code>*function* rev_i(slr: string|list|<a id='t-range'></a>, start\_offset: number, end\_offset: number, \_slr\_len: number) : <a id='t-range'></a></code>
+<code>*function* rev_i(slr: string|list|<a href="#t-range">range</a>, start\_offset: number, end\_offset: number, \_slr\_len: number) : <a href="#t-range">range</a></code>
 
 Return a range representing indices to iterate over slr backwards.
 
@@ -3017,7 +3117,7 @@ Return a range representing indices to iterate over slr backwards.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 slr to iterate over
 
@@ -3048,7 +3148,7 @@ If passed, then use that cached value instead of calculating `len(slr)`.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-range'></a></code>
+**Returns**: <code><a href="#t-range">range</a></code>
 
 A descending range that goes from idx(slr, -1) + start_offset to
 end_offset.
@@ -3057,13 +3157,13 @@ end_offset.
 
 #### ⚙️next\_in<a id='f-next_in'></a>
 
-<code>*function* next_in(slr: string|list|<a id='t-range'></a>, i: number, inc: number, wrap\_to\_0: bool, \_slr\_len: number) : number</code>
+<code>*function* next_in(slr: string|list|<a href="#t-range">range</a>, i: number, inc: number, wrap\_to\_0: bool, \_slr\_len: number) : number</code>
 
 Gets the next index, wrapping if goes to or beyond slr_len(slr).
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 slr used for knowing when to wrap.
 
@@ -3103,13 +3203,13 @@ Next element index in list.
 
 #### ⚙️prev\_in<a id='f-prev_in'></a>
 
-<code>*function* prev_in(slr: string|list|<a id='t-range'></a>, i: number, dec: number, wrap\_to\_last: bool, \_slr\_len: number) : number</code>
+<code>*function* prev_in(slr: string|list|<a href="#t-range">range</a>, i: number, dec: number, wrap\_to\_last: bool, \_slr\_len: number) : number</code>
 
 Gets the prev index, wrapping if goes negative.
 
 <details><summary>parameters</summary>
 
-**<code>slr</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 slr used for knowing when to wrap.
 
@@ -3151,7 +3251,7 @@ Previous element index in list.
 
 #### ⚙️push<a id='f-push'></a>
 
-<code>*function* push(sl: string|list, es: string|list|<a id='t-range'></a>) : string|list</code>
+<code>*function* push(sl: string|list, es: string|list|<a href="#t-range">range</a>) : string|list</code>
 
 Push elements onto the head (which is after the last element) of the `sl`.
 
@@ -3161,7 +3261,7 @@ Push elements onto the head (which is after the last element) of the `sl`.
 
 sl to add to.
 
-**<code>es</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>es</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 - if string, then
   - a string of characters to append to string or
@@ -3222,7 +3322,7 @@ The updated sl.
 
 #### ⚙️unshift<a id='f-unshift'></a>
 
-<code>*function* unshift(sl: string|list, es: string|list|<a id='t-range'></a>) : string|list</code>
+<code>*function* unshift(sl: string|list, es: string|list|<a href="#t-range">range</a>) : string|list</code>
 
 Unshift elements onto the tail (which are before the beginning) of the `sl`.
 
@@ -3232,7 +3332,7 @@ Unshift elements onto the tail (which are before the beginning) of the `sl`.
 
 List to add to.
 
-**<code>es</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>es</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 - if string, then
   - a string of characters to prepend to string or
@@ -3292,11 +3392,13 @@ The updated sl.
 
 #### ⚙️insert<a id='f-insert'></a>
 
-<code>*function* insert(sl: string|list, i: number, es: string|list|<a id='t-range'></a>, es\_birls: <a id='t-Birls'></a>, es\_end\_i: <a id='t-EndI'></a>) : string|list</code>
+<code>*function* insert(sl: string|list, i: number, es: string|list|<a href="#t-range">range</a>, es\_birls: <a href="#t-Birls">Birls</a>, es\_end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
 
-Insert specified elements in `es` into `sl` starting at index `i`.
+Possible callchains:
 
     insert(sl, i, es, es_birls, es_end_i) : (string | list)
+
+Insert specified elements in `es` into `sl` starting at index `i`.
 
 <details><summary>parameters</summary>
 
@@ -3315,11 +3417,11 @@ Index to insert into.
   - `-len(sl)` will insert at the beginning of list (like unshift)
   - **UB** if `i < -len(sl) or len(sl) < i`.
 
-**<code>es</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>es</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 Elements to insert.
 
-**<code>es_birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>es_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -3327,7 +3429,7 @@ Elements to insert.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>es_end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>es_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -3396,11 +3498,13 @@ The updated sl.
 
 #### ⚙️remove\_adjacent\_dups<a id='f-remove_adjacent_dups'></a>
 
-<code>*function* remove_adjacent_dups(sl: string|list, wrap: bool, \_sl\_len: number) : <a id='t-RemoveAdjacentDupsFn'></a></code>
+<code>*function* remove_adjacent_dups(sl: string|list, wrap: bool, \_sl\_len: number) : <a href="#t-RemoveAdjacentDupsFn">RemoveAdjacentDupsFn</a></code>
 
-Removes the same consecutive values, where same is defined by `equal_fn`.
+Possible callchains:
 
     remove_adjacent_dups(sl, wrap, _sl_len) (equal_fn) : (string | list)
+
+Removes the same consecutive values, where same is defined by `equal_fn`.
 
 <details><summary>parameters</summary>
 
@@ -3426,15 +3530,19 @@ If passed, then use that cached value instead of calculating `len(sl)`.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-RemoveAdjacentDupsFn'></a></code>
+**Returns**: <code><a href="#t-RemoveAdjacentDupsFn">RemoveAdjacentDupsFn</a></code>
 
 Callback that removes the adjacent duplicates.
+
+Possible callchains:
+
+    RemoveAdjacentDupsFn(equal_fn) : (string|list)
 
 </details>
 
 #### ⚙️remove\_each<a id='f-remove_each'></a>
 
-<code>*function* remove_each(sl: string|list, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : string|list</code>
+<code>*function* remove_each(sl: string|list, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
 
 Removes each element indexed in the `birlsei`.
 
@@ -3448,7 +3556,7 @@ Removes each element indexed in the `birlsei`.
 
 List to remove elements from.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -3456,7 +3564,7 @@ List to remove elements from.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -3476,7 +3584,7 @@ The updated sl.
 
 #### ⚙️replace<a id='f-replace'></a>
 
-<code>*function* replace(a: string|list, a\_begin\_i: number, a\_end\_i: number, b: string|list|<a id='t-range'></a>, b\_birls: <a id='t-Birls'></a>, b\_end\_i: <a id='t-EndI'></a>) : string|list</code>
+<code>*function* replace(a: string|list, a\_begin\_i: number, a\_end\_i: number, b: string|list|<a href="#t-range">range</a>, b\_birls: <a href="#t-Birls">Birls</a>, b\_end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
 
 Replaces contiguous index set \[`a_begin_i`, `a_end_i`] from list `a` with
 `birlsei` index set of list `b`.
@@ -3495,11 +3603,11 @@ The starting index of a to replace.
 
 The ending index of a to replace.
 
-**<code>b</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>b</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 List to draw elements from to replace the a element range with.
 
-**<code>b_birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -3507,7 +3615,7 @@ List to draw elements from to replace the a element range with.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>b_end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -3527,7 +3635,11 @@ This is the updated list of elements.
 
 #### ⚙️replace\_each<a id='f-replace_each'></a>
 
-<code>*function* replace_each(a: string|list, a\_birls: <a id='t-Birls'></a>, a\_end\_i: <a id='t-EndI'></a>) : <a id='t-ReplaceEachFn'></a></code>
+<code>*function* replace_each(a: string|list, a\_birls: <a href="#t-Birls">Birls</a>, a\_end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReplaceEachFn">ReplaceEachFn</a></code>
+
+Possible callchains:
+
+    replace_each(a, a_birl a_end_i) (b, b_birl b_end_i) : (string | list)
 
 Replaces each element specified by `a_birls, a_end_i` with each element
 specified by `b_birls, b_end_i`.
@@ -3540,15 +3652,13 @@ specified by `b_birls, b_end_i`.
 >
 > Both `birlsei`s MUST iterate over the same number of elements.
 
-    replace_each(a, a_birl a_end_i) (b, b_birl b_end_i) : (string | list)
-
 <details><summary>parameters</summary>
 
 **<code>a</code>**: <code>string|list</code>
 
 sl to have elements replaced.
 
-**<code>a_birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>a_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -3556,7 +3666,7 @@ sl to have elements replaced.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>a_end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>a_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -3568,9 +3678,13 @@ sl to have elements replaced.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-ReplaceEachFn'></a></code>
+**Returns**: <code><a href="#t-ReplaceEachFn">ReplaceEachFn</a></code>
 
 Get the replacement set and execute replacement.
+
+Possible callchains:
+
+    ReplaceEachFn(b, b_birls, b_end_i) : (string|list)
 
 </details>
 
@@ -3806,22 +3920,24 @@ Objects at the tail of the list.
 
 #### ⚙️osearch<a id='f-osearch'></a>
 
-<code>*function* osearch(haystack: string|list, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-SearchNeedleFn'></a></code>
+<code>*function* osearch(haystack: string|list, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
+
+Possible callchains:
+
+    osearch(haystack, birls, end_i) (needle, n_birls, n_end_i) (equal_fn) : (undef | number)
 
 Searches for an ordered set of elements specified in needle that occurs as an
 ordered set of elements in haystack.  Similar to built-in search() function,
 but allows specifying an index range to search and exposes the equal()
 operator to allow for non-exact matches.
 
-    osearch(haystack, birls, end_i) (needle, n_birls, n_end_i) (equal_fn) : (undef | number)
-
 <details><summary>parameters</summary>
 
 **<code>haystack</code>**: <code>string|list</code>
 
 String or list of consecutive items to search through.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -3829,7 +3945,7 @@ String or list of consecutive items to search through.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -3841,30 +3957,36 @@ String or list of consecutive items to search through.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-SearchNeedleFn'></a></code>
+**Returns**: <code><a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
 
 Curry function to get needle data.
+
+Possible callchains:
+
+    SearchNeedleFn(needle, n_birls, n_end_i) (equal_fn) : (number|undef)
 
 </details>
 
 #### ⚙️csearch<a id='f-csearch'></a>
 
-<code>*function* csearch(haystack: string|list, birls: <a id='t-Birls'></a>, end\_i: <a id='t-EndI'></a>) : <a id='t-SearchNeedleFn'></a></code>
+<code>*function* csearch(haystack: string|list, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
+
+Possible callchains:
+
+    csearch(haystack, birls, end_i) (needle, n_birls, n_end_i) (equal_fn) : (undef | number)
 
 Searches haystack for contiguous set of elements that starts from an ordered
 set of indices that match an ordered set of elements specified in needle.
 Similar to built-in search() function, but allows specifying an index range
 to search and exposes the equal() operator to allow for non-exact matches.
 
-    csearch(haystack, birls, end_i) (needle, n_birls, n_end_i) (equal_fn) : (undef | number)
-
 <details><summary>parameters</summary>
 
 **<code>haystack</code>**: <code>string|list</code>
 
 String or list of consecutive items to search through.
 
-**<code>birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
  *(Default: `0`)*
 
 - If `number`, start index to iterate over.
@@ -3872,7 +3994,7 @@ String or list of consecutive items to search through.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
  *(Default: `undef`)*
 
 - If related `birl` is a number, then this is the end index to iterate
@@ -3884,9 +4006,13 @@ String or list of consecutive items to search through.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-SearchNeedleFn'></a></code>
+**Returns**: <code><a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
 
 Curry function to get needle data.
+
+Possible callchains:
+
+    SearchNeedleFn(needle, n_birls, n_end_i) (equal_fn) : (number|undef)
 
 </details>
 
@@ -3909,7 +4035,7 @@ indexable range.
 
 #### 🧩Birls<a id='t-Birls'></a>
 
-<code>*type* Birls = number|<a id='t-range'></a>|list|<a id='t-slice'></a></code>
+<code>*type* Birls = number|<a href="#t-range">range</a>|list|<a href="#t-slice">slice</a></code>
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
@@ -3929,7 +4055,7 @@ Cache returned by `_slr_cache(slr, birls, end_i)`.  Usage example:
 
 Length of `slr`.
 
-<code><b>_SLR_TE</b></code>: <code><a id='t-type_enum'></a></code>
+<code><b>_SLR_TE</b></code>: <code><a href="#t-type_enum">type_enum</a></code>
 
 Type enum of `slr`.
 
@@ -3970,7 +4096,7 @@ Length of normalised `birlsei`.
 
 String representation of normalised `birlsei`.
 
-<code><b>_SLR_BIRL</b></code>: <code>number|<a id='t-range'></a>|list</code>
+<code><b>_SLR_BIRL</b></code>: <code>number|<a href="#t-range">range</a>|list</code>
 
 Normalised birls.
 
@@ -3982,13 +4108,13 @@ Normalised end_i.
 
 #### 🧩GetPpmrrairFn<a id='t-GetPpmrrairFn'></a>
 
-<code>*callback* GetPpmrrairFn(ppmrrair\_fn: <a id='t-PpmrrairFn'></a>) : any</code>
+<code>*callback* GetPpmrrairFn(ppmrrair\_fn: <a href="#t-PpmrrairFn">PpmrrairFn</a>) : any</code>
 
 Gets the PPMRRAIR function to apply the [AlgoFn](#t-AlgoFn) to.
 
 <details><summary>parameters</summary>
 
-**<code>ppmrrair_fn</code>**: <code><a id='t-PpmrrairFn'></a></code>
+**<code>ppmrrair_fn</code>**: <code><a href="#t-PpmrrairFn">PpmrrairFn</a></code>
 
 The PPMRRAIR function to iterate with.
 
@@ -4032,13 +4158,13 @@ The result of the equality test.
 
 #### 🧩GetEqualFn<a id='t-GetEqualFn'></a>
 
-<code>*callback* GetEqualFn(equal\_fn: <a id='t-EqualFn'></a>) : any</code>
+<code>*callback* GetEqualFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
 
 Gets the equality function and perform a function with it.
 
 <details><summary>parameters</summary>
 
-**<code>equal_fn</code>**: <code><a id='t-EqualFn'></a></code>
+**<code>equal_fn</code>**: <code><a href="#t-EqualFn">EqualFn</a></code>
 
 The equality function.
 
@@ -4054,28 +4180,28 @@ The resulting value when done.
 
 #### 🧩RemoveAdjacentDupsFn<a id='t-RemoveAdjacentDupsFn'></a>
 
-<code>*callback* RemoveAdjacentDupsFn(equal\_fn: <a id='t-EqualFn'></a>) : any</code>
+<code>*callback* RemoveAdjacentDupsFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
 
 Callback that removes the adjacent duplicates.
 
 #### 🧩ReplaceEachFn<a id='t-ReplaceEachFn'></a>
 
-<code>*callback* ReplaceEachFn(b: string|list|<a id='t-range'></a>, b\_birls: <a id='t-Birls'></a>, b\_end\_i: <a id='t-EndI'></a>) : string|list</code>
+<code>*callback* ReplaceEachFn(b: string|list|<a href="#t-range">range</a>, b\_birls: <a href="#t-Birls">Birls</a>, b\_end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
 
 <details><summary>parameters</summary>
 
-**<code>b</code>**: <code>string|list|<a id='t-range'></a></code>
+**<code>b</code>**: <code>string|list|<a href="#t-range">range</a></code>
 
 sl to have elements replaced.
 
-**<code>b_birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>b_end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4094,13 +4220,13 @@ This is the updated list of elements.
 
 #### 🧩SearchFn<a id='t-SearchFn'></a>
 
-<code>*callback* SearchFn(equal\_fn: <a id='t-EqualFn'></a>) : any</code>
+<code>*callback* SearchFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
 
 Perform search.
 
 #### 🧩SearchNeedleFn<a id='t-SearchNeedleFn'></a>
 
-<code>*callback* SearchNeedleFn(needle: string|list, n\_birls: <a id='t-Birls'></a>, n\_end\_i: <a id='t-EndI'></a>) : <a id='t-SearchFn'></a></code>
+<code>*callback* SearchNeedleFn(needle: string|list, n\_birls: <a href="#t-Birls">Birls</a>, n\_end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-SearchFn">SearchFn</a></code>
 
 Gets the needle data.
 
@@ -4110,14 +4236,14 @@ Gets the needle data.
 
 String or list of items being searched for.
 
-**<code>n_birls</code>**: <code><a id='t-Birls'></a></code>
+**<code>n_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>n_end_i</code>**: <code><a id='t-EndI'></a></code>
+**<code>n_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4128,9 +4254,13 @@ String or list of items being searched for.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-SearchFn'></a></code>
+**Returns**: <code><a href="#t-SearchFn">SearchFn</a></code>
 
 Callback to get the equality function.
+
+Possible callchains:
+
+    SearchFn(equal_fn) : (number|undef)
 
 </details>
 
@@ -4363,7 +4493,7 @@ This library is for matrix math for a verity of things.
 
 #### ⚙️transpose<a id='f-transpose'></a>
 
-<code>*function* transpose(A: <a id='t-Matrix'></a>) : <a id='t-Matrix'></a></code>
+<code>*function* transpose(A: <a href="#t-Matrix">Matrix</a>) : <a href="#t-Matrix">Matrix</a></code>
 
 Transpose of a matrix.
 
@@ -4377,7 +4507,7 @@ Transpose of a matrix.
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a id='t-Matrix'></a></code>
+**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
 
 The matrix to transpose.
 
@@ -4385,7 +4515,7 @@ The matrix to transpose.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 The transpose of matrix A.
 
@@ -4393,7 +4523,7 @@ The transpose of matrix A.
 
 #### ⚙️homogenise<a id='f-homogenise'></a>
 
-<code>*function* homogenise(pts: list\[<a id='t-Point'></a>,...], n: number) : list\[<a id='t-Point'></a>,...]</code>
+<code>*function* homogenise(pts: list\[<a href="#t-Point">Point</a>,...], n: number) : list\[<a href="#t-Point">Point</a>,...]</code>
 
 Convert points to homogeneous coordinates.
 
@@ -4402,7 +4532,7 @@ appended.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a id='t-Point'></a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
 
 List of points.  Each point must have dimension < n.
 
@@ -4416,7 +4546,7 @@ point in pts.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a id='t-Point'></a>,...]</code>
+**Returns**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
 
 List of n-dimensional points with homogeneous coordinate 1 at index n-1.
 
@@ -4424,7 +4554,7 @@ List of n-dimensional points with homogeneous coordinate 1 at index n-1.
 
 #### ⚙️dehomogenise<a id='f-dehomogenise'></a>
 
-<code>*function* dehomogenise(pts: list\[<a id='t-Point'></a>,...], n: number) : list\[<a id='t-Point'></a>,...]</code>
+<code>*function* dehomogenise(pts: list\[<a href="#t-Point">Point</a>,...], n: number) : list\[<a href="#t-Point">Point</a>,...]</code>
 
 Dehomogenises a list of homogeneous points to Euclidean points.
 
@@ -4443,7 +4573,7 @@ Preconditions (enforced by asserts):
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a id='t-Point'></a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
 
 List of homogeneous points.
 
@@ -4456,7 +4586,7 @@ Number of Euclidean coordinates to return per point.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a id='t-Point'></a>,...]</code>
+**Returns**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
 
 List of n-dimensional Euclidean points.
 
@@ -4464,7 +4594,7 @@ List of n-dimensional Euclidean points.
 
 #### ⚙️homogenise\_transform<a id='f-homogenise_transform'></a>
 
-<code>*function* homogenise_transform(A: <a id='t-Matrix'></a>, n: number) : <a id='t-Matrix'></a></code>
+<code>*function* homogenise_transform(A: <a href="#t-Matrix">Matrix</a>, n: number) : <a href="#t-Matrix">Matrix</a></code>
 
 Embed a non-homogeneous square transform into a larger homogeneous matrix.
 
@@ -4480,7 +4610,7 @@ Use:
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a id='t-Matrix'></a></code>
+**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Square M×M transform matrix.
 
@@ -4493,7 +4623,7 @@ Target homogeneous dimension.  Must satisfy M < n.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Homogeneous matrix H (n×n) with A in the top-left block and identity
 elsewhere.
@@ -4502,7 +4632,7 @@ elsewhere.
 
 #### ⚙️rot\_x<a id='f-rot_x'></a>
 
-<code>*function* rot_x(a: number) : <a id='t-Matrix'></a></code>
+<code>*function* rot_x(a: number) : <a href="#t-Matrix">Matrix</a></code>
 
 Rotation matrix about the X axis.
 
@@ -4523,7 +4653,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Column-vector rotation matrix M.
 
@@ -4531,7 +4661,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rot\_y<a id='f-rot_y'></a>
 
-<code>*function* rot_y(a: number) : <a id='t-Matrix'></a></code>
+<code>*function* rot_y(a: number) : <a href="#t-Matrix">Matrix</a></code>
 
 Rotation matrix about the Y axis.
 
@@ -4552,7 +4682,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Column-vector rotation matrix M.
 
@@ -4560,7 +4690,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rot\_z<a id='f-rot_z'></a>
 
-<code>*function* rot_z(a: number) : <a id='t-Matrix'></a></code>
+<code>*function* rot_z(a: number) : <a href="#t-Matrix">Matrix</a></code>
 
 Rotation matrix about the Z axis.
 
@@ -4581,7 +4711,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Column-vector rotation matrix M.
 
@@ -4671,7 +4801,7 @@ True if has the shape of 2 bound points of `dim` `number`s.
 
 #### ⚙️rot\_axis<a id='f-rot_axis'></a>
 
-<code>*function* rot_axis(angle: number, axis: <a id='t-Vector3D'></a>) : <a id='t-Matrix'></a></code>
+<code>*function* rot_axis(angle: number, axis: <a href="#t-Vector3D">Vector3D</a>) : <a href="#t-Matrix">Matrix</a></code>
 
 Rotation matrix about an arbitrary axis.
 
@@ -4690,7 +4820,7 @@ Use:
 
 Rotation angle in degrees.
 
-**<code>axis</code>**: <code><a id='t-Vector3D'></a></code>
+**<code>axis</code>**: <code><a href="#t-Vector3D">Vector3D</a></code>
 
 Rotation axis vector (must be non-zero).
 
@@ -4698,7 +4828,7 @@ Rotation axis vector (must be non-zero).
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Column-vector rotation matrix M.
 
@@ -4706,7 +4836,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rotate<a id='f-rotate'></a>
 
-<code>*function* rotate(a: number|list\[number,number,number], v: <a id='t-Vector3D'></a>|<a id='t-BVector3D'></a>) : <a id='t-Matrix'></a></code>
+<code>*function* rotate(a: number|list\[number,number,number], v: <a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a>) : <a href="#t-Matrix">Matrix</a></code>
 
 Rotation matrix that parallels OpenSCAD's rotate() module, with the
 additional feature that it can also take a `BVector3D` for `v`, meaning that
@@ -4744,7 +4874,7 @@ or if don't want to worry about having to use
 - If `list` `[rx,ry,rz]`: apply rotations about X then Y then Z (degrees).
   (v is ignored.)
 
-**<code>v</code>**: <code><a id='t-Vector3D'></a>|<a id='t-BVector3D'></a></code>
+**<code>v</code>**: <code><a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a></code>
  *(Default: `undef`)*
 
 - If `a` is a number
@@ -4757,7 +4887,7 @@ or if don't want to worry about having to use
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Column-vector rotation matrix M.
 
@@ -4770,7 +4900,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️translate<a id='f-translate'></a>
 
-<code>*function* translate(v: list\[number]) : <a id='t-Matrix'></a></code>
+<code>*function* translate(v: list\[number]) : <a href="#t-Matrix">Matrix</a></code>
 
 Translation matrix that parallels OpenSCAD's translate() module.
 
@@ -4791,7 +4921,7 @@ Translation vector.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Homogeneous column-vector translation matrix T.
 
@@ -4799,7 +4929,7 @@ Homogeneous column-vector translation matrix T.
 
 #### ⚙️scale<a id='f-scale'></a>
 
-<code>*function* scale(v: list\[number]) : <a id='t-Matrix'></a></code>
+<code>*function* scale(v: list\[number]) : <a href="#t-Matrix">Matrix</a></code>
 
 Scale matrix that parallels OpenSCAD's scale() module.
 
@@ -4820,7 +4950,7 @@ Per-axis scale factors.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Column-vector scaling matrix S.
 
@@ -4828,7 +4958,7 @@ Column-vector scaling matrix S.
 
 #### ⚙️transform<a id='f-transform'></a>
 
-<code>*function* transform(pts: list\[<a id='t-Point'></a>], matrix\_or\_fn: <a id='t-Matrix'></a>|function) : list\[<a id='t-Point'></a>]</code>
+<code>*function* transform(pts: list\[<a href="#t-Point">Point</a>], matrix\_or\_fn: <a href="#t-Matrix">Matrix</a>|function) : list\[<a href="#t-Point">Point</a>]</code>
 
 Transform a list of points using either a matrix or a point-mapping function.
 
@@ -4843,11 +4973,11 @@ Points in pts are treated as **row vectors** (each point is a 1×d row).
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a id='t-Point'></a>]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-Point">Point</a>]</code>
 
 List of points (rows).  All points must have the same dimension.
 
-**<code>matrix_or_fn</code>**: <code><a id='t-Matrix'></a>|function</code>
+**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix">Matrix</a>|function</code>
 
 Either:
 
@@ -4858,7 +4988,7 @@ Either:
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a id='t-Point'></a>]</code>
+**Returns**: <code>list\[<a href="#t-Point">Point</a>]</code>
 
 Transformed points.
 
@@ -4866,7 +4996,7 @@ Transformed points.
 
 #### ⚙️reorient<a id='f-reorient'></a>
 
-<code>*function* reorient(start\_line\_seg: list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>], end\_line\_seg: list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>], scale\_to\_vectors: bool) : <a id='t-Matrix'></a></code>
+<code>*function* reorient(start\_line\_seg: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], end\_line\_seg: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], scale\_to\_vectors: bool) : <a href="#t-Matrix">Matrix</a></code>
 
 Returns a homogeneous column-vector transform matrix T (4×4) that maps one
 line segment to another.
@@ -4878,11 +5008,11 @@ Use:
 
 <details><summary>parameters</summary>
 
-**<code>start_line_seg</code>**: <code>list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]</code>
+**<code>start_line_seg</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
 
 The source line segment: `[P0, P1]`.
 
-**<code>end_line_seg</code>**: <code>list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]|list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]</code>
+**<code>end_line_seg</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
 
 The target line segment: `[Q0, Q1]`.
 
@@ -4896,7 +5026,7 @@ Only affects the 2-point overload.  If true, also apply uniform scaling by
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Homogeneous column-vector transform matrix T.
 
@@ -4914,13 +5044,13 @@ Homogeneous column-vector transform matrix T.
 
 #### ⚙️invert<a id='f-invert'></a>
 
-<code>*function* invert(A: <a id='t-Matrix'></a>, eps: number) : <a id='t-Matrix'></a></code>
+<code>*function* invert(A: <a href="#t-Matrix">Matrix</a>, eps: number) : <a href="#t-Matrix">Matrix</a></code>
 
 Invert a square matrix using Gauss-Jordan elimination with partial pivoting.
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a id='t-Matrix'></a></code>
+**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Non-empty square numeric matrix (list of equal-length lists).
 
@@ -4933,7 +5063,7 @@ Pivot tolerance.  Must be > 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 The inverse matrix `A⁻¹`.
 
@@ -4948,14 +5078,14 @@ Example
 
 #### ⚙️row\_reduction<a id='f-row_reduction'></a>
 
-<code>*function* row_reduction(aug: <a id='t-Matrix'></a>, k: number, n: number, eps: number) : <a id='t-Matrix'></a></code>
+<code>*function* row_reduction(aug: <a href="#t-Matrix">Matrix</a>, k: number, n: number, eps: number) : <a href="#t-Matrix">Matrix</a></code>
 
 Performs Gauss-Jordan row reduction with partial pivoting on an augmented
 matrix.
 
 <details><summary>parameters</summary>
 
-**<code>aug</code>**: <code><a id='t-Matrix'></a></code>
+**<code>aug</code>**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Augmented matrix of shape `n×(2n)`, typically `[A | I]`.
 
@@ -4975,7 +5105,7 @@ Pivot tolerance.  Must be > 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 The reduced augmented matrix.  For a non-singular A this is `[I | A⁻¹]`.
 
@@ -4985,7 +5115,7 @@ Assertion failure if `|pivot| < eps` at any step.
 
 #### ⚙️identity<a id='f-identity'></a>
 
-<code>*function* identity(n: number) : <a id='t-Matrix'></a></code>
+<code>*function* identity(n: number) : <a href="#t-Matrix">Matrix</a></code>
 
 Creates an n×n identity matrix.
 
@@ -4999,7 +5129,7 @@ Matrix order.  Must be > 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 The identity matrix of order n.
 
@@ -5007,17 +5137,17 @@ The identity matrix of order n.
 
 #### ⚙️augment<a id='f-augment'></a>
 
-<code>*function* augment(A: <a id='t-Matrix'></a>, B: <a id='t-Matrix'></a>) : <a id='t-Matrix'></a></code>
+<code>*function* augment(A: <a href="#t-Matrix">Matrix</a>, B: <a href="#t-Matrix">Matrix</a>) : <a href="#t-Matrix">Matrix</a></code>
 
 Horizontally concatenates two matrices with the same row count.
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a id='t-Matrix'></a></code>
+**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Left matrix with r rows.
 
-**<code>B</code>**: <code><a id='t-Matrix'></a></code>
+**<code>B</code>**: <code><a href="#t-Matrix">Matrix</a></code>
 
 Right matrix with r rows.
 
@@ -5025,7 +5155,7 @@ Right matrix with r rows.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Matrix'></a></code>
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
 
 The augmented matrix `[A | B]`.
 
@@ -5185,17 +5315,17 @@ This is the dimension `n` dimension of the vector.
 
 #### 🧩BVector2D<a id='t-BVector2D'></a>
 
-<code>*type* BVector2D = list\[<a id='t-Point2D'></a>,<a id='t-Point2D'></a>]</code>
+<code>*type* BVector2D = list\[<a href="#t-Point2D">Point2D</a>,<a href="#t-Point2D">Point2D</a>]</code>
 
 A bound 2D vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a id='t-Point2D'></a></code>
+<code><b>0</b></code>: <code><a href="#t-Point2D">Point2D</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a id='t-Point2D'></a></code>
+<code><b>1</b></code>: <code><a href="#t-Point2D">Point2D</a></code>
 
 This is the ending point for this bound vector.
 
@@ -5203,17 +5333,17 @@ This is the ending point for this bound vector.
 
 #### 🧩BVector3D<a id='t-BVector3D'></a>
 
-<code>*type* BVector3D = list\[<a id='t-Point3D'></a>,<a id='t-Point3D'></a>]</code>
+<code>*type* BVector3D = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
 
 A bound 3D vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a id='t-Point3D'></a></code>
+<code><b>0</b></code>: <code><a href="#t-Point3D">Point3D</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a id='t-Point3D'></a></code>
+<code><b>1</b></code>: <code><a href="#t-Point3D">Point3D</a></code>
 
 This is the ending point for this bound vector.
 
@@ -5221,17 +5351,17 @@ This is the ending point for this bound vector.
 
 #### 🧩BVector<a id='t-BVector'></a>
 
-<code>*type* BVector = list\[<a id='t-Point'></a>,<a id='t-Point'></a>]</code>
+<code>*type* BVector = list\[<a href="#t-Point">Point</a>,<a href="#t-Point">Point</a>]</code>
 
 A bound ND vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a id='t-Point'></a></code>
+<code><b>0</b></code>: <code><a href="#t-Point">Point</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a id='t-Point'></a></code>
+<code><b>1</b></code>: <code><a href="#t-Point">Point</a></code>
 
 This is the ending point for this bound vector.
 
@@ -5442,7 +5572,7 @@ They would be undef if there is no solution for that direction.
 
 #### ⚙️not<a id='f-not'></a>
 
-<code>*function* not(not\_fn: function) : function(p: <a id='t-PredFn'></a>): bool</code>
+<code>*function* not(not\_fn: function) : function(p: <a href="#t-PredFn">PredFn</a>): bool</code>
 
 Wrap a lambda so that it negates its return value.
 
@@ -5456,7 +5586,7 @@ The function to invert the boolean's (or equivalent truthy/falsy) value.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>function(p: <a id='t-PredFn'></a>): bool</code>
+**Returns**: <code>function(p: <a href="#t-PredFn">PredFn</a>): bool</code>
 
 Return the lambda that will invert a lambda's truth value.
 
@@ -5494,7 +5624,7 @@ Value v that is clamped between `[lo, hi]`.
 
 #### ⚙️vector\_info<a id='f-vector_info'></a>
 
-<code>*function* vector_info(a: <a id='t-Point'></a>, b: <a id='t-Point'></a>) : <a id='t-VectorInfo'></a></code>
+<code>*function* vector_info(a: <a href="#t-Point">Point</a>, b: <a href="#t-Point">Point</a>) : <a href="#t-VectorInfo">VectorInfo</a></code>
 
 Computes direction, length, unit vector and normal to unit vector, and puts
 them into an list.
@@ -5503,11 +5633,11 @@ Add `include <helpers_consts>` to use the appropriate constants.
 
 <details><summary>parameters</summary>
 
-**<code>a</code>**: <code><a id='t-Point'></a></code>
+**<code>a</code>**: <code><a href="#t-Point">Point</a></code>
 
 Starting point of vector
 
-**<code>b</code>**: <code><a id='t-Point'></a></code>
+**<code>b</code>**: <code><a href="#t-Point">Point</a></code>
 
 Ending point of vector
 
@@ -5515,7 +5645,7 @@ Ending point of vector
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-VectorInfo'></a></code>
+**Returns**: <code><a href="#t-VectorInfo">VectorInfo</a></code>
 
 Object containing the info of all the operations.  See `VectorInfo` type
 for details.
@@ -5596,7 +5726,7 @@ Used to mark code as incomplete.
 
 #### ⚙️offset\_angle<a id='f-offset_angle'></a>
 
-<code>*function* offset_angle(ref\_vec: <a id='t-Point'></a>, vec: <a id='t-Point'></a>, delta\_angle\_deg: number) : <a id='t-Point'></a></code>
+<code>*function* offset_angle(ref\_vec: <a href="#t-Point">Point</a>, vec: <a href="#t-Point">Point</a>, delta\_angle\_deg: number) : <a href="#t-Point">Point</a></code>
 
 Rotate vec so that the angle between ref_vec and vec increases by
 delta_angle_deg.
@@ -5605,11 +5735,11 @@ Uses rotate(delta_angle_deg, cross(ref_vec, vec)) and applies it to vec.
 
 <details><summary>parameters</summary>
 
-**<code>ref_vec</code>**: <code><a id='t-Point'></a></code>
+**<code>ref_vec</code>**: <code><a href="#t-Point">Point</a></code>
 
 Reference vector.  Must have norm(ref_vec) > 0.
 
-**<code>vec</code>**: <code><a id='t-Point'></a></code>
+**<code>vec</code>**: <code><a href="#t-Point">Point</a></code>
 
 Vector to rotate.  Must have norm(vec) > 0 and must not be (anti)parallel to
 ref_vec.
@@ -5622,7 +5752,7 @@ Angle increase in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-Point'></a></code>
+**Returns**: <code><a href="#t-Point">Point</a></code>
 
 The rotated vector.
 
@@ -5714,7 +5844,11 @@ the terminal window.
 
 #### ⚙️Assert<a id='f-Assert'></a>
 
-<code>*function* Assert(truth: bool, msg: string|function) : <a id='t-IdentityFn'></a></code>
+<code>*function* Assert(truth: bool, msg: string|function) : <a href="#t-IdentityFn">IdentityFn</a></code>
+
+Possible callchains:
+
+    Assert(truth, msg) (value) : any
 
 Asserts that `truth` is `true`.
 
@@ -5730,8 +5864,6 @@ an expression with minimal effort.
 >
 > There is an enhancement to potentially resolve this reported by me here:
 > <https://github.com/openscad/openscad/issues/6240>
-
-    Assert(truth, msg) (value) : any
 
 <details><summary>parameters</summary>
 
@@ -5752,10 +5884,14 @@ an expression with minimal effort.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-IdentityFn'></a></code>
+**Returns**: <code><a href="#t-IdentityFn">IdentityFn</a></code>
 
 Returns a function that returns the `return_value` unmolested.  This allows
 to put the `Assert()` function in the middle of an expression if desired.
+
+Possible callchains:
+
+    IdentityFn(return_value) : any
 
 </details>
 
@@ -5805,7 +5941,7 @@ and `p1`.
 Results of the [vector_info()](#f-vector_info) call.
 
 <details><summary>slots</summary>
-<code><b>VI_VECTOR</b></code>: <code><a id='t-Point'></a></code>
+<code><b>VI_VECTOR</b></code>: <code><a href="#t-Point">Point</a></code>
 
 Direction of the ab vector.
 
@@ -5813,11 +5949,11 @@ Direction of the ab vector.
 
 Length of ab vector.
 
-<code><b>VI_DIR</b></code>: <code><a id='t-Point'></a></code>
+<code><b>VI_DIR</b></code>: <code><a href="#t-Point">Point</a></code>
 
 Unit ab vector.
 
-<code><b>VI_NORMAL</b></code>: <code><a id='t-Point'></a></code>
+<code><b>VI_NORMAL</b></code>: <code><a href="#t-Point">Point</a></code>
 
 A normal unit vector by swapping first two dimensions and then making the
 resulting first dimension negative.
@@ -5859,13 +5995,13 @@ This requires keeping track of a bunch of data, which was put into a list.
 
 #### ⚙️skin\_to\_string<a id='f-skin_to_string'></a>
 
-<code>*function* skin_to_string(obj: <a id='t-skin'></a>, only\_first\_and\_last\_layers: bool, precision: number) : string</code>
+<code>*function* skin_to_string(obj: <a href="#t-skin">skin</a>, only\_first\_and\_last\_layers: bool, precision: number) : string</code>
 
 Converts a skin object to a human readable string.
 
 <details><summary>parameters</summary>
 
-**<code>obj</code>**: <code><a id='t-skin'></a></code>
+**<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
 This is the skin object to view.
 
@@ -5963,7 +6099,7 @@ A list of linear layer_i corresponding to the given points.
 
 #### ⚙️layer\_side\_faces<a id='f-layer_side_faces'></a>
 
-<code>*function* layer_side_faces(pts\_in\_layer: number, layers: number, wall\_diagonal: list\[bool,...]) : list\[<a id='t-Face'></a>]</code>
+<code>*function* layer_side_faces(pts\_in\_layer: number, layers: number, wall\_diagonal: list\[bool,...]) : list\[<a href="#t-Face">Face</a>]</code>
 
 Helper to generate side wall faces between consecutive layers.
 
@@ -6004,7 +6140,7 @@ E.g.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a id='t-Face'></a>]</code>
+**Returns**: <code>list\[<a href="#t-Face">Face</a>]</code>
 
 A list of triangle layer_i forming the side walls.
 
@@ -6018,7 +6154,7 @@ Checks to see if object is a skin object
 
 #### ⚙️skin\_new<a id='f-skin_new'></a>
 
-<code>*function* skin_new(pt\_count\_per\_layer: number, layers: number, pts3d: list\[<a id='t-Point3D'></a>,...], comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a id='t-Point3D'></a>,...],...]) : <a id='t-skin'></a></code>
+<code>*function* skin_new(pt\_count\_per\_layer: number, layers: number, pts3d: list\[<a href="#t-Point3D">Point3D</a>,...], comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]) : <a href="#t-skin">skin</a></code>
 
 Create a new skin object.
 
@@ -6032,7 +6168,7 @@ number of points per layer (must be ≥ 3)
 
 Number of wall segments (requires `layers + 1` total point layers).
 
-**<code>pts3d</code>**: <code>list\[<a id='t-Point3D'></a>,...]</code>
+**<code>pts3d</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
 
 The full list of points arranged in stacked layers.
 
@@ -6060,7 +6196,7 @@ E.g.
 - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
   then the other way, and then repeat.
 
-**<code>debug_axes</code>**: <code>list\[list\[<a id='t-Point3D'></a>,...],...]</code>
+**<code>debug_axes</code>**: <code>list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]</code>
 
 This is a list of point groups.  When rendering, arrows will be drawn from
 the first point to each succeeding point in list.  When debugging, call
@@ -6074,22 +6210,24 @@ skin_show_debug_axis().
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 </details>
 
 #### ⚙️skin\_extrude<a id='f-skin_extrude'></a>
 
-<code>*function* skin_extrude(birl: number|<a id='t-range'></a>|list, end\_i: number|undef, comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a id='t-Point3D'></a>,...],...]) : <a id='t-SkinExtrude'></a></code>
+<code>*function* skin_extrude(birl: number|<a href="#t-range">range</a>|list, end\_i: number|undef, comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]) : <a href="#t-SkinExtrude">SkinExtrude</a></code>
+
+Possible callchains:
+
+    skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes) (pts_fn) : skin
 
 Generates an extruded point list from a number range, range or list of
 indices.
 
-    skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes) (pts_fn) : skin
-
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code>number|<a id='t-range'></a>|list</code>
+**<code>birl</code>**: <code>number|<a href="#t-range">range</a>|list</code>
 
 - If number, start index to check
 - If range, indices to check
@@ -6125,7 +6263,7 @@ E.g.
 - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
   then the other way, and then repeat.
 
-**<code>debug_axes</code>**: <code>list\[list\[<a id='t-Point3D'></a>,...],...]</code>
+**<code>debug_axes</code>**: <code>list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]</code>
 
 This is a list of point groups.  When rendering, arrows will be drawn from
 the first point to each succeeding point in list.  When debugging, call
@@ -6139,15 +6277,19 @@ skin_show_debug_axis().
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-SkinExtrude'></a></code>
+**Returns**: <code><a href="#t-SkinExtrude">SkinExtrude</a></code>
 
 Lambda that takes a function that returns one layer of points.
+
+Possible callchains:
+
+    SkinExtrude(pts_fn) : skin
 
 </details>
 
 #### ⚙️skin\_create\_faces<a id='f-skin_create_faces'></a>
 
-<code>*function* skin_create_faces(skin: <a id='t-skin'></a>) : list\[<a id='t-Face'></a>]</code>
+<code>*function* skin_create_faces(skin: <a href="#t-skin">skin</a>) : list\[<a href="#t-Face">Face</a>]</code>
 
 Generates face layer_i to skin a layered structure, including:
 
@@ -6161,7 +6303,7 @@ layer must be ordered clockwise when looking into the object.
 
 <details><summary>parameters</summary>
 
-**<code>skin</code>**: <code><a id='t-skin'></a></code>
+**<code>skin</code>**: <code><a href="#t-skin">skin</a></code>
 
 The skin object generating the faces from.
 
@@ -6169,7 +6311,7 @@ The skin object generating the faces from.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a id='t-Face'></a>]</code>
+**Returns**: <code>list\[<a href="#t-Face">Face</a>]</code>
 
 A list of triangle face definitions.
 
@@ -6177,18 +6319,18 @@ A list of triangle face definitions.
 
 #### ⚙️skin\_transform<a id='f-skin_transform'></a>
 
-<code>*function* skin_transform(obj\_or\_objs: <a id='t-skin'></a>, matrix\_or\_fn: <a id='t-Matrix'></a>|function) : <a id='t-skin'></a></code>
+<code>*function* skin_transform(obj\_or\_objs: <a href="#t-skin">skin</a>, matrix\_or\_fn: <a href="#t-Matrix">Matrix</a>|function) : <a href="#t-skin">skin</a></code>
 
 Performs a transformation on the points stored in the skin object.
 
 <details><summary>parameters</summary>
 
-**<code>obj_or_objs</code>**: <code><a id='t-skin'></a></code>
+**<code>obj_or_objs</code>**: <code><a href="#t-skin">skin</a></code>
 
 The skin object where the points are coming from to transform.
 TODO: Update doc to state `list[skin]`
 
-**<code>matrix_or_fn</code>**: <code><a id='t-Matrix'></a>|function</code>
+**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix">Matrix</a>|function</code>
 
 The matrix or function to do the transformation with.  If the
 transformation is homogenous, then will convert the points to a homogeneous
@@ -6198,7 +6340,7 @@ basis, perform the transformation and then remove the basis.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 A new skin object with the points transformed.
 
@@ -6206,14 +6348,14 @@ A new skin object with the points transformed.
 
 #### 🧊skin\_to\_polyhedron<a id='m-skin_to_polyhedron'></a>
 
-<code>*module* skin_to_polyhedron(obj\_or\_objs: <a id='t-skin'></a>|list\[<a id='t-skin'></a>,...])</code>
+<code>*module* skin_to_polyhedron(obj\_or\_objs: <a href="#t-skin">skin</a>|list\[<a href="#t-skin">skin</a>,...])</code>
 
 Takes the skin object and make it into a polyhedron.  If obj is a list, will
 assume all are skin objects and attempt to skin them all.
 
 <details><summary>parameters</summary>
 
-**<code>obj_or_objs</code>**: <code><a id='t-skin'></a>|list\[<a id='t-skin'></a>,...]</code>
+**<code>obj_or_objs</code>**: <code><a href="#t-skin">skin</a>|list\[<a href="#t-skin">skin</a>,...]</code>
 
 The skin object or list of skin objects to make into a polyhedron.
 
@@ -6221,7 +6363,7 @@ The skin object or list of skin objects to make into a polyhedron.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 A new skin object with the points transformed.
 
@@ -6229,14 +6371,14 @@ A new skin object with the points transformed.
 
 #### ⚙️skin\_add\_layer\_if<a id='f-skin_add_layer_if'></a>
 
-<code>*function* skin_add_layer_if(obj: <a id='t-skin'></a>, add\_layers\_fn: function) : <a id='t-skin'></a></code>
+<code>*function* skin_add_layer_if(obj: <a href="#t-skin">skin</a>, add\_layers\_fn: function) : <a href="#t-skin">skin</a></code>
 
 Adds a number of interpolated layers between layers based how many
 add_layers_fn(i) returns.
 
 <details><summary>parameters</summary>
 
-**<code>obj</code>**: <code><a id='t-skin'></a></code>
+**<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
 Object to add to.
 
@@ -6264,7 +6406,7 @@ E.g.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 Updated skin.
 
@@ -6272,18 +6414,18 @@ Updated skin.
 
 #### 🧊skin\_show\_debug\_axes<a id='m-skin_show_debug_axes'></a>
 
-<code>*module* skin_show_debug_axes(obj: <a id='t-skin'></a>, styles: list\[<a id='t-DebugStyle'></a>])</code>
+<code>*module* skin_show_debug_axes(obj: <a href="#t-skin">skin</a>, styles: list\[<a href="#t-DebugStyle">DebugStyle</a>])</code>
 
 UNTESTED!
 Shows the debug axes to verify where you think things should be.
 
 <details><summary>parameters</summary>
 
-**<code>obj</code>**: <code><a id='t-skin'></a></code>
+**<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
 Object to show debug axes for.
 
-**<code>styles</code>**: <code>list\[<a id='t-DebugStyle'></a>]</code>
+**<code>styles</code>**: <code>list\[<a href="#t-DebugStyle">DebugStyle</a>]</code>
  *(Default: `[["red", 1, .1], ["green"], ["blue"]]`)*
 
 Contains a list of styles that are reused when the number of points in a
@@ -6307,14 +6449,14 @@ Interpolates value between v0 and v1?
 
 #### ⚙️skin\_limit<a id='f-skin_limit'></a>
 
-<code>*function* skin_limit(obj: <a id='t-skin'></a>, extract\_order\_value\_fn: function, begin: number, end: number) : <a id='t-skin'></a></code>
+<code>*function* skin_limit(obj: <a href="#t-skin">skin</a>, extract\_order\_value\_fn: function, begin: number, end: number) : <a href="#t-skin">skin</a></code>
 
 INCOMPLETE!
 Truncates the beginning, end or both of the extrusion.
 
 <details><summary>parameters</summary>
 
-**<code>obj</code>**: <code><a id='t-skin'></a></code>
+**<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
 Object to remove values before in points.  Value extracted from points MUST
 BE monotonically nondecreasing over the points list.
@@ -6336,7 +6478,7 @@ The value to compare against the extracted value from a point.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 Updated skin object with all of the points before value removed.  If
 extracted value is not EXACTLY value, then will linearly interpolated to
@@ -6346,7 +6488,7 @@ cup off EXACTLY at value.
 
 #### ⚙️skin\_verify<a id='f-skin_verify'></a>
 
-<code>*function* skin_verify(obj: <a id='t-skin'></a>, disp\_all\_pts: bool) : string</code>
+<code>*function* skin_verify(obj: <a href="#t-skin">skin</a>, disp\_all\_pts: bool) : string</code>
 
 For debugging, returns a string reporting the stats of a skin object.
 
@@ -6356,7 +6498,7 @@ Asserts if the object's number of points doesn't correspond to the equation:
 
 <details><summary>parameters</summary>
 
-**<code>obj</code>**: <code><a id='t-skin'></a></code>
+**<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
 Object to verify.
 
@@ -6378,14 +6520,14 @@ A prettified/simplified view of points in the object.
 
 #### ⚙️skin\_max\_layer\_distance\_fn<a id='f-skin_max_layer_distance_fn'></a>
 
-<code>*function* skin_max_layer_distance_fn(obj: <a id='t-skin'></a>, max\_diff: number, diff\_fn: function) : function(i: number): number</code>
+<code>*function* skin_max_layer_distance_fn(obj: <a href="#t-skin">skin</a>, max\_diff: number, diff\_fn: function) : function(i: number): number</code>
 
 Returns a function that can be used with skin_add_layer_if() to ensure that
 the distance between layers don't exceed some length.
 
 <details><summary>parameters</summary>
 
-**<code>obj</code>**: <code><a id='t-skin'></a></code>
+**<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
 Represents a skin object.
 
@@ -6429,7 +6571,7 @@ Number of points in a layer.
 
 Number of layers-1.
 
-<code><b>SKIN_PTS</b></code>: <code>list\[<a id='t-Point3D'></a>,...]</code>
+<code><b>SKIN_PTS</b></code>: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
 
 A list of points representing the skin object.  This is a flattened list of
 points in layer order.  Points are in clockwise order when looking towards
@@ -6486,7 +6628,7 @@ This is the third index to the point in the referenced point list.
 
 #### 🧩SkinExtrude<a id='t-SkinExtrude'></a>
 
-<code>*callback* SkinExtrude(pts\_fn: function) : <a id='t-skin'></a></code>
+<code>*callback* SkinExtrude(pts\_fn: function) : <a href="#t-skin">skin</a></code>
 
 <details><summary>parameters</summary>
 
@@ -6507,7 +6649,7 @@ calling skin_to_polyhedron.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 The skin object.
 
@@ -6624,7 +6766,7 @@ spellings of grey/gray including slategrey/slategray etc are valid):
 Style for a debug vector.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a id='t-ColourStr'></a>|<a id='t-ColourLst'></a>|<a id='t-ColourName'></a></code>
+<code><b>0</b></code>: <code><a href="#t-ColourStr">ColourStr</a>|<a href="#t-ColourLst">ColourLst</a>|<a href="#t-ColourName">ColourName</a></code>
 
 - If a string, then the name of a colour, or the hex representation of one.
 - If a number, the the value of the hex value.
@@ -6648,17 +6790,17 @@ Thickness that is passed to [`arrow()`](#m-arrow) module.
 
 #### ⚙️sas\_cutter<a id='f-sas_cutter'></a>
 
-<code>*function* sas_cutter(a: <a id='t-Point2D'></a>, b: <a id='t-Point2D'></a>, y\_thickness: number, z\_thickness: number, lat\_wave\_segs: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number) : <a id='t-skin'></a></code>
+<code>*function* sas_cutter(a: <a href="#t-Point2D">Point2D</a>, b: <a href="#t-Point2D">Point2D</a>, y\_thickness: number, z\_thickness: number, lat\_wave\_segs: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number) : <a href="#t-skin">skin</a></code>
 
 Self aligning seam cutter aligned along edge a → b, with sinusoidal cutface.
 
 <details><summary>parameters</summary>
 
-**<code>a</code>**: <code><a id='t-Point2D'></a></code>
+**<code>a</code>**: <code><a href="#t-Point2D">Point2D</a></code>
 
 Starting point.
 
-**<code>b</code>**: <code><a id='t-Point2D'></a></code>
+**<code>b</code>**: <code><a href="#t-Point2D">Point2D</a></code>
 
 Ending point.
 
@@ -6708,13 +6850,13 @@ expanding from the centre.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 </details>
 
 #### ⚙️sas2\_cutter<a id='f-sas2_cutter'></a>
 
-<code>*function* sas2_cutter(a: <a id='t-Point2D'></a>, b: <a id='t-Point2D'></a>, y\_thickness: number, z\_thickness: number, lat\_wall\_percent: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number, x\_phase\_offset: number) : <a id='t-skin'></a></code>
+<code>*function* sas2_cutter(a: <a href="#t-Point2D">Point2D</a>, b: <a href="#t-Point2D">Point2D</a>, y\_thickness: number, z\_thickness: number, lat\_wall\_percent: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number, x\_phase\_offset: number) : <a href="#t-skin">skin</a></code>
 
 Self aligning seam cutter 2 aligned along edge a → b, with sinusoidal cutface.
 
@@ -6726,11 +6868,11 @@ TODO: a and b parameters are misleading.  They are only used for the length.
 
 <details><summary>parameters</summary>
 
-**<code>a</code>**: <code><a id='t-Point2D'></a></code>
+**<code>a</code>**: <code><a href="#t-Point2D">Point2D</a></code>
 
 Starting point.
 
-**<code>b</code>**: <code><a id='t-Point2D'></a></code>
+**<code>b</code>**: <code><a href="#t-Point2D">Point2D</a></code>
 
 Ending point.
 
@@ -6794,24 +6936,24 @@ lengthens the cutter by this amount
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a id='t-skin'></a></code>
+**Returns**: <code><a href="#t-skin">skin</a></code>
 
 </details>
 
 #### ⚙️scs\_cutter<a id='f-scs_cutter'></a>
 
-<code>*function* scs_cutter(a: <a id='t-Point2D'></a>, b: <a id='t-Point2D'></a>, y\_thickness: number, z\_thickness: number, lat\_wave\_segs: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number)</code>
+<code>*function* scs_cutter(a: <a href="#t-Point2D">Point2D</a>, b: <a href="#t-Point2D">Point2D</a>, y\_thickness: number, z\_thickness: number, lat\_wave\_segs: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number)</code>
 
 Self connecting seam cutter aligned along edge a → b, with sinusoidal cutface.
 INCOMPLETE!
 
 <details><summary>parameters</summary>
 
-**<code>a</code>**: <code><a id='t-Point2D'></a></code>
+**<code>a</code>**: <code><a href="#t-Point2D">Point2D</a></code>
 
 starting point.
 
-**<code>b</code>**: <code><a id='t-Point2D'></a></code>
+**<code>b</code>**: <code><a href="#t-Point2D">Point2D</a></code>
 
 ending point.
 

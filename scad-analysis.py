@@ -36,8 +36,8 @@ SymWithDoc = \
   tuple[ItemType, CharSlice, CharSlice, CharSlice, list[tuple[str, str]] | None, CharSlice, CharSlice]
 
 # ( Type_of_object, entire_obj_slice ) |
-# ( Type_of_object, entire_obj_slice, id_slice, sig_slice, param_slices, body_slice ) |
-# ( Type_of_object, entire_obj_slice, id_slice, sig_slice, param_slices, body_slice, sym_doc_slice)
+# ( Type_of_object, entire_obj_slice, id_slice, sig_slice, param_list, body_slice ) |
+# ( Type_of_object, entire_obj_slice, id_slice, sig_slice, param_list, body_slice, sym_doc_slice)
 ItemInfo: TypeAlias = DocItem | Symbol | SymWithDoc
 
 DOC_TYPE         = 0
@@ -144,16 +144,15 @@ RES_LIB = r'''
 
 def mtime_to_utc(mtime: float) -> str:
   """
-  Retrieves the modification time of a file and converts it to a UTC datetime object.
+  Converts a modification time to a UTC datetime string.
 
   Args:
-    filepath (str): The path to the file.
+    mtime (float): The modification time as a Unix timestamp.
 
   Returns:
-    datetime: A datetime object representing the file's modification time in UTC.
+    str: A string representing the time in UTC (format: 'YYYY-MM-DD HH:MM:SS GMT+0000').
   """
-  # Get the modification time as a Unix timestamp (seconds since epoch)
-  # Convert the timestamp to a datetime object, assuming UTC
+  # Convert the timestamp to a datetime object in UTC
   gmt_datetime = datetime.fromtimestamp(mtime, tz=timezone.utc)
   return gmt_datetime.strftime('%Y-%m-%d %H:%M:%S GMT%z')
 
@@ -196,8 +195,6 @@ def get_items(content: str) -> list[ItemInfo]:
   ----------
   content: str
     The content to process.
-  lines: list[int]
-    List of character positions to get line numbers for.
 
   Returns
   -------
@@ -283,22 +280,19 @@ def params_as_list(m: regex.Match[str]) -> list[tuple[str, str]] | None:
 
 def get_lines(charRange: CharSlice, lines: list[int]) -> LinePair:
   '''
-  Converts (start, stop) character positions (half-open slice) to (start, stop)
-  line positions (closed range pair).
+  Converts a character slice (half-open range) to a line pair (closed range).
 
   Parameters
   ----------
-  start: int
-    Start character position.
-  end: int
-    One past end, end character position.
+  charRange: CharSlice
+    A slice with start and stop character positions.
   lines: list[int]
-    Line indices.
+    Line start indices (from get_line_positions).
 
   Returns
   -------
   LinePair
-    Closed line range pair.
+    Closed line range pair (1-indexed).
   '''
   start = charRange.start
   stop  = charRange.stop
@@ -996,8 +990,8 @@ class Doc:
 
     if len(documented_params) < len(declared_params):
       # Not all parameters are documented.  Possible legit reasons:
-      # - Lazy or don't wan to document
-      print(f"WARNING: Symbol {self.filename}::{self.content[doc_item[DOC_S_ID_SLC]]} isn't not documenting all callable parameters.",
+      # - Lazy or don't want to document
+      print(f"WARNING: Symbol {self.filename}::{self.content[doc_item[DOC_S_ID_SLC]]} isn't documenting all callable parameters.",
             file=sys.stderr)
 
   RE_FUNC = regex.compile(
@@ -1307,6 +1301,42 @@ class Doc:
         type = symbols.type_dict.get(type_name)
         if type:
           type.output_callchains(output_lines, id_override)
+    else:
+      # Auto-generate callchains for functions that return callbacks
+      id = id_override if id_override else self.id
+      if id and self.items["returns"]:
+        ret_type = self.items["returns"][0][Doc.TYPE]
+        if ret_type:
+          # Build function signature prefix
+          params = ", ".join(name for _, name, _ in self.items["param"])
+          func_prefix = f"{id}({params}) "
+
+          # Parse return types using RE_SEP_TYPES for unions
+          ret_type = ret_type.strip()
+          if ret_type.startswith("("):
+            ret_types = [m["type"].strip() for m in Doc.RE_SEP_TYPES.finditer(ret_type, 1)]
+          else:
+            ret_types = [ret_type]
+
+          # Generate callchain for each return type that is a callback
+          generated_count = 0
+          for rtype in ret_types:
+            cc = symbols.get_callchains(rtype)
+            if cc:
+              # cc is like "    TypeName(params) ..." - replace type name with function prefix
+              cc_stripped = cc.strip()
+              if cc_stripped.startswith(rtype):
+                cc_rest = cc_stripped[len(rtype):]
+                output_lines.append(f"    {func_prefix}{cc_rest}")
+                generated_count += 1
+
+          # Warn if auto-generated callchains for multiple return types
+          if generated_count > 1:
+            print(f"WARNING: '{self.filename}::{id}' has auto-generated callchains. "
+                  "Cannot determine which parameter subsets map to which return types. "
+                  "All parameters shown for each return type. "
+                  "Use @callchain tags for accurate curried function documentation.",
+                  file=sys.stderr)
   
   def output_slots(self, output_lines: list[str]):
     """
@@ -1419,6 +1449,37 @@ class Doc:
       desc_lines = Doc.RE_TRAILING_EMPTY_LINES.sub("", desc_lines)
       output_lines.append(desc_lines+"\n")
 
+    # Show callchains for return types that are callbacks
+    if ret_type:
+      callchain_lines: list[str] = []
+      # Parse union types - handle both "(A|B)" and "A|B" formats
+      type_str = ret_type.strip()
+      if type_str.startswith("(") and type_str.endswith(")"):
+        # Use RE_SEP_TYPES for parenthesized unions
+        for id_matched in Doc.RE_SEP_TYPES.finditer(type_str, 1):
+          type_name = id_matched["type"].strip()
+          cc = symbols.get_callchains(type_name)
+          if cc:
+            callchain_lines.append(cc)
+      elif "|" in type_str:
+        # Simple pipe-separated union
+        for type_name in type_str.split("|"):
+          type_name = type_name.strip()
+          cc = symbols.get_callchains(type_name)
+          if cc:
+            callchain_lines.append(cc)
+      else:
+        # Single type
+        cc = symbols.get_callchains(type_str)
+        if cc:
+          callchain_lines.append(cc)
+
+      if callchain_lines:
+        output_lines.append("Possible callchains:\n")
+        for cc in callchain_lines:
+          output_lines.append(cc)
+        output_lines.append("")
+
     # output_lines.append("")
     output_lines.append("</details>")
     output_lines.append("")
@@ -1525,14 +1586,13 @@ class Doc:
 
       # Only output description and details if doc exists
       if is_sym_with_doc(self.doc_item):
-        # Callchains (for functions that return callbacks)
-        if self.items["callchain"]:
-          callchain_lines = []
-          self.output_callchains(callchain_lines, None)
-          if callchain_lines:
-            callchain_lines.append("")
-            output_lines.append("Possible callchains:\n")
-            output_lines += callchain_lines
+        # Callchains (explicit or auto-generated for functions that return callbacks)
+        callchain_lines: list[str] = []
+        self.output_callchains(callchain_lines, None)
+        if callchain_lines:
+          callchain_lines.append("")
+          output_lines.append("Possible callchains:\n")
+          output_lines += callchain_lines
 
         # Description
         if self.items["desc"]:
