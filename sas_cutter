@@ -1,3 +1,18 @@
+/**
+ * ## sas_cutter
+ *
+ * ### Purpose
+ *
+ * Self Aligning Seam (SAS) cutters.  Each cutter generates a `skin` that is
+ * used as a negative mold — subtract it from an existing edge so that two
+ * separate parts align together when assembled.
+ *
+ * ### Variants
+ *
+ * - `sas_cutter` — sinusoidal cutface with bumps that fit into indentations.
+ * - `sas2_cutter` — overlapping tabs instead of bump/indentation pairs.
+ * - `scs_cutter` — Self Connecting Seam cutter (incomplete).
+ */
 use <helpers>
 include <helpers_consts>
 use <skin>

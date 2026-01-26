@@ -139,9 +139,11 @@ def generate_toc(markdown_text: str) -> str:
 
   return "\n".join(toc_output) + "\n" if toc_output else ""
 
-header = "README-header.md"
-with open(header, "r", encoding="utf-8") as in_f:
-  contents = in_f.read()
+with open("README.md", "r", encoding="utf-8") as in_f:
+  readme_contents = in_f.read()
+
+with open("API-header.md", "r", encoding="utf-8") as in_f:
+  api_contents = in_f.read()
 
 re_file_section = regex.compile(
   r'''
@@ -150,7 +152,7 @@ re_file_section = regex.compile(
   ((?:(?!\#).*+(?:\n|$))*+)
   ''', regex.MULTILINE | regex.VERBOSE
 )
-matched = re_file_section.search(contents)
+matched = re_file_section.search(readme_contents)
 assert matched
 file_section = matched[1]
 
@@ -196,8 +198,9 @@ else:
   # Generate TOC from the scad-analysis.py output
   toc = generate_toc(result.stdout)
 
-  with open("README.md", "w", encoding="utf-8") as f_out:
-    f_out.write(contents)
+  # Write API.md (full API reference)
+  with open("API.md", "w", encoding="utf-8") as f_out:
+    f_out.write(api_contents)
     if toc:
       f_out.write("\n## Table of Contents\n\n")
       f_out.write("*If viewing on GitHub, you can also use the"
