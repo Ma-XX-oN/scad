@@ -1764,7 +1764,7 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
   RE_H3 = regex.compile(r"^(### )(.*)", regex.MULTILINE)
 
   def add_h2_emoji_anchor(m):
-    return f"{m.group(1)}<span style=\"font-size: 1.1em; color: yellow\">📘{m.group(2)}</span>{make_anchor('file', m.group(2))}"
+    return f"{m.group(1)}📘{m.group(2)}{make_anchor('file', m.group(2))}"
 
   def add_h3_emoji_and_anchor(m):
     heading_text = m.group(2)

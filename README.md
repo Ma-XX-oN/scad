@@ -573,7 +573,7 @@ There are several files in this library set.
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘range</span><a id='file-range'></a>
+## 📘range<a id='file-range'></a>
 
 ### <i>📑How to Import</i><a id='range-ch-How_to_Import'></a>
 
@@ -842,7 +842,7 @@ Stop value.
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘types</span><a id='file-types'></a>
+## 📘types<a id='file-types'></a>
 
 ### <i>📑Purpose</i><a id='types-ch-Purpose'></a>
 
@@ -1081,7 +1081,7 @@ Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
 to get name of type.
 
 
-## <span style="font-size: 1.1em; color: yellow">📘birlei</span><a id='file-birlei'></a>
+## 📘birlei<a id='file-birlei'></a>
 
 ### <i>📑How to Import</i><a id='birlei-ch-How_to_Import'></a>
 
@@ -1521,7 +1521,7 @@ Index to remap or undef if no index to remap.
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘base_algos</span><a id='file-base_algos'></a>
+## 📘base_algos<a id='file-base_algos'></a>
 
 ### <i>📑How to Import</i><a id='base_algos-ch-How_to_Import'></a>
 
@@ -2388,7 +2388,7 @@ A list of elements that were mapped.
 <code>*callback* MapBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘indexable</span><a id='file-indexable'></a>
+## 📘indexable<a id='file-indexable'></a>
 
 ### <i>📑How to Import</i><a id='indexable-ch-How_to_Import'></a>
 
@@ -4302,7 +4302,7 @@ Possible callchains:
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘function</span><a id='file-function'></a>
+## 📘function<a id='file-function'></a>
 
 ### <i>📑Purpose</i><a id='function-ch-Purpose'></a>
 
@@ -4418,7 +4418,7 @@ The return value of fn().
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘test</span><a id='file-test'></a>
+## 📘test<a id='file-test'></a>
 
 ### <i>📑Purpose</i><a id='test-ch-Purpose'></a>
 
@@ -4631,7 +4631,7 @@ A user message to append to failure message.
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘transform</span><a id='file-transform'></a>
+## 📘transform<a id='file-transform'></a>
 
 ### <i>📑Purpose</i><a id='transform-ch-Purpose'></a>
 
@@ -5516,7 +5516,7 @@ This is the ending point for this bound vector.
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘helpers</span><a id='file-helpers'></a>
+## 📘helpers<a id='file-helpers'></a>
 
 ### <i>📑Purpose</i><a id='helpers-ch-Purpose'></a>
 
@@ -6129,7 +6129,7 @@ Returns `return_value`.
 </details>
 
 
-## <span style="font-size: 1.1em; color: yellow">📘skin</span><a id='file-skin'></a>
+## 📘skin<a id='file-skin'></a>
 
 ### <i>📑Purpose</i><a id='skin-ch-Purpose'></a>
 
