@@ -194,7 +194,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-range">📘 <b>range</b></a></summary>
 <blockquote>
-• <a href="#range-ch-How%20to%20Import">📑 <i>How to Import</i></a><br>
+• <a href="#range-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#range-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#range-ch-Test">📑 <i>Test</i></a></summary>
 <blockquote>
@@ -210,7 +210,7 @@ There are several files in this library set.
 • <a href="#f-range_idx">⚙️range_idx</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#range-ch-range%20types">📑 <i>range types</i></a></summary>
+<details><summary><a href="#range-ch-range_types">📑 <i>range types</i></a></summary>
 <blockquote>
 • <a href="#t-range">🧩range</a><br>
 </blockquote>
@@ -229,7 +229,7 @@ There are several files in this library set.
 • <a href="#f-is_nan">⚙️is_nan</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#types-ch-Type%20Introspection">📑 <i>Type Introspection</i></a></summary>
+<details><summary><a href="#types-ch-Type_Introspection">📑 <i>Type Introspection</i></a></summary>
 <blockquote>
 • <a href="#f-type_enum">⚙️type_enum</a><br>
 • <a href="#f-type_enum_to_str">⚙️type_enum_to_str</a><br>
@@ -238,7 +238,7 @@ There are several files in this library set.
 • <a href="#f-type_value">⚙️type_value</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#types-ch-types%20types">📑 <i>types types</i></a></summary>
+<details><summary><a href="#types-ch-types_types">📑 <i>types types</i></a></summary>
 <blockquote>
 • <a href="#t-type_enum">🧩type_enum</a><br>
 </blockquote>
@@ -248,7 +248,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-birlei">📘 <b>birlei</b></a></summary>
 <blockquote>
-• <a href="#birlei-ch-How%20to%20Import">📑 <i>How to Import</i></a><br>
+• <a href="#birlei-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#birlei-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#birlei-ch-Functions">📑 <i>Functions</i></a></summary>
 <blockquote>
@@ -256,7 +256,7 @@ There are several files in this library set.
 • <a href="#f-birlei_to_indices">⚙️birlei_to_indices</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#birlei-ch-birlei%20types">📑 <i>birlei types</i></a></summary>
+<details><summary><a href="#birlei-ch-birlei_types">📑 <i>birlei types</i></a></summary>
 <blockquote>
 • <a href="#t-Birl">🧩Birl</a><br>
 • <a href="#t-EndI">🧩EndI</a><br>
@@ -275,13 +275,13 @@ There are several files in this library set.
 
 <details><summary><a href="#file-base_algos">📘 <b>base_algos</b></a></summary>
 <blockquote>
-• <a href="#base_algos-ch-How%20to%20Import">📑 <i>How to Import</i></a><br>
+• <a href="#base_algos-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#base_algos-ch-Purpose">📑 <i>Purpose</i></a><br>
-• <a href="#base_algos-ch-FYI:%20Functions%20and%20Iterating%20are%20Abound!">📑 <i>FYI: Functions and Iterating are Abound!</i></a><br>
-• <a href="#base_algos-ch-Iterators:">📑 <i>Iterators:</i></a><br>
+• <a href="#base_algos-ch-FYI___Functions_and_Iterating_are_Abound_">📑 <i>FYI: Functions and Iterating are Abound!</i></a><br>
+• <a href="#base_algos-ch-Iterators__">📑 <i>Iterators:</i></a><br>
 • <a href="#base_algos-ch-Algorithms">📑 <i>Algorithms</i></a><br>
-• <a href="#base_algos-ch-Algorithm%20Signatures">📑 <i>Algorithm Signatures</i></a><br>
-<details><summary><a href="#base_algos-ch-PPMRRAIR%20functions">📑 <i>PPMRRAIR functions</i></a></summary>
+• <a href="#base_algos-ch-Algorithm_Signatures">📑 <i>Algorithm Signatures</i></a><br>
+<details><summary><a href="#base_algos-ch-PPMRRAIR_functions">📑 <i>PPMRRAIR functions</i></a></summary>
 <blockquote>
 • <a href="#predicate-functioni--result">Predicate (`function(i) : result`)</a><br>
 • <a href="#predicatemap-functioni-v--any">Predicate/Map (`function(i, v) : any`)</a><br>
@@ -289,7 +289,7 @@ There are several files in this library set.
 • <a href="#reduction-allow-incomplete-reduction-functioni-acc--cont-acc">Reduction, Allow Incomplete Reduction (`function(i, acc) : [cont, acc]`)</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#base_algos-ch-The%20Base%20Algorithms">📑 <i>The Base Algorithms</i></a></summary>
+<details><summary><a href="#base_algos-ch-The_Base_Algorithms">📑 <i>The Base Algorithms</i></a></summary>
 <blockquote>
 • <a href="#f-find_lower">⚙️find_lower</a><br>
 • <a href="#f-find_upper">⚙️find_upper</a><br>
@@ -300,7 +300,7 @@ There are several files in this library set.
 • <a href="#f-map">⚙️map</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#base_algos-ch-base_algos%20types">📑 <i>base_algos types</i></a></summary>
+<details><summary><a href="#base_algos-ch-base_algos_types">📑 <i>base_algos types</i></a></summary>
 <blockquote>
 • <a href="#t-BoundIndexFn">🧩BoundIndexFn</a><br>
 • <a href="#t-FindLowerFn">🧩FindLowerFn</a><br>
@@ -327,7 +327,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-indexable">📘 <b>indexable</b></a></summary>
 <blockquote>
-• <a href="#indexable-ch-How%20to%20Import">📑 <i>How to Import</i></a><br>
+• <a href="#indexable-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 <details><summary><a href="#indexable-ch-Purpose">📑 <i>Purpose</i></a></summary>
 <blockquote>
 • <a href="#example">Example</a><br>
@@ -340,14 +340,14 @@ There are several files in this library set.
 • <a href="#f-slice_to_range">⚙️slice_to_range</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Algorithm%20Adaptors">📑 <i>Algorithm Adaptors</i></a></summary>
+<details><summary><a href="#indexable-ch-Algorithm_Adaptors">📑 <i>Algorithm Adaptors</i></a></summary>
 <blockquote>
 • <a href="#f-it_each">⚙️it_each</a><br>
 • <a href="#f-it_idxs">⚙️it_idxs</a><br>
 • <a href="#f-it_enum">⚙️it_enum</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Treat%20All%20Indexables%20the%20Same">📑 <i>Treat All Indexables the Same</i></a></summary>
+<details><summary><a href="#indexable-ch-Treat_All_Indexables_the_Same">📑 <i>Treat All Indexables the Same</i></a></summary>
 <blockquote>
 • <a href="#f-slr_len">⚙️slr_len</a><br>
 • <a href="#f-idx">⚙️idx</a><br>
@@ -357,7 +357,7 @@ There are several files in this library set.
 • <a href="#f-range_els">⚙️range_els</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Getting/Traversing%20Indices">📑 <i>Getting/Traversing Indices</i></a></summary>
+<details><summary><a href="#indexable-ch-Getting_Traversing_Indices">📑 <i>Getting/Traversing Indices</i></a></summary>
 <blockquote>
 • <a href="#f-idxs">⚙️idxs</a><br>
 • <a href="#f-fwd_i">⚙️fwd_i</a><br>
@@ -366,7 +366,7 @@ There are several files in this library set.
 • <a href="#f-prev_in">⚙️prev_in</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Functions%20to%20Manipulate%20Strings%20and%20Lists">📑 <i>Functions to Manipulate Strings and Lists</i></a></summary>
+<details><summary><a href="#indexable-ch-Functions_to_Manipulate_Strings_and_Lists">📑 <i>Functions to Manipulate Strings and Lists</i></a></summary>
 <blockquote>
 • <a href="#f-push">⚙️push</a><br>
 • <a href="#f-pop">⚙️pop</a><br>
@@ -389,7 +389,7 @@ There are several files in this library set.
 • <a href="#f-csearch">⚙️csearch</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-indexable%20types">📑 <i>indexable types</i></a></summary>
+<details><summary><a href="#indexable-ch-indexable_types">📑 <i>indexable types</i></a></summary>
 <blockquote>
 • <a href="#t-slice">🧩slice</a><br>
 • <a href="#t-Birls">🧩Birls</a><br>
@@ -409,7 +409,7 @@ There are several files in this library set.
 <details><summary><a href="#file-function">📘 <b>function</b></a></summary>
 <blockquote>
 • <a href="#function-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#function-ch-Function%20Introspection">📑 <i>Function Introspection</i></a></summary>
+<details><summary><a href="#function-ch-Function_Introspection">📑 <i>Function Introspection</i></a></summary>
 <blockquote>
 • <a href="#f-param_count">⚙️param_count</a><br>
 • <a href="#f-param_count_direct_recursion_demo">⚙️param_count_direct_recursion_demo</a><br>
@@ -423,7 +423,7 @@ There are several files in this library set.
 <details><summary><a href="#file-test">📘 <b>test</b></a></summary>
 <blockquote>
 • <a href="#test-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#test-ch-Test%20Your%20Code!">📑 <i>Test Your Code!</i></a></summary>
+<details><summary><a href="#test-ch-Test_Your_Code_">📑 <i>Test Your Code!</i></a></summary>
 <blockquote>
 • <a href="#m-test_eq">🧪test_eq</a><br>
 • <a href="#m-test_approx_eq">🧪test_approx_eq</a><br>
@@ -442,7 +442,7 @@ There are several files in this library set.
 <details><summary><a href="#file-transform">📘 <b>transform</b></a></summary>
 <blockquote>
 • <a href="#transform-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#transform-ch-Generate%20Matrices%20for%20Vector%20Transforms">📑 <i>Generate Matrices for Vector Transforms</i></a></summary>
+<details><summary><a href="#transform-ch-Generate_Matrices_for_Vector_Transforms">📑 <i>Generate Matrices for Vector Transforms</i></a></summary>
 <blockquote>
 • <a href="#f-transpose">⚙️transpose</a><br>
 • <a href="#f-homogenise">⚙️homogenise</a><br>
@@ -462,7 +462,7 @@ There are several files in this library set.
 • <a href="#f-reorient">⚙️reorient</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#transform-ch-Matrix%20Math">📑 <i>Matrix Math</i></a></summary>
+<details><summary><a href="#transform-ch-Matrix_Math">📑 <i>Matrix Math</i></a></summary>
 <blockquote>
 • <a href="#f-invert">⚙️invert</a><br>
 • <a href="#f-row_reduction">⚙️row_reduction</a><br>
@@ -470,7 +470,7 @@ There are several files in this library set.
 • <a href="#f-augment">⚙️augment</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#transform-ch-transform%20types">📑 <i>transform types</i></a></summary>
+<details><summary><a href="#transform-ch-transform_types">📑 <i>transform types</i></a></summary>
 <blockquote>
 • <a href="#t-Matrix">🧩Matrix</a><br>
 • <a href="#t-Point2D">🧩Point2D</a><br>
@@ -490,13 +490,13 @@ There are several files in this library set.
 <details><summary><a href="#file-helpers">📘 <b>helpers</b></a></summary>
 <blockquote>
 • <a href="#helpers-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#helpers-ch-Conversion%20functions">📑 <i>Conversion functions</i></a></summary>
+<details><summary><a href="#helpers-ch-Conversion_functions">📑 <i>Conversion functions</i></a></summary>
 <blockquote>
 • <a href="#f-r2d">⚙️r2d</a><br>
 • <a href="#f-d2r">⚙️d2r</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#helpers-ch-Circular%20/%20Spherical%20Calculations">📑 <i>Circular / Spherical Calculations</i></a></summary>
+<details><summary><a href="#helpers-ch-Circular___Spherical_Calculations">📑 <i>Circular / Spherical Calculations</i></a></summary>
 <blockquote>
 • <a href="#f-arc_len">⚙️arc_len</a><br>
 • <a href="#f-arc_len_angle">⚙️arc_len_angle</a><br>
@@ -521,7 +521,7 @@ There are several files in this library set.
 • <a href="#f-interpolated_values">⚙️interpolated_values</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#helpers-ch-helpers%20types">📑 <i>helpers types</i></a></summary>
+<details><summary><a href="#helpers-ch-helpers_types">📑 <i>helpers types</i></a></summary>
 <blockquote>
 • <a href="#t-VectorInfo">🧩VectorInfo</a><br>
 • <a href="#t-IdentityFn">🧩IdentityFn</a><br>
@@ -553,7 +553,7 @@ There are several files in this library set.
 • <a href="#f-skin_max_layer_distance_fn">⚙️skin_max_layer_distance_fn</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#skin-ch-skin%20types">📑 <i>skin types</i></a></summary>
+<details><summary><a href="#skin-ch-skin_types">📑 <i>skin types</i></a></summary>
 <blockquote>
 • <a href="#t-skin">🧩skin</a><br>
 • <a href="#t-Face">🧩Face</a><br>
@@ -573,7 +573,7 @@ There are several files in this library set.
 
 ## <span style="font-size: 1.1em; color: yellow">📘range</span><a id='file-range'></a>
 
-### <i>📑How to Import</i><a id='range-ch-How to Import'></a>
+### <i>📑How to Import</i><a id='range-ch-How_to_Import'></a>
 
     use <range>
 
@@ -802,7 +802,7 @@ The positive index.
 
 </details>
 
-### <i>📑range types</i><a id='range-ch-range types'></a>
+### <i>📑range types</i><a id='range-ch-range_types'></a>
 
 #### 🧩range<a id='t-range'></a>
 
@@ -938,7 +938,7 @@ Returns `true` if NaN, `false` otherwise.
 
 </details>
 
-### <i>📑Type Introspection</i><a id='types-ch-Type Introspection'></a>
+### <i>📑Type Introspection</i><a id='types-ch-Type_Introspection'></a>
 
 #### ⚙️type\_enum<a id='f-type_enum'></a>
 
@@ -1069,7 +1069,7 @@ Give info for `o` as string.
 
 </details>
 
-### <i>📑types types</i><a id='types-ch-types types'></a>
+### <i>📑types types</i><a id='types-ch-types_types'></a>
 
 #### 🧩type\_enum<a id='t-type_enum'></a>
 
@@ -1081,7 +1081,7 @@ to get name of type.
 
 ## <span style="font-size: 1.1em; color: yellow">📘birlei</span><a id='file-birlei'></a>
 
-### <i>📑How to Import</i><a id='birlei-ch-How to Import'></a>
+### <i>📑How to Import</i><a id='birlei-ch-How_to_Import'></a>
 
     use <birlei>
 
@@ -1189,7 +1189,7 @@ Returns a list or range describing the indices to traverse.
 
 </details>
 
-### <i>📑birlei types</i><a id='birlei-ch-birlei types'></a>
+### <i>📑birlei types</i><a id='birlei-ch-birlei_types'></a>
 
 #### 🧩Birl<a id='t-Birl'></a>
 
@@ -1521,7 +1521,7 @@ Index to remap or undef if no index to remap.
 
 ## <span style="font-size: 1.1em; color: yellow">📘base_algos</span><a id='file-base_algos'></a>
 
-### <i>📑How to Import</i><a id='base_algos-ch-How to Import'></a>
+### <i>📑How to Import</i><a id='base_algos-ch-How_to_Import'></a>
 
     use <base_algos>
 
@@ -1534,7 +1534,7 @@ rolled implementations, IMHO this makes it easier to read and rationalise as
 to intent.  Also, the pattern used is repeated everywhere, making it easier
 to learn how to use.
 
-### <i>📑FYI: Functions and Iterating are Abound!</i><a id='base_algos-ch-FYI: Functions and Iterating are Abound!'></a>
+### <i>📑FYI: Functions and Iterating are Abound!</i><a id='base_algos-ch-FYI___Functions_and_Iterating_are_Abound_'></a>
 
 There is a lot of currying and passing of functions in this library.  (Mmmmmm
 curry!)  No, not that type of curry.  Currying relates to having a function
@@ -1565,7 +1565,7 @@ the algorithm while passing the element to the `PPMRRAIR` function.
 These 2 basic patterns are used everywhere in the library set, and though it
 might look odd at first, you'll find that it becomes natural quite quickly.
 
-### <i>📑Iterators:</i><a id='base_algos-ch-Iterators:'></a>
+### <i>📑Iterators:</i><a id='base_algos-ch-Iterators__'></a>
 
 The algorithms are index, not element centric, which means that a physical
 container (i.e. a list) is *not* needed.  A virtual container (i.e. function)
@@ -1611,7 +1611,7 @@ range size.
 >
 > A: I've yet not seen a good reason to do this.
 
-### <i>📑Algorithm Signatures</i><a id='base_algos-ch-Algorithm Signatures'></a>
+### <i>📑Algorithm Signatures</i><a id='base_algos-ch-Algorithm_Signatures'></a>
 
 All of the algorithms have a compatible signature that have a `birlei` (one
 or two parameters, a `birl` and optional `end_i`).  When you call the
@@ -1622,7 +1622,7 @@ When it's passed a `birlei`, it returns a function that requires a PPMRRAIR
 function.  That function that is then called by the algorithm on each index
 that the `birlei` refers to.
 
-### <i>📑PPMRRAIR functions</i><a id='base_algos-ch-PPMRRAIR functions'></a>
+### <i>📑PPMRRAIR functions</i><a id='base_algos-ch-PPMRRAIR_functions'></a>
 
 Named after the 4 function types: `P`redicate, `P`redicate/`M`ap, `R`eduction
 and `R`eduction that `A`llows for `I`ncomplete `R`eduction, these functions
@@ -1676,7 +1676,7 @@ over each `birlei` element:
 
 **See also** [Algorithm Adaptors](#algorithm-adaptors).
 
-### <i>📑The Base Algorithms</i><a id='base_algos-ch-The Base Algorithms'></a>
+### <i>📑The Base Algorithms</i><a id='base_algos-ch-The_Base_Algorithms'></a>
 
 #### ⚙️find\_lower<a id='f-find_lower'></a>
 
@@ -2014,7 +2014,7 @@ Possible callchains:
 
 </details>
 
-### <i>📑base_algos types</i><a id='base_algos-ch-base_algos types'></a>
+### <i>📑base_algos types</i><a id='base_algos-ch-base_algos_types'></a>
 
 #### 🧩BoundIndexFn<a id='t-BoundIndexFn'></a>
 
@@ -2388,7 +2388,7 @@ A list of elements that were mapped.
 
 ## <span style="font-size: 1.1em; color: yellow">📘indexable</span><a id='file-indexable'></a>
 
-### <i>📑How to Import</i><a id='indexable-ch-How to Import'></a>
+### <i>📑How to Import</i><a id='indexable-ch-How_to_Import'></a>
 
     use <indexable>
 
@@ -2599,7 +2599,7 @@ If the slice is completely before or after the slr, returns [].
 
 </details>
 
-### <i>📑Algorithm Adaptors</i><a id='indexable-ch-Algorithm Adaptors'></a>
+### <i>📑Algorithm Adaptors</i><a id='indexable-ch-Algorithm_Adaptors'></a>
 
 The `PPMRRAIR` functions usually are passed an integer as it's first
 parameter, referring to the current index.  For convenience, there are
@@ -2815,7 +2815,7 @@ Possible callchains:
 
 </details>
 
-### <i>📑Treat All Indexables the Same</i><a id='indexable-ch-Treat All Indexables the Same'></a>
+### <i>📑Treat All Indexables the Same</i><a id='indexable-ch-Treat_All_Indexables_the_Same'></a>
 
 #### ⚙️slr\_len<a id='f-slr_len'></a>
 
@@ -3046,7 +3046,7 @@ The elements at the indices specified or the substring.
 
 </details>
 
-### <i>📑Getting/Traversing Indices</i><a id='indexable-ch-Getting/Traversing Indices'></a>
+### <i>📑Getting/Traversing Indices</i><a id='indexable-ch-Getting_Traversing_Indices'></a>
 
 #### ⚙️idxs<a id='f-idxs'></a>
 
@@ -3282,7 +3282,7 @@ Previous element index in list.
 
 </details>
 
-### <i>📑Functions to Manipulate Strings and Lists</i><a id='indexable-ch-Functions to Manipulate Strings and Lists'></a>
+### <i>📑Functions to Manipulate Strings and Lists</i><a id='indexable-ch-Functions_to_Manipulate_Strings_and_Lists'></a>
 
 #### ⚙️push<a id='f-push'></a>
 
@@ -4051,7 +4051,7 @@ Possible callchains:
 
 </details>
 
-### <i>📑indexable types</i><a id='indexable-ch-indexable types'></a>
+### <i>📑indexable types</i><a id='indexable-ch-indexable_types'></a>
 
 #### 🧩slice<a id='t-slice'></a>
 
@@ -4306,7 +4306,7 @@ Possible callchains:
 
 Allows doing things with functions using introspection.
 
-### <i>📑Function Introspection</i><a id='function-ch-Function Introspection'></a>
+### <i>📑Function Introspection</i><a id='function-ch-Function_Introspection'></a>
 
 #### ⚙️param\_count<a id='f-param_count'></a>
 
@@ -4423,7 +4423,7 @@ The return value of fn().
 Used to generate code for using TDD methodology.  Tries to report useful
 error messages with an optional user configurable message.
 
-### <i>📑Test Your Code!</i><a id='test-ch-Test Your Code!'></a>
+### <i>📑Test Your Code!</i><a id='test-ch-Test_Your_Code_'></a>
 
 #### 🧪test\_eq<a id='m-test_eq'></a>
 
@@ -4635,7 +4635,7 @@ A user message to append to failure message.
 
 This library is for matrix math for a variety of things.
 
-### <i>📑Generate Matrices for Vector Transforms</i><a id='transform-ch-Generate Matrices for Vector Transforms'></a>
+### <i>📑Generate Matrices for Vector Transforms</i><a id='transform-ch-Generate_Matrices_for_Vector_Transforms'></a>
 
 #### ⚙️transpose<a id='f-transpose'></a>
 
@@ -5186,7 +5186,7 @@ Homogeneous column-vector transform matrix T.
 
 </details>
 
-### <i>📑Matrix Math</i><a id='transform-ch-Matrix Math'></a>
+### <i>📑Matrix Math</i><a id='transform-ch-Matrix_Math'></a>
 
 #### ⚙️invert<a id='f-invert'></a>
 
@@ -5309,7 +5309,7 @@ Assertion failure if A and B do not have the same non-zero row count.
 
 </details>
 
-### <i>📑transform types</i><a id='transform-ch-transform types'></a>
+### <i>📑transform types</i><a id='transform-ch-transform_types'></a>
 
 #### 🧩Matrix<a id='t-Matrix'></a>
 
@@ -5520,7 +5520,7 @@ This is the ending point for this bound vector.
 
 Miscellaneous helper functions.
 
-### <i>📑Conversion functions</i><a id='helpers-ch-Conversion functions'></a>
+### <i>📑Conversion functions</i><a id='helpers-ch-Conversion_functions'></a>
 
 #### ⚙️r2d<a id='f-r2d'></a>
 
@@ -5566,7 +5566,7 @@ Equivalent radians.
 
 </details>
 
-### <i>📑Circular / Spherical Calculations</i><a id='helpers-ch-Circular / Spherical Calculations'></a>
+### <i>📑Circular / Spherical Calculations</i><a id='helpers-ch-Circular___Spherical_Calculations'></a>
 
 #### ⚙️arc\_len<a id='f-arc_len'></a>
 
@@ -6078,7 +6078,7 @@ and `p1`.
 
 </details>
 
-### <i>📑helpers types</i><a id='helpers-ch-helpers types'></a>
+### <i>📑helpers types</i><a id='helpers-ch-helpers_types'></a>
 
 #### 🧩VectorInfo<a id='t-VectorInfo'></a>
 
@@ -6700,7 +6700,7 @@ of layers to add.
 
 </details>
 
-### <i>📑skin types</i><a id='skin-ch-skin types'></a>
+### <i>📑skin types</i><a id='skin-ch-skin_types'></a>
 
 #### 🧩skin<a id='t-skin'></a>
 

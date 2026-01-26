@@ -16,8 +16,6 @@ def generate_toc(markdown_text: str) -> str:
 
   def make_link(text: str, anchor: str) -> str:
     """Create an HTML link."""
-    # URL-encode spaces in anchors
-    anchor = anchor.replace(" ", "%20")
     return f'<a href="#{anchor}">{text}</a>'
 
   def heading_to_anchor(heading: str) -> str:

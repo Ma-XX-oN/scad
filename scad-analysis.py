@@ -524,8 +524,16 @@ class TrackFull(Track):
 
 from abc import ABC, abstractmethod
 
+def sanitize_anchor_id(id: str) -> str:
+  """Sanitize an id for use in an HTML anchor.
+  Colons are replaced with ``__``, spaces and other
+  URL-specific punctuation are replaced with ``_``."""
+  id = id.replace(":", "__")
+  id = regex.sub(r"[^\w-]", "_", id)
+  return id
+
 def make_anchor(prefix: str, id: str):
-  return f"<a id='{prefix}-{id}'></a>"
+  return f"<a id='{prefix}-{sanitize_anchor_id(id)}'></a>"
 
 # `any` isn't builtin, but it's not to be linked to
 # `...` is just a placeholder
