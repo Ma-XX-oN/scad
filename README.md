@@ -564,6 +564,17 @@ There are several files in this library set.
 • <a href="#t-ColourStr">🧩ColourStr</a><br>
 • <a href="#t-ColourName">🧩ColourName</a><br>
 • <a href="#t-DebugStyle">🧩DebugStyle</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
+<details><summary><a href="#file-sas_cutter">📘 <b>sas_cutter</b></a></summary>
+<blockquote>
+• <a href="#sas_cutter-ch-Purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#sas_cutter-ch-Variants">📑 <i>Variants</i></a></summary>
+<blockquote>
+• <a href="#f-sas_cutter">⚙️sas_cutter</a><br>
 • <a href="#f-sas2_cutter">⚙️sas2_cutter</a><br>
 • <a href="#f-scs_cutter">⚙️scs_cutter</a><br>
 </blockquote>
@@ -6934,6 +6945,86 @@ Thickness that is passed to [`arrow()`](#m-arrow) module.
 
 </details>
 
+
+## 📘sas_cutter<a id='file-sas_cutter'></a>
+
+### <i>📑Purpose</i><a id='sas_cutter-ch-Purpose'></a>
+
+Self Aligning Seam (SAS) cutters.  Each cutter generates a `skin` that is
+used as a negative mold - subtract it from an existing edge so that two
+separate parts align together when assembled.
+
+### <i>📑Variants</i><a id='sas_cutter-ch-Variants'></a>
+
+- `sas_cutter` - sinusoidal cutface with bumps that fit into indentations.
+- `sas2_cutter` - overlapping tabs instead of bump/indentation pairs.
+- `scs_cutter` - Self Connecting Seam cutter (incomplete).
+
+#### ⚙️sas\_cutter<a id='f-sas_cutter'></a>
+
+<code>*function* sas_cutter(a: <a href="#t-Point2D">Point2D</a>, b: <a href="#t-Point2D">Point2D</a>, y\_thickness: number, z\_thickness: number, lat\_wave\_segs: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number) : <a href="#t-skin">skin</a></code>
+
+Self aligning seam cutter aligned along edge a → b, with sinusoidal cutface.
+
+<details><summary>parameters</summary>
+
+**<code>a</code>**: <code><a href="#t-Point2D">Point2D</a></code>
+
+Starting point.
+
+**<code>b</code>**: <code><a href="#t-Point2D">Point2D</a></code>
+
+Ending point.
+
+**<code>y_thickness</code>**: <code>number</code>
+
+Thickness along y-axis of cutter from cutface to handle.
+
+**<code>z_thickness</code>**: <code>number</code>
+
+Height of cutting tool (z-axis).
+
+**<code>lat_wave_segs</code>**: <code>number</code>
+
+Number of segments to break up the wave into.
+
+**<code>lat_wave_cycles</code>**: <code>number</code>
+
+Number of complete wave_cycles to apply along cutting edge.
+
+**<code>wave_amp</code>**: <code>number</code>
+
+Amplitude of the wave on cutting edge (peak-to-peak).
+
+**<code>long_wave_segs</code>**: <code>number</code>
+ *(Default: `4`)*
+
+Number of segments to break up the wave into.
+
+**<code>long_wave_cycles</code>**: <code>number</code>
+ *(Default: `0.5`)*
+
+Number of complete wave_cycles to apply perpendicular to the cutting edge.
+
+**<code>cutedge_long_overflow</code>**: <code>number</code>
+ *(Default: `1e-4`)*
+
+Widens the cutter by this amount
+     expanding from the centre.
+
+**<code>cutedge_lat_overflow</code>**: <code>number</code>
+ *(Default: `1`)*
+
+Lengthens the cutter by this amount (rounded to the next segment length)
+expanding from the centre.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-skin">skin</a></code>
+
+</details>
 
 #### ⚙️sas2\_cutter<a id='f-sas2_cutter'></a>
 

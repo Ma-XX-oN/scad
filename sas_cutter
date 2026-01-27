@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 /**
  * ## sas_cutter
  *
@@ -15,7 +13,6 @@
  * - `sas2_cutter` - overlapping tabs instead of bump/indentation pairs.
  * - `scs_cutter` - Self Connecting Seam cutter (incomplete).
  */
->>>>>>> Stashed changes
 use <helpers>
 include <helpers_consts>
 use <skin>
