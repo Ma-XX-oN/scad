@@ -106,11 +106,14 @@ example:
 
 - `@callchain replace_each(a, a_birls, a_end_i) (b, b_birls, b_end_i): (string | list)`
 
+If used, they are the first item in the documentation of a function, module,
+callchain and will show as a code block in the rendered documentation in the
+same relative position.
+
 This makes the intended usage obvious to readers and makes it straightforward to
-generate the `.md` documentation with a custom tool.  Different overloads may
-also be stated using this syntax, and a call chain may comprise of only one
-link.  E.g. The call to the first function may just end right there, if it
-doesn't curry.
+generate the `.md` documentation.  Different overloads may also be stated using
+this syntax, and a call chain may comprise of only one link.  E.g. The call to
+the first function may just end right there, if it doesn't curry.
 
 ### Libraries
 

@@ -106,11 +106,14 @@ example:
 
 - `@callchain replace_each(a, a_birls, a_end_i) (b, b_birls, b_end_i): (string | list)`
 
+If used, they are the first item in the documentation of a function, module,
+callchain and will show as a code block in the rendered documentation in the
+same relative position.
+
 This makes the intended usage obvious to readers and makes it straightforward to
-generate the `.md` documentation with a custom tool.  Different overloads may
-also be stated using this syntax, and a call chain may comprise of only one
-link.  E.g. The call to the first function may just end right there, if it
-doesn't curry.
+generate the `.md` documentation.  Different overloads may also be stated using
+this syntax, and a call chain may comprise of only one link.  E.g. The call to
+the first function may just end right there, if it doesn't curry.
 
 ### Libraries
 
@@ -191,6 +194,7 @@ There are several files in this library set.
 11. [sas_cutter](#file-sas_cutter)
     - Creates a skin which is used as a cutting tool help to align two separate
       parts together.
+
 
 
 ## Table of Contents
@@ -642,6 +646,12 @@ Returns `true` if object is a range, otherwise `false`.
 #### ⚙️range<a id='f-range'></a>
 
 <code>*function* range(count\_or\_begin\_i: number, step\_or\_end\_i: number, end\_i: number) : <a href="#t-range">range</a>|list</code>
+
+Possible callchains:
+
+    range(count)                : resulting_range
+    range(begin_i, end_i)       : resulting_range
+    range(begin_i, skip, end_i) : resulting_range
 
 Creates a range object.
 
@@ -2541,6 +2551,11 @@ Object to check.
 #### ⚙️slice<a id='f-slice'></a>
 
 <code>*function* slice(begin\_i: number, step\_or\_end\_i: number, end\_i: number|undef) : <a href="#t-slice">slice</a></code>
+
+Possible callchains:
+
+    slice(begin_i, end_i)       : resulting_slice
+    slice(begin_i, skip, end_i) : resulting_slice
 
 Create a `slice` object.
 
@@ -7177,6 +7192,5 @@ lengthens the cutter by this amount
      (rounded to the next segment length) expanding from the centre.
 
 </details>
-
 
 
