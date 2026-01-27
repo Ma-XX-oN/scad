@@ -32,6 +32,9 @@ library folder and then import files by relative path from there.  OpenSCAD
 exposes the library folder location via **File → Show Library Folder...**.
 OpenSCAD User Manual - Libraries (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
 
+Alternatively, if using in several projects, clone in one location and set the `OPENSCADPATH`
+variable to point to that location.
+
 ### Importing Library Files
 
 - For `*_consts` files: use the `include <>` idiom.
@@ -188,4 +191,5 @@ There are several files in this library set.
 11. [sas_cutter](#file-sas_cutter)
     - Creates a skin which is used as a cutting tool help to align two separate
       parts together.
+
 
