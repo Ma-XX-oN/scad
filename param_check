@@ -97,7 +97,7 @@ function verify_l(l) =
  *   Value to check.
  */
 function verify_r(r) =
-  assert(!is_string(r) && !is_list(r) && is_num(r[0]),
+  assert(!is_string(r) && !is_list(r) && is_num(r[0]) || is_list(r) && !len(r),
          str("Invalid r.  Got: ", r))
 ;
 

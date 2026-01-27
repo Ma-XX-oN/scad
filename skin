@@ -677,7 +677,7 @@ function skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes
         )
         echo("birlei = ", birl, end_i, layer_is)
         echo("layer_count", layer_count)
-        let ( layer_is = _els(layer_is, 1, slr_len(layer_is)-1) )
+        let ( layer_is = els(layer_is, 1, slr_len(layer_is)-1) )
         echo("layer_is", layer_is)
         assert(layer_count > 1, "Need 2 or more layers to make a volume.")
         skin_new(pts_in_layer, layer_count - 1,

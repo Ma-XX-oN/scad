@@ -178,6 +178,9 @@ function is_slice(o) =
  */
 
 /**
+ * @callchain slice(begin_i, end_i)       : resulting_slice
+ * @callchain slice(begin_i, skip, end_i) : resulting_slice
+ *
  * Create a `slice` object.
  *
  * @param {number} begin_i
@@ -955,10 +958,10 @@ function els(slr, birls = 0, end_i = undef) =
   let ( _ = verify_slr(slr) )
   let ( _ = verify_vbsis(slr, birls, end_i) )
   let ( _slr = _slr_cache(slr, birls, end_i) )
-  _els(slr, _slr[_SLR_BIRL], _slr[_SLR_END_I])
+  _els(slr, _slr[_SLR_BIRL], _slr[_SLR_END_I], _slr[_SLR_ELD], _slr[_SLR_BLEN])
 ;
 
-function _els(slr, birl, end_i) =
+function _els(slr, birl, end_i, _eld, _blen) =
   let ( _ = verify_slr(slr) )
   let ( _ = verify_vbis(slr, birl, end_i) )
   is_list(slr)
@@ -974,7 +977,7 @@ function _els(slr, birl, end_i) =
           str(acc, slr[i])
       )
     : // RANGE
-      _range_els(slr, birl, end_i)
+      _range_els(slr, birl, end_i, _eld, _blen)
 ;
 
 echo("els: ", els([0,1,2,3,4,5], 1));
@@ -1028,6 +1031,8 @@ function range_els(r, birls=0, end_i=undef) =
 function _range_els(r, birl, end_i, _eld, _blen) =
   let ( _ = verify_r(r) )
   let ( _ = verify_vbis(r, birl, end_i) )
+  let ( _ = verify_fn(_eld) )
+  let ( _ = verify_vpi(_blen) )
   _blen
   ? is_list(birl)
     ? // LIST

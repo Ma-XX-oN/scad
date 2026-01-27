@@ -74,6 +74,10 @@ function is_range(o) =
 /** ### Functions */
 
 /**
+ * @callchain range(count)                : resulting_range
+ * @callchain range(begin_i, end_i)       : resulting_range
+ * @callchain range(begin_i, skip, end_i) : resulting_range
+ *
  * Creates a range object.
  *
  * > NOTE:
