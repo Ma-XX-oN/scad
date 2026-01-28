@@ -48,6 +48,23 @@ When encountering issues with library functions, prefer using the correct public
   punctuation.  This project sanitizes anchors via `sanitize_anchor_id()`:
   colons become `__`, spaces and other URL punctuation become `_`.
 
+### Read and understand code before writing tests
+
+Before writing tests for any function:
+
+1. **Read the actual function** - look at its signature, parameters, and implementation.
+2. **Verify the function exists** - don't invent APIs that aren't there.
+3. **Understand the behavior** - trace through the code to know what it actually does.
+
+Writing tests without reading the code results in:
+
+- Tests for imaginary function signatures
+- Tests that call functions with wrong argument counts
+- Tests that assert behavior the function doesn't have
+
+This is unacceptable. Own the mistake directly - don't use vague language like
+"someone thought" to deflect blame for code you wrote.
+
 ### Offensive programming and testing strategy
 
 This library uses offensive programming: all input is assumed safe and trusted.
