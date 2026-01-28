@@ -224,7 +224,7 @@ _ear_cw = function(pts, pt_i0, pt_i1, pt_i2, eps = 1e-6)
   let ( _ = verify_vpi(pts, pt_i0) )
   let ( _ = verify_vpi(pts, pt_i1) )
   let ( _ = verify_vpi(pts, pt_i2) )
-  let ( _ = verify_vpi(eps) )
+  let ( _ = verify_vpos(eps) )
   let(
     pt0 = pts[pt_i0],
     pt1 = pts[pt_i1],
@@ -265,7 +265,7 @@ _ear_ccw = function(pts, pt_i0, pt_i1, pt_i2, eps = 1e-6)
   let ( _ = verify_vpi(pts, pt_i0) )
   let ( _ = verify_vpi(pts, pt_i1) )
   let ( _ = verify_vpi(pts, pt_i2) )
-  let ( _ = verify_vpi(eps) )
+  let ( _ = verify_vpos(eps) )
   let(
     pt0 = pts[pt_i0],
     pt1 = pts[pt_i1],

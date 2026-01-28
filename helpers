@@ -13,6 +13,7 @@ use <indexable>
 use <test>
 use <transform>
 use <any_all>
+use <param_check>
 
 /** ### Conversion functions */
 
@@ -212,7 +213,7 @@ function _wrap_diff_deg(a1, a2) =
  *   before or after the shift.
  */
 function arc_len_for_shift(R, m, a, b = 0) =
-  assert(R > 0, "R must be > 0.")
+  let ( _ = verify_vpos(R) )
   let(
     pts0 = _circle_line_intersections(R, m, b),
     p0   = _pick_right(pts0),
@@ -250,7 +251,7 @@ function arc_len_for_shift(R, m, a, b = 0) =
  *   They would be undef if there is no solution for that direction.
  */
 function shift_for_arc_len(R, m, delta_s, b = 0) =
-  assert(R > 0, "R must be > 0.")
+  let ( _ = verify_vpos(R) )
   let(
     // Must have a right-side intersection to begin with
     p0 = _pick_right(_circle_line_intersections(R, m, b))
@@ -295,7 +296,7 @@ function shift_for_arc_len(R, m, delta_s, b = 0) =
  */
 function not(not_fn) =
   // echo("NOT: ", not_fn)
-  assert(is_function(not_fn))
+  let ( _ = verify_fn(not_fn) )
   function(p) !not_fn(p)
 ;
 

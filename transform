@@ -6,6 +6,8 @@
  * This library is for matrix math for a variety of things.
  */
 use <any_all>
+use <helpers>
+use <param_check>
 
 /** ### Generate Matrices for Vector Transforms */
 
@@ -822,7 +824,7 @@ function row_reduction(aug, k, n, eps) =
  *   The identity matrix of order n.
  */
 function identity(n) =
-  assert(n > 0, "identity: n must be > 0")
+  let ( _ = verify_vpos(n) )
   [for (i = [0 : n - 1]) [for (j = [0 : n - 1]) (i == j) ? 1 : 0]];
 
 /**

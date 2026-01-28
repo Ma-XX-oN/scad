@@ -940,7 +940,8 @@ function el_pos_idx(slr, i) =
 ;
 
 /**
- * Gets a substring, sub-range or sub-elements of a string, list or range.
+ * Gets a substring, sub-range or sub-elements of a string, list or range.   If
+ * `slr` is a `range` and the `birlei` is a `range`, the the result is a `range`.
  *
  * > NOTE:
  * >
@@ -1196,8 +1197,7 @@ function next_in(slr, i, inc=1, wrap_to_0 = false, _slr_len) =
   let ( _ = verify_slr(slr) )
   let ( _ = verify_i(i) )
   let ( _ = verify_vpi(slr, i, _slr_len) )
-  let ( _ = verify_i(inc) )
-  let ( _ = verify_vpi(inc) )
+  let ( _ = verify_vpos(inc) )
   let (
     i = i + inc,
     _slr_len = is_undef(_slr_len) ? slr_len(slr) : _slr_len
@@ -1235,8 +1235,7 @@ function next_in(slr, i, inc=1, wrap_to_0 = false, _slr_len) =
 function prev_in(slr, i, dec=1, wrap_to_last = false, _slr_len) =
   let ( _ = verify_slr(slr) )
   let ( _ = verify_vpi(slr, i, _slr_len) )
-  let ( _ = verify_i(dec) )
-  let ( _ = verify_vpi(dec) )
+  let ( _ = verify_vpos(dec) )
   let ( i = i - dec )
   i < 0
   ? let (
@@ -1998,9 +1997,9 @@ function rotate_right(sl, i, _sl_len) =
  */
 function head(sl, _sl_len) =
   let ( _ = verify_sl(sl) )
+  let ( _ = verify_nesl(sl) )
   let ( _ = verify_vlen(sl, _sl_len) )
   let ( _sl_len = is_undef(_sl_len) ? len(sl) : _sl_len )
-  assert(len(sl) >= 1)
   sl[_sl_len - 1]
 ;
 
@@ -2040,7 +2039,7 @@ function head_multi(sl, i, _sl_len) =
  */
 function tail(sl) =
   let ( _ = verify_sl(sl) )
-  assert(len(sl) >= 1)
+  let ( _ = verify_nesl(sl) )
   sl[0]
 ;
 

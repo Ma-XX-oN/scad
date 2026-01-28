@@ -102,17 +102,6 @@ function verify_r(r) =
 ;
 
 /**
- * Verifies the `u` type is undef.
- *
- * @param {undef} u
- *   Value to check.
- */
-function verify_u(u) =
-  assert(is_num(u),
-         str("Invalid u.  Got: ", u))
-;
-
-/**
  * Verifies the `i` type is a number.
  *
  * @param {number} i
@@ -622,4 +611,26 @@ function verify_vbinc(birl, end_i) =
  */
 function verify_vnz(v) =
   assert(is_num(v) && v, "Must be a non-zero number.")
+;
+
+/**
+ * Verifies `v` is a positive number (`v > 0`).
+ *
+ * @param {number} v
+ *   Value to check.
+ */
+function verify_vpos(v) =
+  assert(is_num(v) && v > 0,
+    str("Must be a positive number.  Got: ", v))
+;
+
+/**
+ * Verifies `sl` is a non-empty string or list.
+ *
+ * @param {(string|list)} sl
+ *   Value to check.
+ */
+function verify_nesl(sl) =
+  assert((is_string(sl) || is_list(sl)) && len(sl) >= 1,
+    str("Must be a non-empty string or list.  Got: ", sl))
 ;

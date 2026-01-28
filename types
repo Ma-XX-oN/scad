@@ -9,6 +9,7 @@
 use <base_algos>
 use <indexable>
 use <any_all>
+use <param_check>
 include <types_consts>
 
 /** ### Tests */
@@ -135,7 +136,7 @@ function type_enum(o, distinguish_float_from_int = false) =
  *   return "*INVALID TYPE*".
  */
 function type_enum_to_str(i) =
-  assert(is_num(i))
+  let ( _ = verify_i(i) )
   0 <= i && i < len(_TYPE_NAMES)
   ? _TYPE_NAMES[i]
   : "*INVALID TYPE*"

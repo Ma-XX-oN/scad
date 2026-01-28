@@ -244,7 +244,6 @@ use <function>
  *   - Else returns type `FindLowerFn`.
  */
 function find_lower(birl, end_i) =
-  assert(!is_function(birl))
   is_undef(birl)
   ? function(birl, end_i) find_lower(birl, end_i)
   : let (
@@ -326,7 +325,6 @@ let (v = 3) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],  
  *   - Else returns type `FindUpperFn`.
  */
 function find_upper(birl, end_i) =
-  assert(!is_function(birl))
   is_undef(birl)
   ? function(birl, end_i) find_upper(birl, end_i)
   : let (
@@ -403,7 +401,6 @@ let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],  
  *   - Else returns type `FindFn`.
  */
 function find(birl, end_i) =
-  assert(!is_function(birl))
   is_undef(birl)
   ? function(birl, end_i) find(birl, end_i)
   : let (
@@ -456,7 +453,6 @@ function find(birl, end_i) =
  *   - Else returns type `ReduceFn`.
  */
  function reduce(init, birl, end_i) =
-  assert(!is_function(birl))
   is_undef(birl)
   ? function(birl, end_i) reduce(init, birl, end_i)
   : // echo(str("reduce:\n  ", op_fn, "\n  ", type_value(init), "\n  ", birl, ", ", end_i ))
@@ -514,7 +510,6 @@ function find(birl, end_i) =
  *   - Else returns type `ReduceAirFn`.
  */
 function reduce_air(init, birl, end_i) =
-  assert(!is_function(birl))
   is_undef(birl)
   ? function(birl, end_i) reduce_air(init, birl, end_i)
   : // echo(str("reduce:\n  ", op_fn, "\n  ", init, "\n  ", birl, ", ", end_i ))
@@ -568,7 +563,6 @@ function reduce_air(init, birl, end_i) =
  *   - Else returns type `FilterFn`.
  */
 function filter(birl, end_i) =
-  assert(!is_function(birl))
   is_undef(birl)
   ? function(birl, end_i) filter(birl, end_i)
   : let (
@@ -617,7 +611,6 @@ function filter(birl, end_i) =
  *   - Else returns type `MapFn`.
  */
 function map(birl, end_i) =
-  assert(!is_function(birl))
   is_undef(birl)
   ? function(birl, end_i) map(birl, end_i)
   : function(map_fn)

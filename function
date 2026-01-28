@@ -10,6 +10,7 @@
 use <base_algos>
 use <test>
 use <indexable>
+use <param_check>
 
 /**
  * Counts the number of parameters that can be passed to the function fn.
@@ -20,8 +21,9 @@ use <indexable>
  *   The number of parameters that the function can take.
  */
 function param_count(fn) =
+  let ( _ = verify_fn(fn) )
   let (
-    fn_str = assert(is_function(fn)) str(fn),
+    fn_str = str(fn),
     // Where to start scanning parameters in stringified function
     param_begin_i = 9,
     params =
@@ -157,7 +159,7 @@ function _pc_loop(fn_str, i = _PARAM_BEGIN_I(), params = 0, escaping = 0, quotin
  *   The number of parameters that the function can take.
  */
 function param_count_direct_recursion_demo(fn) =
-  assert(is_function(fn))
+  let ( _ = verify_fn(fn) )
   let (fn_str = str(fn))
   assert(fn_str[_PARAM_BEGIN_I()-1] == "(", str("lambda parameters expected to start at ", _PARAM_BEGIN_I()))
   _pc_loop(fn_str)
@@ -189,6 +191,8 @@ test_eq(15, it_each([1,2,3,4,5], reduce(0))(
  *   The return value of fn().
  */
 function apply_to_fn(fn, p) =
+  let ( _ = verify_fn(fn) )
+  let ( _ = verify_l(p) )
   let (
     fn_pc = param_count(fn),
     passed_pc = len(p),
@@ -211,8 +215,6 @@ function apply_to_fn(fn, p) =
       function() fn(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14])
     ]
   )
-  assert(is_function(fn))
-  assert(is_list(p))
   assert(
     fn_pc >= passed_pc,
     str("Too many list elements (", passed_pc,
@@ -237,12 +239,12 @@ function apply_to_fn(fn, p) =
  *   The return value of fn().
  */
 function apply_to_fn2(fn, p) =
+  let ( _ = verify_fn(fn) )
+  let ( _ = verify_l(p) )
   let (
     fn_pc = param_count(fn),
     passed_pc = len(p)
   )
-  assert(is_function(fn))
-  assert(is_list(p))
   assert(
     fn_pc >= passed_pc,
     str("Too many list elements (", passed_pc,
