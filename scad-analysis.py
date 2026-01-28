@@ -597,11 +597,11 @@ class Doc:
         |         (?<tag>typedef)   (?&ws) (?&type_opt)  (?&ws)?+ (?<id>(?&symbol)) (?&eol)
         |         (?<tag>callback)  (?&ws) (?&type_none)          (?<id>(?&symbol)) (?&eol)
       )
-      (?<desc>)
+      (?<default>) (?<desc>)
     )
 
     (?<CALLCHAIN>
-      (?&at_bol) @(?<tag>callchain) (?&ws) (?&type_none)          (?<id>)
+      (?&at_bol) @(?<tag>callchain) (?&ws) (?&type_none)          (?<id>) (?<default>)
       (?<desc>(?&line_tail_mtws))                                                   (?&eol)
     )
 
@@ -609,7 +609,7 @@ class Doc:
         Not using type_none as it is possible [though unlikely] that description
         could start with `{`
     )
-    (?<DOC_DESC>  (?<tag>)                  (?<type>)             (?<id>)
+    (?<DOC_DESC>  (?<tag>)                  (?<type>)             (?<id>) (?<default>)
       (?&empty_line)?+
       (?<desc>(?&to_rec_tag0))
     )
@@ -617,8 +617,9 @@ class Doc:
     (?<SLOT>
       (?&at_bol) @(?<tag>slot)      (?&ws) (?&type_opt) (?&ws)?+
       (?:
-          \[ (?<id>(?&symbol)|\d++) \s*+ (?: = \s*+ (?&id_chars_mtws))?+ \s*+ \] (?# optional slot )
-           | (?<id>(?&symbol)|\d++)                                              (?# required slot )
+          \[ \s*+ (?<id>(?&symbol)|\d++) \s*+
+                                    (?<default> (?: = \s*+ (?&id_chars_mtws))?+ \s*+ \])   (?# optional param with or without default)
+           | (?<id>(?&symbol)|\d++) (?<default>)                                 (?# required slot )
       ) (?&eol)
       (?&empty_line)?+(?<desc>(?&to_rec_tag0))
     )
@@ -626,42 +627,48 @@ class Doc:
     (?<PARAM>
       (?&at_bol) @(?<tag>param)     (?&ws) (?&type_opt) (?&ws)?+
       (?:
-        \[ \s*+ (?<id>(?&symbol)) \s*+ (?: = \s*+ (?&id_chars_mtws))?+ \s*+ \] (?# optional param with or without default)
-      | (?<id>(?&symbol))                                                      (?# required param)
+        \[ \s*+ (?<id>(?&symbol)) \s*+
+                          (?<default> (?: = \s*+ (?&id_chars_mtws))?+ \s*+ \])   (?# optional param with or without default)
+      | (?<id>(?&symbol)) (?<default>)                                           (?# required param)
       )
       (?&eol)
       (?&empty_line)?+(?<desc>(?&to_rec_tag0))
     )
 
     (?<RETURNS>
-      (?&at_bol) @(?<tag>returns)   (?&ws) (?&type_opt) (?&ws)?+  (?<id>)           (?&eol)
+      (?&at_bol) @(?<tag>returns)   (?&ws) (?&type_opt) (?&ws)?+  (?<id>) (?<default>) (?&eol)
       (?&empty_line)?+(?<desc>(?&to_rec_tag0))
     )
     ''' + RES_LIB, regex.VERBOSE
   )
   """
-  This regex will generate parallel arrays in the match named tag/type/id/desc.
+  This regex will generate parallel arrays in the match named tag/type/id/
+  default/desc.
   Reading off the parallel array, the tags will appear in the following order.
   Row/columns with:
     - `R` means that the column for that tag is required.
     - `O` means that the column for that tag is optional.
     - `O*` means optional with caveat.  See Assertions for more details.
-    - `` means that the column should be empty.
+    - ` ` means that the column should be empty.
   Tag <empty> is the symbol's description.
   A type that wasn't specified should read as "???" in output, meaning unknown.
 
-  tag         | type | id | desc | Assertions
-  ------------|------|----|------|-----------------
-  "callchain" |      |    |   O  | Must start at index 0.
-  "type"      |   R  |    |   O  | Must start at index 0 or follow callchains.
-  "typedef"   |   O  |  R |   O  | Must start at index 0 or follow callchains.
-  "callback"  |      |  R |   O  | Must start at index 0 or follow callchains.
-  <empty>     |      |    |   O  | Must start at index 0 or follow an item above.
-  "slot"      |   O  |  R |   O  | Must follow itself or an item above.
-  "param"     |   O  |  R |   O  | Must follow itself or an item above, except
-              |      |    |      | for slot.
-  "returns"   |  *O  |    |   O  | Must follow an item above, except for slot.
-              |      |    |      | *If callchain defined, then this is required.
+  tag         | type | id | default | desc | Assertions
+  ------------|------|----|---------|------|-----------------
+  "callchain" |      |    |         |   O  | Must start at index 0.
+  "type"      |  R   |    |         |   O  | Must start at index 0 or follow callchains.
+  "typedef"   |  O   |  R |         |   O  | Must start at index 0 or follow callchains.
+  "callback"  |      |  R |         |   O  | Must start at index 0 or follow callchains.
+  <empty>     |      |    |         |   O  | Must start at index 0 or follow an item above.
+  "slot"      |  O   |  R |    O*   |   O  | Must follow itself or an item above.
+              |      |    |         |      | *Default is `]` if optional.
+  "param"     |  O   |  R |    O*   |   O  | Must follow itself or an item above, except
+              |      |    |         |      | for slot.
+              |      |    |         |      | *Default:
+              |      |    |         |      | - Start with '=' and ends with ']' if has default.
+              |      |    |         |      | - Just ends with ']' if optional.
+  "returns"   |  O*  |    |         |   O  | Must follow an item above, except for slot.
+              |      |    |         |      | *If callchain defined, then this is required.
 
   Example of my JSDoc variant:
 
@@ -853,13 +860,14 @@ class Doc:
   "Indicates what kind of document this is"
 
   Tag: TypeAlias = Literal[ "header", "callchain", "desc", "slot", "param", "returns" ]
-  items : dict["Doc.Tag", list[tuple[str,str,str]]]
+  items : dict["Doc.Tag", list[tuple[str,str,str,str]]]
   "A dictionary that describes the doc"
     
   TYPE = 0
   ID   = 1
   DESC = 2
-  ATTR = ("type", "id", "desc")
+  DEFAULT = 3
+  ATTR = ("type", "id", "desc", "default")
 
   @staticmethod
   def is_tag(tag: str) -> TypeGuard["Doc.Tag"]:
@@ -948,7 +956,7 @@ class Doc:
 
       assert Doc.is_tag(tag)
       self.items[tag].append(
-        (m.captures("type")[i], m.captures("id")[i], m.captures("desc")[i])
+        (m.captures("type")[i], m.captures("id")[i], m.captures("desc")[i], m.captures("default")[i])
       )
 
     assert not self.items["callchain"] or self.items["returns"] and self.items["returns"][0][self.TYPE], \
@@ -992,7 +1000,7 @@ class Doc:
          self.e(f"ERROR: Symbol {self.content[doc_item[DOC_S_ID_SLC]]}"
            " is documenting more callable parameters than are available.")
 
-    for i, ((_, doc_param, _), (declared_param, _)) in enumerate(zip(documented_params, declared_params)):
+    for i, ((_, doc_param, _, _), (declared_param, _)) in enumerate(zip(documented_params, declared_params)):
       assert declared_param == doc_param, \
         f"ERROR: Symbol '{self.filename}::{self.content[doc_item[DOC_S_ID_SLC]]}' named declared param '{declared_param}' at pos {i}, doesn't match documented param '{doc_param}'."
 
@@ -1175,7 +1183,7 @@ class Doc:
       # callback signature from params and returns
       sig = f"*callback* {id}("
       params = []
-      for (ptype, pid, _) in self.items["param"]:
+      for (ptype, pid, _, _) in self.items["param"]:
         param_str = f"{pid.replace("_", "\\_")}"
         if ptype:
           param_str += f": {self.link_types(ptype, False)}"
@@ -1236,7 +1244,7 @@ class Doc:
       # build params for function/module
       params = []
       doc_params = self.items["param"]
-      for (ptype, pid, _) in doc_params:
+      for (ptype, pid, _, _) in doc_params:
         param_str = f"{pid.replace("_", "\\_")}"
         if ptype:
           param_str += f": {self.link_types(ptype, False)}"
@@ -1268,8 +1276,9 @@ class Doc:
 
       # Extract param names from the parsed param list
       params = []
-      if self.doc_item[DOC_S_PARAM_LST] is not None:
-        for (param_name, _) in self.doc_item[DOC_S_PARAM_LST]:
+      param_list = self.doc_item[DOC_S_PARAM_LST]
+      if param_list is not None:
+        for (param_name, _) in param_list:
           params.append(param_name.replace("_", "\\_"))
 
       sig += ", ".join(params) + ")"
@@ -1298,7 +1307,7 @@ class Doc:
         Used with typedef to override the id for a callback.
     """
     if self.items["callchain"]:
-      for (_, _, callchain) in self.items["callchain"]:
+      for (_, _, callchain, _) in self.items["callchain"]:
         if id_override and is_sym_with_doc(self.doc_item):
           output_lines.append(f"    {callchain}".replace(self.content[self.doc_item[DOC_S_ID_SLC]], id_override, 1))
         else:
@@ -1316,7 +1325,7 @@ class Doc:
         ret_type = self.items["returns"][0][Doc.TYPE]
         if ret_type:
           # Build function signature prefix
-          params = ", ".join(name for _, name, _ in self.items["param"])
+          params = ", ".join(name for _, name, _, _ in self.items["param"])
           func_prefix = f"{id}({params}) "
 
           # Parse return types using RE_SEP_TYPES for unions
@@ -1358,11 +1367,22 @@ class Doc:
     output_lines.append("<details><summary>slots</summary>")
     # output_lines.append("")
 
-    for (slot_type, slot_id, slot_desc) in self.items["slot"]:
+    for (slot_type, slot_id, slot_desc, slot_opt) in self.items["slot"]:
       line = f"<code><b>{slot_id}</b></code>"
       if slot_type:
-        line += f": <code>{self.link_types(slot_type)}</code>\n"
-      output_lines.append(line)
+        line += f": <code>{self.link_types(slot_type)}</code>"
+      if slot_opt:
+        # documented default/optional (should only be at end of list)
+        if slot_opt.startswith("="):
+          # documented default (how undef is treated)
+          assert slot_opt.endswith("]"), "regex error"
+          slot_opt = slot_opt[1:-1].strip().replace("[", "\\[")
+          line += f" *(Default: `{slot_opt}`)*"
+        else:
+          # documented optional (how undef is treated)
+          assert slot_opt.endswith("]"), "regex error"
+          line += " *(Optional)*"
+      output_lines.append(f"{line}\n")
 
       if slot_desc:
         # Remove leading indentation from description
@@ -1400,18 +1420,27 @@ class Doc:
           if param_default:
             param_defaults[param_name] = param_default
 
-    for (param_type, param_id, param_desc) in self.items["param"]:
+    for (param_type, param_id, param_desc, param_opt) in self.items["param"]:
       line = f"**<code>{param_id}</code>**"
       if param_type:
-        line += f": <code>{self.link_types(param_type, False)}</code>\n"
-
-      # TODO: Missing Optional
+        line += f": <code>{self.link_types(param_type, False)}</code>"
 
       # Check if param has a default value
-      if param_id in param_defaults:
-        line += f" *(Default: `{param_defaults[param_id]}`)*\n"
+      if param_opt:
+        if param_opt.startswith("="):
+          # documented default
+          assert param_opt.endswith("]"), "regex error"
+          param_opt = param_opt[1:-1].strip().replace("[", "\\[")
+          line += f" *(Default: `{param_opt}`)*"
+        else:
+          # documented optional (most likely undef)
+          assert param_opt.endswith("]"), "regex error"
+          line += " *(Optional)*"
+      elif param_id in param_defaults:
+        # undocumented default
+        line += f" *(Default: `{param_defaults[param_id].replace("[", "\\[")}`)*"
 
-      output_lines.append(line)
+      output_lines.append(f"{line}\n")
 
       if param_desc:
         # Remove leading indentation from description
@@ -1440,7 +1469,7 @@ class Doc:
     if not self.items["returns"]:
       return
 
-    (ret_type, _, ret_desc) = self.items["returns"][0]
+    (ret_type, _, ret_desc, _) = self.items["returns"][0]
 
     # output_lines.append("")
     output_lines.append("<details><summary>returns</summary>")
@@ -1504,7 +1533,7 @@ class Doc:
 
   def output_desc(self, output_lines: list[str]):
     if self.items["desc"]:
-      for (_, _, desc) in self.items["desc"]:
+      for (_, _, desc, _) in self.items["desc"]:
         if desc:
           output_lines.append(Doc.RE_TRAILING_EMPTY_LINES.sub("", desc))
           output_lines.append("")
@@ -1526,7 +1555,7 @@ class Doc:
     # File-level documentation (no symbol)
     if self.doc_type == "file":
       if self.items["desc"]:
-        for (_, _, desc) in self.items["desc"]:
+        for (_, _, desc, _) in self.items["desc"]:
           if desc:
             output_lines.append(desc.strip() + "\n")
       return
@@ -1604,7 +1633,7 @@ class Doc:
 
         # Description
         if self.items["desc"]:
-          for (_, _, desc) in self.items["desc"]:
+          for (_, _, desc, _) in self.items["desc"]:
             if desc:
               output_lines.append(desc.strip())
               output_lines.append("")
@@ -1644,7 +1673,7 @@ class Symbols:
     obj = self.type_dict.get(symbol_name) or self.function_dict.get(symbol_name)
     if obj and obj.items["callchain"]:
       return "\n".join(
-        "    " + cc_desc for _, _, cc_desc in obj.items["callchain"] if cc_desc
+        "    " + cc_desc for _, _, cc_desc, _ in obj.items["callchain"] if cc_desc
       )
 
     def resolve_to_callback(type_name: str):
@@ -1685,7 +1714,7 @@ class Symbols:
 
     segs: list[str] = []
     segs.append(
-      f"{symbol_name}({', '.join(name for _, name, _ in cb.items['param'])})"
+      f"{symbol_name}({', '.join(name for _, name, _, _ in cb.items['param'])})"
     )
     ret_type = get_ret_type(symbol_name, cb)
 
@@ -1700,7 +1729,7 @@ class Symbols:
 
       had_curry = True
       segs.append(
-        f"({', '.join(name for _, name, _ in next_cb.items['param'])})"
+        f"({', '.join(name for _, name, _, _ in next_cb.items['param'])})"
       )
       seen.add(ret_type)
       ret_type = get_ret_type(ret_type, next_cb)
@@ -1949,13 +1978,13 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
     if output_lines is not None:
       out_text = "\n".join(output_lines)
 
-      # This makes sure that the heading for the next file will be separated by
-      # an empty line.  A side effect of this is that the end of the file will
-      # contain 2 consecutive blank lines, causing the markdown linter to complain.
-      if out_text and not out_text.endswith("\n\n"):
-        out_text += "\n"
+      # # This makes sure that the heading for the next file will be separated by
+      # # an empty line.  A side effect of this is that the end of the file will
+      # # contain 2 consecutive blank lines, causing the markdown linter to complain.
+      # if out_text and not out_text.endswith("\n\n"):
+      #   out_text += "\n"
 
-  assert out_text == "" or out_text.endswith("\n\n")
+  assert out_text == "" or out_text.endswith("\n")
   # Output phase
   # from_stdin is always combined with write_ext=None (enforced above).
   if write_ext is None:

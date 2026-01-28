@@ -6,8 +6,8 @@ use <helpers>
 _fl = function(l) fl("test_range.scad", l);
 
 module test_range_is_range() {
-  // Currently, library does not construct a dedicated "range object"
-  // in OpenSCAD; these tests only cover negatives.
+  // These tests only verify non-range values return false.
+  // Positive cases (actual ranges) are not tested here.
   test_falsy(is_range(123), _fl(11));
   test_falsy(is_range("abc"), _fl(12));
   test_falsy(is_range([0, 1, 2]), _fl(13));

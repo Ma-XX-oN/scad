@@ -204,5 +204,5 @@ else:
                   " outline button (☰) near the top right of the page"
                   " to navigate by heading.*\n\n")
       f_out.write(toc)
-      f_out.write("\n")
+      # f_out.write("\n")
     f_out.write(result.stdout)

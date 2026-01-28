@@ -24,13 +24,13 @@ locations.  In particular, library files are searched for:
 - in the same folder as the design file you opened,
 - in the library folder of the OpenSCAD installation, and
 - in folders listed by the `OPENSCADPATH` environment variable.  (See the
-  OpenSCAD manual for the full details.)  OpenSCAD User Manual - Include
-  Statement (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Include_Statement)
+  OpenSCAD manual for the full details.)  [OpenSCAD User Manual - Include
+  Statement](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Include_Statement)
 
 A practical way to use this library is to place (or clone) it into your user
 library folder and then import files by relative path from there.  OpenSCAD
 exposes the library folder location via **File → Show Library Folder...**.
-OpenSCAD User Manual - Libraries (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
+[OpenSCAD User Manual - Libraries](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
 
 Alternatively, if using in several projects, clone in one location and set the `OPENSCADPATH`
 variable to point to that location.
@@ -194,8 +194,6 @@ There are several files in this library set.
 11. [sas_cutter](#file-sas_cutter)
     - Creates a skin which is used as a cutting tool help to align two separate
       parts together.
-
-
 
 ## Table of Contents
 
@@ -589,7 +587,6 @@ There are several files in this library set.
 </blockquote>
 </details>
 
-
 ## 📘range<a id='file-range'></a>
 
 ### <i>📑How to Import</i><a id='range-ch-How_to_Import'></a>
@@ -670,12 +667,12 @@ Creates a range object.
   - If `≤ 0` then returns an empty list.
 - Else the beginning index.
 
-**<code>step_or_end_i</code>**: <code>number</code>
+**<code>step_or_end_i</code>**: <code>number</code> *(Optional)*
 
 - If `end_i` is `undef`, then this is the end index.
 - Else this is the step.
 
-**<code>end_i</code>**: <code>number</code>
+**<code>end_i</code>**: <code>number</code> *(Optional)*
 
 - If a number, then this is the ending index.
 
@@ -740,7 +737,7 @@ The range to get index from if left to iterate `i` times.
 The number iterations to have been done to get the return value.
 If negative then start counting from end to beginning.
 
-**<code>_r_len</code>**: <code>number|undef</code>
+**<code>_r_len</code>**: <code>number|undef</code> *(Optional)*
 
 Cached length of `r`.  Will calculate it if `undef`.
 
@@ -808,7 +805,7 @@ The range to get the index for.
 The index of the element.  If value is negative, then goes backward from
 end of range.
 
-**<code>_r_len</code>**: <code>number|undef</code>
+**<code>_r_len</code>**: <code>number|undef</code> *(Optional)*
 
 Cached length of `r`.  Will calculate it if `undef`.
 
@@ -863,7 +860,6 @@ Step value.
 Stop value.
 
 </details>
-
 
 ## 📘types<a id='file-types'></a>
 
@@ -977,8 +973,7 @@ Function to get the type of an object as an enum.
 
 The object to get the type from.
 
-**<code>distinguish_float_from_int</code>**: <code>bool</code>
- *(Default: `false`)*
+**<code>distinguish_float_from_int</code>**: <code>bool</code> *(Default: `false`)*
 
 Flag to indicate if to distinguish floats from integers rather than
 grouping them together as numbers.
@@ -1028,8 +1023,7 @@ Gets a string representation of the type of `o`.
 
 Object to query.
 
-**<code>distinguish_float_from_int</code>**: <code>bool</code>
- *(Default: `false`)*
+**<code>distinguish_float_from_int</code>**: <code>bool</code> *(Default: `false`)*
 
 States if to distinguish a float from an int when detecting a number.
 
@@ -1102,7 +1096,6 @@ Give info for `o` as string.
 
 Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
 to get name of type.
-
 
 ## 📘birlei<a id='file-birlei'></a>
 
@@ -1454,7 +1447,7 @@ or any other abstract structure) and/or by how it interprets adaptor outputs.
 
 The probe value as defined above.
 
-**<code>get_value</code>**: <code>bool</code>
+**<code>get_value</code>**: <code>bool</code> *(Default: `undef`)*
 
 States if to return the predicate result or the probed value.
 
@@ -1542,7 +1535,6 @@ Index to remap or undef if no index to remap.
 - If passed undef, returns undef.
 
 </details>
-
 
 ## 📘base_algos<a id='file-base_algos'></a>
 
@@ -1723,7 +1715,7 @@ Like C++'s `lower_bound`: returns the first index `i` for which
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1731,7 +1723,7 @@ Like C++'s `lower_bound`: returns the first index `i` for which
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1774,7 +1766,7 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1782,7 +1774,7 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1819,7 +1811,7 @@ result.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1827,7 +1819,7 @@ result.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1869,7 +1861,7 @@ the indices.
 This is the initial value that is passed to the first iteration of `op_fn`
 as the accumulator.
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1877,7 +1869,7 @@ as the accumulator.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1919,7 +1911,7 @@ the indices.  This Reduction Allows for Incomplete Reduction.
 This is the initial value that is passed to the first iteration of `op_fn`
 as the accumulator.
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1927,7 +1919,7 @@ as the accumulator.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1963,7 +1955,7 @@ Filter function.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -1971,7 +1963,7 @@ Filter function.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2008,7 +2000,7 @@ elements as indices provided.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code>
+**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2016,7 +2008,7 @@ elements as indices provided.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2121,7 +2113,7 @@ Executes the algorithm.
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2410,7 +2402,6 @@ A list of elements that were mapped.
 
 <code>*callback* MapBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-
 ## 📘indexable<a id='file-indexable'></a>
 
 ### <i>📑How to Import</i><a id='indexable-ch-How_to_Import'></a>
@@ -2609,7 +2600,7 @@ The slice being converted.
 
 The `slr` used as reference.
 
-**<code>_slr_len</code>**: <code>number</code>
+**<code>_slr_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(slr)`.
 
@@ -2680,16 +2671,14 @@ This is the list to take element data from.
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2747,16 +2736,14 @@ This is the list to take element data from.
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2815,16 +2802,14 @@ This is the list to take element data from.
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2892,7 +2877,7 @@ The `slr` to get the index for.
 The index of the element.  If value is negative, then goes backward from
 end of slr, where -1 represents the last indexable index.
 
-**<code>_slr_len</code>**: <code>number</code>
+**<code>_slr_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(slr)`.
 
@@ -2978,7 +2963,8 @@ The element at the index specified.
 
 <code>*function* els(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : string|list|<a href="#t-range">range</a></code>
 
-Gets a substring, sub-range or sub-elements of a string, list or range.
+Gets a substring, sub-range or sub-elements of a string, list or range.   If
+`slr` is a `range` and the `birlei` is a `range`, the the result is a `range`.
 
 > ℹ️ NOTE:
 >
@@ -2990,16 +2976,14 @@ Gets a substring, sub-range or sub-elements of a string, list or range.
 
 The `slr` to get the elements from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3050,16 +3034,14 @@ Example:
 
 The r to get the elements from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(r, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3090,16 +3072,14 @@ Gets the indices from a `birlsei` as a list.
 
 The `slr` to get the indices from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3134,21 +3114,19 @@ Return a range representing indices to iterate over a list forwards.
 
 slr to iterate over
 
-**<code>start_offset</code>**: <code>number</code>
- *(Default: `0`)*
+**<code>start_offset</code>**: <code>number</code> *(Default: `0`)*
 
 Offset to start the starting point from.
 
 - Should prolly be positive to not give an undefined index.
 
-**<code>end_offset</code>**: <code>number</code>
- *(Default: `0`)*
+**<code>end_offset</code>**: <code>number</code> *(Default: `0`)*
 
 Offset to end the ending point to.
 
 - Should prolly be negative to not give an undefined index.
 
-**<code>_slr_len</code>**: <code>number</code>
+**<code>_slr_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(slr)`.
 
@@ -3186,21 +3164,19 @@ Return a range representing indices to iterate over slr backwards.
 
 slr to iterate over
 
-**<code>start_offset</code>**: <code>number</code>
- *(Default: `0`)*
+**<code>start_offset</code>**: <code>number</code> *(Default: `0`)*
 
 Offset to start the starting point from.
 
 - Should prolly be negative to not give an undefined index.
 
-**<code>end_offset</code>**: <code>number</code>
- *(Default: `0`)*
+**<code>end_offset</code>**: <code>number</code> *(Default: `0`)*
 
 Offset to end the ending point to.
 
 - Should prolly be positive to not give an undefined index.
 
-**<code>_slr_len</code>**: <code>number</code>
+**<code>_slr_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(slr)`.
 
@@ -3236,18 +3212,16 @@ slr used for knowing when to wrap.
 
 Index to start from.  Assumed: `0 <= i < slr_len(slr)`.
 
-**<code>inc</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>inc</code>**: <code>number</code> *(Default: `1`)*
 
 Count to increase i by.
 
-**<code>wrap_to_0</code>**: <code>bool</code>
- *(Default: `false`)*
+**<code>wrap_to_0</code>**: <code>bool</code> *(Default: `false`)*
 
 If true, then when i+inc >= slr_len(slr), result is 0.  Otherwise, it wraps
 to modulo slr_len(slr).
 
-**<code>_slr_len</code>**: <code>number</code>
+**<code>_slr_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(slr)`.
 
@@ -3282,18 +3256,16 @@ slr used for knowing when to wrap.
 
 Index to start from.  Assumed: `0 <= i < slr_len(slr)`.
 
-**<code>dec</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>dec</code>**: <code>number</code> *(Default: `1`)*
 
 Count to decrease i by.
 
-**<code>wrap_to_last</code>**: <code>bool</code>
- *(Default: `false`)*
+**<code>wrap_to_last</code>**: <code>bool</code> *(Default: `false`)*
 
 If true, then when i-dec < 0, result is idx(slr, -1).  Otherwise, it wraps
 to modulo slr_len(slr).
 
-**<code>_slr_len</code>**: <code>number</code>
+**<code>_slr_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(slr)`.
 
@@ -3361,12 +3333,11 @@ Pops 0 or more elements off the head (which are the last elements) of the
 
 sl to remove from.
 
-**<code>count</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>count</code>**: <code>number</code> *(Default: `1`)*
 
 Number of elements to pop off end of list.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -3431,12 +3402,11 @@ Shift elements off of the tail (which are at the beginning) of the `sl`.
 
 sl to remove from.
 
-**<code>count</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>count</code>**: <code>number</code> *(Default: `1`)*
 
 Number of elements to shift off beginning of list.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -3486,16 +3456,14 @@ Index to insert into.
 
 Elements to insert.
 
-**<code>es_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>es_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>es_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>es_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(es, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3542,7 +3510,7 @@ The first index to remove. Can be negative to represent counting from end.
 
 The last index to remove. Can be negative to represent counting from end.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -3577,12 +3545,11 @@ Removes the same consecutive values, where same is defined by `equal_fn`.
 
 List to remove duplicate consecutive elements from.
 
-**<code>wrap</code>**: <code>bool</code>
- *(Default: `false`)*
+**<code>wrap</code>**: <code>bool</code> *(Default: `false`)*
 
 If true, then will consider the first and last element consecutive.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -3621,16 +3588,14 @@ Removes each element indexed in the `birlsei`.
 
 List to remove elements from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(sl, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3672,16 +3637,14 @@ The ending index of a to replace.
 
 List to draw elements from to replace the a element range with.
 
-**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(b, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3723,16 +3686,14 @@ specified by `b_birls, b_end_i`.
 
 sl to have elements replaced.
 
-**<code>a_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>a_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>a_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>a_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(a, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3812,7 +3773,7 @@ This is the list to rotate.
 - Number of elements to rotate left.
 - If negative, rotates right.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -3850,7 +3811,7 @@ This is the list to rotate.
 - Number of elements to rotate right.
 - If negative, rotates left.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -3881,7 +3842,7 @@ Gets the element at the head (which is the last element) of the `sl`.
 
 List to get from.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -3916,7 +3877,7 @@ List to get from.
 
 Number of elements to retrieve from the head.
 
-**<code>_sl_len</code>**: <code>number</code>
+**<code>_sl_len</code>**: <code>number</code> *(Optional)*
 
 If passed, then use that cached value instead of calculating `len(sl)`.
 
@@ -4002,16 +3963,14 @@ operator to allow for non-exact matches.
 
 String or list of consecutive items to search through.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(haystack, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4051,16 +4010,14 @@ to search and exposes the equal() operator to allow for non-exact matches.
 
 String or list of consecutive items to search through.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code>
- *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
- *(Default: `undef`)*
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(haystack, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4229,7 +4186,7 @@ Gets the equality function and perform a function with it.
 
 <details><summary>parameters</summary>
 
-**<code>equal_fn</code>**: <code><a href="#t-EqualFn">EqualFn</a></code>
+**<code>equal_fn</code>**: <code><a href="#t-EqualFn">EqualFn</a></code> *(Default: `function(a, b) a == b`)*
 
 The equality function.
 
@@ -4259,14 +4216,14 @@ Callback that removes the adjacent duplicates.
 
 sl to have elements replaced.
 
-**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
+**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(b, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4301,14 +4258,14 @@ Gets the needle data.
 
 String or list of items being searched for.
 
-**<code>n_birls</code>**: <code><a href="#t-Birls">Birls</a></code>
+**<code>n_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>n_end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>n_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(needle, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4328,7 +4285,6 @@ Possible callchains:
     SearchFn(equal_fn) : (number|undef)
 
 </details>
-
 
 ## 📘function<a id='file-function'></a>
 
@@ -4445,7 +4401,6 @@ The return value of fn().
 
 </details>
 
-
 ## 📘test<a id='file-test'></a>
 
 ### <i>📑Purpose</i><a id='test-ch-Purpose'></a>
@@ -4471,8 +4426,7 @@ Expected value.
 
 The value actually received.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4498,8 +4452,7 @@ The value actually received.
 
 How much tolerance to say that two numbers are equal.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4521,8 +4474,7 @@ Value that wasn't expected.
 
 The value actually received.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4544,8 +4496,7 @@ Left hand side value to test.
 
 Right hand side value to test.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4567,8 +4518,7 @@ Left hand side value to test.
 
 Right hand side value to test.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4590,8 +4540,7 @@ Left hand side value to test.
 
 Right hand side value to test.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4613,8 +4562,7 @@ Left hand side value to test.
 
 Right hand side value to test.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4632,8 +4580,7 @@ Tests if `val` is a truthy value
 
 Value to test.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
@@ -4651,13 +4598,11 @@ Tests if `val` is a falsy value
 
 Value to test.
 
-**<code>msg</code>**: <code>string</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string</code> *(Default: `""`)*
 
 A user message to append to failure message.
 
 </details>
-
 
 ## 📘transform<a id='file-transform'></a>
 
@@ -4712,8 +4657,7 @@ appended.
 
 List of points.  Each point must have dimension < n.
 
-**<code>n</code>**: <code>number</code>
- *(Default: `4`)*
+**<code>n</code>**: <code>number</code> *(Default: `4`)*
 
 Target homogeneous dimension.  Must be greater than the dimension of every
 point in pts.
@@ -4753,8 +4697,7 @@ Preconditions (enforced by asserts):
 
 List of homogeneous points.
 
-**<code>n</code>**: <code>number</code>
- *(Default: `3`)*
+**<code>n</code>**: <code>number</code> *(Default: `3`)*
 
 Number of Euclidean coordinates to return per point.
 
@@ -4790,8 +4733,7 @@ Use:
 
 Square M×M transform matrix.
 
-**<code>n</code>**: <code>number</code>
- *(Default: `4`)*
+**<code>n</code>**: <code>number</code> *(Default: `4`)*
 
 Target homogeneous dimension.  Must satisfy M < n.
 
@@ -4905,8 +4847,7 @@ Checks if `o` has the shape of a vector of `dim` `number`s.
 
 Object to test.
 
-**<code>dim</code>**: <code>number</code>
- *(Default: `3`)*
+**<code>dim</code>**: <code>number</code> *(Default: `3`)*
 
 Number of dimensions the vector should represent.
 
@@ -4932,8 +4873,7 @@ Checks if `o` has the shape of a free vector of `dim` `number`s.
 
 Object to test.
 
-**<code>dim</code>**: <code>number</code>
- *(Default: `3`)*
+**<code>dim</code>**: <code>number</code> *(Default: `3`)*
 
 Number of dimensions the vector should represent.
 
@@ -4960,8 +4900,7 @@ represents the starting and ending points of a bound vector.
 
 Object to test.
 
-**<code>dim</code>**: <code>number</code>
- *(Default: `3`)*
+**<code>dim</code>**: <code>number</code> *(Default: `3`)*
 
 Number of dimensions the vector should represent.
 
@@ -5050,8 +4989,7 @@ or if don't want to worry about having to use
 - If `list` `[rx,ry,rz]`: apply rotations about X then Y then Z (degrees).
   (v is ignored.)
 
-**<code>v</code>**: <code><a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a></code>
- *(Default: `undef`)*
+**<code>v</code>**: <code><a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a></code> *(Optional)*
 
 - If `a` is a number
   - If `v` is a specified Vector3D, then this is the axis vector.
@@ -5192,8 +5130,7 @@ The source line segment: `[P0, P1]`.
 
 The target line segment: `[Q0, Q1]`.
 
-**<code>scale_to_vectors</code>**: <code>bool</code>
- *(Default: `false`)*
+**<code>scale_to_vectors</code>**: <code>bool</code> *(Default: `false`)*
 
 Only affects the 2-point overload.  If true, also apply uniform scaling by
 `|Q1-Q0|/|P1-P0|`.
@@ -5230,8 +5167,7 @@ Invert a square matrix using Gauss-Jordan elimination with partial pivoting.
 
 Non-empty square numeric matrix (list of equal-length lists).
 
-**<code>eps</code>**: <code>number</code>
- *(Default: `1e-12`)*
+**<code>eps</code>**: <code>number</code> *(Default: `1e-12`)*
 
 Pivot tolerance.  Must be > 0.
 
@@ -5412,7 +5348,7 @@ by property `.y`.
 This is the dimension `2` or z dimension of the point.  Can also be accessed
 by property `.z`.
 
-<code><b>n</b></code>: <code>number</code>
+<code><b>n</b></code>: <code>number</code> *(Optional)*
 
 This is the dimension `n` dimension of the point.
 
@@ -5483,7 +5419,7 @@ accessed by property `.y`.
 This is the dimension `2` or z dimension of the vector.  Can also be
 accessed by property `.z`.
 
-<code><b>n</b></code>: <code>number</code>
+<code><b>n</b></code>: <code>number</code> *(Optional)*
 
 This is the dimension `n` dimension of the vector.
 
@@ -5542,7 +5478,6 @@ This is the starting point for this bound vector.
 This is the ending point for this bound vector.
 
 </details>
-
 
 ## 📘helpers<a id='file-helpers'></a>
 
@@ -5615,8 +5550,7 @@ First vector.
 
 Second vector.
 
-**<code>R</code>**: <code>number</code>
- *(Default: `undef`)*
+**<code>R</code>**: <code>number</code> *(Optional)*
 
 Radius to use to measure the length along a sphere's great arc.
 
@@ -5688,8 +5622,7 @@ slope (dy/dx)
 
 vertical shift of the line relative to b
 
-**<code>b</code>**: <code>number</code>
- *(Default: `0`)*
+**<code>b</code>**: <code>number</code> *(Default: `0`)*
 
 original y-intercept (default 0)
 
@@ -5727,8 +5660,7 @@ slope (dy/dx)
 
 desired arc length difference
 
-**<code>b</code>**: <code>number</code>
- *(Default: `0`)*
+**<code>b</code>**: <code>number</code> *(Default: `0`)*
 
 original y-intercept (default 0)
 
@@ -5847,8 +5779,7 @@ First item to compare against.
 
 Second item to compare against.
 
-**<code>epsilon</code>**: <code>number</code>
- *(Default: `1e-6`)*
+**<code>epsilon</code>**: <code>number</code> *(Default: `1e-6`)*
 
 The max error tolerated for a number.
 
@@ -5947,8 +5878,7 @@ debugging.
 
 Length of arrow.
 
-**<code>t</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>t</code>**: <code>number</code> *(Default: `1`)*
 
 Thickness of arrowhead shaft.
 
@@ -5977,8 +5907,7 @@ respectively.
 
 Length of arrow.
 
-**<code>t</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>t</code>**: <code>number</code> *(Default: `1`)*
 
 Thickness of arrowhead shaft.
 
@@ -6048,8 +5977,7 @@ an expression with minimal effort.
 - If truthy, returns function that takes a parameter  which it returns
   unmodified.
 
-**<code>msg</code>**: <code>string|function</code>
- *(Default: `""`)*
+**<code>msg</code>**: <code>string|function</code> *(Default: `""`)*
 
 - If truth is falsy, then
   - If msg is a function, execute it to get the actual message.
@@ -6156,7 +6084,6 @@ Returns `return_value`.
 
 </details>
 
-
 ## 📘skin<a id='file-skin'></a>
 
 ### <i>📑Purpose</i><a id='skin-ch-Purpose'></a>
@@ -6181,13 +6108,11 @@ Converts a skin object to a human readable string.
 
 This is the skin object to view.
 
-**<code>only_first_and_last_layers</code>**: <code>bool</code>
- *(Default: `true`)*
+**<code>only_first_and_last_layers</code>**: <code>bool</code> *(Default: `true`)*
 
 Show only the first and last layers if true, otherwise all layers.
 
-**<code>precision</code>**: <code>number</code>
- *(Default: `4`)*
+**<code>precision</code>**: <code>number</code> *(Default: `4`)*
 
 The number of decimal places to show the layers.
 
@@ -6292,14 +6217,12 @@ points between adjacent layers.  Each triangle is a [`Face`](#t-Face).
 
 Number of points per layer.
 
-**<code>layers</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>layers</code>**: <code>number</code> *(Default: `1`)*
 
 Number of vertical wall segments to generate (requires one more point
 layer).
 
-**<code>wall_diagonal</code>**: <code>list\[bool,...]</code>
- *(Default: `[0, 1]`)*
+**<code>wall_diagonal</code>**: <code>list\[bool,...]</code> *(Default: `\[0,1]`)*
 
 This is used to allow changing the diagonal of neighbouring square polygons
 on a layer.
@@ -6601,8 +6524,7 @@ Shows the debug axes to verify where you think things should be.
 
 Object to show debug axes for.
 
-**<code>styles</code>**: <code>list\[<a href="#t-DebugStyle">DebugStyle</a>]</code>
- *(Default: `[["red", 1, .1], ["green"], ["blue"]]`)*
+**<code>styles</code>**: <code>list\[<a href="#t-DebugStyle">DebugStyle</a>]</code> *(Default: `\[\["red", 1, .1], \["green"], \["blue"]]`)*
 
 Contains a list of styles that are reused when the number of points in a
 debug group exceeds the the number of styles.
@@ -6642,11 +6564,11 @@ BE monotonically nondecreasing over the points list.
 This take in a point and returns some value.  This is to allow selection of
 a particular axis or length for a given point to compare against value.
 
-**<code>begin</code>**: <code>number</code>
+**<code>begin</code>**: <code>number</code> *(Default: `extract_order_value_fn(el(obj\[SKIN_PTS],  0))`)*
 
 The value to compare against the extracted value from a point.
 
-**<code>end</code>**: <code>number</code>
+**<code>end</code>**: <code>number</code> *(Default: `extract_order_value_fn(el(obj\[SKIN_PTS], -1))`)*
 
 The value to compare against the extracted value from a point.
 
@@ -6678,8 +6600,7 @@ Asserts if the object's number of points doesn't correspond to the equation:
 
 Object to verify.
 
-**<code>disp_all_pts</code>**: <code>bool</code>
- *(Default: `false`)*
+**<code>disp_all_pts</code>**: <code>bool</code> *(Default: `false`)*
 
 - If false, only returns the first and last points in the list.
 - If true, returns all points, with each layer of points on a separate line.
@@ -6712,8 +6633,7 @@ Represents a skin object.
 Maximum distance before adding another layer to reduce the distance below
 max_diff.
 
-**<code>diff_fn</code>**: <code>function</code>
- *(Default: `function(p0, p1) p1.x - p0.x`)*
+**<code>diff_fn</code>**: <code>function</code> *(Default: `function(p0, p1) p1.x - p0.x`)*
 
 Callback that gives the distance between layers, where `p0` is the first
 point of the current layer and `p1` is the first point of the next layer.
@@ -6848,7 +6768,7 @@ Green value between `[0,1]`.
 
 Blue value between `[0,1]`.
 
-<code><b>3</b></code>: <code>number</code>
+<code><b>3</b></code>: <code>number</code> *(Default: `1.0`)*
 
 Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
 
@@ -6963,7 +6883,6 @@ Thickness that is passed to [`arrow()`](#m-arrow) module.
 
 </details>
 
-
 ## 📘sas_cutter<a id='file-sas_cutter'></a>
 
 ### <i>📑Purpose</i><a id='sas_cutter-ch-Purpose'></a>
@@ -7014,24 +6933,20 @@ Number of complete wave_cycles to apply along cutting edge.
 
 Amplitude of the wave on cutting edge (peak-to-peak).
 
-**<code>long_wave_segs</code>**: <code>number</code>
- *(Default: `4`)*
+**<code>long_wave_segs</code>**: <code>number</code> *(Default: `4`)*
 
 Number of segments to break up the wave into.
 
-**<code>long_wave_cycles</code>**: <code>number</code>
- *(Default: `0.5`)*
+**<code>long_wave_cycles</code>**: <code>number</code> *(Default: `0.5`)*
 
 Number of complete wave_cycles to apply perpendicular to the cutting edge.
 
-**<code>cutedge_long_overflow</code>**: <code>number</code>
- *(Default: `1e-4`)*
+**<code>cutedge_long_overflow</code>**: <code>number</code> *(Default: `1e-4`)*
 
 Widens the cutter by this amount
      expanding from the centre.
 
-**<code>cutedge_lat_overflow</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>cutedge_lat_overflow</code>**: <code>number</code> *(Default: `1`)*
 
 Lengthens the cutter by this amount (rounded to the next segment length)
 expanding from the centre.
@@ -7095,30 +7010,25 @@ number of complete wave_cycles to apply along cutting edge.
 
 amplitude of the wave on cutting edge (peak-to-peak).
 
-**<code>long_wave_segs</code>**: <code>number</code>
- *(Default: `_ignored(4)`)*
+**<code>long_wave_segs</code>**: <code>number</code> *(Default: `*ignored*`)*
 
 number of segments to break up the wave into.
 
-**<code>long_wave_cycles</code>**: <code>number</code>
- *(Default: `_ignored(0.5)`)*
+**<code>long_wave_cycles</code>**: <code>number</code> *(Default: `*ignored*`)*
 
 number of complete wave_cycles to apply perpendicular to the cutting edge.
 
-**<code>cutedge_long_overflow</code>**: <code>number</code>
- *(Default: `1e-4`)*
+**<code>cutedge_long_overflow</code>**: <code>number</code> *(Default: `1e-4`)*
 
 widens the cutter by this amount
      expanding from the centre.
 
-**<code>cutedge_lat_overflow</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>cutedge_lat_overflow</code>**: <code>number</code> *(Default: `1`)*
 
 lengthens the cutter by this amount
      (rounded to the next segment length) expanding from the centre.
 
-**<code>x_phase_offset</code>**: <code>number</code>
- *(Default: `0`)*
+**<code>x_phase_offset</code>**: <code>number</code> *(Default: `0`)*
 
      The starting phase of the a point.  Value must be ∈ [0, 360).
 
@@ -7168,29 +7078,24 @@ number of complete wave_cycles to apply
 
 amplitude of the wave on cutting edge (peak-to-peak).
 
-**<code>long_wave_segs</code>**: <code>number</code>
- *(Default: `4`)*
+**<code>long_wave_segs</code>**: <code>number</code> *(Default: `4`)*
 
 number of segments to break up the wave into.
 
-**<code>long_wave_cycles</code>**: <code>number</code>
- *(Default: `0.5`)*
+**<code>long_wave_cycles</code>**: <code>number</code> *(Default: `0.5`)*
 
 number of complete wave_cycles to apply
      perpendicular to the cutting edge.
 
-**<code>cutedge_long_overflow</code>**: <code>number</code>
- *(Default: `1e-4`)*
+**<code>cutedge_long_overflow</code>**: <code>number</code> *(Default: `1e-4`)*
 
 widens the cutter by this amount
      expanding from the centre.
 
-**<code>cutedge_lat_overflow</code>**: <code>number</code>
- *(Default: `1`)*
+**<code>cutedge_lat_overflow</code>**: <code>number</code> *(Default: `1`)*
 
 lengthens the cutter by this amount
      (rounded to the next segment length) expanding from the centre.
 
 </details>
-
 
