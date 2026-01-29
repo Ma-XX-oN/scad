@@ -23,14 +23,14 @@ locations.  In particular, library files are searched for:
 
 - in the same folder as the design file you opened,
 - in the library folder of the OpenSCAD installation, and
-- in folders listed by the `OPENSCADPATH` environment variable.  (See the
-  OpenSCAD manual for the full details.)  [OpenSCAD User Manual - Include
-  Statement](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Include_Statement)
+- in folders listed by the `OPENSCADPATH` environment variable.  (See
+  [OpenSCAD User Manual - Include
+  Statement](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Include_Statement))
 
 A practical way to use this library is to place (or clone) it into your user
 library folder and then import files by relative path from there.  OpenSCAD
-exposes the library folder location via **File → Show Library Folder...**.
-[OpenSCAD User Manual - Libraries](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
+exposes the library folder location via **File → Show Library Folder...**.  (See
+[OpenSCAD User Manual - Libraries](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries))
 
 Alternatively, if using in several projects, clone in one location and set the `OPENSCADPATH`
 variable to point to that location.

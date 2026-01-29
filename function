@@ -1,6 +1,10 @@
 /**
  * ## function
  *
+ * ### How to Import
+ *
+ *     use <function>
+ *
  * ### Purpose
  *
  * Allows doing things with functions using introspection.

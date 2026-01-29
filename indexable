@@ -5,6 +5,9 @@
  *
  *     use <indexable>
  *
+ *     // Only necessary if implementing your own algo that takes a slice.
+ *     include <indexable_consts>
+ *
  * ### Purpose
  *
  * Treats all indexable objects similarly.  As a group, they are referred to as

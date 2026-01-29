@@ -1,6 +1,11 @@
 /**
  * ## helpers
  *
+ * ### How to Import
+ *
+ *     use <helpers>
+ *     include <helpers_consts> // Only needed if using vector_info().
+ *
  * ### Purpose
  *
  * Miscellaneous helper functions.

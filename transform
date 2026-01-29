@@ -1,6 +1,10 @@
 /**
  * ## transform
  *
+ * ### How to Import
+ *
+ *     use <transform>
+ *
  * ### Purpose
  *
  * This library is for matrix math for a variety of things.

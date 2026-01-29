@@ -1,6 +1,11 @@
 /**
  * ## types
  *
+ * ### How to Import
+ *
+ *     use <types>
+ *     include <types_consts> // Symbol names for type enums.
+ *
  * ### Purpose
  *
  * This library allows representing types as enumerated values, strings or

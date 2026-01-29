@@ -1,6 +1,10 @@
 /**
  * ## test
  * 
+ * ### How to Import
+ *
+ *     use <test>
+ *
  * ### Purpose
  * 
  * Used to generate code for using TDD methodology.  Tries to report useful

@@ -1,3 +1,16 @@
+/**
+ * ## string
+ *
+ * ### How to Import
+ *
+ *     use <string>
+ *     include <string_consts> // Constants for show_sign parameter.
+ *
+ * ### Purpose
+ *
+ * OpenSCAD doesn't have any string formatting, which can make reading debug
+ * output challenging.  This library is to help with that.
+ */
 use <base_algos>
 use <test>
 use <types>
@@ -8,8 +21,9 @@ use <helpers>
 include <string_consts>
 
 /**
- * Makes s wider to fit into width characters by padding the string on the right
- * with the `pad_char` character.  If same or wider than width, then do nothing.
+ * Makes `s` wider to fit into width characters by padding the string on the
+ * right with the `pad_char` character.  If same or wider than width, then do
+ * nothing.
  *
  * @param {string} s
  *   String to align.
@@ -26,8 +40,9 @@ function align_left(s, width, pad_char = " ") =
 ;
 
 /**
- * Makes s wider to fit into width characters by padding the string on the left
- * with the `pad_char` character.  If same or wider than width, then do nothing.
+ * Makes `s` wider to fit into width characters by padding the string on the
+ * left with the `pad_char` character.  If same or wider than width, then do
+ * nothing.
  *
  * @param {string} s
  *   String to align.

@@ -4,6 +4,10 @@
 /**
  * ## sas_cutter
  *
+ * ### How to Import
+ *
+ *     use <sas_cutter>
+ *
  * ### Purpose
  *
  * Self Aligning Seam (SAS) cutters.  Each cutter generates a `skin` that is

@@ -1,15 +1,15 @@
 /**
  * ## skin
  *
+ * ### How to Import
+ *
+ *     use <skin>
+ *
  * ### Purpose
  *
  * The built in extrude module isn't powerful or flexible enough so this library
  * was made.  It creates a skin by making layers of polygons with the same
  * number of vertices and then skins them by putting faces between layers.
- *
- * ### Design
- *
- * This requires keeping track of a bunch of data, which was put into a list.
  */
 use <base_algos>
 use <indexable>
@@ -22,35 +22,60 @@ use <birlei>
 use <param_check>
 use <any_all>
 include <skin_consts>
+/**
+ * ### Design
+ *
+ * This requires keeping track of a bunch of data, which was put into a list.
+ * These constants are used for indexing the [skin](#t-skin) object.
+ *
+ * ### Values
+ */
+
+/** Header for skin */
+_SKIN_ID           = "SKIN";
+/** points in layer */
+_SKIN_PTS_IN_LAYER = 1;
+/** # of point layers - 1 */
+_SKIN_LAYERS       = 2;
+/** the list of points */
+_SKIN_PTS          = 3;
+/** debug axes */
+_SKIN_DEBUG_AXES   = 4;
+/** the comment if any */
+_SKIN_COMMENT      = 5;
+/** the operation (`[op, apply_to_next_count]`) */
+_SKIN_OPERATION    = 6;
+/** wall diagonal info */
+_SKIN_WALL_DIAG    = 7;
 
 /**
  * @typedef {list} skin
  *
  * Represents a skin object.
  *
- * @slot {number} SKIN_PTS_IN_LAYER
+ * @slot {number} _SKIN_PTS_IN_LAYER
  *   Number of points in a layer.
- * @slot {number} SKIN_LAYERS
+ * @slot {number} _SKIN_LAYERS
  *   Number of layers-1.
- * @slot {list[Point3D,...]} SKIN_PTS
+ * @slot {list[Point3D,...]} _SKIN_PTS
  *   A list of points representing the skin object.  This is a flattened list of
  *   points in layer order.  Points are in clockwise order when looking towards
  *   the next layer.
- * @slot {...} SKIN_DEBUG_AXES
+ * @slot {...} _SKIN_DEBUG_AXES
  *   A set of points that gets transformed with the skin points.
  *
  *   > NOTE:
  *   >
  *   > Rendering is still under development.  **Untested**.
- * @slot {string} SKIN_COMMENT
+ * @slot {string} _SKIN_COMMENT
  *   A string to give meaning as to what this object represents.
- * @slot {...} SKIN_OPERATION
+ * @slot {...} _SKIN_OPERATION
  *   This is to allow operations between adjacent skin objects in a list.
  *
  *   > NOTE:
  *   >
  *   > Rendering is still under development.  **Untested**.
- * @slot {list[bool,...]} SKIN_WALL_DIAG
+ * @slot {list[bool,...]} _SKIN_WALL_DIAG
  *   When skinning the side walls of the skin, there are two ways to skin a 4
  *   point polygon.  This allows controlling that by specifying the direction.
  *   The first polygon is rendered by what slot 0 states.  The second, by what
@@ -78,9 +103,9 @@ function skin_to_string(obj, only_first_and_last_layers = true, precision = 4) =
     ],
     fmt_el_fn = function(i,e,indent)
       str(names[i], ": ",
-        i == SKIN_PTS
+        i == _SKIN_PTS
         ? pt_list_to_string(
-          obj[SKIN_PTS], obj[SKIN_PTS_IN_LAYER], obj[SKIN_LAYERS]+1,
+          obj[_SKIN_PTS], obj[_SKIN_PTS_IN_LAYER], obj[_SKIN_LAYERS]+1,
             indent, only_first_and_last_layers, precision)
         : e)
   )
@@ -556,7 +581,7 @@ function filter_out_degenerate_triangles(pts3d, triangles) =
 /**
  * Checks to see if object is a skin object
  */
-function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID;
+function is_skin(obj) = is_list(obj) && obj[0] == _SKIN_ID;
 
 /**
  * Create a new skin object.
@@ -597,7 +622,7 @@ function is_skin(obj) = is_list(obj) && obj[0] == SKIN_ID;
  * @returns {skin}
  */
 function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_diagonal, debug_axes) =
-  [ SKIN_ID, pt_count_per_layer, layers, pts3d, debug_axes, comment, operation, wall_diagonal ]
+  [ _SKIN_ID, pt_count_per_layer, layers, pts3d, debug_axes, comment, operation, wall_diagonal ]
 ;
 
 /**
@@ -712,10 +737,10 @@ function skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes
 function skin_create_faces(skin) =
   assert(is_skin(skin))
   let (
-    wall_diagonal = default(skin[SKIN_WALL_DIAG], [0, 1]),
-    pts_in_layer = skin[SKIN_PTS_IN_LAYER],
-    layers = skin[SKIN_LAYERS],
-    pts3d = skin[SKIN_PTS]
+    wall_diagonal = default(skin[_SKIN_WALL_DIAG], [0, 1]),
+    pts_in_layer = skin[_SKIN_PTS_IN_LAYER],
+    layers = skin[_SKIN_LAYERS],
+    pts3d = skin[_SKIN_PTS]
   )
   concat(
     _cap_layers(pts_in_layer,
@@ -745,11 +770,11 @@ function skin_create_faces(skin) =
 function skin_transform(obj_or_objs, matrix_or_fn) =
   is_skin(obj_or_objs)
   ? let (
-      pts = obj_or_objs[SKIN_PTS],
-      dbg_pts = obj_or_objs[SKIN_DEBUG_AXES],
+      pts = obj_or_objs[_SKIN_PTS],
+      dbg_pts = obj_or_objs[_SKIN_DEBUG_AXES],
       _ = assert(is_list(pts), str("pts (", pts, ") is not a list\n", obj_or_objs))
     )
-    replace(obj_or_objs, SKIN_PTS, SKIN_DEBUG_AXES, [
+    replace(obj_or_objs, _SKIN_PTS, _SKIN_DEBUG_AXES, [
       transform(pts, matrix_or_fn),
       is_undef(dbg_pts) ? undef : transform(dbg_pts, matrix_or_fn)
     ])
@@ -767,7 +792,7 @@ module skin_to_polyhedron(obj_or_objs) {
   // base case
   if (is_skin(obj_or_objs)) {
     obj = obj_or_objs;
-    pts = obj[SKIN_PTS];
+    pts = obj[_SKIN_PTS];
     faces = skin_create_faces(obj);
     polyhedron(pts, faces);
   } else {
@@ -781,13 +806,13 @@ module skin_to_polyhedron(obj_or_objs) {
     // Prevents the need to recurse just to iterate over list of skins.
     is = filter(0, len(objs)-1)(function(i)
         // filter out any index that does have an operation in the previous index.
-        i == 0 || !is_skin(objs[i-1]) || objs[i-1][SKIN_OPERATION] == undef);
+        i == 0 || !is_skin(objs[i-1]) || objs[i-1][_SKIN_OPERATION] == undef);
 
     for (i = is) {
       obj = objs[i];
       if (is_skin(obj)) {
-        op = obj[SKIN_OPERATION];
-        pts = obj[SKIN_PTS];
+        op = obj[_SKIN_OPERATION];
+        pts = obj[_SKIN_PTS];
         faces = skin_create_faces(obj);
         if (is_undef(op)) {
             polyhedron(pts, faces);
@@ -846,8 +871,8 @@ module skin_to_polyhedron(obj_or_objs) {
  */
 function skin_add_layer_if(obj, add_layers_fn) =
   let (
-    pts = obj[SKIN_PTS],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER],
+    pts = obj[_SKIN_PTS],
+    pts_in_layer = obj[_SKIN_PTS_IN_LAYER],
 
     new_pts =
       reduce(
@@ -878,11 +903,11 @@ function skin_add_layer_if(obj, add_layers_fn) =
     ,
     //  _ = len(new_pts) != len(pts)
     //     ? echo(str("Added ", (len(new_pts) - len(pts))/pts_in_layer, " layers",
-    //       obj[SKIN_COMMENT] == undef ? "" : str(" to ", obj[SKIN_COMMENT])))
+    //       obj[_SKIN_COMMENT] == undef ? "" : str(" to ", obj[_SKIN_COMMENT])))
     //     : undef,
 
-    result = replace(obj, SKIN_LAYERS, SKIN_PTS, [ len(new_pts)/pts_in_layer-1, new_pts ]),
-    added_layer_count = result[SKIN_LAYERS] - obj[SKIN_LAYERS]
+    result = replace(obj, _SKIN_LAYERS, _SKIN_PTS, [ len(new_pts)/pts_in_layer-1, new_pts ]),
+    added_layer_count = result[_SKIN_LAYERS] - obj[_SKIN_LAYERS]
   )
   assert(added_layer_count >= 0, str("Lost ", -added_layer_count, " layers."))
   // echo("layers", added_layer_count)
@@ -895,8 +920,8 @@ function skin_add_layer_if(obj, add_layers_fn) =
  */
 function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
   let (
-    pts = obj[SKIN_PTS],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER],
+    pts = obj[_SKIN_PTS],
+    pts_in_layer = obj[_SKIN_PTS_IN_LAYER],
     pt_ranges = [ [0], each add_pts_after_pt_numbers ]
   )
   // iterate over each layer
@@ -1050,7 +1075,7 @@ function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
 module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
 {
   assert(is_skin(obj));
-  dbg_pt_grps = obj[SKIN_DEBUG_AXES];
+  dbg_pt_grps = obj[_SKIN_DEBUG_AXES];
   assert(dbg_pt_grps != undef, "No debug axes to show.");
   for (pt_grp = dbg_pt_grps) {
     ref_pt = pt_grp[0]; // starting point
@@ -1117,9 +1142,9 @@ function interpolate(v0, v1, v) =
  * @param {function(pt: Point3D): extracted_value} extract_order_value_fn
  *   This take in a point and returns some value.  This is to allow selection of
  *   a particular axis or length for a given point to compare against value.
- * @param {number} [begin=extract_order_value_fn(el(obj[SKIN_PTS],  0))]
+ * @param {number} [begin=extract_order_value_fn(el(obj[_SKIN_PTS],  0))]
  *   The value to compare against the extracted value from a point.
- * @param {number} [end=extract_order_value_fn(el(obj[SKIN_PTS], -1))]
+ * @param {number} [end=extract_order_value_fn(el(obj[_SKIN_PTS], -1))]
  *   The value to compare against the extracted value from a point.
  *
  * @returns {skin}
@@ -1132,7 +1157,7 @@ function skin_limit(obj, extract_order_value_fn, begin, end) =
   // [1, 3, 5], begin = undef, end = 4 => begin_i = 0, end_i = 1 => end interpolation required
   // assert(begin <= end)
   let (
-    pts = INCOMPLETE(obj[SKIN_PTS]),
+    pts = INCOMPLETE(obj[_SKIN_PTS]),
     last_i = idx(pts, -1),
     begin_i = is_undef(begin)
       ? 0
@@ -1222,9 +1247,9 @@ function skin_limit(obj, extract_order_value_fn, begin, end) =
  */
 function skin_verify(obj, disp_all_pts = false) =
   let (
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER],
-    layers = obj[SKIN_LAYERS],
-    pts3d = obj[SKIN_PTS],
+    pts_in_layer = obj[_SKIN_PTS_IN_LAYER],
+    layers = obj[_SKIN_LAYERS],
+    pts3d = obj[_SKIN_PTS],
     result = len(pts3d) == pts_in_layer * (layers + 1),
     output = str("pts_in_layer: ", pts_in_layer, ", layers: ", layers, " gives: ", pts_in_layer * (layers+1), " pts."),
     str_obj = skin_to_string(obj, !disp_all_pts)
@@ -1254,8 +1279,8 @@ function skin_verify(obj, disp_all_pts = false) =
  */
 function skin_max_layer_distance_fn(obj, max_diff, diff_fn = function(p0, p1) p1.x - p0.x) =
   let (
-    pts = obj[SKIN_PTS],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER]
+    pts = obj[_SKIN_PTS],
+    pts_in_layer = obj[_SKIN_PTS_IN_LAYER]
   )
   function(i)
     let (
@@ -1269,8 +1294,8 @@ function skin_max_layer_distance_fn(obj, max_diff, diff_fn = function(p0, p1) p1
  */
 function skin_max_pt_distance_fn(obj, max_diff) =
   let (
-    pts = obj[SKIN_PTS],
-    pts_in_layer = obj[SKIN_PTS_IN_LAYER]
+    pts = obj[_SKIN_PTS],
+    pts_in_layer = obj[_SKIN_PTS_IN_LAYER]
   )
   function(i)
     let (
@@ -1354,8 +1379,8 @@ module skin_example3() {
   echo("test_skin: ", skin_to_string(test_skin, false));
   skin_to_polyhedron(
     let (
-      pts = test_skin[SKIN_PTS],
-      pts_in_layer = test_skin[SKIN_PTS_IN_LAYER]
+      pts = test_skin[_SKIN_PTS],
+      pts_in_layer = test_skin[_SKIN_PTS_IN_LAYER]
     )
     // test_skin
     skin_add_layer_if(test_skin, skin_max_layer_distance_fn(test_skin, 0.333)

@@ -23,14 +23,14 @@ locations.  In particular, library files are searched for:
 
 - in the same folder as the design file you opened,
 - in the library folder of the OpenSCAD installation, and
-- in folders listed by the `OPENSCADPATH` environment variable.  (See the
-  OpenSCAD manual for the full details.)  [OpenSCAD User Manual - Include
-  Statement](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Include_Statement)
+- in folders listed by the `OPENSCADPATH` environment variable.  (See
+  [OpenSCAD User Manual - Include
+  Statement](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Include_Statement))
 
 A practical way to use this library is to place (or clone) it into your user
 library folder and then import files by relative path from there.  OpenSCAD
-exposes the library folder location via **File → Show Library Folder...**.
-[OpenSCAD User Manual - Libraries](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries)
+exposes the library folder location via **File → Show Library Folder...**.  (See
+[OpenSCAD User Manual - Libraries](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries))
 
 Alternatively, if using in several projects, clone in one location and set the `OPENSCADPATH`
 variable to point to that location.
@@ -224,6 +224,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-types">📘 <b>types</b></a></summary>
 <blockquote>
+• <a href="#types-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#types-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#types-ch-Tests">📑 <i>Tests</i></a></summary>
 <blockquote>
@@ -461,6 +462,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-function">📘 <b>function</b></a></summary>
 <blockquote>
+• <a href="#function-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#function-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#function-ch-Function_Introspection">📑 <i>Function Introspection</i></a></summary>
 <blockquote>
@@ -477,6 +479,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-test">📘 <b>test</b></a></summary>
 <blockquote>
+• <a href="#test-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#test-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#test-ch-Test_Your_Code_">📑 <i>Test Your Code!</i></a></summary>
 <blockquote>
@@ -496,6 +499,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-transform">📘 <b>transform</b></a></summary>
 <blockquote>
+• <a href="#transform-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#transform-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#transform-ch-Generate_Matrices_for_Vector_Transforms">📑 <i>Generate Matrices for Vector Transforms</i></a></summary>
 <blockquote>
@@ -550,6 +554,7 @@ There are several files in this library set.
 
 <details><summary><a href="#file-helpers">📘 <b>helpers</b></a></summary>
 <blockquote>
+• <a href="#helpers-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#helpers-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#helpers-ch-Conversion_functions">📑 <i>Conversion functions</i></a></summary>
 <blockquote>
@@ -597,9 +602,19 @@ There are several files in this library set.
 
 <details><summary><a href="#file-skin">📘 <b>skin</b></a></summary>
 <blockquote>
+• <a href="#skin-ch-How_to_Import">📑 <i>How to Import</i></a><br>
 • <a href="#skin-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#skin-ch-Design">📑 <i>Design</i></a></summary>
+• <a href="#skin-ch-Design">📑 <i>Design</i></a><br>
+<details><summary><a href="#skin-ch-Values">📑 <i>Values</i></a></summary>
 <blockquote>
+• <a href="#v-_SKIN_ID">💠_SKIN_ID</a><br>
+• <a href="#v-_SKIN_PTS_IN_LAYER">💠_SKIN_PTS_IN_LAYER</a><br>
+• <a href="#v-_SKIN_LAYERS">💠_SKIN_LAYERS</a><br>
+• <a href="#v-_SKIN_PTS">💠_SKIN_PTS</a><br>
+• <a href="#v-_SKIN_DEBUG_AXES">💠_SKIN_DEBUG_AXES</a><br>
+• <a href="#v-_SKIN_COMMENT">💠_SKIN_COMMENT</a><br>
+• <a href="#v-_SKIN_OPERATION">💠_SKIN_OPERATION</a><br>
+• <a href="#v-_SKIN_WALL_DIAG">💠_SKIN_WALL_DIAG</a><br>
 • <a href="#f-skin_to_string">⚙️skin_to_string</a><br>
 • <a href="#f-layer_pt">⚙️layer_pt</a><br>
 • <a href="#f-layer_pts">⚙️layer_pts</a><br>
@@ -921,6 +936,11 @@ Stop value.
 </details>
 
 ## 📘types<a id='file-types'></a>
+
+### <i>📑How to Import</i><a id='types-ch-How_to_Import'></a>
+
+    use <types>
+    include <types_consts> // Symbol names for type enums.
 
 ### <i>📑Purpose</i><a id='types-ch-Purpose'></a>
 
@@ -2549,6 +2569,9 @@ A list of elements that were mapped.
 ### <i>📑How to Import</i><a id='indexable-ch-How_to_Import'></a>
 
     use <indexable>
+
+    // Only necessary if implementing your own algo that takes a slice.
+    include <indexable_consts>
 
 ### <i>📑Purpose</i><a id='indexable-ch-Purpose'></a>
 
@@ -4637,6 +4660,10 @@ _slr_cache(slr, birls, end_i)[_SLR_END_I] (number | undef)
 
 ## 📘function<a id='file-function'></a>
 
+### <i>📑How to Import</i><a id='function-ch-How_to_Import'></a>
+
+    use <function>
+
 ### <i>📑Purpose</i><a id='function-ch-Purpose'></a>
 
 Allows doing things with functions using introspection.
@@ -4810,6 +4837,10 @@ The return value of fn().
 </details>
 
 ## 📘test<a id='file-test'></a>
+
+### <i>📑How to Import</i><a id='test-ch-How_to_Import'></a>
+
+    use <test>
 
 ### <i>📑Purpose</i><a id='test-ch-Purpose'></a>
 
@@ -5013,6 +5044,10 @@ A user message to append to failure message.
 </details>
 
 ## 📘transform<a id='file-transform'></a>
+
+### <i>📑How to Import</i><a id='transform-ch-How_to_Import'></a>
+
+    use <transform>
 
 ### <i>📑Purpose</i><a id='transform-ch-Purpose'></a>
 
@@ -6050,6 +6085,11 @@ This is the ending point for this bound vector.
 
 ## 📘helpers<a id='file-helpers'></a>
 
+### <i>📑How to Import</i><a id='helpers-ch-How_to_Import'></a>
+
+    use <helpers>
+    include <helpers_consts> // Only needed if using vector_info().
+
 ### <i>📑Purpose</i><a id='helpers-ch-Purpose'></a>
 
 Miscellaneous helper functions.
@@ -6771,6 +6811,10 @@ Returns `return_value`.
 
 ## 📘skin<a id='file-skin'></a>
 
+### <i>📑How to Import</i><a id='skin-ch-How_to_Import'></a>
+
+    use <skin>
+
 ### <i>📑Purpose</i><a id='skin-ch-Purpose'></a>
 
 The built in extrude module isn't powerful or flexible enough so this library
@@ -6780,6 +6824,57 @@ number of vertices and then skins them by putting faces between layers.
 ### <i>📑Design</i><a id='skin-ch-Design'></a>
 
 This requires keeping track of a bunch of data, which was put into a list.
+These constants are used for indexing the [skin](#t-skin) object.
+
+### <i>📑Values</i><a id='skin-ch-Values'></a>
+
+#### 💠\_SKIN\_ID<a id='v-_SKIN_ID'></a>
+
+<code>*value* _SKIN_ID : ???</code>
+
+Header for skin
+
+#### 💠\_SKIN\_PTS\_IN\_LAYER<a id='v-_SKIN_PTS_IN_LAYER'></a>
+
+<code>*value* _SKIN_PTS_IN_LAYER : ???</code>
+
+points in layer
+
+#### 💠\_SKIN\_LAYERS<a id='v-_SKIN_LAYERS'></a>
+
+<code>*value* _SKIN_LAYERS : ???</code>
+
+# of point layers - 1
+
+#### 💠\_SKIN\_PTS<a id='v-_SKIN_PTS'></a>
+
+<code>*value* _SKIN_PTS : ???</code>
+
+the list of points
+
+#### 💠\_SKIN\_DEBUG\_AXES<a id='v-_SKIN_DEBUG_AXES'></a>
+
+<code>*value* _SKIN_DEBUG_AXES : ???</code>
+
+debug axes
+
+#### 💠\_SKIN\_COMMENT<a id='v-_SKIN_COMMENT'></a>
+
+<code>*value* _SKIN_COMMENT : ???</code>
+
+the comment if any
+
+#### 💠\_SKIN\_OPERATION<a id='v-_SKIN_OPERATION'></a>
+
+<code>*value* _SKIN_OPERATION : ???</code>
+
+the operation (`[op, apply_to_next_count]`)
+
+#### 💠\_SKIN\_WALL\_DIAG<a id='v-_SKIN_WALL_DIAG'></a>
+
+<code>*value* _SKIN_WALL_DIAG : ???</code>
+
+wall diagonal info
 
 #### ⚙️skin\_to\_string<a id='f-skin_to_string'></a>
 
@@ -7455,11 +7550,11 @@ BE monotonically nondecreasing over the points list.
 This take in a point and returns some value.  This is to allow selection of
 a particular axis or length for a given point to compare against value.
 
-**<code>begin</code>**: <code>number</code> *(Default: `extract_order_value_fn(el(obj\[SKIN_PTS],  0))`)*
+**<code>begin</code>**: <code>number</code> *(Default: `extract_order_value_fn(el(obj\[_SKIN_PTS],  0))`)*
 
 The value to compare against the extracted value from a point.
 
-**<code>end</code>**: <code>number</code> *(Default: `extract_order_value_fn(el(obj\[SKIN_PTS], -1))`)*
+**<code>end</code>**: <code>number</code> *(Default: `extract_order_value_fn(el(obj\[_SKIN_PTS], -1))`)*
 
 The value to compare against the extracted value from a point.
 
@@ -7558,21 +7653,21 @@ TODO: Look into this. Not sure what I was attempting here.
 Represents a skin object.
 
 <details><summary>slots</summary>
-<code><b>SKIN_PTS_IN_LAYER</b></code>: <code>number</code>
+<code><b>_SKIN_PTS_IN_LAYER</b></code>: <code>number</code>
 
 Number of points in a layer.
 
-<code><b>SKIN_LAYERS</b></code>: <code>number</code>
+<code><b>_SKIN_LAYERS</b></code>: <code>number</code>
 
 Number of layers-1.
 
-<code><b>SKIN_PTS</b></code>: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+<code><b>_SKIN_PTS</b></code>: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
 
 A list of points representing the skin object.  This is a flattened list of
 points in layer order.  Points are in clockwise order when looking towards
 the next layer.
 
-<code><b>SKIN_DEBUG_AXES</b></code>: <code>...</code>
+<code><b>_SKIN_DEBUG_AXES</b></code>: <code>...</code>
 
 A set of points that gets transformed with the skin points.
 
@@ -7580,11 +7675,11 @@ A set of points that gets transformed with the skin points.
 >
 > Rendering is still under development.  **Untested**.
 
-<code><b>SKIN_COMMENT</b></code>: <code>string</code>
+<code><b>_SKIN_COMMENT</b></code>: <code>string</code>
 
 A string to give meaning as to what this object represents.
 
-<code><b>SKIN_OPERATION</b></code>: <code>...</code>
+<code><b>_SKIN_OPERATION</b></code>: <code>...</code>
 
 This is to allow operations between adjacent skin objects in a list.
 
@@ -7592,7 +7687,7 @@ This is to allow operations between adjacent skin objects in a list.
 >
 > Rendering is still under development.  **Untested**.
 
-<code><b>SKIN_WALL_DIAG</b></code>: <code>list\[bool,...]</code>
+<code><b>_SKIN_WALL_DIAG</b></code>: <code>list\[bool,...]</code>
 
 When skinning the side walls of the skin, there are two ways to skin a 4
 point polygon.  This allows controlling that by specifying the direction.
