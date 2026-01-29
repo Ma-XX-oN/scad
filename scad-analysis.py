@@ -1188,7 +1188,7 @@ class Doc:
       sig = f"*callback* {id}("
       params = []
       for (ptype, pid, _, _) in self.items["param"]:
-        param_str = f"{pid.replace("_", "\\_")}"
+        param_str = f"{pid.replace('_', '\\_')}"
         if ptype:
           param_str += f": {self.link_types(ptype, False)}"
         params.append(param_str)
@@ -1249,7 +1249,7 @@ class Doc:
       params = []
       doc_params = self.items["param"]
       for (ptype, pid, _, _) in doc_params:
-        param_str = f"{pid.replace("_", "\\_")}"
+        param_str = f"{pid.replace('_', '\\_')}"
         if ptype:
           param_str += f": {self.link_types(ptype, False)}"
         params.append(param_str)
@@ -1269,12 +1269,12 @@ class Doc:
       assert id
 
       if sig_text.startswith("function "):
-        sig = f"*function* {id.replace("_", "\\_")}("
+        sig = f"*function* {id.replace('_', '\\_')}("
       elif sig_text.startswith("module "):
-        sig = f"*module* {id.replace("_", "\\_")}("
+        sig = f"*module* {id.replace('_', '\\_')}("
       else:
         # value without doc
-        sig = f"*value* {id.replace("_", "\\_")} : ???"
+        sig = f"*value* {id.replace('_', '\\_')} : ???"
         output_lines.append(f"<code>{sig}</code>")
         return
 
@@ -1442,7 +1442,7 @@ class Doc:
           line += " *(Optional)*"
       elif param_id in param_defaults:
         # undocumented default
-        line += f" *(Default: `{param_defaults[param_id].replace("[", "\\[")}`)*"
+        line += f" *(Default: `{param_defaults[param_id].replace('[', '\\[')}`)*"
 
       output_lines.append(f"{line}\n")
 
@@ -1810,9 +1810,47 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
     tmp = RE_H3.sub(add_h3_emoji_and_anchor, tmp)
     output_lines[i] = tmp
 
+def render_json(filename: str, item_count: int, content: str, track_ids: dict[str, TrackIds], track_docs: list[tuple[int, str]], track_symbols: list[str], item: ItemInfo):
+  # Generating json representation
+  if len(item) > 2:
+    # Generating json for symbol
+    sig_slc = content[item[DOC_S_SIG_SLC]]
+    if sig_slc.startswith("function "):
+      prefix = "f-"
+    elif sig_slc.startswith("module "):
+      prefix = "m-"
+    else:
+      prefix = "v-"
+
+    s_line, e_line = get_lines(item[DOC_SLC], line_char_index)
+    result: TrackIds = {
+      "filename"  : filename,
+      "order"     : item_count,
+      "type"      : item[DOC_TYPE],
+      "name"      : prefix + content[item[DOC_S_ID_SLC]],
+      "line_start": s_line,
+      "line_end"  : e_line,
+      "signature" : content[item[DOC_S_SIG_SLC]],
+      "body"      : content[item[DOC_S_BODY_SLC]],
+      "doc"       : content[item[DOC_S_DOC_SLC]] if is_sym_with_doc(item) else ""
+    }
+    # assert track_ids is not None
+    assert track_ids is not None
+    track_ids[result["name"]] = result
+    assert track_symbols is not None
+    track_symbols.append(result["name"])
+    item_count += 1
+
+  elif item[DOC_TYPE] == "doc":
+    # Generating json for doc
+    assert track_docs is not None
+    track_docs.append( (item_count, content[item[DOC_SLC]]) )
+    item_count += 1
+
 def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = False) -> Optional[Track]:
   item_count = 0
 
+  content: str
   if from_stdin:
     content = sys.stdin.read()
   else:
@@ -1826,7 +1864,8 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
   track       : Optional[Track]
   output_lines: Optional[list[str]]
 
-  if options["show"] == "json":
+  show = options["show"]
+  if show == "json":
     current_hash = hashlib.sha256()
     current_hash.update(content.encode("utf-8"))
     track = {
@@ -1852,19 +1891,22 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
     track_symbols = None
     output_lines = []
 
+  assert show == "json" and track_ids is not None \
+    and track_docs is not None and track_symbols is not None
+
   if len(content):
     global line_char_index
     line_char_index = get_line_positions(content)
     items = get_items(content)
 
-    if options["show"] == "summary":
+    if show == "summary":
       last_line_digit_count = 0
     else:
       last_line_digit_count = math.floor(math.log(len(line_char_index), 10)) + 1
 
     # Create conditional implementations of disp() to display slices of content
     # with optional line number prefixes or independent strings.
-    if options["show"] == "summary" or not options["showLineNums"]:
+    if show == "summary" or not options["showLineNums"]:
       def disp(param: slice | str):
         nonlocal output_lines
         assert output_lines is not None
@@ -1899,9 +1941,9 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
             f"{'':>{last_line_digit_count}}  {param}"
           )
 
-    if options["show"] in ("md", "md-with-private"):
+    if show in ("md", "md-with-private"):
       assert output_lines is not None
-      render_md(filename, content, output_lines, items, options["show"] == "md-with-private")
+      render_md(filename, content, output_lines, items, show == "md-with-private")
     else:
 
       for item in items:
@@ -1909,7 +1951,7 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
           # This item is not being filtered for
           continue
 
-        if options["show"] == "summary":
+        if show == "summary":
           # Generating text with symbol name and the lines it resides on.
           if len(item) > 2: # implies some sort of symbol
             sig_slc = item[DOC_S_SIG_SLC]
@@ -1920,39 +1962,11 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
               disp(f"{content[sig_slc]} (lines {s_line}-{e_line})")
           continue
 
-        elif options["show"] == "json":
-          # Generating json representation
-          if len(item) > 2:
-            # Generating json for symbol
-            sig_slc = item[DOC_S_SIG_SLC]
-            s_line, e_line = get_lines(item[DOC_SLC], line_char_index)
-            result: TrackIds = {
-              "filename"  : filename,
-              "order"     : item_count,
-              "type"      : item[DOC_TYPE],
-              "name"      : content[item[DOC_S_ID_SLC]],
-              "line_start": s_line,
-              "line_end"  : e_line,
-              "signature" : content[item[DOC_S_SIG_SLC]],
-              "body"      : content[item[DOC_S_BODY_SLC]],
-              "doc"       : content[item[DOC_S_DOC_SLC]] if is_sym_with_doc(item) else ""
-            }
-            # assert track_ids is not None
-            assert track_ids is not None
-            track_ids[result["name"]] = result
-            assert track_symbols is not None
-            track_symbols.append(result["name"])
-            item_count += 1
-
-          elif item[DOC_TYPE] == "doc":
-            # Generating json for doc
-            assert track_docs is not None
-            track_docs.append( (item_count, content[item[DOC_SLC]]) )
-            item_count += 1
-
+        elif show == "json":
+          render_json(filename, item_count, content, track_ids, track_docs, track_symbols, item)
           continue
 
-        elif options["show"] == "sig-doc":
+        elif show == "sig-doc":
           # Generating text for symbol signatures and docs
           if item[DOC_TYPE] == "doc":
             disp(item[DOC_SLC])
@@ -1969,7 +1983,7 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
 
         if len(item) > 2:
           # Generating text for ids, sigs, bodies and code.
-          match options["show"]:
+          match show:
             case "id":
               disp(item[DOC_S_ID_SLC])
             case "sig" | "all":
@@ -2009,6 +2023,7 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
         out_f.write(out_text)
 
   return track
+
 # ---- main loop over all filenames ----
 
 tracking: list[Track] = []
