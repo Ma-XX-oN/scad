@@ -963,6 +963,8 @@ class Doc:
       self.e("If any @callchain tags are defined, then a @returns tag and its type must also be defined.")
     
     if sym_and_doc:
+      # if there is a doc, ensure that the parameter names in the doc line up
+      # with the parameter names defined.
       self.verify_sig_with_doc(doc_item)
       
       if self.doc_type == "nontype":
@@ -972,6 +974,8 @@ class Doc:
           symbols.function_dict[sym_id] = self
         elif sig.startswith("module "):
           symbols.module_dict[sym_id] = self
+          assert not self.items["returns"], \
+            self.e("@returns tag specified for module, but module does not return anything to caller.")
         else:
           symbols.value_dict[sym_id] = self
 

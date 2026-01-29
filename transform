@@ -154,7 +154,7 @@ function dehomogenise(pts, n=3) =
   [ for (i = [0 : len(pts) - 1]) // iterate over each point in list of points
       let (
         homogeneous =
-          assert(len(pts[i]) > n, "Points must have the more dimensions as n.")
+          assert(len(pts[i]) > n, "Points must have the more dimensions than n.")
           pts[i][len(pts[i])-1]
       )
       assert(homogeneous != 0, "Homogeneous dimension can't have a value of 0.")
@@ -601,6 +601,14 @@ function transform(pts, matrix_or_fn) =
 ;
 
 /**
+ * > TTA:
+ * >
+ * > Going to change this.  I think I want it like:
+ * >     reorient(vector_space_1, vector_space_2, scale_to_vectors)
+ * > Where vector_space_* is a start point, followed by 1-3 end points and
+ * > scale_to_vectors could be bool or list[bool,...] indicating if to scale all
+ * > or just some.
+ *
  * Returns a homogeneous column-vector transform matrix T (4×4) that maps one
  * line segment to another.
  *
@@ -628,10 +636,10 @@ function transform(pts, matrix_or_fn) =
  *   - otherwise start/end line_seg consist of 4 points
  *     - Reorientation that maps one 3D basis (plus translation) to another.
  */
-function reorient(start_line_seg, end_line_seg, scale_to_vectors = false) =
+function _reorient(start_line_seg, end_line_seg, scale_to_vectors = false) =
   let(nA = len(start_line_seg), nB = len(end_line_seg))
   assert((nA == 2 || nA == 3 || nA == 4) && nA == nB,
-         "reorient: both inputs must have length 2, 3, or 4, and match")
+         "reorient: both inputs must have length 2, 3, or 4, and be the same length.")
   // ---------- 2-point overload: align direction + uniform scale ----------
   (nA == 2)
   ? (

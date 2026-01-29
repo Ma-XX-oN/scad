@@ -5,7 +5,7 @@
  *
  * Helper constants.
  *
- * ### For [vector_info](#vector_info_a__b)
+ * ### For indexing type [VectorInfo](#t-VectorInfo).
  */
 /** vector_info(a, b)[VI_VECTOR] = vector of ab */
 VI_VECTOR = 0;

@@ -177,7 +177,7 @@ args = [
   sys.executable,
   "-Xfrozen_modules=off",
   "scad-analysis.py",
-  "--show", "md",
+  "--show", "md-with-private",
   # "--write-to-file", "README.md",
   *files_list
 ]

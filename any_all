@@ -1,3 +1,14 @@
+/**
+ * ## any_all
+ *
+ * ### How to Import
+ *
+ *     use <any_all>
+ *
+ * ### Purpose
+ *
+ * Implements any and all algorithms.
+ */
 use <birlei>
 use <base_algos>
 use <helpers>
@@ -7,20 +18,34 @@ use <indexable>
 include <indexable_consts>
 
 /**
+ * @callback AnyFn
+ * @param {PredFn} pred_fn
+ * @returns {bool}
+ *   First index where `pred_fn(i)` is `true` will result in `true`, else
+ *   `false`.
+ */
+
+/**
+ * @typedef {AlgoFn} AnyBirleiFn
+ *
+ * @returns {AnyFn}
+ *   Callback that returns first index where `pred_fn(i)` is `true` will result
+ *   in `true`, else `false`.
+ */
+
+/**
+ * @callchain any()            : AnyBirleiFn
+ * @callchain any(birl, end_i) : bool
+ *
  * Will determine if any of the calls to pred_fn(i) will result in a truthy
  * result.
  *
- * @param {(number|range|list)} birl
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param {(number|undef)} end_i
- *   - If birl is a number, end index to check.  If end_i < birl then pred_fn
- *     is never called, making this function return false.
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
  *
- * @returns {function(pred_fn: PredFn): bool}
- *   If any pred_fn(i) calls returns truthy, then returns true, otherwise
- *   false.
+ * @returns {AnyFn|bool}
+ *   - If `birl` is omitted, then will return type `AnyBirleiFn`.
+ *   - Else returns type `AnyFn`.
  */
 function any(birl, end_i) =
   is_undef(birl)
@@ -30,16 +55,30 @@ function any(birl, end_i) =
 ;
 
 /**
+ * @callback AllFn
+ * @param {PredFn} pred_fn
+ * @returns {(number|undef)}
+ *   First index where `pred_fn(i)` is `false` will result in `false`, else
+ *   `true`.
+ */
+
+/**
+ * @typedef {AlgoFn} AllBirleiFn
+ *
+ * @returns {AllFn}
+ *   Callback that returns first index where `pred_fn(i)` is `false` will result
+ *   in `false`, else `true`.
+ */
+
+/**
+ * @callchain all()            : AllBirleiFn
+ * @callchain all(birl, end_i) : bool
+ *
  * Will determine if all of the calls to pred_fn(i) will result in a truthy
  * result.
  *
- * @param {(number|range|list)} birl
- *   - If number, start index to check
- *   - If range, indices to check
- *   - If list, indices to check
- * @param {(number|undef)} end_i
- *   - If birl is a number, end index to check.  If end_i < birl then pred_fn
- *     is never called, making this function return true.
+ * @param {OptionalBirl} [birl]
+ * @param {EndI} [end_i]
  *
  * @returns {function(pred_fn: PredFn): bool}
  *   If all pred_fn(i) calls returns truthy, then returns true, otherwise
@@ -51,65 +90,3 @@ function all(birl, end_i) =
   : function(all_pred_fn)
       is_undef(find(birl, end_i)(function(v) !all_pred_fn(v)))
 ;
-
-// input : list of numbers
-// output : sorted list of numbers
-function quicksort_list_comp_ex(arr) = !(len(arr)>0) ? [] : let(
-    pivot   = arr[floor(len(arr)/2)],
-    lesser  = [ for (y = arr) if (y  < pivot) y ],
-    equal   = [ for (y = arr) if (y == pivot) y ],
-    greater = [ for (y = arr) if (y  > pivot) y ]
-) concat(
-    quicksort_list_comp_ex(lesser), equal, quicksort_list_comp_ex(greater)
-);
-
-/**
- * Test of quick sort algorithm.
- *
- * Modified quicksort example from:
- *   https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions
- *
- * NOTE: Not saying that it should be implemented this way.  Just testing.
- *       Done this way, could sort a subset.
- */
-function quicksort_lib_test(l, birl = 0, end_i = undef) =
-  let (
-    _l = birlei(birl, end_i, l),
-    len_l = _l[BIRLEI_LEN()](),
-    invoke = _l[BIRLEI_INVOKE()],
-    lr_is = _l[BIRLEI_ELS()](),
-    deref = _l[BIRLEI_DEREF()]
-  )
-  len_l == 0
-  ? []
-  : let(
-      pivot   = deref(floor(len_l/2)),
-      // _ = echo("pivot: ", pivot, _fl(127)),
-      lesser  = filter(lr_is)(function(i) let (e = l[i]) e  < pivot),
-      equal   = filter(lr_is)(function(i) let (e = l[i]) e == pivot),
-      greater = filter(lr_is)(function(i) let (e = l[i]) e  > pivot)
-
-      // Other alternative ways to do the same thing using this library:
-
-      // lesser  = filter(lr_is)(function(i) let (e = deref(i)) e  < pivot),
-      // equal   = filter(lr_is)(function(i) let (e = deref(i)) e == pivot),
-      // greater = filter(lr_is)(function(i) let (e = deref(i)) e  > pivot)
-
-      // lesser  = invoke(function(b,e,l) filter(b,e)(function(i) let (e = l(i)) e  < pivot)),
-      // equal   = invoke(function(b,e,l) filter(b,e)(function(i) let (e = l(i)) e == pivot)),
-      // greater = invoke(function(b,e,l) filter(b,e)(function(i) let (e = l(i)) e  > pivot))
-    )
-    concat(
-      quicksort_lib_test(els(l,lesser)), els(l, equal), quicksort_lib_test(els(l, greater))
-    )
-;
-
-// use seed in rands() to get reproducible results
-unsorted = [for (a = rands(10, 20, 6, 3)) ceil(a)];
-echo(str("unsorted: ", unsorted));            // ECHO: [1, 9, 2, 6, 5, 1]
-// echo(str("  sorted: ", quicksort_lib_test(unsorted))); // ECHO: [1, 1, 2, 5, 6, 9]
-echo(str("  sorted: ", quicksort_lib_test(unsorted, fwd_i(unsorted, 2, -1)))); // ECHO: [1, 1, 2, 5, 6, 9]
-
-// local file line function as variable so it doesn't get exported.
-_fl = function(l)
-  fl("any_all", l);

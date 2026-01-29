@@ -119,7 +119,7 @@ the first function may just end right there, if it doesn't curry.
 
 #### Parameter Names That Infer Types
 
-Many parameters names imply the types that they accept.
+Many parameter names imply the types that they accept.
 
 - `s` - A `string`.
 - `l` - A `list`.
@@ -143,7 +143,7 @@ There are several files in this library set.
     - Wraps OpenSCAD ranges `[start:stop]`/`[start:step:stop]`, adds extra
       functionality and remove warnings when creating null ranges.  Ranges are
       considered indexable and can be dereferenced using `range_el`.
- 2. [types](#file-types)
+ 2. [types](#file-types), [types_consts](#file-types_consts)
     - Allows for classifying object types that are beyond the standard
       `is_num`, `is_string`, `is_list`, `is_undef`, `is_function`, `is_bool` by
       adding `is_int`, `is_float` and `is_nan`.  `is_range` is defined in range
@@ -166,10 +166,10 @@ There are several files in this library set.
       benefit from the fastest way of executing the algorithms.
  4. [base_algos](#file-base_algos)
     - The base algorithms which most of the rest of the library uses.
-    - When not passed the `birlei`, the algorithm, it returns a lambda that
+    - When the `birlei` is not passed, the algorithm returns a lambda that
       only take a `birlei`.
-    - When passing a `birlei`, returns a lambda that takes a `PPMRRAIR`
-      function which is called over the `birlei` set.
+    - When passing a `birlei`, returns a lambda that takes a lambda which is
+      called over the `birlei` set.
  5. [indexable](#file-indexable), [indexable_consts](#file-indexable_consts)
     - Functions to manipulate a list or string as a stack / queue, use negative
       indices to get the indices / elements from the end, insert /
@@ -191,9 +191,6 @@ There are several files in this library set.
     - Miscellaneous functions that don't fit elsewhere.
 10. [skin](#file-skin)
     - Generates a polyhedron using slices.
-11. [sas_cutter](#file-sas_cutter)
-    - Creates a skin which is used as a cutting tool help to align two separate
-      parts together.
 
 ## Table of Contents
 
@@ -238,6 +235,7 @@ There are several files in this library set.
 </details>
 <details><summary><a href="#types-ch-Type_Introspection">📑 <i>Type Introspection</i></a></summary>
 <blockquote>
+• <a href="#t-_TYPE_NAMES">💠_TYPE_NAMES</a><br>
 • <a href="#f-type_enum">⚙️type_enum</a><br>
 • <a href="#f-type_enum_to_str">⚙️type_enum_to_str</a><br>
 • <a href="#f-type">⚙️type</a><br>
@@ -248,6 +246,29 @@ There are several files in this library set.
 <details><summary><a href="#types-ch-types_types">📑 <i>types types</i></a></summary>
 <blockquote>
 • <a href="#t-type_enum">🧩type_enum</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
+<details><summary><a href="#file-types_consts">📘 <b>types_consts</b></a></summary>
+<blockquote>
+• <a href="#types_consts-ch-How_to_Import">📑 <i>How to Import</i></a><br>
+• <a href="#types_consts-ch-Purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#types_consts-ch-Values">📑 <i>Values</i></a></summary>
+<blockquote>
+• <a href="#v-RANGE">💠RANGE</a><br>
+• <a href="#v-LIST">💠LIST</a><br>
+• <a href="#v-STR">💠STR</a><br>
+• <a href="#v-UNKNOWN">💠UNKNOWN</a><br>
+• <a href="#v-SLICE">💠SLICE</a><br>
+• <a href="#v-UNDEF">💠UNDEF</a><br>
+• <a href="#v-BOOL">💠BOOL</a><br>
+• <a href="#v-FUNC">💠FUNC</a><br>
+• <a href="#v-NUM">💠NUM</a><br>
+• <a href="#v-INT">💠INT</a><br>
+• <a href="#v-FLOAT">💠FLOAT</a><br>
+• <a href="#v-NAN">💠NAN</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -310,11 +331,11 @@ There are several files in this library set.
 <details><summary><a href="#base_algos-ch-base_algos_types">📑 <i>base_algos types</i></a></summary>
 <blockquote>
 • <a href="#t-BoundIndexFn">🧩BoundIndexFn</a><br>
-• <a href="#t-FindLowerFn">🧩FindLowerFn</a><br>
-• <a href="#t-FindUpperFn">🧩FindUpperFn</a><br>
 • <a href="#t-OptionalBirl">🧩OptionalBirl</a><br>
 • <a href="#t-AlgoFn">🧩AlgoFn</a><br>
+• <a href="#t-FindLowerFn">🧩FindLowerFn</a><br>
 • <a href="#t-FindLowerBirleiFn">🧩FindLowerBirleiFn</a><br>
+• <a href="#t-FindUpperFn">🧩FindUpperFn</a><br>
 • <a href="#t-FindUpperFn">🧩FindUpperFn</a><br>
 • <a href="#t-FindUpperBirleiFn">🧩FindUpperBirleiFn</a><br>
 • <a href="#t-FindFn">🧩FindFn</a><br>
@@ -345,6 +366,7 @@ There are several files in this library set.
 • <a href="#f-is_slice">⚙️is_slice</a><br>
 • <a href="#f-slice">⚙️slice</a><br>
 • <a href="#f-slice_to_range">⚙️slice_to_range</a><br>
+• <a href="#f-_slr_cache">⚙️_slr_cache</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#indexable-ch-Algorithm_Adaptors">📑 <i>Algorithm Adaptors</i></a></summary>
@@ -394,6 +416,9 @@ There are several files in this library set.
 • <a href="#f-tail_multi">⚙️tail_multi</a><br>
 • <a href="#f-osearch">⚙️osearch</a><br>
 • <a href="#f-csearch">⚙️csearch</a><br>
+• <a href="#f-quicksort_list_comp_ex">⚙️quicksort_list_comp_ex</a><br>
+• <a href="#f-quicksort_lib_ex1">⚙️quicksort_lib_ex1</a><br>
+• <a href="#f-quicksort_lib_ex2">⚙️quicksort_lib_ex2</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#indexable-ch-indexable_types">📑 <i>indexable types</i></a></summary>
@@ -413,12 +438,35 @@ There are several files in this library set.
 </blockquote>
 </details>
 
+<details><summary><a href="#file-indexable_consts">📘 <b>indexable_consts</b></a></summary>
+<blockquote>
+• <a href="#indexable_consts-ch-How_to_Import">📑 <i>How to Import</i></a><br>
+• <a href="#indexable_consts-ch-Purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#indexable_consts-ch-Values">📑 <i>Values</i></a></summary>
+<blockquote>
+• <a href="#v-_SLR_CACHE_HEADER">💠_SLR_CACHE_HEADER</a><br>
+• <a href="#v-_SLR_LEN">💠_SLR_LEN</a><br>
+• <a href="#v-_SLR_TE">💠_SLR_TE</a><br>
+• <a href="#v-_SLR_ELD">💠_SLR_ELD</a><br>
+• <a href="#v-_SLR_BLEN">💠_SLR_BLEN</a><br>
+• <a href="#v-_SLR_ELI">💠_SLR_ELI</a><br>
+• <a href="#v-_SLR_IDX">💠_SLR_IDX</a><br>
+• <a href="#v-_SLR_STR">💠_SLR_STR</a><br>
+• <a href="#v-_SLR_BIRL">💠_SLR_BIRL</a><br>
+• <a href="#v-_SLR_END_I">💠_SLR_END_I</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
 <details><summary><a href="#file-function">📘 <b>function</b></a></summary>
 <blockquote>
 • <a href="#function-ch-Purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#function-ch-Function_Introspection">📑 <i>Function Introspection</i></a></summary>
 <blockquote>
 • <a href="#f-param_count">⚙️param_count</a><br>
+• <a href="#f-_PARAM_BEGIN_I">⚙️_PARAM_BEGIN_I</a><br>
+• <a href="#f-_pc_loop">⚙️_pc_loop</a><br>
 • <a href="#f-param_count_direct_recursion_demo">⚙️param_count_direct_recursion_demo</a><br>
 • <a href="#f-apply_to_fn">⚙️apply_to_fn</a><br>
 • <a href="#f-apply_to_fn2">⚙️apply_to_fn2</a><br>
@@ -466,7 +514,7 @@ There are several files in this library set.
 • <a href="#f-translate">⚙️translate</a><br>
 • <a href="#f-scale">⚙️scale</a><br>
 • <a href="#f-transform">⚙️transform</a><br>
-• <a href="#f-reorient">⚙️reorient</a><br>
+• <a href="#f-_reorient">⚙️_reorient</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#transform-ch-Matrix_Math">📑 <i>Matrix Math</i></a></summary>
@@ -475,6 +523,12 @@ There are several files in this library set.
 • <a href="#f-row_reduction">⚙️row_reduction</a><br>
 • <a href="#f-identity">⚙️identity</a><br>
 • <a href="#f-augment">⚙️augment</a><br>
+• <a href="#f-_right_half">⚙️_right_half</a><br>
+• <a href="#f-_swap_rows">⚙️_swap_rows</a><br>
+• <a href="#f-_argmax_abs_col">⚙️_argmax_abs_col</a><br>
+• <a href="#f-_is_rect_matrix">⚙️_is_rect_matrix</a><br>
+• <a href="#f-_is_square_matrix">⚙️_is_square_matrix</a><br>
+• <a href="#f-_all_numeric">⚙️_all_numeric</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#transform-ch-transform_types">📑 <i>transform types</i></a></summary>
@@ -507,6 +561,10 @@ There are several files in this library set.
 <blockquote>
 • <a href="#f-arc_len">⚙️arc_len</a><br>
 • <a href="#f-arc_len_angle">⚙️arc_len_angle</a><br>
+• <a href="#f-_circle_line_intersections">⚙️_circle_line_intersections</a><br>
+• <a href="#f-_pick_right">⚙️_pick_right</a><br>
+• <a href="#f-_theta_deg">⚙️_theta_deg</a><br>
+• <a href="#f-_wrap_diff_deg">⚙️_wrap_diff_deg</a><br>
 • <a href="#f-arc_len_for_shift">⚙️arc_len_for_shift</a><br>
 • <a href="#f-shift_for_arc_len">⚙️shift_for_arc_len</a><br>
 </blockquote>
@@ -546,6 +604,15 @@ There are several files in this library set.
 • <a href="#f-layer_pt">⚙️layer_pt</a><br>
 • <a href="#f-layer_pts">⚙️layer_pts</a><br>
 • <a href="#f-layer_side_faces">⚙️layer_side_faces</a><br>
+• <a href="#t-_ear_cw">💠_ear_cw</a><br>
+• <a href="#t-_ear_ccw">💠_ear_ccw</a><br>
+• <a href="#f-_pt_in_triangle">⚙️_pt_in_triangle</a><br>
+• <a href="#f-_any_point_in_ear">⚙️_any_point_in_ear</a><br>
+• <a href="#f-_cap_ears">⚙️_cap_ears</a><br>
+• <a href="#f-_proj_pts">⚙️_proj_pts</a><br>
+• <a href="#f-_proj_to_what_norm">⚙️_proj_to_what_norm</a><br>
+• <a href="#f-_cap_layer">⚙️_cap_layer</a><br>
+• <a href="#f-_cap_layers">⚙️_cap_layers</a><br>
 • <a href="#f-is_skin">⚙️is_skin</a><br>
 • <a href="#f-skin_new">⚙️skin_new</a><br>
 • <a href="#f-skin_extrude">⚙️skin_extrude</a><br>
@@ -553,11 +620,13 @@ There are several files in this library set.
 • <a href="#f-skin_transform">⚙️skin_transform</a><br>
 • <a href="#m-skin_to_polyhedron">🧊skin_to_polyhedron</a><br>
 • <a href="#f-skin_add_layer_if">⚙️skin_add_layer_if</a><br>
+• <a href="#f-skin_add_point_in_layer">⚙️skin_add_point_in_layer</a><br>
 • <a href="#m-skin_show_debug_axes">🧊skin_show_debug_axes</a><br>
 • <a href="#f-interpolate">⚙️interpolate</a><br>
 • <a href="#f-skin_limit">⚙️skin_limit</a><br>
 • <a href="#f-skin_verify">⚙️skin_verify</a><br>
 • <a href="#f-skin_max_layer_distance_fn">⚙️skin_max_layer_distance_fn</a><br>
+• <a href="#f-skin_max_pt_distance_fn">⚙️skin_max_pt_distance_fn</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#skin-ch-skin_types">📑 <i>skin types</i></a></summary>
@@ -569,19 +638,6 @@ There are several files in this library set.
 • <a href="#t-ColourStr">🧩ColourStr</a><br>
 • <a href="#t-ColourName">🧩ColourName</a><br>
 • <a href="#t-DebugStyle">🧩DebugStyle</a><br>
-</blockquote>
-</details>
-</blockquote>
-</details>
-
-<details><summary><a href="#file-sas_cutter">📘 <b>sas_cutter</b></a></summary>
-<blockquote>
-• <a href="#sas_cutter-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#sas_cutter-ch-Variants">📑 <i>Variants</i></a></summary>
-<blockquote>
-• <a href="#f-sas_cutter">⚙️sas_cutter</a><br>
-• <a href="#f-sas2_cutter">⚙️sas2_cutter</a><br>
-• <a href="#f-scs_cutter">⚙️scs_cutter</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -602,7 +658,7 @@ list.  However, unlike in python, it:
 2. Doesn't have a simple means to determine if an object is a range object.
 3. Doesn't have a way to interrogate it for its length.
 4. Has a feature which if the end value is unreachable given an initial start
-   and step value, it generates a a warning.
+   and step value, it generates a warning.
 
 This library is to help with those deficiencies.
 
@@ -648,9 +704,12 @@ Possible callchains:
 
     range(count)                : resulting_range
     range(begin_i, end_i)       : resulting_range
-    range(begin_i, skip, end_i) : resulting_range
+    range(begin_i, step, end_i) : resulting_range
 
 Creates a range object.
+
+The callchains show the overloads, where `step` refers to the step count used
+to go between `begin_i` and `end_i`.
 
 > ℹ️ NOTE:
 >
@@ -791,7 +850,7 @@ The index to have retrieved if iterated over `i` times.
 
 <code>*function* range_idx(r: <a href="#t-range">range</a>, i: number, \_r\_len: number|undef) : number</code>
 
-Gets the index for an range.  Allows for negative values to reference
+Gets the index for a range.  Allows for negative values to reference
 elements starting from the end going backwards.
 
 <details><summary>parameters</summary>
@@ -961,6 +1020,12 @@ Returns `true` if NaN, `false` otherwise.
 
 ### <i>📑Type Introspection</i><a id='types-ch-Type_Introspection'></a>
 
+#### 💠\_TYPE\_NAMES<a id='t-_TYPE_NAMES'></a>
+
+<code>*value* _TYPE_NAMES : list\[string]</code>
+
+The names of the types indexed by the type enums.
+
 #### ⚙️type\_enum<a id='f-type_enum'></a>
 
 <code>*function* type_enum(o: any, distinguish\_float\_from\_int: bool) : number</code>
@@ -1096,6 +1161,90 @@ Give info for `o` as string.
 
 Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
 to get name of type.
+
+## 📘types_consts<a id='file-types_consts'></a>
+
+### <i>📑How to Import</i><a id='types_consts-ch-How_to_Import'></a>
+
+    include <types_consts>
+
+### <i>📑Purpose</i><a id='types_consts-ch-Purpose'></a>
+
+Constants representing the types as enumerated values.
+
+### <i>📑Values</i><a id='types_consts-ch-Values'></a>
+
+#### 💠RANGE<a id='v-RANGE'></a>
+
+<code>*value* RANGE : ???</code>
+
+Enum for range type
+
+#### 💠LIST<a id='v-LIST'></a>
+
+<code>*value* LIST : ???</code>
+
+Enum for list type
+
+#### 💠STR<a id='v-STR'></a>
+
+<code>*value* STR : ???</code>
+
+Enum for string type
+
+#### 💠UNKNOWN<a id='v-UNKNOWN'></a>
+
+<code>*value* UNKNOWN : ???</code>
+
+Enum for unknown type
+
+#### 💠SLICE<a id='v-SLICE'></a>
+
+<code>*value* SLICE : ???</code>
+
+Enum for slice type
+
+#### 💠UNDEF<a id='v-UNDEF'></a>
+
+<code>*value* UNDEF : ???</code>
+
+Enum for undef type
+
+#### 💠BOOL<a id='v-BOOL'></a>
+
+<code>*value* BOOL : ???</code>
+
+Enum for boolean type
+
+#### 💠FUNC<a id='v-FUNC'></a>
+
+<code>*value* FUNC : ???</code>
+
+Enum for function type
+
+#### 💠NUM<a id='v-NUM'></a>
+
+<code>*value* NUM : ???</code>
+
+Enum for number type
+
+#### 💠INT<a id='v-INT'></a>
+
+<code>*value* INT : ???</code>
+
+Enum for integer type
+
+#### 💠FLOAT<a id='v-FLOAT'></a>
+
+<code>*value* FLOAT : ???</code>
+
+Enum for floating point type
+
+#### 💠NAN<a id='v-NAN'></a>
+
+<code>*value* NAN : ???</code>
+
+Enum for NaN
 
 ## 📘birlei<a id='file-birlei'></a>
 
@@ -1419,8 +1568,8 @@ value.
 
 <code>*callback* PredMapFn(probe: any, get\_value: bool) : any</code>
 
-Compares a derived comparison value against an internally stored value and
-returns a value if:
+Compares a derived comparison value against an internally stored value or
+returns a value, depending on the second parameter's truthiness.
 
 Definitions:
 
@@ -1575,9 +1724,9 @@ Or it could be done using the algorithm adaptor `it_each` (See
 You'll notice the occurrence of `)(`.  This ends the algorithm or adaptor
 call and start the next call which takes a function to test each element.
 Also, observe that when the algorithm's `birlei` parameter is omitted, a
-`function(birl, end_i)` is returned, which in this case is `find()`.  The
-adaptor needs this function signature to be passed to it so that it can apply
-the algorithm while passing the element to the `PPMRRAIR` function.
+`function(birl, end_i)` is returned, which in this case is the function that
+executes the `find` algorithm.  This reduces the algorithm down to standard
+function signature.
 
 These 2 basic patterns are used everywhere in the library set, and though it
 might look odd at first, you'll find that it becomes natural quite quickly.
@@ -1648,8 +1797,8 @@ over each `birlei` element:
 
 #### **Predicate** (`function(i) : result`)
 
-- A binary predicate is used by `find`, `filter` and `map`.  It has 2
-  results, truthy or falsely.
+- A binary predicate is used by `find` and `filter`.  It has 2 results,
+  truthy or falsy.
 - A trinary predicate is used with `find_lower` and `find_upper`.  It has 3
   results: less than 0, equal to 0 and greater than 0.  This is akin to the
   spaceship operator in c++20.
@@ -1666,30 +1815,30 @@ over each `birlei` element:
 
 #### **Reduction** (`function(i, acc) : acc`)
 
-> ℹ️ NOTE:
->
-> `acc` **is the second parameter** which is different from most languages.
-> This is to keep it consistent with the rest of the `PPMRRAIR` functions
-> and this library in general.  You have been warned.
-
 - Used by `reduce`.
 - Takes in the index and the previous accumulated object and returns the
   new accumulated object.
 - This is roughly equivalent to a for_each loop in C++.
 
-#### **Reduction, Allow Incomplete Reduction** (`function(i, acc) : [cont, acc]`)
-
 > ℹ️ NOTE:
 >
 > `acc` **is the second parameter** which is different from most languages.
 > This is to keep it consistent with the rest of the `PPMRRAIR` functions
 > and this library in general.  You have been warned.
+
+#### **Reduction, Allow Incomplete Reduction** (`function(i, acc) : [cont, acc]`)
 
 - Used by `reduce_air`.
 - Takes in the index and the previous accumulated object and returns a
   list `[ cont, new_acc ]`, where `cont` states if to continue looping if not
   finished iterating over the `birlei`.
 - This is roughly equivalent to a for loop in C++.
+
+> ℹ️ NOTE:
+>
+> `acc` **is the second parameter** which is different from most languages.
+> This is to keep it consistent with the rest of the `PPMRRAIR` functions
+> and this library in general.  You have been warned.
 
 **See also** [Algorithm Adaptors](#algorithm-adaptors).
 
@@ -1894,7 +2043,7 @@ Possible callchains:
 
 #### ⚙️reduce\_air<a id='f-reduce_air'></a>
 
-<code>*function* reduce_air(init: any, birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReductionAirFn">ReductionAirFn</a></code>
+<code>*function* reduce_air(init: any, birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReduceAirBirleiFn">ReduceAirBirleiFn</a></code>
 
 Possible callchains:
 
@@ -1930,7 +2079,7 @@ as the accumulator.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReductionAirFn">ReductionAirFn</a></code>
+**Returns**: <code><a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReduceAirBirleiFn">ReduceAirBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `ReduceAirBirleiFn`.
 - Else returns type `ReduceAirFn`.
@@ -1938,7 +2087,7 @@ as the accumulator.
 Possible callchains:
 
     ReduceAirFn(reduction_fn) : list[bool,any]
-    ReductionAirFn(probe, accumulator) : list[bool,any]
+    ReduceAirBirleiFn(birl, end_i) (reduction_fn) : list[bool,any]
 
 </details>
 
@@ -1981,8 +2130,8 @@ Filter function.
 
 Possible callchains:
 
-    FilterFn(reduction_fn) : list[any,...]
-    FilterBirleiFn(birl, end_i) (reduction_fn) : list[any,...]
+    FilterFn(ppm_fn) : list[any,...]
+    FilterBirleiFn(birl, end_i) (ppm_fn) : list[any,...]
 
 </details>
 
@@ -1995,7 +2144,7 @@ Possible callchains:
     map(birl, end_i)    (map_fn) : list
     map() (birl, end_i) (map_fn) : list
 
-Map indices or list elements to values, producing an list that has as many
+Map indices or list elements to values, producing a list that has as many
 elements as indices provided.
 
 <details><summary>parameters</summary>
@@ -2077,18 +2226,6 @@ Index of the selected bound, or `undef` if no such index exists.
 
 </details>
 
-#### 🧩FindLowerFn<a id='t-FindLowerFn'></a>
-
-<code>*callback* FindLowerFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
-
-Returns the first index `i` where `spaceship_fn(i) >= 0`.
-
-#### 🧩FindUpperFn<a id='t-FindUpperFn'></a>
-
-<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
-
-Returns the first index `i` where `spaceship_fn(i) > 0`.
-
 #### 🧩OptionalBirl<a id='t-OptionalBirl'></a>
 
 <code>*type* OptionalBirl = number|<a href="#t-range">range</a>|list|undef</code>
@@ -2130,9 +2267,19 @@ Returned value is based on the result of the function doing the iterating.
 
 </details>
 
+#### 🧩FindLowerFn<a id='t-FindLowerFn'></a>
+
+<code>*callback* FindLowerFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
+
 #### 🧩FindLowerBirleiFn<a id='t-FindLowerBirleiFn'></a>
 
 <code>*callback* FindLowerBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+
+#### 🧩FindUpperFn<a id='t-FindUpperFn'></a>
+
+<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
+
+Returns the first index `i` where `spaceship_fn(i) > 0`.
 
 #### 🧩FindUpperFn<a id='t-FindUpperFn'></a>
 
@@ -2173,8 +2320,7 @@ or any other abstract structure) and/or by how it interprets adaptor outputs.
 
 **Returns**: <code>number|undef</code>
 
-First index where `spaceship_fn(i) > 0`.  If none are found, returns
-`undef`.
+The first index `i` where `spaceship_fn(i) > 0` or `undef` if none found.
 
 > ℹ️ NOTE:
 >
@@ -2186,10 +2332,6 @@ First index where `spaceship_fn(i) > 0`.  If none are found, returns
 #### 🧩FindUpperBirleiFn<a id='t-FindUpperBirleiFn'></a>
 
 <code>*callback* FindUpperBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
-
-Possible callchains:
-
-    FindUpperBirleiFn(birl, end_i) (spaceship_fn) : (number|undef)
 
 #### 🧩FindFn<a id='t-FindFn'></a>
 
@@ -2341,11 +2483,11 @@ Last continue value and the final value of accumulator.  If the original
 
 #### 🧩FilterFn<a id='t-FilterFn'></a>
 
-<code>*callback* FilterFn(reduction\_fn: <a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a>) : list\[any,...]</code>
+<code>*callback* FilterFn(ppm\_fn: <a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a>) : list\[any,...]</code>
 
 <details><summary>parameters</summary>
 
-**<code>reduction_fn</code>**: <code><a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a></code>
+**<code>ppm_fn</code>**: <code><a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a></code>
 
 </details>
 
@@ -2546,9 +2688,12 @@ Object to check.
 Possible callchains:
 
     slice(begin_i, end_i)       : resulting_slice
-    slice(begin_i, skip, end_i) : resulting_slice
+    slice(begin_i, step, end_i) : resulting_slice
 
 Create a `slice` object.
+
+The callchains show the overloads, where `step` refers to the step count used
+to go between `begin_i` and `end_i`.
 
 <details><summary>parameters</summary>
 
@@ -2559,7 +2704,7 @@ of slr being referred to.
 
 **<code>step_or_end_i</code>**: <code>number</code>
 
-- If `end_i` not defined, then refers to the lat index of the sequence.
+- If `end_i` not defined, then refers to the last index of the sequence.
   - If negative, then counts backward from end of `slr` being referred to.
 - If `end_i` is defined, then refers to the step count used to go between
   `begin_i` and `end_i`.
@@ -2617,6 +2762,90 @@ If passed, then use that cached value instead of calculating `len(slr)`.
 
 A range that corresponds to what the slice is to do given an `slr`.
 If the slice is completely before or after the slr, returns [].
+
+</details>
+
+#### ⚙️\_slr\_cache<a id='f-_slr_cache'></a>
+
+<code>*function* _slr_cache(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-slr_cache">slr_cache</a></code>
+
+A `birlsei` may be incomplete or may be a slice. This function normalise it
+to a `birlei` such that:
+
+1. If `is_num(birls) && is_undef(end_i)` then `end_i` is the index of the
+   last element.
+2. If `is_slice(birls)`, then convert to a a range using `slice_to_range()`.
+
+> ℹ️ NOTE:
+>
+> The `birlei` can represent only positive indices.
+
+The returned array can be dereferenced using the \_SLR_* constants, which can
+be included using the command `include<indexable_consts>` (DO NOT USE
+`use<>`).
+
+> ℹ️ NOTE:
+>
+> All functions that dereference the slr or normalised `birlsei` are fully
+> unrolled and optimized for their specific slr type, so will be faster when
+> compared with using `el()` or `idx()` calls.
+
+> 🤔 TO THINK ABOUT:
+>
+> Do we need a _SLR_BTE to store the type of the normalised `birlsei`?
+>
+> Answer:
+>
+> I would think that testing using is_num(birls), is_list(birls) and
+> is_num(`birls[0]`) would be faster than using a stored \_SLR\_BTE, unless
+> considering using a dispatch table, which would require function call
+> overhead, so is prolly not worth it.
+
+> 🤔 TO THINK ABOUT:
+>
+> Do we need the normalised `birlsei` to house values that are positive and
+> negative?  Can we just make it house just positive values?
+>
+> Answer:
+>
+> No, if that's really needed, just add the `birlei` length to the index
+> needed.  Don't want to slow things down in the most common case.
+
+<details><summary>parameters</summary>
+
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
+
+The `slr` used as reference.
+
+**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+
+- If `number`, start index to iterate over.
+- If `range`, indices to iterate over.
+- If `list`, indices to iterate over.
+- If `slice`, to convert to range providing indices to iterate over.
+
+**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
+
+- If related `birl` is a number, then this is the end index to iterate
+  over.
+  - If this value is less than the related birl's value, then nothing is
+    iterated over.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-slr_cache">slr_cache</a></code>
+
+ Normalised values:
+ `[ header, slr_len, slr_te, eld_fn, blen, eli_fn, idx_fn, str_fn, birl, end_i ]`
+
+ > MICRO OPTIMIZATION:
+ >
+ > On normalisation, if a birl is not a number, then end_i will not be
+ > allocated.  Referencing that value will return undef and should be
+ > marginally faster than having to actually get the undef value if it was
+ > allocated.
 
 </details>
 
@@ -2705,7 +2934,7 @@ Possible callchains:
 
 Possible callchains:
 
-    it_idxs(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
+    it_idxs(slr, algo_fn, birls, end_i) (ppmrrair_fn) : any
 
 This convenience function will execute function `algo_fn` as if it were used
 on a collection, `ppmrrair_fn` will still receive the *index*.  Uses the
@@ -2770,7 +2999,7 @@ Possible callchains:
 
 Possible callchains:
 
-    it_enum(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
+    it_enum(slr, algo_fn, birls, end_i) (ppmrrair_fn) : any
 
 This convenience function will execute function `algo_fn` as if it were used
 on a collection, remapping the first parameter being passed to `ppmrrair_fn`
@@ -2964,7 +3193,7 @@ The element at the index specified.
 <code>*function* els(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : string|list|<a href="#t-range">range</a></code>
 
 Gets a substring, sub-range or sub-elements of a string, list or range.   If
-`slr` is a `range` and the `birlei` is a `range`, the the result is a `range`.
+`slr` is a `range` and the `birlei` is a `range`, the result is a `range`.
 
 > ℹ️ NOTE:
 >
@@ -3290,7 +3519,7 @@ Previous element index in list.
 
 <code>*function* push(sl: string|list, es: string|list|<a href="#t-range">range</a>) : string|list</code>
 
-Push elements onto the head (which is after the last element) of the `sl`.
+Push elements onto the end of `sl`.
 
 <details><summary>parameters</summary>
 
@@ -3320,8 +3549,7 @@ The updated string or list.
 
 <code>*function* pop(sl: string|list, count: number, \_sl\_len: number) : string|list</code>
 
-Pops 0 or more elements off the head (which are the last elements) of the
-`sl`.
+Pops 0 or more elements off the end of `sl`.
 
 > ℹ️ NOTE:
 >
@@ -3360,7 +3588,7 @@ The updated sl.
 
 <code>*function* unshift(sl: string|list, es: string|list|<a href="#t-range">range</a>) : string|list</code>
 
-Unshift elements onto the tail (which are before the beginning) of the `sl`.
+Unshift elements onto the beginning of `sl`.
 
 <details><summary>parameters</summary>
 
@@ -3390,7 +3618,7 @@ The updated sl.
 
 <code>*function* shift(sl: string|list, count: number, \_sl\_len: number) : string|list</code>
 
-Shift elements off of the tail (which are at the beginning) of the `sl`.
+Shift elements off of the beginning of `sl`.
 
 > ℹ️ NOTE:
 >
@@ -3834,7 +4062,7 @@ Returns the rotated list.
 
 <code>*function* head(sl: string|list, \_sl\_len: number) : any</code>
 
-Gets the element at the head (which is the last element) of the `sl`.
+Gets the element at the end of `sl`.
 
 <details><summary>parameters</summary>
 
@@ -3865,7 +4093,7 @@ Object at the head of the list.
 
 <code>*function* head_multi(sl: string|list, i: number, \_sl\_len: number) : string|list</code>
 
-Gets the elements at the head (which are the last elements) of the `sl`.
+Gets the elements at the end of `sl`.
 
 <details><summary>parameters</summary>
 
@@ -3900,7 +4128,7 @@ Objects at the head of the list.
 
 <code>*function* tail(sl: string|list) : any</code>
 
-Gets the element at the tail (which is the first element) of the `sl`.
+Gets the element at the beginning of `sl`.
 
 <details><summary>parameters</summary>
 
@@ -3922,7 +4150,7 @@ Object at the tail of the list.
 
 <code>*function* tail_multi(sl: string|list, i: number) : string|list</code>
 
-Gets the elements at the tail (which are the first elements) of the `sl`.
+Gets the elements at the beginning of `sl`.
 
 <details><summary>parameters</summary>
 
@@ -4038,6 +4266,43 @@ Possible callchains:
 
 </details>
 
+#### ⚙️quicksort\_list\_comp\_ex<a id='f-quicksort_list_comp_ex'></a>
+
+<code>*function* quicksort_list_comp_ex()</code>
+
+Example quick sort algorithm from:
+  (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+
+#### ⚙️quicksort\_lib\_ex1<a id='f-quicksort_lib_ex1'></a>
+
+<code>*function* quicksort_lib_ex1()</code>
+
+Example of quick sort algorithm using library.
+
+Modified quicksort example from:
+  (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+
+> ℹ️ NOTE:
+>
+> Not saying that it should be implemented this way.  Just testing.
+> If done this way, could sort a subset, but the overhead would be
+> significant.
+
+#### ⚙️quicksort\_lib\_ex2<a id='f-quicksort_lib_ex2'></a>
+
+<code>*function* quicksort_lib_ex2()</code>
+
+Example of quick sort algorithm using library.
+
+Modified quicksort example from:
+  (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+
+> ℹ️ NOTE:
+>
+> Not saying that it should be implemented this way.  Just testing.
+> If done this way, could sort a subset, but the overhead would be
+> significant.
+
 ### <i>📑indexable types</i><a id='indexable-ch-indexable_types'></a>
 
 #### 🧩slice<a id='t-slice'></a>
@@ -4087,9 +4352,9 @@ Type enum of `slr`.
 
 Returns roughly `slr[i]`, where `0 <= i < slr_len`.
 
-- If backward indexing is wanted, manually calculating it by the formula
-  `slr_len - i` is required.  This maximises throughput for most common
-  case.
+- If backward indexing equivalent to [`idx()`](#f-idx) is wanted, manually
+  calculating it by the formula `slr_len - i` is required.  This maximises
+  throughput for most common case.
 
 <code><b>_SLR_BLEN</b></code>: <code>number</code>
 
@@ -4101,18 +4366,18 @@ Length of normalised `birlsei`.
 (Indirect addressing).  Returns roughly `slr[birlei[j]]`, where
 `0 <= j < birlei_len`.
 
-- If backward indexing is wanted, manually calculating it by the formula
-  `birlei_len - j` is required.  This maximises throughput for most common
-  case.
+- If backward indexing equivalent to [`idx()`](#f-idx) is wanted, manually
+  calculating it by the formula `birlei_len - j` is required.  This
+  maximises throughput for most common case.
 
 <code><b>_SLR_IDX</b></code>: <code>function(k: number): number</code>
 
 `k` is the index to dereference the normalised `birlsei`.  Returns roughly
 `birlei[k]`, where `0 <= k < birlei_len`.
 
-- If backward indexing is wanted, manually calculating it by the formula
-  `birlei_len - k` is required.  This maximises throughput for most common
-  case.
+- If backward indexing equivalent to [`idx()`](#f-idx) is wanted, manually
+  calculating it by the formula `birlei_len - k` is required.  This
+  maximises throughput for most common case.
 
 <code><b>_SLR_STR</b></code>: <code>function(): string</code>
 
@@ -4286,6 +4551,90 @@ Possible callchains:
 
 </details>
 
+## 📘indexable_consts<a id='file-indexable_consts'></a>
+
+### <i>📑How to Import</i><a id='indexable_consts-ch-How_to_Import'></a>
+
+    include <indexable_consts>
+
+### <i>📑Purpose</i><a id='indexable_consts-ch-Purpose'></a>
+
+Constants used by [`slr_cache`](f-slr_cache) for indexing the
+[slr_cache](#t-slr_cache) object.
+
+### <i>📑Values</i><a id='indexable_consts-ch-Values'></a>
+
+#### 💠\_SLR\_CACHE\_HEADER<a id='v-_SLR_CACHE_HEADER'></a>
+
+<code>*value* _SLR_CACHE_HEADER : ???</code>
+
+Used to indicate if a list object is identified as an `_SLR_CACHE` object
+
+#### 💠\_SLR\_LEN<a id='v-_SLR_LEN'></a>
+
+<code>*value* _SLR_LEN : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_LEN] (number)
+  Value representing the length of `slr`.
+
+#### 💠\_SLR\_TE<a id='v-_SLR_TE'></a>
+
+<code>*value* _SLR_TE : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_TE] (type_enum)
+  Value representing the type of `slr`.
+
+#### 💠\_SLR\_ELD<a id='v-_SLR_ELD'></a>
+
+<code>*value* _SLR_ELD : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_ELD] (function(i): any)
+  Function dereferences the `slr` DIRECTLY.  E.g. index directly to `slr`
+  without going through the BIRLEI.
+
+#### 💠\_SLR\_BLEN<a id='v-_SLR_BLEN'></a>
+
+<code>*value* _SLR_BLEN : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_BLEN] (number)
+  Length of BIRLEI.
+
+#### 💠\_SLR\_ELI<a id='v-_SLR_ELI'></a>
+
+<code>*value* _SLR_ELI : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_ELI] (function(i): any)
+  Function dereferences the `slr` INDIRECTLY by getting index through the
+  BIRLEI, and using that index to index the `slr`.
+
+#### 💠\_SLR\_IDX<a id='v-_SLR_IDX'></a>
+
+<code>*value* _SLR_IDX : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_IDX] (function(i): number)
+  Function that dereferences the BIRLEI value.
+
+#### 💠\_SLR\_STR<a id='v-_SLR_STR'></a>
+
+<code>*value* _SLR_STR : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_STR] (function() : string)
+  Function converting normalised BIRLEI to string.
+
+#### 💠\_SLR\_BIRL<a id='v-_SLR_BIRL'></a>
+
+<code>*value* _SLR_BIRL : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_BIRL] (number | list | range)
+  Normalised BIRL component of BIRLEI.
+
+#### 💠\_SLR\_END\_I<a id='v-_SLR_END_I'></a>
+
+<code>*value* _SLR_END_I : ???</code>
+
+_slr_cache(slr, birls, end_i)[_SLR_END_I] (number | undef)
+  Normalised END_I component of BIRLEI.
+
 ## 📘function<a id='file-function'></a>
 
 ### <i>📑Purpose</i><a id='function-ch-Purpose'></a>
@@ -4311,6 +4660,65 @@ Counts the number of parameters that can be passed to the function fn.
 **Returns**: <code>number</code>
 
 The number of parameters that the function can take.
+
+</details>
+
+#### ⚙️\_PARAM\_BEGIN\_I<a id='f-_PARAM_BEGIN_I'></a>
+
+<code>*function* _PARAM_BEGIN_I()</code>
+
+Constant stating what character to start scanning stringified function.
+
+#### ⚙️\_pc\_loop<a id='f-_pc_loop'></a>
+
+<code>*function* _pc_loop(fn\_str: string, i: number, params: number, escaping: number, quoting: number, nwscf: number, b\_depth: number, p\_depth: number) : number</code>
+
+Main processing loop to count function parameters.
+
+THIS IS A DEMO to show amount of code noise generated when using direct
+recursion vs reduce_air().  Made by translating that loop.
+
+<details><summary>parameters</summary>
+
+**<code>fn_str</code>**: <code>string</code>
+
+String representation of function.
+
+**<code>i</code>**: <code>number</code> *(Default: `_PARAM_BEGIN_I()`)*
+
+Current index being looked at.
+
+**<code>params</code>**: <code>number</code> *(Default: `0`)*
+
+Parameter count so far.
+
+**<code>escaping</code>**: <code>number</code> *(Default: `0`)*
+
+This char is escaped.
+
+**<code>quoting</code>**: <code>number</code> *(Default: `0`)*
+
+Currently in a string.
+
+**<code>nwscf</code>**: <code>number</code> *(Default: `0`)*
+
+Non-whitespace character found.
+
+**<code>b_depth</code>**: <code>number</code> *(Default: `0`)*
+
+Current bracket depth.
+
+**<code>p_depth</code>**: <code>number</code> *(Default: `1`)*
+
+Current parenthesis depth.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Number of parameters counted.
 
 </details>
 
@@ -4345,7 +4753,7 @@ The number of parameters that the function can take.
 
 <code>*function* apply_to_fn(fn: function, p: list) : any</code>
 
-Applies each element in an list to a function's parameter list.
+Applies each element in a list to a function's parameter list.
 
 TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
       overhead.  NEED TO BENCHMARK to determine which to keep.
@@ -4359,7 +4767,7 @@ A lambda that takes between 0 and 15 parameters.
 **<code>p</code>**: <code>list</code>
 
 A list of elements to apply to the function fn.  Must have the same or
-fewer elements than `fn` can take and must be less than 15 elements.
+fewer elements than `fn` can take and must be at most 15 elements.
 
 </details>
 
@@ -4375,7 +4783,7 @@ The return value of fn().
 
 <code>*function* apply_to_fn2(fn: function, p: list) : any</code>
 
-Applies each element in an list to a function's parameter list.
+Applies each element in a list to a function's parameter list.
 
 TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
       overhead.  NEED TO BENCHMARK to determine which to keep.
@@ -4389,7 +4797,7 @@ A lambda that takes between 0 and 15 parameters.
 **<code>p</code>**: <code>list</code>
 
 A list of elements to apply to the function fn.  Must have the same or
-fewer elements than `fn` can take and must be less than 15 elements.
+fewer elements than `fn` can take and must be at most 15 elements.
 
 </details>
 
@@ -5108,9 +5516,17 @@ Transformed points.
 
 </details>
 
-#### ⚙️reorient<a id='f-reorient'></a>
+#### ⚙️\_reorient<a id='f-_reorient'></a>
 
-<code>*function* reorient(start\_line\_seg: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], end\_line\_seg: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], scale\_to\_vectors: bool) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* _reorient(start\_line\_seg: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], end\_line\_seg: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]|list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], scale\_to\_vectors: bool) : <a href="#t-Matrix">Matrix</a></code>
+
+> 🤔 TO THINK ABOUT:
+>
+> Going to change this.  I think I want it like:
+>     reorient(vector_space_1, vector_space_2, scale_to_vectors)
+> Where vector_space_* is a start point, followed by 1-3 end points and
+> scale_to_vectors could be bool or list[bool,...] indicating if to scale all
+> or just some.
 
 Returns a homogeneous column-vector transform matrix T (4×4) that maps one
 line segment to another.
@@ -5272,6 +5688,159 @@ Right matrix with r rows.
 The augmented matrix `[A | B]`.
 
 Assertion failure if A and B do not have the same non-zero row count.
+
+</details>
+
+#### ⚙️\_right\_half<a id='f-_right_half'></a>
+
+<code>*function* _right_half(aug: <a href="#t-Matrix">Matrix</a>, n: number) : <a href="#t-Matrix">Matrix</a></code>
+
+Extracts the right half (columns `n..2n-1`) of an `n × (2n)` augmented matrix.
+
+<details><summary>parameters</summary>
+
+**<code>aug</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+
+Augmented matrix of shape n×(2n).
+
+**<code>n</code>**: <code>number</code>
+
+Left block width and row count.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+
+The right n×n block.
+
+</details>
+
+#### ⚙️\_swap\_rows<a id='f-_swap_rows'></a>
+
+<code>*function* _swap_rows(M: <a href="#t-Matrix">Matrix</a>, i: number, j: number) : <a href="#t-Matrix">Matrix</a></code>
+
+Returns a copy of matrix M with rows i and j swapped.
+
+<details><summary>parameters</summary>
+
+**<code>M</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+
+Input matrix.
+
+**<code>i</code>**: <code>number</code>
+
+First row index (0-based).
+
+**<code>j</code>**: <code>number</code>
+
+Second row index (0-based).
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+
+Matrix with rows i and j exchanged.
+
+</details>
+
+#### ⚙️\_argmax\_abs\_col<a id='f-_argmax_abs_col'></a>
+
+<code>*function* _argmax_abs_col(aug: <a href="#t-Matrix">Matrix</a>, col: number, start: number) : number</code>
+
+Finds the row index `r ∈ [start..n-1]` that maximises `|aug[r][col]|`.
+Ties resolve to the first occurrence.
+
+<details><summary>parameters</summary>
+
+**<code>aug</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+
+Matrix to scan.
+
+**<code>col</code>**: <code>number</code>
+
+Column index to examine.
+
+**<code>start</code>**: <code>number</code>
+
+First row index to consider (inclusive).
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Row index of the maximal absolute entry in the given column slice.
+
+</details>
+
+#### ⚙️\_is\_rect\_matrix<a id='f-_is_rect_matrix'></a>
+
+<code>*function* _is_rect_matrix(M: any) : bool</code>
+
+Tests whether M is a rectangular list-of-lists with consistent row length.
+
+<details><summary>parameters</summary>
+
+**<code>M</code>**: <code>any</code>
+
+Candidate matrix.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>bool</code>
+
+true if M is a non-empty list of rows with equal positive length.
+
+</details>
+
+#### ⚙️\_is\_square\_matrix<a id='f-_is_square_matrix'></a>
+
+<code>*function* _is_square_matrix(M: any) : bool</code>
+
+Tests whether M is a square matrix (rectangular and rows == columns).
+
+<details><summary>parameters</summary>
+
+**<code>M</code>**: <code>any</code>
+
+Candidate matrix.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>bool</code>
+
+true if M is rectangular and `len(M) == len(M[0])`.
+
+</details>
+
+#### ⚙️\_all\_numeric<a id='f-_all_numeric'></a>
+
+<code>*function* _all_numeric(M: any) : bool</code>
+
+Tests whether all entries of M are numeric.
+
+<details><summary>parameters</summary>
+
+**<code>M</code>**: <code>any</code>
+
+Candidate matrix.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>bool</code>
+
+true if every element in every row is numeric.
 
 </details>
 
@@ -5599,6 +6168,118 @@ Angle in degrees. Sign follows arc_len.
 
 </details>
 
+#### ⚙️\_circle\_line\_intersections<a id='f-_circle_line_intersections'></a>
+
+<code>*function* _circle_line_intersections(R: number, m: number, b: number) : list</code>
+
+Computes the intersection points of a line and a circle around the origin.
+
+The line is y = m*x + b and the circle is x^2 + y^2 = R^2.
+
+<details><summary>parameters</summary>
+
+**<code>R</code>**: <code>number</code>
+
+Radius of the circle.  Callers such as arc_len_for_shift pass R > 0.
+
+**<code>m</code>**: <code>number</code>
+
+Slope of the line (dy/dx).
+
+**<code>b</code>**: <code>number</code>
+
+Y-intercept of the line.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[]` if there is no real intersection, or `[[x1, y1], [x2, y2]]` where each
+`[x, y]` is a Cartesian intersection point.  For a tangent line both
+returned points are identical.
+
+</details>
+
+#### ⚙️\_pick\_right<a id='f-_pick_right'></a>
+
+<code>*function* _pick_right(ptlist: list) : list|undef</code>
+
+Picks the "right-side" intersection point from up to two candidates.
+
+This is intended to operate on the list returned by
+_circle_line_intersections().  It chooses a single point on the right
+half-plane according to a deterministic ordering.
+
+<details><summary>parameters</summary>
+
+**<code>ptlist</code>**: <code>list</code>
+
+List of zero, one, or two points `[[x1, y1], [x2, y2]]`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list|undef</code>
+
+The selected point `[x, y]` or undef if no point has x >= 0.  Among
+points with x >= 0 it selects the one with the largest x; if x ties,
+it selects the point with the smaller y (the lower point).
+
+</details>
+
+#### ⚙️\_theta\_deg<a id='f-_theta_deg'></a>
+
+<code>*function* _theta_deg(pt: list) : number</code>
+
+Computes the polar angle of a point on the circle in degrees.
+
+<details><summary>parameters</summary>
+
+**<code>pt</code>**: <code>list</code>
+
+Point `[x, y]` in Cartesian coordinates.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Angle in degrees measured from the +X axis using atan2(y, x), with the
+usual range (-180, 180].
+
+</details>
+
+#### ⚙️\_wrap\_diff\_deg<a id='f-_wrap_diff_deg'></a>
+
+<code>*function* _wrap_diff_deg(a1: number, a2: number) : number</code>
+
+Computes the smallest signed difference between two angles in degrees.
+
+<details><summary>parameters</summary>
+
+**<code>a1</code>**: <code>number</code>
+
+First angle in degrees.
+
+**<code>a2</code>**: <code>number</code>
+
+Second angle in degrees.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Signed difference a2 - a1 wrapped into the range (-180, 180].  This is
+the minimal rotation in degrees that moves a1 onto a2.
+
+</details>
+
 #### ⚙️arc\_len\_for\_shift<a id='f-arc_len_for_shift'></a>
 
 <code>*function* arc_len_for_shift(R: number, m: number, a: number, b: number) : number</code>
@@ -5735,7 +6416,7 @@ Value v that is clamped between `[lo, hi]`.
 <code>*function* vector_info(a: <a href="#t-Point">Point</a>, b: <a href="#t-Point">Point</a>) : <a href="#t-VectorInfo">VectorInfo</a></code>
 
 Computes direction, length, unit vector and normal to unit vector, and puts
-them into an list.
+them into a list.
 
 Add `include <helpers_consts>` to use the appropriate constants.
 
@@ -6001,7 +6682,7 @@ Possible callchains:
 
 #### ⚙️interpolated\_values<a id='f-interpolated_values'></a>
 
-<code>*function* interpolated_values(p0: number|list, p1: number|list) : list\[number|list]</code>
+<code>*function* interpolated_values(p0: number|list, p1: number|list, number\_of\_values: number) : list\[number|list]</code>
 
 Gets a list of `number_of_values` between `p0` and `p1`.
 
@@ -6024,6 +6705,10 @@ Starting point.
 **<code>p1</code>**: <code>number|list</code>
 
 Ending point.
+
+**<code>number_of_values</code>**: <code>number</code>
+
+The number of values to put between `p0` and `p1`.
 
 </details>
 
@@ -6245,6 +6930,214 @@ A list of triangle layer_i forming the side walls.
 
 </details>
 
+#### 💠\_ear\_cw<a id='t-_ear_cw'></a>
+
+<code>*value* _ear_cw : function</code>
+
+Given a set of points and an index, returns a face if `pts[pt_is[i..i+2]]`
+are convex, or undef if concave or colinear.
+
+This is for clockwise polygons when looking towards -z.
+
+#### 💠\_ear\_ccw<a id='t-_ear_ccw'></a>
+
+<code>*value* _ear_ccw : function</code>
+
+Given a set of points and an index, returns a face if `pts[pt_is[i..i+2]]`
+are convex, or undef if concave or colinear.
+
+This is for counter-clockwise polygons when looking towards -z.
+
+#### ⚙️\_pt\_in\_triangle<a id='f-_pt_in_triangle'></a>
+
+<code>*function* _pt_in_triangle()</code>
+
+Determines if `pt` is in triangle `(pt0, pt1, pt2)`. `_*` parameters are
+cached values.
+
+#### ⚙️\_any\_point\_in\_ear<a id='f-_any_point_in_ear'></a>
+
+<code>*function* _any_point_in_ear()</code>
+
+Checks if any point indexed by pt_is that is not `pt_i{0, 1, 2}` is inclusively
+bounded by the triangle `pts[pt_is[pt_i{0, 1, 2}]]`.
+
+#### ⚙️\_cap\_ears<a id='f-_cap_ears'></a>
+
+<code>*function* _cap_ears(pts: list\[<a href="#t-Point3D">Point3D</a>,...], pt\_is: list\[number,...], create\_ear\_fn: function, \_i: number, \_faces: list\[<a href="#t-Face">Face</a>,...], \_removed\_at\_least\_one\_ear: bool) : list\[<a href="#t-Face">Face</a>,...]</code>
+
+Caps the end of a face by making all ears into faces until none left.
+
+Parameters starting with _ will not be set by the external caller.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+
+Points that `pt_is` references.
+
+**<code>pt_is</code>**: <code>list\[number,...]</code>
+
+Point indices to dereference `pts` with.
+
+**<code>create_ear_fn</code>**: <code>function</code>
+
+Callback that when given the set of point indices, return a new face or
+undef if not an ear.
+
+**<code>_i</code>**: <code>number</code> *(Default: `0`)*
+
+Where to start traversing polygon for ear clipping.
+
+**<code>_faces</code>**: <code>list\[<a href="#t-Face">Face</a>,...]</code> *(Default: `\[]`)*
+
+Faces.
+
+**<code>_removed_at_least_one_ear</code>**: <code>bool</code> *(Default: `false`)*
+
+States if at least one ear has been removed after one complete cycle of cap
+points.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-Face">Face</a>,...]</code>
+
+Faces
+
+</details>
+
+#### ⚙️\_proj\_pts<a id='f-_proj_pts'></a>
+
+<code>*function* _proj_pts(pts: list\[<a href="#t-Point3D">Point3D</a>,...], dim\_i: number) : list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+
+Project all points to an axis by removing `dim_i` and possibly swapping
+coordinates.  This is done to simplify calculations.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+
+Points to have projected.
+
+**<code>dim_i</code>**: <code>number</code>
+
+Axis to have project along (have set to 0).  0 = x, 1 = y, 2 = z.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+
+Returns points with the specified dimension removed.
+
+</details>
+
+#### ⚙️\_proj\_to\_what\_norm<a id='f-_proj_to_what_norm'></a>
+
+<code>*function* _proj_to_what_norm(pts: list\[<a href="#t-Point3D">Point3D</a>,...], dim\_i: number, \_n: number, \_n\_len: number, \_dim\_i: number) : list\[number,<a href="#t-Point3D">Point3D</a>]</code>
+
+Determine which projection give the largest normal vector.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+
+A list of points.  Must have at least 3 points.
+
+**<code>dim_i</code>**: <code>number</code> *(Default: `0`)*
+
+Dimension index currently checking.
+
+**<code>_n</code>**: <code>number</code> *(Default: `0`)*
+
+Current best normal found so far.
+
+**<code>_n_len</code>**: <code>number</code> *(Default: `0`)*
+
+Length of the current best normal found so far.
+
+**<code>_dim_i</code>**: <code>number</code> *(Default: `-1`)*
+
+Current best projection axis so far.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[number,<a href="#t-Point3D">Point3D</a>]</code>
+
+The best projection axis with it's corresponding best normal.
+
+</details>
+
+#### ⚙️\_cap\_layer<a id='f-_cap_layer'></a>
+
+<code>*function* _cap_layer(pts: list\[<a href="#t-Point3D">Point3D</a>,...], pt\_is: list\[number,...]) : list\[<a href="#t-Face">Face</a>,...]</code>
+
+Caps a layer of points.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+
+List of points in layer.
+
+**<code>pt_is</code>**: <code>list\[number,...]</code>
+
+List of indices used to dereference `pts`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-Face">Face</a>,...]</code>
+
+List of faces.
+
+</details>
+
+#### ⚙️\_cap\_layers<a id='f-_cap_layers'></a>
+
+<code>*function* _cap_layers(pts\_in\_layer: number, pts3d: list\[<a href="#t-Point3D">Point3D</a>,...], layers: number) : list\[<a href="#t-Face">Face</a>,...]</code>
+
+Generates triangulated faces to cap the first and last point layers.
+
+Assumes `pts3d` is a flat list of points arranged in contiguous layers,
+each containing `pts_in_layer` points. There must be `layers + 1` total
+point layers. The polygon formed by each cap must be planar and ordered
+clockwise when looking from the start layer towards the next layer.  Each
+layer of points are all coplanar to the other points in that layer.
+
+This algorithm uses ear clipping to allow for non-convex polygons to be
+capped.
+
+<details><summary>parameters</summary>
+
+**<code>pts_in_layer</code>**: <code>number</code>
+
+Number of points in a layer.
+
+**<code>pts3d</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+
+Points for all layers.
+
+**<code>layers</code>**: <code>number</code>
+
+Number of layers - 1.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-Face">Face</a>,...]</code>
+
+Generated faces.
+
+</details>
+
 #### ⚙️is\_skin<a id='f-is_skin'></a>
 
 <code>*function* is_skin()</code>
@@ -6460,14 +7353,6 @@ The skin object or list of skin objects to make into a polyhedron.
 
 </details>
 
-<details><summary>returns</summary>
-
-**Returns**: <code><a href="#t-skin">skin</a></code>
-
-A new skin object with the points transformed.
-
-</details>
-
 #### ⚙️skin\_add\_layer\_if<a id='f-skin_add_layer_if'></a>
 
 <code>*function* skin_add_layer_if(obj: <a href="#t-skin">skin</a>, add\_layers\_fn: function) : <a href="#t-skin">skin</a></code>
@@ -6511,6 +7396,12 @@ Updated skin.
 
 </details>
 
+#### ⚙️skin\_add\_point\_in\_layer<a id='f-skin_add_point_in_layer'></a>
+
+<code>*function* skin_add_point_in_layer()</code>
+
+TODO: Look into this. Not sure what I was attempting here.
+
 #### 🧊skin\_show\_debug\_axes<a id='m-skin_show_debug_axes'></a>
 
 <code>*module* skin_show_debug_axes(obj: <a href="#t-skin">skin</a>, styles: list\[<a href="#t-DebugStyle">DebugStyle</a>])</code>
@@ -6527,7 +7418,7 @@ Object to show debug axes for.
 **<code>styles</code>**: <code>list\[<a href="#t-DebugStyle">DebugStyle</a>]</code> *(Default: `\[\["red", 1, .1], \["green"], \["blue"]]`)*
 
 Contains a list of styles that are reused when the number of points in a
-debug group exceeds the the number of styles.
+debug group exceeds the number of styles.
 
 If a style doesn't contain a colour, alpha or thickness (set as undef),
 will go backwards to find one that does and uses that.
@@ -6538,11 +7429,11 @@ will go backwards to find one that does and uses that.
 
 <code>*function* interpolate()</code>
 
-Interpolates value between v0 and v1?
+Interpolates value between v0 and v1.
 
 > 📌 TO DO:
 >
-> This function is deprecated and should be replaced with
+> This function should be ***deprecated*** and should be replaced with
 > [`interpolated_values()`](#f-interpolated_values).
 
 #### ⚙️skin\_limit<a id='f-skin_limit'></a>
@@ -6580,7 +7471,7 @@ The value to compare against the extracted value from a point.
 
 Updated skin object with all of the points before value removed.  If
 extracted value is not EXACTLY value, then will linearly interpolated to
-cup off EXACTLY at value.
+cut off EXACTLY at value.
 
 </details>
 
@@ -6619,6 +7510,8 @@ A prettified/simplified view of points in the object.
 
 <code>*function* skin_max_layer_distance_fn(obj: <a href="#t-skin">skin</a>, max\_diff: number, diff\_fn: function) : function(i: number): number</code>
 
+EXPERIMENTAL:
+
 Returns a function that can be used with skin_add_layer_if() to ensure that
 the distance between layers don't exceed some length.
 
@@ -6649,6 +7542,12 @@ Function that can be used with skin_add_layer_if() and returns the number
 of layers to add.
 
 </details>
+
+#### ⚙️skin\_max\_pt\_distance\_fn<a id='f-skin_max_pt_distance_fn'></a>
+
+<code>*function* skin_max_pt_distance_fn()</code>
+
+TODO: Look into this. Not sure what I was attempting here.
 
 ### <i>📑skin types</i><a id='skin-ch-skin_types'></a>
 
@@ -6865,7 +7764,7 @@ Style for a debug vector.
 <code><b>0</b></code>: <code><a href="#t-ColourStr">ColourStr</a>|<a href="#t-ColourLst">ColourLst</a>|<a href="#t-ColourName">ColourName</a></code>
 
 - If a string, then the name of a colour, or the hex representation of one.
-- If a number, the the value of the hex value.
+- If a number, the value of the hex value.
 
 <code><b>1</b></code>: <code>number</code>
 
@@ -6880,222 +7779,6 @@ Alpha value between `[0, 1]`.
 <code><b>2</b></code>: <code>number</code>
 
 Thickness that is passed to [`arrow()`](#m-arrow) module.
-
-</details>
-
-## 📘sas_cutter<a id='file-sas_cutter'></a>
-
-### <i>📑Purpose</i><a id='sas_cutter-ch-Purpose'></a>
-
-Self Aligning Seam (SAS) cutters.  Each cutter generates a `skin` that is
-used as a negative mold - subtract it from an existing edge so that two
-separate parts align together when assembled.
-
-### <i>📑Variants</i><a id='sas_cutter-ch-Variants'></a>
-
-- `sas_cutter` - sinusoidal cutface with bumps that fit into indentations.
-- `sas2_cutter` - overlapping tabs instead of bump/indentation pairs.
-- `scs_cutter` - Self Connecting Seam cutter (incomplete).
-
-#### ⚙️sas\_cutter<a id='f-sas_cutter'></a>
-
-<code>*function* sas_cutter(a: <a href="#t-Point2D">Point2D</a>, b: <a href="#t-Point2D">Point2D</a>, y\_thickness: number, z\_thickness: number, lat\_wave\_segs: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number) : <a href="#t-skin">skin</a></code>
-
-Self aligning seam cutter aligned along edge a → b, with sinusoidal cutface.
-
-<details><summary>parameters</summary>
-
-**<code>a</code>**: <code><a href="#t-Point2D">Point2D</a></code>
-
-Starting point.
-
-**<code>b</code>**: <code><a href="#t-Point2D">Point2D</a></code>
-
-Ending point.
-
-**<code>y_thickness</code>**: <code>number</code>
-
-Thickness along y-axis of cutter from cutface to handle.
-
-**<code>z_thickness</code>**: <code>number</code>
-
-Height of cutting tool (z-axis).
-
-**<code>lat_wave_segs</code>**: <code>number</code>
-
-Number of segments to break up the wave into.
-
-**<code>lat_wave_cycles</code>**: <code>number</code>
-
-Number of complete wave_cycles to apply along cutting edge.
-
-**<code>wave_amp</code>**: <code>number</code>
-
-Amplitude of the wave on cutting edge (peak-to-peak).
-
-**<code>long_wave_segs</code>**: <code>number</code> *(Default: `4`)*
-
-Number of segments to break up the wave into.
-
-**<code>long_wave_cycles</code>**: <code>number</code> *(Default: `0.5`)*
-
-Number of complete wave_cycles to apply perpendicular to the cutting edge.
-
-**<code>cutedge_long_overflow</code>**: <code>number</code> *(Default: `1e-4`)*
-
-Widens the cutter by this amount
-     expanding from the centre.
-
-**<code>cutedge_lat_overflow</code>**: <code>number</code> *(Default: `1`)*
-
-Lengthens the cutter by this amount (rounded to the next segment length)
-expanding from the centre.
-
-</details>
-
-<details><summary>returns</summary>
-
-**Returns**: <code><a href="#t-skin">skin</a></code>
-
-</details>
-
-#### ⚙️sas2\_cutter<a id='f-sas2_cutter'></a>
-
-<code>*function* sas2_cutter(a: <a href="#t-Point2D">Point2D</a>, b: <a href="#t-Point2D">Point2D</a>, y\_thickness: number, z\_thickness: number, lat\_wall\_percent: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number, x\_phase\_offset: number) : <a href="#t-skin">skin</a></code>
-
-Self aligning seam cutter 2 aligned along edge a → b, with sinusoidal cutface.
-
-Similar to sas, but uses overlapping tabs instead of bumps that fit into
-indentations.
-
-TODO: a and b parameters are misleading.  They are only used for the length.
-      Need to fix.
-
-<details><summary>parameters</summary>
-
-**<code>a</code>**: <code><a href="#t-Point2D">Point2D</a></code>
-
-Starting point.
-
-**<code>b</code>**: <code><a href="#t-Point2D">Point2D</a></code>
-
-Ending point.
-
-**<code>y_thickness</code>**: <code>number</code>
-
-Thickness of cutter along y-axis from lowest part of cutface to handle.
-
-**<code>z_thickness</code>**: <code>number</code>
-
-Height of cutting tool (z-axis).
-
-**<code>lat_wall_percent</code>**: <code>number</code>
-
-     When transitioning from the each half cycle to the next point, and a
-     point to each half cycle, this is % of a 1/4 cycle traveled along the
-     latitude direction.  A value of 0 is a results in a "square wave".  A
-     value of 1 would result in a "sawtooth wave".
-
-     E.g.          latitude travel   Square wave           Sawtooth wave
-           ___     |↔|__              ___     ___
-          /   \    |/   \            |   |   |   |           /\  /\
-          |    \___/     \___/|      |   |___|   |___       |  \/  \/|
-          |___________________|      |_______________|      |________|
-
-**<code>lat_wave_cycles</code>**: <code>number</code>
-
-number of complete wave_cycles to apply along cutting edge.
-
-**<code>wave_amp</code>**: <code>number</code>
-
-amplitude of the wave on cutting edge (peak-to-peak).
-
-**<code>long_wave_segs</code>**: <code>number</code> *(Default: `*ignored*`)*
-
-number of segments to break up the wave into.
-
-**<code>long_wave_cycles</code>**: <code>number</code> *(Default: `*ignored*`)*
-
-number of complete wave_cycles to apply perpendicular to the cutting edge.
-
-**<code>cutedge_long_overflow</code>**: <code>number</code> *(Default: `1e-4`)*
-
-widens the cutter by this amount
-     expanding from the centre.
-
-**<code>cutedge_lat_overflow</code>**: <code>number</code> *(Default: `1`)*
-
-lengthens the cutter by this amount
-     (rounded to the next segment length) expanding from the centre.
-
-**<code>x_phase_offset</code>**: <code>number</code> *(Default: `0`)*
-
-     The starting phase of the a point.  Value must be ∈ [0, 360).
-
-</details>
-
-<details><summary>returns</summary>
-
-**Returns**: <code><a href="#t-skin">skin</a></code>
-
-</details>
-
-#### ⚙️scs\_cutter<a id='f-scs_cutter'></a>
-
-<code>*function* scs_cutter(a: <a href="#t-Point2D">Point2D</a>, b: <a href="#t-Point2D">Point2D</a>, y\_thickness: number, z\_thickness: number, lat\_wave\_segs: number, lat\_wave\_cycles: number, wave\_amp: number, long\_wave\_segs: number, long\_wave\_cycles: number, cutedge\_long\_overflow: number, cutedge\_lat\_overflow: number)</code>
-
-Self connecting seam cutter aligned along edge a → b, with sinusoidal cutface.
-INCOMPLETE!
-
-<details><summary>parameters</summary>
-
-**<code>a</code>**: <code><a href="#t-Point2D">Point2D</a></code>
-
-starting point.
-
-**<code>b</code>**: <code><a href="#t-Point2D">Point2D</a></code>
-
-ending point.
-
-**<code>y_thickness</code>**: <code>number</code>
-
-y_thickness of cutter from cutface to handle.
-
-**<code>z_thickness</code>**: <code>number</code>
-
-Height of cutting tool (z-axis).
-
-**<code>lat_wave_segs</code>**: <code>number</code>
-
-number of segments to break up the wave into.
-
-**<code>lat_wave_cycles</code>**: <code>number</code>
-
-number of complete wave_cycles to apply
-     along cutting edge.
-
-**<code>wave_amp</code>**: <code>number</code>
-
-amplitude of the wave on cutting edge (peak-to-peak).
-
-**<code>long_wave_segs</code>**: <code>number</code> *(Default: `4`)*
-
-number of segments to break up the wave into.
-
-**<code>long_wave_cycles</code>**: <code>number</code> *(Default: `0.5`)*
-
-number of complete wave_cycles to apply
-     perpendicular to the cutting edge.
-
-**<code>cutedge_long_overflow</code>**: <code>number</code> *(Default: `1e-4`)*
-
-widens the cutter by this amount
-     expanding from the centre.
-
-**<code>cutedge_lat_overflow</code>**: <code>number</code> *(Default: `1`)*
-
-lengthens the cutter by this amount
-     (rounded to the next segment length) expanding from the centre.
 
 </details>
 

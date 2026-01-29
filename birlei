@@ -188,8 +188,8 @@ use <param_check>
 
 /**
  * @callback PredMapFn
- * Compares a derived comparison value against an internally stored value and
- * returns a value if:
+ * Compares a derived comparison value against an internally stored value or
+ * returns a value, depending on the second parameter's truthiness.
  *
  * Definitions:
  *
@@ -328,7 +328,7 @@ function birlei_to_begin_i_end_i(algo_fn, ppmrrair_fn, birl, end_i) =
         algo_fn(ppmrrair_fn, birl[0], birl[2], function(i) is_undef(i) ? undef : i)
       : let (
           rc = range_len(birl),
-          end2_i = is_undef(rc) ? -1 : rc - 1,
+          end2_i = rc - 1,
           result = algo_fn(
             pc == 1
             ? function(i) ppmrrair_fn(el(birl, i))

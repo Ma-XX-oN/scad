@@ -272,9 +272,9 @@ function type_value(o) =
   str("value(", type_structure(o), "): {", o, "}")
 ;
 
-echo(concat("hello", [1]));
-echo(concat(["hello"], [1]));
-echo("type_structure 1", type_structure("hi"));
-echo("type_structure 2", type_structure(["hi", 1]));
-echo("type_structure 3", type_structure(["hi", []]));
-echo("type_structure 4", type_structure(["hi", ""]));
+// echo(concat("hello", [1]));
+// echo(concat(["hello"], [1]));
+// echo("type_structure 1", type_structure("hi"));
+// echo("type_structure 2", type_structure(["hi", 1]));
+// echo("type_structure 3", type_structure(["hi", []]));
+// echo("type_structure 4", type_structure(["hi", ""]));

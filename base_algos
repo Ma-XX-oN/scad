@@ -38,9 +38,9 @@
  * You'll notice the occurrence of `)(`.  This ends the algorithm or adaptor
  * call and start the next call which takes a function to test each element.
  * Also, observe that when the algorithm's `birlei` parameter is omitted, a
- * `function(birl, end_i)` is returned, which in this case is `find()`.  The
- * adaptor needs this function signature to be passed to it so that it can apply
- * the algorithm while passing the element to the `PPMRRAIR` function.
+ * `function(birl, end_i)` is returned, which in this case is the function that
+ * executes the `find` algorithm.  This reduces the algorithm down to standard
+ * function signature.
  *
  * These 2 basic patterns are used everywhere in the library set, and though it
  * might look odd at first, you'll find that it becomes natural quite quickly.
@@ -111,8 +111,8 @@
  *
  * #### **Predicate** (`function(i) : result`)
  *
- * - A binary predicate is used by `find`, `filter` and `map`.  It has 2
- *   results, truthy or falsely.
+ * - A binary predicate is used by `find` and `filter`.  It has 2 results,
+ *   truthy or falsy.
  * - A trinary predicate is used with `find_lower` and `find_upper`.  It has 3
  *   results: less than 0, equal to 0 and greater than 0.  This is akin to the
  *   spaceship operator in c++20.
@@ -129,30 +129,30 @@
  *
  * #### **Reduction** (`function(i, acc) : acc`)
  *
- * > NOTE:
- * >
- * > `acc` **is the second parameter** which is different from most languages.
- * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
- * > and this library in general.  You have been warned.
- *
  * - Used by `reduce`.
  * - Takes in the index and the previous accumulated object and returns the
  *   new accumulated object.
  * - This is roughly equivalent to a for_each loop in C++.
  *
- * #### **Reduction, Allow Incomplete Reduction** (`function(i, acc) : [cont, acc]`)
- *
  * > NOTE:
  * >
  * > `acc` **is the second parameter** which is different from most languages.
  * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
  * > and this library in general.  You have been warned.
+ *
+ * #### **Reduction, Allow Incomplete Reduction** (`function(i, acc) : [cont, acc]`)
  *
  * - Used by `reduce_air`.
  * - Takes in the index and the previous accumulated object and returns a
  *   list `[ cont, new_acc ]`, where `cont` states if to continue looping if not
  *   finished iterating over the `birlei`.
  * - This is roughly equivalent to a for loop in C++.
+ *
+ * > NOTE:
+ * >
+ * > `acc` **is the second parameter** which is different from most languages.
+ * > This is to keep it consistent with the rest of the `PPMRRAIR` functions
+ * > and this library in general.  You have been warned.
  *
  * **See also** [Algorithm Adaptors](#algorithm-adaptors).
  */
@@ -180,16 +180,6 @@ use <function>
  */
 
 /**
- * @typedef {BoundIndexFn} FindLowerFn
- * Returns the first index `i` where `spaceship_fn(i) >= 0`.
- */
-
-/**
- * @typedef {BoundIndexFn} FindUpperFn
- * Returns the first index `i` where `spaceship_fn(i) > 0`.
- */
-
-/**
  * @typedef {(number|range|list|undef)} OptionalBirl
  * - If `number`, start index to iterate over
  * - If `range`, indices to iterate over
@@ -211,16 +201,23 @@ use <function>
  */
 
 /**
- * @typedef {AlgoFn} FindLowerBirleiFn
+ * @typedef {BoundIndexFn} FindLowerFn
  *
- * @returns {FindLowerFn}
- *   First index where `spaceship_fn(i) >= 0`.  If none are found, returns
- *   `undef`.
+ * @returns {(number|undef)}
+ *   The first index `i` where `spaceship_fn(i) >= 0` or `undef` if none found.
  *
  *   > NOTE:
  *   >
  *   > The reason for returning `undef` rather than `end_i+1`, is because `birl`
  *   > could be a noncontiguous `range` or `list` of indices.
+ */
+
+/**
+ * @typedef {AlgoFn} FindLowerBirleiFn
+ *
+ * @returns {FindLowerFn}
+ *   Callback that returns the first index `i` where `spaceship_fn(i) >= 0` or
+ *   `undef` if none found.
  */
 
 /**
@@ -280,14 +277,19 @@ let (v = 2) test_eq(    1, echo(str("Searching for ", v)) it_each([0,2,2,2,2],  
 let (v = 3) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_lower())(function(e) e-v));
 
 /**
+ * @typedef {BoundIndexFn} FindUpperFn
+ * Returns the first index `i` where `spaceship_fn(i) > 0`.
+ */
+
+/**
  * @callback FindUpperFn
  *
  * @callchain FindUpperFn(spaceship_fn) : (number|undef)
 
  * @param {SpaceshipFn} spaceship_fn
+ *
  * @returns {(number|undef)}
- *   First index where `spaceship_fn(i) > 0`.  If none are found, returns
- *   `undef`.
+ *   The first index `i` where `spaceship_fn(i) > 0` or `undef` if none found.
  *
  *   > NOTE:
  *   >
@@ -298,10 +300,9 @@ let (v = 3) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],  
 /**
  * @typedef {AlgoFn} FindUpperBirleiFn
  *
- * @callchain FindUpperBirleiFn(birl, end_i) (spaceship_fn) : (number|undef)
- *
  * @returns {FindUpperFn}
- *   Function that gives the final result.
+ *   Callback that returns the first index `i` where `spaceship_fn(i) >= 0` or
+ *   `undef` if none found.
  */
 
 /**
@@ -377,13 +378,8 @@ let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],  
  * @typedef {AlgoFn} FindBirleiFn
  *
  * @returns {FindFn}
- *   First index where `pred_fn(i)` is `true`.  If none are found, returns
- *   `undef`.
- *
- *   > NOTE:
- *   >
- *   > The reason for returning `undef` rather than `end_i+1`, is because `birl`
- *   > could be a noncontiguous `range` or `list` of indices.
+ *   Callback that returns first index where `pred_fn(i)` is `true`.  If none
+ *   are found, returns `undef`.
  */
 
 /**
@@ -432,7 +428,7 @@ function find(birl, end_i) =
  * @typedef {AlgoFn} ReduceBirleiFn
  *
  * @returns {ReduceFn}
- *   Final value of accumulator.
+ *   Callback that returns final value of accumulator.
  */
 
 /**
@@ -468,7 +464,7 @@ function find(birl, end_i) =
     )
     function(op_fn)
       birlei_to_begin_i_end_i(
-        function(op_fn, begin_i, end_i, map_back_fn)
+        function(op_fn, begin_i, end_i, _)
           assert(param_count(op_fn) == 2, op_fn)
           end_i < begin_i
           ? init
@@ -488,8 +484,9 @@ function find(birl, end_i) =
  * @typedef {AlgoFn} ReduceAirBirleiFn
  *
  * @returns {ReduceAirFn}
- *   Last continue value and the final value of accumulator.  If the original
- *  `birlei` was empty will contain `[true, init]`.
+ *   Callback that returns the last continue value and the final value of
+ *   accumulator.  If the original `birlei` was empty will contain
+ *   `[true, init]`.
  */
 
 /**
@@ -505,7 +502,7 @@ function find(birl, end_i) =
  * @param {OptionalBirl} [birl]
  * @param {EndI} [end_i]
  *
- * @returns {(ReduceAirFn|ReductionAirFn)}
+ * @returns {(ReduceAirFn|ReduceAirBirleiFn)}
  *   - If `birl` is omitted, then will return type `ReduceAirBirleiFn`.
  *   - Else returns type `ReduceAirFn`.
  */
@@ -537,7 +534,7 @@ function reduce_air(init, birl, end_i) =
 
 /**
  * @callback FilterFn
- * @param {(PredFn|PredMapFn)} reduction_fn
+ * @param {(PredFn|PredMapFn)} ppm_fn
  * @returns {list[any,...]}
  *   A list of elements where the predicate returned true.
  */
@@ -546,7 +543,7 @@ function reduce_air(init, birl, end_i) =
  * @typedef {AlgoFn} FilterBirleiFn
  *
  * @returns {FilterFn}
- *   A list of elements where the predicate returned true.
+ *   Callback that returns a list of elements where the predicate returned true.
  */
 
 /**
@@ -593,14 +590,14 @@ function filter(birl, end_i) =
  * @typedef {AlgoFn} MapBirleiFn
  *
  * @returns {MapFn}
- *   A list of elements that were mapped.
+ *   Callback that returns a list of elements that were mapped.
  */
 
 /**
  * @callchain map(birl, end_i)    (map_fn) : list
  * @callchain map() (birl, end_i) (map_fn) : list
  *
- * Map indices or list elements to values, producing an list that has as many
+ * Map indices or list elements to values, producing a list that has as many
  * elements as indices provided.
  *
  * @param {OptionalBirl} [birl]

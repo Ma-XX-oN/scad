@@ -1,3 +1,17 @@
+/**
+ * ## types_consts
+ *
+ * ### How to Import
+ *
+ *     include <types_consts>
+ *
+ * ### Purpose
+ *
+ * Constants representing the types as enumerated values.
+ *
+ * ### Values
+ */
+
 /** Enum for range type */
 RANGE   =  0;
 /** Enum for list type */

@@ -179,15 +179,18 @@ function is_slice(o) =
 
 /**
  * @callchain slice(begin_i, end_i)       : resulting_slice
- * @callchain slice(begin_i, skip, end_i) : resulting_slice
+ * @callchain slice(begin_i, step, end_i) : resulting_slice
  *
  * Create a `slice` object.
+ *
+ * The callchains show the overloads, where `step` refers to the step count used
+ * to go between `begin_i` and `end_i`.
  *
  * @param {number} begin_i
  *   The first index of the slice.  If negative, then counts backward from end
  *   of slr being referred to.
  * @param {number} step_or_end_i
- *   - If `end_i` not defined, then refers to the lat index of the sequence.
+ *   - If `end_i` not defined, then refers to the last index of the sequence.
  *     - If negative, then counts backward from end of `slr` being referred to.
  *   - If `end_i` is defined, then refers to the step count used to go between
  *     `begin_i` and `end_i`.
@@ -299,9 +302,9 @@ function slice_to_range(slice, slr, _slr_len) =
  *
  *   Returns roughly `slr[i]`, where `0 <= i < slr_len`.
  *
- *   - If backward indexing is wanted, manually calculating it by the formula
- *     `slr_len - i` is required.  This maximises throughput for most common
- *     case.
+ *   - If backward indexing equivalent to [`idx()`](#f-idx) is wanted, manually
+ *     calculating it by the formula `slr_len - i` is required.  This maximises
+ *     throughput for most common case.
  * @slot {number} _SLR_BLEN
  *   Length of normalised `birlsei`.
  * @slot {function(j: number): any} _SLR_ELI
@@ -309,16 +312,16 @@ function slice_to_range(slice, slr, _slr_len) =
  *   (Indirect addressing).  Returns roughly `slr[birlei[j]]`, where
  *   `0 <= j < birlei_len`.
  *
- *   - If backward indexing is wanted, manually calculating it by the formula
- *     `birlei_len - j` is required.  This maximises throughput for most common
- *     case.
+ *   - If backward indexing equivalent to [`idx()`](#f-idx) is wanted, manually
+ *     calculating it by the formula `birlei_len - j` is required.  This
+ *     maximises throughput for most common case.
  * @slot {function(k: number): number} _SLR_IDX
  *   `k` is the index to dereference the normalised `birlsei`.  Returns roughly
  *   `birlei[k]`, where `0 <= k < birlei_len`.
  *
- *   - If backward indexing is wanted, manually calculating it by the formula
- *     `birlei_len - k` is required.  This maximises throughput for most common
- *     case.
+ *   - If backward indexing equivalent to [`idx()`](#f-idx) is wanted, manually
+ *     calculating it by the formula `birlei_len - k` is required.  This
+ *     maximises throughput for most common case.
  * @slot {function(): string} _SLR_STR
  *   String representation of normalised `birlsei`.
  * @slot {(number|range|list)} _SLR_BIRL
@@ -743,7 +746,7 @@ function _it_each(slr, algo_fn, birl, end_i, _eld) =
 ;
 
 /**
- * @callchain it_idxs(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
+ * @callchain it_idxs(slr, algo_fn, birls, end_i) (ppmrrair_fn) : any
  *
  * This convenience function will execute function `algo_fn` as if it were used
  * on a collection, `ppmrrair_fn` will still receive the *index*.  Uses the
@@ -783,7 +786,7 @@ function it_idxs(slr, algo_fn, birls=0, end_i=undef) =
 ;
 
 /**
- * @callchain it_enum(slr, algo_fn, birl, end_i) (ppmrrair_fn) : any
+ * @callchain it_enum(slr, algo_fn, birls, end_i) (ppmrrair_fn) : any
  *
  * This convenience function will execute function `algo_fn` as if it were used
  * on a collection, remapping the first parameter being passed to `ppmrrair_fn`
@@ -941,7 +944,7 @@ function el_pos_idx(slr, i) =
 
 /**
  * Gets a substring, sub-range or sub-elements of a string, list or range.   If
- * `slr` is a `range` and the `birlei` is a `range`, the the result is a `range`.
+ * `slr` is a `range` and the `birlei` is a `range`, the result is a `range`.
  *
  * > NOTE:
  * >
@@ -981,13 +984,13 @@ function _els(slr, birl, end_i, _eld, _blen) =
       _range_els(slr, birl, end_i, _eld, _blen)
 ;
 
-echo("els: ", els([0,1,2,3,4,5], 1));
-echo("els: ", els([0,1,2,3,4,5], 1, 3));
-echo("els: ", els([0,1,2,3,4,5], range(3, -1, 1)));
-echo("els: ", els("hello", 2, 3));
-let (h = "hello") echo("els: ", els(h, rev_i(h)));
-echo("els: ", els(range(1, 2, 6), 1, 2));
-echo("els: ", els(range(1, 2, 6), range(2, -1, 1)));
+// echo("els: ", els([0,1,2,3,4,5], 1));
+// echo("els: ", els([0,1,2,3,4,5], 1, 3));
+// echo("els: ", els([0,1,2,3,4,5], range(3, -1, 1)));
+// echo("els: ", els("hello", 2, 3));
+// let (h = "hello") echo("els: ", els(h, rev_i(h)));
+// echo("els: ", els(range(1, 2, 6), 1, 2));
+// echo("els: ", els(range(1, 2, 6), range(2, -1, 1)));
 
 /**
  * Optimised version of `els` for ranges.  Gets elements from a range as a range
@@ -1251,7 +1254,7 @@ function prev_in(slr, i, dec=1, wrap_to_last = false, _slr_len) =
 /** ### Functions to Manipulate Strings and Lists */
 
 /**
- * Push elements onto the head (which is after the last element) of the `sl`.
+ * Push elements onto the end of `sl`.
  *
  * @param {(string|list)} sl
  *   sl to add to.
@@ -1278,8 +1281,7 @@ function push(sl, es) =
 ;
 
 /**
- * Pops 0 or more elements off the head (which are the last elements) of the
- * `sl`.
+ * Pops 0 or more elements off the end of `sl`.
  *
  * > NOTE:
  * >
@@ -1309,7 +1311,7 @@ function pop(sl, count=1, _sl_len) =
 ;
 
 /**
- * Unshift elements onto the tail (which are before the beginning) of the `sl`.
+ * Unshift elements onto the beginning of `sl`.
  *
  * @param {(string|list)} sl
  *   List to add to.
@@ -1336,7 +1338,7 @@ function unshift(sl, es) =
 ;
 
 /**
- * Shift elements off of the tail (which are at the beginning) of the `sl`.
+ * Shift elements off of the beginning of `sl`.
  *
  * > NOTE:
  * >
@@ -1600,7 +1602,7 @@ function _remove_each(sl, birl, end_i, _idx, _len, _blen) =
   let ( _ = verify_i(_len) )
   let ( _ = verify_i(_blen) )
   is_num(birl)
-  ? // (NUM, NYM) Take out section in one shot
+  ? // (NUM, NUM) Take out section in one shot
     remove(sl, birl, end_i, _len)
   : // LIST or RANGE
     _blen
@@ -1980,7 +1982,7 @@ function rotate_right(sl, i, _sl_len) =
 ;
 
 /**
- * Gets the element at the head (which is the last element) of the `sl`.
+ * Gets the element at the end of `sl`.
  *
  * @param {(string|list)} sl
  *   List to get from.
@@ -2004,7 +2006,7 @@ function head(sl, _sl_len) =
 ;
 
 /**
- * Gets the elements at the head (which are the last elements) of the `sl`.
+ * Gets the elements at the end of `sl`.
  *
  * @param {(string|list)} sl
  *   List to get from.
@@ -2029,7 +2031,7 @@ function head_multi(sl, i, _sl_len) =
 ;
 
 /**
- * Gets the element at the tail (which is the first element) of the `sl`.
+ * Gets the element at the beginning of `sl`.
  *
  * @param {(string|list)} sl
  *   List to get from.
@@ -2044,7 +2046,7 @@ function tail(sl) =
 ;
 
 /**
- * Gets the elements at the tail (which are the first elements) of the `sl`.
+ * Gets the elements at the beginning of `sl`.
  *
  * @param {(string|list)} sl
  *   List to get from.
@@ -2196,3 +2198,101 @@ function csearch(haystack, birls=0, end_i=undef) =
 //       ) filter(function(i) !is_undef(csearch(s, "there", i, i)), fwd_i(s))
 //     );
 // }
+
+/**
+ * Example quick sort algorithm from:
+ *   (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+ */
+function quicksort_list_comp_ex(arr) =
+  !(len(arr)>0) ? [] : let(
+    pivot   = arr[floor(len(arr)/2)],
+    lesser  = [ for (y = arr) if (y  < pivot) y ],
+    equal   = [ for (y = arr) if (y == pivot) y ],
+    greater = [ for (y = arr) if (y  > pivot) y ]
+  ) concat(
+      quicksort_list_comp_ex(lesser), equal, quicksort_list_comp_ex(greater)
+  );
+
+/**
+ * Example of quick sort algorithm using library.
+ *
+ * Modified quicksort example from:
+ *   (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+ *
+ * > NOTE:
+ * >
+ * > Not saying that it should be implemented this way.  Just testing.
+ * > If done this way, could sort a subset, but the overhead would be
+ * > significant.
+ */
+function quicksort_lib_ex1(l, birls = 0, end_i = undef) =
+  let (
+    _l      = _slr_cache(l, birl, end_i),
+    l_len   = _l[_SLR_LEN],
+    l_birl  = _l[_SLR_BIRL],
+    l_end_i = _l[_SLR_END_I],
+  )
+  l_len == 0
+  ? []
+  : let(
+      pivot   = l[floor(l_len/2)],
+      // _ = echo("pivot: ", pivot, _fl(127)),
+      lesser  = it_each(l, filter(), l_birl, l_end_i)(function(e) e  < pivot),
+      equal   = it_each(l, filter(), l_birl, l_end_i)(function(e) e == pivot),
+      greater = it_each(l, filter(), l_birl, l_end_i)(function(e) e  > pivot)
+
+      // lesser  = filter(l_birl, l_end_i)(function(i) let (e = l[i]) e  < pivot),
+      // equal   = filter(l_birl, l_end_i)(function(i) let (e = l[i]) e == pivot),
+      // greater = filter(l_birl, l_end_i)(function(i) let (e = l[i]) e  > pivot)
+    )
+    concat(
+      quicksort_lib_ex(els(l, lesser)), els(l, equal), quicksort_lib_ex(els(l, greater))
+    )
+;
+
+/**
+ * Example of quick sort algorithm using library.
+ *
+ * Modified quicksort example from:
+ *   (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+ *
+ * > NOTE:
+ * >
+ * > Not saying that it should be implemented this way.  Just testing.
+ * > If done this way, could sort a subset, but the overhead would be
+ * > significant.
+ */
+function quicksort_lib_ex2(l, birls = 0, end_i = undef) =
+  let (
+    _l      = _slr_cache(l, birl, end_i),
+    l_len   = _l[_SLR_LEN],
+    l_birl  = _l[_SLR_BIRL],
+    l_end_i = _l[_SLR_END_I],
+  )
+  l_len == 0
+  ? []
+  : let(
+      pivot   = l[floor(l_len/2)],
+      // _ = echo("pivot: ", pivot, _fl(127)),
+      lesser  = it_each(l, filter(), l_birl, l_end_i)(function(e, v) v ? e : e  < pivot),
+      equal   = it_each(l, filter(), l_birl, l_end_i)(function(e, v) v ? e : e == pivot),
+      greater = it_each(l, filter(), l_birl, l_end_i)(function(e, v) v ? e : e  > pivot)
+
+      // lesser  = filter(l_birl, l_end_i)(function(i, v) let (e = l[i]) v ? e : e  < pivot),
+      // equal   = filter(l_birl, l_end_i)(function(i, v) let (e = l[i]) v ? e : e == pivot),
+      // greater = filter(l_birl, l_end_i)(function(i, v) let (e = l[i]) v ? e : e  > pivot)
+    )
+    concat(
+      quicksort_lib_ex(lesser), equal, quicksort_lib_ex(greater)
+    )
+;
+
+// use seed in rands() to get reproducible results
+unsorted = [for (a = rands(1, 10, 6, 3)) ceil(a)];
+echo(str("unsorted: ", unsorted));            // ECHO: [1, 9, 2, 6, 5, 1]
+// echo(str("  sorted: ", quicksort_lib_ex(unsorted))); // ECHO: [1, 1, 2, 5, 6, 9]
+echo(str("  sorted: ", quicksort_lib_ex(unsorted, fwd_i(unsorted, 2, -1)))); // ECHO: [1, 1, 2, 5, 6, 9]
+
+// local file line function as variable so it doesn't get exported.
+_fl = function(l)
+  fl("any_all", l);

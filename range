@@ -14,7 +14,7 @@
  * 2. Doesn't have a simple means to determine if an object is a range object.
  * 3. Doesn't have a way to interrogate it for its length.
  * 4. Has a feature which if the end value is unreachable given an initial start
- *    and step value, it generates a a warning.
+ *    and step value, it generates a warning.
  *
  * This library is to help with those deficiencies.
  *
@@ -76,9 +76,12 @@ function is_range(o) =
 /**
  * @callchain range(count)                : resulting_range
  * @callchain range(begin_i, end_i)       : resulting_range
- * @callchain range(begin_i, skip, end_i) : resulting_range
+ * @callchain range(begin_i, step, end_i) : resulting_range
  *
  * Creates a range object.
+ *
+ * The callchains show the overloads, where `step` refers to the step count used
+ * to go between `begin_i` and `end_i`.
  *
  * > NOTE:
  * >
@@ -205,7 +208,7 @@ function range_el_pos_idx(r, i) =
 ;
 
 /**
- * Gets the index for an range.  Allows for negative values to reference
+ * Gets the index for a range.  Allows for negative values to reference
  * elements starting from the end going backwards.
  *
  * @param {range} r

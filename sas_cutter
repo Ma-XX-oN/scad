@@ -1,3 +1,6 @@
+// 11. [sas_cutter](#file-sas_cutter)
+//     - Creates a skin which is used as a cutting tool help to align two separate
+//       parts together.
 /**
  * ## sas_cutter
  *
@@ -5,7 +8,12 @@
  *
  * Self Aligning Seam (SAS) cutters.  Each cutter generates a `skin` that is
  * used as a negative mold - subtract it from an existing edge so that two
- * separate parts align together when assembled.
+ * separate parts will align easily together when assembled.
+ *
+ * > WARNING:
+ * >
+ * > The APIs for these are still a bit unstable as I think I can make them
+ * > cleaner.  Feels like there's just too many parameters.
  *
  * ### Variants
  *
@@ -35,16 +43,17 @@ use <base_algos>
  *   Number of complete wave_cycles to apply along cutting edge.
  * @param {number} wave_amp
  *   Amplitude of the wave on cutting edge (peak-to-peak).
- * @param {number} long_wave_segs
+ * @param {number} [long_wave_segs=4]
  *   Number of segments to break up the wave into.
- * @param {number} long_wave_cycles
+ * @param {number} [long_wave_cycles=0.5]
  *   Number of complete wave_cycles to apply perpendicular to the cutting edge.
- * @param {number} cutedge_long_overflow
- *   Widens the cutter by this amount
- *        expanding from the centre.
- * @param {number} cutedge_lat_overflow
- *   Lengthens the cutter by this amount (rounded to the next segment length)
+ * @param {number} [cutedge_long_overflow=1e-4]
+ *   Lengthens the cutter by this amount expanding from the centre.
+ * @param {number} [cutedge_lat_overflow=1]
+ *   Widens the cutter by this amount (rounded to the next segment length)
  *   expanding from the centre.
+ * @param {number} [xy_phase_offset=90]
+ *   Number of degrees that the x and the y waves are offset from each other.
  *
  * @returns {skin}
  */
@@ -129,16 +138,18 @@ function _ignored(x) = x;
  * @param {number} z_thickness
  *   Height of cutting tool (z-axis).
  * @param {number} lat_wall_percent
- *        When transitioning from the each half cycle to the next point, and a
- *        point to each half cycle, this is % of a 1/4 cycle traveled along the
- *        latitude direction.  A value of 0 is a results in a "square wave".  A
- *        value of 1 would result in a "sawtooth wave".
+ *   When transitioning from the each half cycle to the next point, and a
+ *   point to each half cycle, this is % of a 1/4 cycle traveled along the
+ *   latitude direction.  A value of 0 is a results in a "square wave".  A
+ *   value of 1 would result in a "sawtooth wave".
  *
- *        E.g.          latitude travel   Square wave           Sawtooth wave
- *              ___     |↔|__              ___     ___
- *             /   \    |/   \            |   |   |   |           /\  /\
- *             |    \___/     \___/|      |   |___|   |___       |  \/  \/|
- *             |___________________|      |_______________|      |________|
+ *   Example:
+ *   
+ *                     latitude travel   Square wave           Sawtooth wave
+ *             ___     |↔|__              ___     ___
+ *            /   \    |/   \            |   |   |   |           /\  /\
+ *            |    \___/     \___/|      |   |___|   |___       |  \/  \/|
+ *            |___________________|      |_______________|      |________|
  * @param {number} lat_wave_cycles
  *   number of complete wave_cycles to apply along cutting edge.
  * @param {number} wave_amp
@@ -147,14 +158,15 @@ function _ignored(x) = x;
  *   number of segments to break up the wave into.
  * @param {number} [long_wave_cycles=*ignored*]
  *   number of complete wave_cycles to apply perpendicular to the cutting edge.
- * @param {number} cutedge_long_overflow
- *   widens the cutter by this amount
- *        expanding from the centre.
- * @param {number} cutedge_lat_overflow
- *   lengthens the cutter by this amount
- *        (rounded to the next segment length) expanding from the centre.
- * @param {number} x_phase_offset
- *        The starting phase of the a point.  Value must be ∈ [0, 360).
+ * @param {number} [cutedge_long_overflow=1e-4]
+ *   Lengthens the cutter by this amount expanding from the centre.
+ * @param {number} [cutedge_lat_overflow=1]
+ *   Widens the cutter by this amount (rounded to the next segment length)
+ *   expanding from the centre.
+ * @param {number} [x_phase_offset=0]
+ *   The starting phase of the a point.  Value must be ∈ [0, 360).
+ * @param {string} [comment]
+ *   Comment assigned to the returned `skin`.
  *
  * @returns {skin}
  */
@@ -258,21 +270,22 @@ skin_to_polyhedron(sas2_cutter([0, 0, 0], [10, 0, 0], 1, 1, .5, 10, .25, undef, 
  * @param {number} lat_wave_segs
  *   number of segments to break up the wave into.
  * @param {number} lat_wave_cycles
- *   number of complete wave_cycles to apply
- *        along cutting edge.
+ *   number of complete wave_cycles to apply along cutting edge.
  * @param {number} wave_amp
  *   amplitude of the wave on cutting edge (peak-to-peak).
- * @param {number} long_wave_segs
+ * @param {number} [long_wave_segs=4]
  *   number of segments to break up the wave into.
- * @param {number} long_wave_cycles
- *   number of complete wave_cycles to apply
- *        perpendicular to the cutting edge.
- * @param {number} cutedge_long_overflow
- *   widens the cutter by this amount
- *        expanding from the centre.
- * @param {number} cutedge_lat_overflow
- *   lengthens the cutter by this amount
- *        (rounded to the next segment length) expanding from the centre.
+ * @param {number} [long_wave_cycles=0.5]
+ *   number of complete wave_cycles to apply perpendicular to the cutting edge.
+ * @param {number} [cutedge_long_overflow=1e-4]
+ *   Lengthens the cutter by this amount expanding from the centre.
+ * @param {number} [cutedge_lat_overflow=1]
+ *   Widens the cutter by this amount (rounded to the next segment length)
+ *   expanding from the centre.
+ * @param {number} [xy_phase_offset=90]
+ *   Number of degrees that the x and the y waves are offset from each other.
+ *
+ * @returns {skin}
  */
 function scs_cutter(a, b, y_thickness, z_thickness,
   lat_wave_segs, lat_wave_cycles, wave_amp,
@@ -290,8 +303,8 @@ function scs_cutter(a, b, y_thickness, z_thickness,
         "cutedge_lat_overflow:", cutedge_lat_overflow,
         "seg_len", L / lat_wave_segs, norm(edge[VI_VECTOR] / lat_wave_segs),
         "extra_segments:", extra_segments,
-        "long_wave_segs:", lat_wave_segs,
-        "long_percent: ", 1/lat_wave_segs
+        "lat_wave_segs:", lat_wave_segs,
+        "lat_percent: ", 1/lat_wave_segs
       )
       long_wave_segs + 1 + 2,              // # pts per layer
       lat_wave_segs + extra_segments * 2 // # of layers

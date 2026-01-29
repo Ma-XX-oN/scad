@@ -666,7 +666,7 @@ function skin_new(pt_count_per_layer, layers, pts3d, comment, operation, wall_di
 function skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes) =
     is_undef(birl)
     ? function(birl, end_i)
-        skin_extrude(comment, operation, wall_diagonal, debug_axes, birl, end_i)
+        skin_extrude(birl, end_i, comment, operation, wall_diagonal, debug_axes)
     : function(pts_fn)
         let ( _ = verify_birlei(birl, end_i) )
         let (
@@ -762,9 +762,6 @@ function skin_transform(obj_or_objs, matrix_or_fn) =
  *
  * @param {(skin|list[skin,...])} obj_or_objs
  *   The skin object or list of skin objects to make into a polyhedron.
- *
- * @returns {skin}
- *   A new skin object with the points transformed.
  */
 module skin_to_polyhedron(obj_or_objs) {
   // base case
@@ -893,11 +890,14 @@ function skin_add_layer_if(obj, add_layers_fn) =
   result
 ;
 
+/**
+ * TODO: Look into this. Not sure what I was attempting here.
+ */
 function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
   let (
     pts = obj[SKIN_PTS],
     pts_in_layer = obj[SKIN_PTS_IN_LAYER],
-    pt_ranges = [ [0], each add_pt_between_pt_numbers ]
+    pt_ranges = [ [0], each add_pts_after_pt_numbers ]
   )
   // iterate over each layer
   reduce([], range(0, pts_in_layer, len(pts)-pts_in_layer))(
@@ -1021,7 +1021,7 @@ function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
  *
  * @slot {(ColourStr|ColourLst|ColourName)} 0
  *   - If a string, then the name of a colour, or the hex representation of one.
- *   - If a number, the the value of the hex value.
+ *   - If a number, the value of the hex value.
  * @slot {number} 1
  *   Alpha value between `[0, 1]`.
  *
@@ -1042,7 +1042,7 @@ function skin_add_point_in_layer(obj, add_pts_after_pt_numbers) =
  *   Object to show debug axes for.
  * @param {list[DebugStyle]} styles
  *   Contains a list of styles that are reused when the number of points in a
- *   debug group exceeds the the number of styles.
+ *   debug group exceeds the number of styles.
  *
  *   If a style doesn't contain a colour, alpha or thickness (set as undef),
  *   will go backwards to find one that does and uses that.
@@ -1052,10 +1052,10 @@ module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
   assert(is_skin(obj));
   dbg_pt_grps = obj[SKIN_DEBUG_AXES];
   assert(dbg_pt_grps != undef, "No debug axes to show.");
-  for (pt_grp = debug_pt_grps) {
-    ref_pt = pt_grp[0];
-    for (pt_i = fwd_i(pt_grp, 1)) {
-      v = pt_grp[i] - ref_pt;
+  for (pt_grp = dbg_pt_grps) {
+    ref_pt = pt_grp[0]; // starting point
+    for (pt_i = fwd_i(pt_grp, 1)) { // iterate over ending points
+      v = pt_grp[pt_i] - ref_pt;
       angle = arc_len([0, 0, 1], v, 180/PI);
       normal = cross([0, 0, 1], v);
       length = norm(v);
@@ -1078,7 +1078,7 @@ module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
         alpha     = data[1];
         thickness = default(data[2], length * 0.1);
 
-        if (is_undef(color)) {
+        if (is_undef(colour)) {
           multmatrix(T)
           axis(length, thickness);
         } else {
@@ -1096,11 +1096,11 @@ module skin_show_debug_axes(obj, styles = [["red", 1, .1], ["green"], ["blue"]])
 }
 
 /**
- * Interpolates value between v0 and v1?
+ * Interpolates value between v0 and v1.
  *
  * > TODO:
  * >
- * > This function is deprecated and should be replaced with
+ * > This function should be ***deprecated*** and should be replaced with
  * > [`interpolated_values()`](#f-interpolated_values).
  */
 function interpolate(v0, v1, v) =
@@ -1125,7 +1125,7 @@ function interpolate(v0, v1, v) =
  * @returns {skin}
  *   Updated skin object with all of the points before value removed.  If
  *   extracted value is not EXACTLY value, then will linearly interpolated to
- *   cup off EXACTLY at value.
+ *   cut off EXACTLY at value.
  */
 function skin_limit(obj, extract_order_value_fn, begin, end) =
   // [1, 3, 5], begin = undef, end = 5 => begin_i = 0, end_i = 2 => no interpolation required
@@ -1234,6 +1234,8 @@ function skin_verify(obj, disp_all_pts = false) =
 ;
 
 /**
+ * EXPERIMENTAL:
+ *
  * Returns a function that can be used with skin_add_layer_if() to ensure that
  * the distance between layers don't exceed some length.
  *
@@ -1262,6 +1264,9 @@ function skin_max_layer_distance_fn(obj, max_diff, diff_fn = function(p0, p1) p1
     floor(diff / max_diff) - 1
 ;
 
+/**
+ * TODO: Look into this. Not sure what I was attempting here.
+ */
 function skin_max_pt_distance_fn(obj, max_diff) =
   let (
     pts = obj[SKIN_PTS],

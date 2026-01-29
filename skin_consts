@@ -1,3 +1,17 @@
+/**
+ * ## skin_consts
+ *
+ * ### How to Import
+ *
+ *     include <skin_consts>
+ *
+ * ### Purpose
+ *
+ * Constants used by skin library for indexing the [skin](#t-skin) object.
+ *
+ * ### Values
+ */
+
 /** Header for skin */
 SKIN_ID           = "SKIN";
 /** skin_obj[SKIN_PTS_IN_LAYER] = points in layer */

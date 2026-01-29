@@ -89,7 +89,7 @@ function _sign_str(v, show_sign) =
  * @param {number} show_sign
  *   SHOW_SIGN_NEG - States if to only show a negative sign.
  *   SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
- *   SHOW_SIGN_SP_NEG - States if to show space for positive sign or negative sign.
+ *   SHOW_SIGN_SPC_NEG - States if to show space for positive sign or negative sign.
  * @param {string} pad_char
  *   The character to use for padding a right justified value.
  * @param {number} min_width
@@ -258,7 +258,7 @@ echo(str("o2s: ", obj_to_string(["hello"])));
  *     have the line feeds added.  This is to conform to IETF RFC 4180:
  *     https://datatracker.ietf.org/doc/html/rfc4180
  *   - If false, double quotes and backslashes will be backslash escaped and
- *     lime endings are left as is and new ones added will be "\n".
+ *     line endings are left as is and new ones added will be "\n".
  *
  * @returns {string}
  *   Returns a string of the 2D list `a` as a CSV string.
@@ -373,7 +373,7 @@ function list_to_string(list, row_length = 0, fmt_el_fn = fmt_list_fn(),
         output_row_fn(0, "[\n"),
         len(list) > row_length
         ? str(
-            echo(str("len(list) > row_length * 2 = ", len(list), " > ", row_length, " * ", 2))
+            // echo(str("len(list) > row_length * 2 = ", len(list), " > ", row_length, " * ", 2))
             len(list) > row_length * 2
             ? str(",\n", indent, new_indent, "...\n")
             : ",\n",
@@ -409,7 +409,7 @@ function list_to_string(list, row_length = 0, fmt_el_fn = fmt_list_fn(),
  * @param {number} show_sign
  *   SHOW_SIGN_NEG - States if to only show a negative sign.
  *   SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
- *   SHOW_SIGN_SP_NEG - States if to show space for positive sign or negative sign.
+ *   SHOW_SIGN_SPC_NEG - States if to show space for positive sign or negative sign.
  *
  * @returns {function(i: number, e: any, indent: string) : string}
  *   Returns the lambda to render an element.
@@ -466,7 +466,7 @@ function fmt_pt_list_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG, min_widths_for
  * @param {number} show_sign
  *   SHOW_SIGN_NEG - States if to only show a negative sign.
  *   SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
- *   SHOW_SIGN_SP_NEG - States if to show space for positive sign or negative sign.
+ *   SHOW_SIGN_SPC_NEG - States if to show space for positive sign or negative sign.
  * @param {list[number,...]} [min_widths_for_dims]
  *   If specified, will output coord with minimum width of each specified by
  *   corresponding value in this list.
@@ -501,6 +501,9 @@ function fmt_pt_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG, min_widths_for_dims
  *   States if to output only first and last row (true) or all rows (false).
  * @param {number} [precision=4]
  *   The number of decimal places to output.
+ *
+ * @returns {string}
+ *   String with the aligned points.
  */
 function pt_list_to_string(pts, cols, rows, indent = "", only_first_and_last = false, precision = 4) =
   let (

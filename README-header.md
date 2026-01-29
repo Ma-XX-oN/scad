@@ -119,7 +119,7 @@ the first function may just end right there, if it doesn't curry.
 
 #### Parameter Names That Infer Types
 
-Many parameters names imply the types that they accept.
+Many parameter names imply the types that they accept.
 
 - `s` - A `string`.
 - `l` - A `list`.
@@ -143,7 +143,7 @@ There are several files in this library set.
     - Wraps OpenSCAD ranges `[start:stop]`/`[start:step:stop]`, adds extra
       functionality and remove warnings when creating null ranges.  Ranges are
       considered indexable and can be dereferenced using `range_el`.
- 2. [types](#file-types)
+ 2. [types](#file-types), [types_consts](#file-types_consts)
     - Allows for classifying object types that are beyond the standard
       `is_num`, `is_string`, `is_list`, `is_undef`, `is_function`, `is_bool` by
       adding `is_int`, `is_float` and `is_nan`.  `is_range` is defined in range
@@ -166,10 +166,10 @@ There are several files in this library set.
       benefit from the fastest way of executing the algorithms.
  4. [base_algos](#file-base_algos)
     - The base algorithms which most of the rest of the library uses.
-    - When not passed the `birlei`, the algorithm, it returns a lambda that
+    - When the `birlei` is not passed, the algorithm returns a lambda that
       only take a `birlei`.
-    - When passing a `birlei`, returns a lambda that takes a `PPMRRAIR`
-      function which is called over the `birlei` set.
+    - When passing a `birlei`, returns a lambda that takes a lambda which is
+      called over the `birlei` set.
  5. [indexable](#file-indexable), [indexable_consts](#file-indexable_consts)
     - Functions to manipulate a list or string as a stack / queue, use negative
       indices to get the indices / elements from the end, insert /
@@ -191,6 +191,3 @@ There are several files in this library set.
     - Miscellaneous functions that don't fit elsewhere.
 10. [skin](#file-skin)
     - Generates a polyhedron using slices.
-11. [sas_cutter](#file-sas_cutter)
-    - Creates a skin which is used as a cutting tool help to align two separate
-      parts together.

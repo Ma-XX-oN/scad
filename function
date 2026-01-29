@@ -176,7 +176,7 @@ test_eq(15, it_each([1,2,3,4,5], reduce(0))(
 );
 
 /**
- * Applies each element in an list to a function's parameter list.
+ * Applies each element in a list to a function's parameter list.
  *
  * TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
  *       overhead.  NEED TO BENCHMARK to determine which to keep.
@@ -185,7 +185,7 @@ test_eq(15, it_each([1,2,3,4,5], reduce(0))(
  *   A lambda that takes between 0 and 15 parameters.
  * @param {list} p
  *   A list of elements to apply to the function fn.  Must have the same or
- *   fewer elements than `fn` can take and must be less than 15 elements.
+ *   fewer elements than `fn` can take and must be at most 15 elements.
  *
  * @returns {any}
  *   The return value of fn().
@@ -224,7 +224,7 @@ function apply_to_fn(fn, p) =
 ;
 
 /**
- * Applies each element in an list to a function's parameter list.
+ * Applies each element in a list to a function's parameter list.
  *
  * TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
  *       overhead.  NEED TO BENCHMARK to determine which to keep.
@@ -233,7 +233,7 @@ function apply_to_fn(fn, p) =
  *   A lambda that takes between 0 and 15 parameters.
  * @param {list} p
  *   A list of elements to apply to the function fn.  Must have the same or
- *   fewer elements than `fn` can take and must be less than 15 elements.
+ *   fewer elements than `fn` can take and must be at most 15 elements.
  *
  * @returns {any}
  *   The return value of fn().

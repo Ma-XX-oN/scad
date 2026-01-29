@@ -1,3 +1,17 @@
+/**
+ * ## string_consts
+ *
+ * ### How to Import
+ *
+ *     include <string_consts>
+ *
+ * ### Purpose
+ *
+ * Constants representing how to show the sign of a number in string library.
+ *
+ * ### Values
+ */
+
 /** The enum that represents showing only -ve and never +ve sign */
 SHOW_SIGN_NEG = 0;
 /** The enum that represents showing only -ve and +ve signs */

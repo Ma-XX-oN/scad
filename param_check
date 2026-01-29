@@ -1,4 +1,10 @@
 /**
+ * ## param_check
+ *
+ * ### How to Import
+ *
+ *     use <param_check>
+ *
  * ### Purpose
  *
  * These functions do a minimal check to see if the parameters passed are what
@@ -28,7 +34,7 @@
  *           echo "Failed to update $f"
  *       done
  *
- * Although this modifies the library, this will result in disable parameter
+ * Although this modifies the library, this will result in disabled parameter
  * checks having 0 effect on runtime performance.
  *
  * Can make two libraries, one debug with parameter checking turned on and one
@@ -254,7 +260,7 @@ function verify_biei(begin_i, end_i) =
 /**
  * ### Value Checks
  *
- * These check the birlsei and slr_cache.
+ * These check that the values are within bounds.
  */
 
 /**
@@ -274,12 +280,6 @@ function verify_precache(slr, birls, end_i) =
   let ( __ = verify_vbsis(slr, birls, end_i) )
   undef
 ;
-
-/**
- * ### Value Checks
- *
- * These check that the values are within bounds.
- */
 
 /**
  * Verifies valid birlei indices.  I.e. `0 <= i < slr_len` where `i ∈ birlei`.
