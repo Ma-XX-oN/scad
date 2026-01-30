@@ -533,6 +533,7 @@ def sanitize_anchor_id(id: str) -> str:
   URL-specific punctuation are replaced with ``_``."""
   id = id.replace(":", "__")
   id = regex.sub(r"[^\w-]", "_", id)
+  id = regex.sub(r"[A-Z]", lambda m: "_" + m[0].lower(), id)
   return id
 
 def make_anchor(prefix: str, id: str):
@@ -1861,7 +1862,7 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
   def add_h3_emoji_and_anchor(m):
     heading_text = m.group(2)
     assert isinstance(heading_text, str)
-    return f"{m.group(1)}<i>📑{heading_text}</i>{make_anchor(f'{filename}-ch', heading_text)}"
+    return f"{m.group(1)}<i>📑{heading_text}</i>{make_anchor(f'ch-{filename}', heading_text)}"
 
   for i in range(len(output_lines)):
     tmp = output_lines[i]

@@ -215,14 +215,14 @@ There are several files in this library set.
 
 <details><summary><a href="#file-range">📘 <b>range</b></a></summary>
 <blockquote>
-• <a href="#range-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#range-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#range-ch-Test">📑 <i>Test</i></a></summary>
+• <a href="#ch-range-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-range-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-range-_test">📑 <i>Test</i></a></summary>
 <blockquote>
 • <a href="#f-is_range">⚙️is_range</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#range-ch-Functions">📑 <i>Functions</i></a></summary>
+<details><summary><a href="#ch-range-_functions">📑 <i>Functions</i></a></summary>
 <blockquote>
 • <a href="#f-range">⚙️range</a><br>
 • <a href="#f-range_len">⚙️range_len</a><br>
@@ -231,7 +231,7 @@ There are several files in this library set.
 • <a href="#f-range_idx">⚙️range_idx</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#range-ch-range_types">📑 <i>range types</i></a></summary>
+<details><summary><a href="#ch-range-range_types">📑 <i>range types</i></a></summary>
 <blockquote>
 • <a href="#t-range">🧩range</a><br>
 </blockquote>
@@ -241,9 +241,9 @@ There are several files in this library set.
 
 <details><summary><a href="#file-types">📘 <b>types</b></a></summary>
 <blockquote>
-• <a href="#types-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#types-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#types-ch-Tests">📑 <i>Tests</i></a></summary>
+• <a href="#ch-types-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-types-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-types-_tests">📑 <i>Tests</i></a></summary>
 <blockquote>
 • <a href="#f-is_indexable_te">⚙️is_indexable_te</a><br>
 • <a href="#f-is_int">⚙️is_int</a><br>
@@ -251,9 +251,9 @@ There are several files in this library set.
 • <a href="#f-is_nan">⚙️is_nan</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#types-ch-Type_Introspection">📑 <i>Type Introspection</i></a></summary>
+<details><summary><a href="#ch-types-_type__introspection">📑 <i>Type Introspection</i></a></summary>
 <blockquote>
-• <a href="#t-_TYPE_NAMES">💠_TYPE_NAMES</a><br>
+• <a href="#t-__t_y_p_e__n_a_m_e_s">💠_TYPE_NAMES</a><br>
 • <a href="#f-type_enum">⚙️type_enum</a><br>
 • <a href="#f-type_enum_to_str">⚙️type_enum_to_str</a><br>
 • <a href="#f-type">⚙️type</a><br>
@@ -261,9 +261,9 @@ There are several files in this library set.
 • <a href="#f-type_value">⚙️type_value</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#types-ch-types_types">📑 <i>types types</i></a></summary>
+<details><summary><a href="#ch-types-types_types">📑 <i>types types</i></a></summary>
 <blockquote>
-• <a href="#t-TypeEnum">🧩TypeEnum</a><br>
+• <a href="#t-_type_enum">🧩TypeEnum</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -271,22 +271,22 @@ There are several files in this library set.
 
 <details><summary><a href="#file-types_consts">📘 <b>types_consts</b></a></summary>
 <blockquote>
-• <a href="#types_consts-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#types_consts-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#types_consts-ch-Values">📑 <i>Values</i></a></summary>
+• <a href="#ch-types_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-types_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-types_consts-_values">📑 <i>Values</i></a></summary>
 <blockquote>
-• <a href="#t-RANGE">💠RANGE</a><br>
-• <a href="#t-LIST">💠LIST</a><br>
-• <a href="#t-STR">💠STR</a><br>
-• <a href="#t-UNKNOWN">💠UNKNOWN</a><br>
-• <a href="#t-SLICE">💠SLICE</a><br>
-• <a href="#t-UNDEF">💠UNDEF</a><br>
-• <a href="#t-BOOL">💠BOOL</a><br>
-• <a href="#t-FUNC">💠FUNC</a><br>
-• <a href="#t-NUM">💠NUM</a><br>
-• <a href="#t-INT">💠INT</a><br>
-• <a href="#t-FLOAT">💠FLOAT</a><br>
-• <a href="#t-NAN">💠NAN</a><br>
+• <a href="#t-_r_a_n_g_e">💠RANGE</a><br>
+• <a href="#t-_l_i_s_t">💠LIST</a><br>
+• <a href="#t-_s_t_r">💠STR</a><br>
+• <a href="#t-_u_n_k_n_o_w_n">💠UNKNOWN</a><br>
+• <a href="#t-_s_l_i_c_e">💠SLICE</a><br>
+• <a href="#t-_u_n_d_e_f">💠UNDEF</a><br>
+• <a href="#t-_b_o_o_l">💠BOOL</a><br>
+• <a href="#t-_f_u_n_c">💠FUNC</a><br>
+• <a href="#t-_n_u_m">💠NUM</a><br>
+• <a href="#t-_i_n_t">💠INT</a><br>
+• <a href="#t-_f_l_o_a_t">💠FLOAT</a><br>
+• <a href="#t-_n_a_n">💠NAN</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -294,26 +294,26 @@ There are several files in this library set.
 
 <details><summary><a href="#file-birlei">📘 <b>birlei</b></a></summary>
 <blockquote>
-• <a href="#birlei-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#birlei-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#birlei-ch-Functions">📑 <i>Functions</i></a></summary>
+• <a href="#ch-birlei-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-birlei-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-birlei-_functions">📑 <i>Functions</i></a></summary>
 <blockquote>
 • <a href="#f-birlei_to_begin_i_end_i">⚙️birlei_to_begin_i_end_i</a><br>
 • <a href="#f-birlei_to_indices">⚙️birlei_to_indices</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#birlei-ch-birlei_types">📑 <i>birlei types</i></a></summary>
+<details><summary><a href="#ch-birlei-birlei_types">📑 <i>birlei types</i></a></summary>
 <blockquote>
-• <a href="#t-Birl">🧩Birl</a><br>
-• <a href="#t-EndI">🧩EndI</a><br>
-• <a href="#t-SpaceshipFn">🧩SpaceshipFn</a><br>
-• <a href="#t-PredFn">🧩PredFn</a><br>
-• <a href="#t-ReductionFn">🧩ReductionFn</a><br>
-• <a href="#t-ReductionAirFn">🧩ReductionAirFn</a><br>
-• <a href="#t-PredMapFn">🧩PredMapFn</a><br>
-• <a href="#t-MapperFn">🧩MapperFn</a><br>
-• <a href="#t-PpmrrairFn">🧩PpmrrairFn</a><br>
-• <a href="#t-MapBackFn">🧩MapBackFn</a><br>
+• <a href="#t-_birl">🧩Birl</a><br>
+• <a href="#t-_end_i">🧩EndI</a><br>
+• <a href="#t-_spaceship_fn">🧩SpaceshipFn</a><br>
+• <a href="#t-_pred_fn">🧩PredFn</a><br>
+• <a href="#t-_reduction_fn">🧩ReductionFn</a><br>
+• <a href="#t-_reduction_air_fn">🧩ReductionAirFn</a><br>
+• <a href="#t-_pred_map_fn">🧩PredMapFn</a><br>
+• <a href="#t-_mapper_fn">🧩MapperFn</a><br>
+• <a href="#t-_ppmrrair_fn">🧩PpmrrairFn</a><br>
+• <a href="#t-_map_back_fn">🧩MapBackFn</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -321,13 +321,13 @@ There are several files in this library set.
 
 <details><summary><a href="#file-base_algos">📘 <b>base_algos</b></a></summary>
 <blockquote>
-• <a href="#base_algos-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#base_algos-ch-Purpose">📑 <i>Purpose</i></a><br>
-• <a href="#base_algos-ch-FYI___Functions_and_Iterating_are_Abound_">📑 <i>FYI: Functions and Iterating are Abound!</i></a><br>
-• <a href="#base_algos-ch-Iterators__">📑 <i>Iterators:</i></a><br>
-• <a href="#base_algos-ch-Algorithms">📑 <i>Algorithms</i></a><br>
-• <a href="#base_algos-ch-Algorithm_Signatures">📑 <i>Algorithm Signatures</i></a><br>
-<details><summary><a href="#base_algos-ch-PPMRRAIR_functions">📑 <i>PPMRRAIR functions</i></a></summary>
+• <a href="#ch-base_algos-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-base_algos-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-base_algos-_f_y_i____functions_and__iterating_are__abound_">📑 <i>FYI: Functions and Iterating are Abound!</i></a><br>
+• <a href="#ch-base_algos-_iterators__">📑 <i>Iterators:</i></a><br>
+• <a href="#ch-base_algos-_algorithms">📑 <i>Algorithms</i></a><br>
+• <a href="#ch-base_algos-_algorithm__signatures">📑 <i>Algorithm Signatures</i></a><br>
+<details><summary><a href="#ch-base_algos-_p_p_m_r_r_a_i_r_functions">📑 <i>PPMRRAIR functions</i></a></summary>
 <blockquote>
 • <a href="#predicate-functioni--result">Predicate (`function(i) : result`)</a><br>
 • <a href="#predicatemap-functioni-v--any">Predicate/Map (`function(i, v) : any`)</a><br>
@@ -335,7 +335,7 @@ There are several files in this library set.
 • <a href="#reduction-allow-incomplete-reduction-functioni-acc--cont-acc">Reduction, Allow Incomplete Reduction (`function(i, acc) : [cont, acc]`)</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#base_algos-ch-The_Base_Algorithms">📑 <i>The Base Algorithms</i></a></summary>
+<details><summary><a href="#ch-base_algos-_the__base__algorithms">📑 <i>The Base Algorithms</i></a></summary>
 <blockquote>
 • <a href="#f-find_lower">⚙️find_lower</a><br>
 • <a href="#f-find_upper">⚙️find_upper</a><br>
@@ -346,26 +346,26 @@ There are several files in this library set.
 • <a href="#f-map">⚙️map</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#base_algos-ch-base_algos_types">📑 <i>base_algos types</i></a></summary>
+<details><summary><a href="#ch-base_algos-base_algos_types">📑 <i>base_algos types</i></a></summary>
 <blockquote>
-• <a href="#t-BoundIndexFn">🧩BoundIndexFn</a><br>
-• <a href="#t-OptionalBirl">🧩OptionalBirl</a><br>
-• <a href="#t-AlgoFn">🧩AlgoFn</a><br>
-• <a href="#t-FindLowerFn">🧩FindLowerFn</a><br>
-• <a href="#t-FindLowerBirleiFn">🧩FindLowerBirleiFn</a><br>
-• <a href="#t-FindUpperFn">🧩FindUpperFn</a><br>
-• <a href="#t-FindUpperFn">🧩FindUpperFn</a><br>
-• <a href="#t-FindUpperBirleiFn">🧩FindUpperBirleiFn</a><br>
-• <a href="#t-FindFn">🧩FindFn</a><br>
-• <a href="#t-FindBirleiFn">🧩FindBirleiFn</a><br>
-• <a href="#t-ReduceFn">🧩ReduceFn</a><br>
-• <a href="#t-ReduceBirleiFn">🧩ReduceBirleiFn</a><br>
-• <a href="#t-ReduceAirFn">🧩ReduceAirFn</a><br>
-• <a href="#t-ReduceAirBirleiFn">🧩ReduceAirBirleiFn</a><br>
-• <a href="#t-FilterFn">🧩FilterFn</a><br>
-• <a href="#t-FilterBirleiFn">🧩FilterBirleiFn</a><br>
-• <a href="#t-MapFn">🧩MapFn</a><br>
-• <a href="#t-MapBirleiFn">🧩MapBirleiFn</a><br>
+• <a href="#t-_bound_index_fn">🧩BoundIndexFn</a><br>
+• <a href="#t-_optional_birl">🧩OptionalBirl</a><br>
+• <a href="#t-_algo_fn">🧩AlgoFn</a><br>
+• <a href="#t-_find_lower_fn">🧩FindLowerFn</a><br>
+• <a href="#t-_find_lower_birlei_fn">🧩FindLowerBirleiFn</a><br>
+• <a href="#t-_find_upper_fn">🧩FindUpperFn</a><br>
+• <a href="#t-_find_upper_fn">🧩FindUpperFn</a><br>
+• <a href="#t-_find_upper_birlei_fn">🧩FindUpperBirleiFn</a><br>
+• <a href="#t-_find_fn">🧩FindFn</a><br>
+• <a href="#t-_find_birlei_fn">🧩FindBirleiFn</a><br>
+• <a href="#t-_reduce_fn">🧩ReduceFn</a><br>
+• <a href="#t-_reduce_birlei_fn">🧩ReduceBirleiFn</a><br>
+• <a href="#t-_reduce_air_fn">🧩ReduceAirFn</a><br>
+• <a href="#t-_reduce_air_birlei_fn">🧩ReduceAirBirleiFn</a><br>
+• <a href="#t-_filter_fn">🧩FilterFn</a><br>
+• <a href="#t-_filter_birlei_fn">🧩FilterBirleiFn</a><br>
+• <a href="#t-_map_fn">🧩MapFn</a><br>
+• <a href="#t-_map_birlei_fn">🧩MapBirleiFn</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -373,19 +373,19 @@ There are several files in this library set.
 
 <details><summary><a href="#file-any_all">📘 <b>any_all</b></a></summary>
 <blockquote>
-• <a href="#any_all-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-<details><summary><a href="#any_all-ch-Purpose">📑 <i>Purpose</i></a></summary>
+• <a href="#ch-any_all-_how_to__import">📑 <i>How to Import</i></a><br>
+<details><summary><a href="#ch-any_all-_purpose">📑 <i>Purpose</i></a></summary>
 <blockquote>
 • <a href="#f-any">⚙️any</a><br>
 • <a href="#f-all">⚙️all</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#any_all-ch-any_all_types">📑 <i>any_all types</i></a></summary>
+<details><summary><a href="#ch-any_all-any_all_types">📑 <i>any_all types</i></a></summary>
 <blockquote>
-• <a href="#t-AnyFn">🧩AnyFn</a><br>
-• <a href="#t-AnyBirleiFn">🧩AnyBirleiFn</a><br>
-• <a href="#t-AllFn">🧩AllFn</a><br>
-• <a href="#t-AllBirleiFn">🧩AllBirleiFn</a><br>
+• <a href="#t-_any_fn">🧩AnyFn</a><br>
+• <a href="#t-_any_birlei_fn">🧩AnyBirleiFn</a><br>
+• <a href="#t-_all_fn">🧩AllFn</a><br>
+• <a href="#t-_all_birlei_fn">🧩AllBirleiFn</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -393,13 +393,13 @@ There are several files in this library set.
 
 <details><summary><a href="#file-indexable">📘 <b>indexable</b></a></summary>
 <blockquote>
-• <a href="#indexable-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-<details><summary><a href="#indexable-ch-Purpose">📑 <i>Purpose</i></a></summary>
+• <a href="#ch-indexable-_how_to__import">📑 <i>How to Import</i></a><br>
+<details><summary><a href="#ch-indexable-_purpose">📑 <i>Purpose</i></a></summary>
 <blockquote>
 • <a href="#example">Example</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Slices">📑 <i>Slices</i></a></summary>
+<details><summary><a href="#ch-indexable-_slices">📑 <i>Slices</i></a></summary>
 <blockquote>
 • <a href="#f-is_slice">⚙️is_slice</a><br>
 • <a href="#f-slice">⚙️slice</a><br>
@@ -407,14 +407,14 @@ There are several files in this library set.
 • <a href="#f-_slr_cache">⚙️_slr_cache</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Algorithm_Adaptors">📑 <i>Algorithm Adaptors</i></a></summary>
+<details><summary><a href="#ch-indexable-_algorithm__adaptors">📑 <i>Algorithm Adaptors</i></a></summary>
 <blockquote>
 • <a href="#f-it_each">⚙️it_each</a><br>
 • <a href="#f-it_idxs">⚙️it_idxs</a><br>
 • <a href="#f-it_enum">⚙️it_enum</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Treat_All_Indexables_the_Same">📑 <i>Treat All Indexables the Same</i></a></summary>
+<details><summary><a href="#ch-indexable-_treat__all__indexables_the__same">📑 <i>Treat All Indexables the Same</i></a></summary>
 <blockquote>
 • <a href="#f-slr_len">⚙️slr_len</a><br>
 • <a href="#f-idx">⚙️idx</a><br>
@@ -424,7 +424,7 @@ There are several files in this library set.
 • <a href="#f-range_els">⚙️range_els</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Getting_Traversing_Indices">📑 <i>Getting/Traversing Indices</i></a></summary>
+<details><summary><a href="#ch-indexable-_getting__traversing__indices">📑 <i>Getting/Traversing Indices</i></a></summary>
 <blockquote>
 • <a href="#f-idxs">⚙️idxs</a><br>
 • <a href="#f-fwd_i">⚙️fwd_i</a><br>
@@ -433,7 +433,7 @@ There are several files in this library set.
 • <a href="#f-prev_in">⚙️prev_in</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-Functions_to_Manipulate_Strings_and_Lists">📑 <i>Functions to Manipulate Strings and Lists</i></a></summary>
+<details><summary><a href="#ch-indexable-_functions_to__manipulate__strings_and__lists">📑 <i>Functions to Manipulate Strings and Lists</i></a></summary>
 <blockquote>
 • <a href="#f-push">⚙️push</a><br>
 • <a href="#f-pop">⚙️pop</a><br>
@@ -459,18 +459,18 @@ There are several files in this library set.
 • <a href="#f-quicksort_lib_ex2">⚙️quicksort_lib_ex2</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable-ch-indexable_types">📑 <i>indexable types</i></a></summary>
+<details><summary><a href="#ch-indexable-indexable_types">📑 <i>indexable types</i></a></summary>
 <blockquote>
 • <a href="#t-slice">🧩slice</a><br>
-• <a href="#t-Birls">🧩Birls</a><br>
+• <a href="#t-_birls">🧩Birls</a><br>
 • <a href="#t-slr_cache">🧩slr_cache</a><br>
-• <a href="#t-GetPpmrrairFn">🧩GetPpmrrairFn</a><br>
-• <a href="#t-EqualFn">🧩EqualFn</a><br>
-• <a href="#t-GetEqualFn">🧩GetEqualFn</a><br>
-• <a href="#t-RemoveAdjacentDupsFn">🧩RemoveAdjacentDupsFn</a><br>
-• <a href="#t-ReplaceEachFn">🧩ReplaceEachFn</a><br>
-• <a href="#t-SearchFn">🧩SearchFn</a><br>
-• <a href="#t-SearchNeedleFn">🧩SearchNeedleFn</a><br>
+• <a href="#t-_get_ppmrrair_fn">🧩GetPpmrrairFn</a><br>
+• <a href="#t-_equal_fn">🧩EqualFn</a><br>
+• <a href="#t-_get_equal_fn">🧩GetEqualFn</a><br>
+• <a href="#t-_remove_adjacent_dups_fn">🧩RemoveAdjacentDupsFn</a><br>
+• <a href="#t-_replace_each_fn">🧩ReplaceEachFn</a><br>
+• <a href="#t-_search_fn">🧩SearchFn</a><br>
+• <a href="#t-_search_needle_fn">🧩SearchNeedleFn</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -478,25 +478,25 @@ There are several files in this library set.
 
 <details><summary><a href="#file-indexable_consts">📘 <b>indexable_consts</b></a></summary>
 <blockquote>
-• <a href="#indexable_consts-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#indexable_consts-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#indexable_consts-ch-Values">📑 <i>Values</i></a></summary>
+• <a href="#ch-indexable_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-indexable_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-indexable_consts-_values">📑 <i>Values</i></a></summary>
 <blockquote>
-• <a href="#t-_SLR_CACHE_HEADER">💠_SLR_CACHE_HEADER</a><br>
-• <a href="#t-_SLR_LEN">💠_SLR_LEN</a><br>
-• <a href="#t-_SLR_TE">💠_SLR_TE</a><br>
-• <a href="#t-_SLR_ELD">💠_SLR_ELD</a><br>
-• <a href="#t-_SLR_BLEN">💠_SLR_BLEN</a><br>
-• <a href="#t-_SLR_ELI">💠_SLR_ELI</a><br>
-• <a href="#t-_SLR_IDX">💠_SLR_IDX</a><br>
-• <a href="#t-_SLR_STR">💠_SLR_STR</a><br>
-• <a href="#t-_SLR_BIRL">💠_SLR_BIRL</a><br>
-• <a href="#t-_SLR_END_I">💠_SLR_END_I</a><br>
+• <a href="#t-__s_l_r__c_a_c_h_e__h_e_a_d_e_r">💠_SLR_CACHE_HEADER</a><br>
+• <a href="#t-__s_l_r__l_e_n">💠_SLR_LEN</a><br>
+• <a href="#t-__s_l_r__t_e">💠_SLR_TE</a><br>
+• <a href="#t-__s_l_r__e_l_d">💠_SLR_ELD</a><br>
+• <a href="#t-__s_l_r__b_l_e_n">💠_SLR_BLEN</a><br>
+• <a href="#t-__s_l_r__e_l_i">💠_SLR_ELI</a><br>
+• <a href="#t-__s_l_r__i_d_x">💠_SLR_IDX</a><br>
+• <a href="#t-__s_l_r__s_t_r">💠_SLR_STR</a><br>
+• <a href="#t-__s_l_r__b_i_r_l">💠_SLR_BIRL</a><br>
+• <a href="#t-__s_l_r__e_n_d__i">💠_SLR_END_I</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#indexable_consts-ch-indexable_consts_types">📑 <i>indexable_consts types</i></a></summary>
+<details><summary><a href="#ch-indexable_consts-indexable_consts_types">📑 <i>indexable_consts types</i></a></summary>
 <blockquote>
-• <a href="#t-SlrCacheEnum">🧩SlrCacheEnum</a><br>
+• <a href="#t-_slr_cache_enum">🧩SlrCacheEnum</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -504,12 +504,12 @@ There are several files in this library set.
 
 <details><summary><a href="#file-function">📘 <b>function</b></a></summary>
 <blockquote>
-• <a href="#function-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#function-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#function-ch-Function_Introspection">📑 <i>Function Introspection</i></a></summary>
+• <a href="#ch-function-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-function-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-function-_function__introspection">📑 <i>Function Introspection</i></a></summary>
 <blockquote>
 • <a href="#f-param_count">⚙️param_count</a><br>
-• <a href="#f-_PARAM_BEGIN_I">⚙️_PARAM_BEGIN_I</a><br>
+• <a href="#f-__p_a_r_a_m__b_e_g_i_n__i">⚙️_PARAM_BEGIN_I</a><br>
 • <a href="#f-_pc_loop">⚙️_pc_loop</a><br>
 • <a href="#f-param_count_direct_recursion_demo">⚙️param_count_direct_recursion_demo</a><br>
 • <a href="#f-apply_to_fn">⚙️apply_to_fn</a><br>
@@ -521,9 +521,9 @@ There are several files in this library set.
 
 <details><summary><a href="#file-test">📘 <b>test</b></a></summary>
 <blockquote>
-• <a href="#test-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#test-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#test-ch-Test_Your_Code_">📑 <i>Test Your Code!</i></a></summary>
+• <a href="#ch-test-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-test-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-test-_test__your__code_">📑 <i>Test Your Code!</i></a></summary>
 <blockquote>
 • <a href="#m-test_eq">🧪test_eq</a><br>
 • <a href="#m-test_approx_eq">🧪test_approx_eq</a><br>
@@ -541,9 +541,9 @@ There are several files in this library set.
 
 <details><summary><a href="#file-param_check">📘 <b>param_check</b></a></summary>
 <blockquote>
-• <a href="#param_check-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#param_check-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#param_check-ch-Type_Checks">📑 <i>Type Checks</i></a></summary>
+• <a href="#ch-param_check-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-param_check-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-param_check-_type__checks">📑 <i>Type Checks</i></a></summary>
 <blockquote>
 • <a href="#f-verify_slr">⚙️verify_slr</a><br>
 • <a href="#f-verify_sl">⚙️verify_sl</a><br>
@@ -562,7 +562,7 @@ There are several files in this library set.
 • <a href="#f-verify_biei">⚙️verify_biei</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#param_check-ch-Value_Checks">📑 <i>Value Checks</i></a></summary>
+<details><summary><a href="#ch-param_check-_value__checks">📑 <i>Value Checks</i></a></summary>
 <blockquote>
 • <a href="#f-verify_precache">⚙️verify_precache</a><br>
 • <a href="#f-verify_vbis">⚙️verify_vbis</a><br>
@@ -585,9 +585,9 @@ There are several files in this library set.
 
 <details><summary><a href="#file-transform">📘 <b>transform</b></a></summary>
 <blockquote>
-• <a href="#transform-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#transform-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#transform-ch-Generate_Matrices_for_Vector_Transforms">📑 <i>Generate Matrices for Vector Transforms</i></a></summary>
+• <a href="#ch-transform-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-transform-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-transform-_generate__matrices_for__vector__transforms">📑 <i>Generate Matrices for Vector Transforms</i></a></summary>
 <blockquote>
 • <a href="#f-transpose">⚙️transpose</a><br>
 • <a href="#f-homogenise">⚙️homogenise</a><br>
@@ -607,7 +607,7 @@ There are several files in this library set.
 • <a href="#f-reorient">⚙️reorient</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#transform-ch-Matrix_Math">📑 <i>Matrix Math</i></a></summary>
+<details><summary><a href="#ch-transform-_matrix__math">📑 <i>Matrix Math</i></a></summary>
 <blockquote>
 • <a href="#f-invert">⚙️invert</a><br>
 • <a href="#f-row_reduction">⚙️row_reduction</a><br>
@@ -621,18 +621,18 @@ There are several files in this library set.
 • <a href="#f-_all_numeric">⚙️_all_numeric</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#transform-ch-transform_types">📑 <i>transform types</i></a></summary>
+<details><summary><a href="#ch-transform-transform_types">📑 <i>transform types</i></a></summary>
 <blockquote>
-• <a href="#t-Matrix">🧩Matrix</a><br>
-• <a href="#t-Point2D">🧩Point2D</a><br>
-• <a href="#t-Point3D">🧩Point3D</a><br>
-• <a href="#t-Point">🧩Point</a><br>
-• <a href="#t-Vector2D">🧩Vector2D</a><br>
-• <a href="#t-Vector3D">🧩Vector3D</a><br>
-• <a href="#t-Vector">🧩Vector</a><br>
-• <a href="#t-BVector2D">🧩BVector2D</a><br>
-• <a href="#t-BVector3D">🧩BVector3D</a><br>
-• <a href="#t-BVector">🧩BVector</a><br>
+• <a href="#t-_matrix">🧩Matrix</a><br>
+• <a href="#t-_point2_d">🧩Point2D</a><br>
+• <a href="#t-_point3_d">🧩Point3D</a><br>
+• <a href="#t-_point">🧩Point</a><br>
+• <a href="#t-_vector2_d">🧩Vector2D</a><br>
+• <a href="#t-_vector3_d">🧩Vector3D</a><br>
+• <a href="#t-_vector">🧩Vector</a><br>
+• <a href="#t-_b_vector2_d">🧩BVector2D</a><br>
+• <a href="#t-_b_vector3_d">🧩BVector3D</a><br>
+• <a href="#t-_b_vector">🧩BVector</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -640,8 +640,8 @@ There are several files in this library set.
 
 <details><summary><a href="#file-string">📘 <b>string</b></a></summary>
 <blockquote>
-• <a href="#string-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-<details><summary><a href="#string-ch-Purpose">📑 <i>Purpose</i></a></summary>
+• <a href="#ch-string-_how_to__import">📑 <i>How to Import</i></a><br>
+<details><summary><a href="#ch-string-_purpose">📑 <i>Purpose</i></a></summary>
 <blockquote>
 • <a href="#f-align_left">⚙️align_left</a><br>
 • <a href="#f-align_right">⚙️align_right</a><br>
@@ -657,9 +657,9 @@ There are several files in this library set.
 • <a href="#f-pt_list_to_string">⚙️pt_list_to_string</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#string-ch-string_types">📑 <i>string types</i></a></summary>
+<details><summary><a href="#ch-string-string_types">📑 <i>string types</i></a></summary>
 <blockquote>
-• <a href="#t-ShowSignEnum">🧩ShowSignEnum</a><br>
+• <a href="#t-_show_sign_enum">🧩ShowSignEnum</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -667,13 +667,13 @@ There are several files in this library set.
 
 <details><summary><a href="#file-string_consts">📘 <b>string_consts</b></a></summary>
 <blockquote>
-• <a href="#string_consts-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#string_consts-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#string_consts-ch-Values_for__show_sign__Parameters">📑 <i>Values for `show_sign` Parameters</i></a></summary>
+• <a href="#ch-string_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-string_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-string_consts-_values_for__show_sign___parameters">📑 <i>Values for `show_sign` Parameters</i></a></summary>
 <blockquote>
-• <a href="#t-SHOW_SIGN_NEG">💠SHOW_SIGN_NEG</a><br>
-• <a href="#t-SHOW_SIGN_POS_NEG">💠SHOW_SIGN_POS_NEG</a><br>
-• <a href="#t-SHOW_SIGN_SPC_NEG">💠SHOW_SIGN_SPC_NEG</a><br>
+• <a href="#t-_s_h_o_w__s_i_g_n__n_e_g">💠SHOW_SIGN_NEG</a><br>
+• <a href="#t-_s_h_o_w__s_i_g_n__p_o_s__n_e_g">💠SHOW_SIGN_POS_NEG</a><br>
+• <a href="#t-_s_h_o_w__s_i_g_n__s_p_c__n_e_g">💠SHOW_SIGN_SPC_NEG</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -681,15 +681,15 @@ There are several files in this library set.
 
 <details><summary><a href="#file-helpers">📘 <b>helpers</b></a></summary>
 <blockquote>
-• <a href="#helpers-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#helpers-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#helpers-ch-Conversion_functions">📑 <i>Conversion functions</i></a></summary>
+• <a href="#ch-helpers-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-helpers-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-helpers-_conversion_functions">📑 <i>Conversion functions</i></a></summary>
 <blockquote>
 • <a href="#f-r2d">⚙️r2d</a><br>
 • <a href="#f-d2r">⚙️d2r</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#helpers-ch-Circular___Spherical_Calculations">📑 <i>Circular / Spherical Calculations</i></a></summary>
+<details><summary><a href="#ch-helpers-_circular____spherical__calculations">📑 <i>Circular / Spherical Calculations</i></a></summary>
 <blockquote>
 • <a href="#f-arc_len">⚙️arc_len</a><br>
 • <a href="#f-arc_len_angle">⚙️arc_len_angle</a><br>
@@ -701,7 +701,7 @@ There are several files in this library set.
 • <a href="#f-shift_for_arc_len">⚙️shift_for_arc_len</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#helpers-ch-Miscellaneous">📑 <i>Miscellaneous</i></a></summary>
+<details><summary><a href="#ch-helpers-_miscellaneous">📑 <i>Miscellaneous</i></a></summary>
 <blockquote>
 • <a href="#f-not">⚙️not</a><br>
 • <a href="#f-clamp">⚙️clamp</a><br>
@@ -709,19 +709,19 @@ There are several files in this library set.
 • <a href="#f-equal">⚙️equal</a><br>
 • <a href="#f-function_equal">⚙️function_equal</a><br>
 • <a href="#f-default">⚙️default</a><br>
-• <a href="#f-INCOMPLETE">⚙️INCOMPLETE</a><br>
+• <a href="#f-_i_n_c_o_m_p_l_e_t_e">⚙️INCOMPLETE</a><br>
 • <a href="#f-offset_angle">⚙️offset_angle</a><br>
 • <a href="#m-arrow">🧊arrow</a><br>
 • <a href="#m-axis">🧊axis</a><br>
 • <a href="#f-fl">⚙️fl</a><br>
-• <a href="#f-Assert">⚙️Assert</a><br>
+• <a href="#f-_assert">⚙️Assert</a><br>
 • <a href="#f-interpolated_values">⚙️interpolated_values</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#helpers-ch-helpers_types">📑 <i>helpers types</i></a></summary>
+<details><summary><a href="#ch-helpers-helpers_types">📑 <i>helpers types</i></a></summary>
 <blockquote>
-• <a href="#t-VectorInfo">🧩VectorInfo</a><br>
-• <a href="#t-IdentityFn">🧩IdentityFn</a><br>
+• <a href="#t-_vector_info">🧩VectorInfo</a><br>
+• <a href="#t-_identity_fn">🧩IdentityFn</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -729,19 +729,19 @@ There are several files in this library set.
 
 <details><summary><a href="#file-helpers_consts">📘 <b>helpers_consts</b></a></summary>
 <blockquote>
-• <a href="#helpers_consts-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#helpers_consts-ch-Purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#helpers_consts-ch-For_indexing_type__VectorInfo___t-VectorInfo__">📑 <i>For indexing type [VectorInfo](#t-VectorInfo).</i></a></summary>
+• <a href="#ch-helpers_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-helpers_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__">📑 <i>For indexing type [VectorInfo](#t-VectorInfo).</i></a></summary>
 <blockquote>
-• <a href="#t-VI_VECTOR">💠VI_VECTOR</a><br>
-• <a href="#t-VI_LENGTH">💠VI_LENGTH</a><br>
-• <a href="#t-VI_DIR">💠VI_DIR</a><br>
-• <a href="#t-VI_NORMAL">💠VI_NORMAL</a><br>
+• <a href="#t-_v_i__v_e_c_t_o_r">💠VI_VECTOR</a><br>
+• <a href="#t-_v_i__l_e_n_g_t_h">💠VI_LENGTH</a><br>
+• <a href="#t-_v_i__d_i_r">💠VI_DIR</a><br>
+• <a href="#t-_v_i__n_o_r_m_a_l">💠VI_NORMAL</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#helpers_consts-ch-helpers_consts_types">📑 <i>helpers_consts types</i></a></summary>
+<details><summary><a href="#ch-helpers_consts-helpers_consts_types">📑 <i>helpers_consts types</i></a></summary>
 <blockquote>
-• <a href="#t-VectorInfoEnum">🧩VectorInfoEnum</a><br>
+• <a href="#t-_vector_info_enum">🧩VectorInfoEnum</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -749,19 +749,19 @@ There are several files in this library set.
 
 <details><summary><a href="#file-skin">📘 <b>skin</b></a></summary>
 <blockquote>
-• <a href="#skin-ch-How_to_Import">📑 <i>How to Import</i></a><br>
-• <a href="#skin-ch-Purpose">📑 <i>Purpose</i></a><br>
-• <a href="#skin-ch-Design">📑 <i>Design</i></a><br>
-<details><summary><a href="#skin-ch-Values">📑 <i>Values</i></a></summary>
+• <a href="#ch-skin-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-skin-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-skin-_design">📑 <i>Design</i></a><br>
+<details><summary><a href="#ch-skin-_values">📑 <i>Values</i></a></summary>
 <blockquote>
-• <a href="#v-_SKIN_ID">💠_SKIN_ID</a><br>
-• <a href="#v-_SKIN_PTS_IN_LAYER">💠_SKIN_PTS_IN_LAYER</a><br>
-• <a href="#v-_SKIN_LAYERS">💠_SKIN_LAYERS</a><br>
-• <a href="#v-_SKIN_PTS">💠_SKIN_PTS</a><br>
-• <a href="#v-_SKIN_DEBUG_AXES">💠_SKIN_DEBUG_AXES</a><br>
-• <a href="#v-_SKIN_COMMENT">💠_SKIN_COMMENT</a><br>
-• <a href="#v-_SKIN_OPERATION">💠_SKIN_OPERATION</a><br>
-• <a href="#v-_SKIN_WALL_DIAG">💠_SKIN_WALL_DIAG</a><br>
+• <a href="#v-__s_k_i_n__i_d">💠_SKIN_ID</a><br>
+• <a href="#v-__s_k_i_n__p_t_s__i_n__l_a_y_e_r">💠_SKIN_PTS_IN_LAYER</a><br>
+• <a href="#v-__s_k_i_n__l_a_y_e_r_s">💠_SKIN_LAYERS</a><br>
+• <a href="#v-__s_k_i_n__p_t_s">💠_SKIN_PTS</a><br>
+• <a href="#v-__s_k_i_n__d_e_b_u_g__a_x_e_s">💠_SKIN_DEBUG_AXES</a><br>
+• <a href="#v-__s_k_i_n__c_o_m_m_e_n_t">💠_SKIN_COMMENT</a><br>
+• <a href="#v-__s_k_i_n__o_p_e_r_a_t_i_o_n">💠_SKIN_OPERATION</a><br>
+• <a href="#v-__s_k_i_n__w_a_l_l__d_i_a_g">💠_SKIN_WALL_DIAG</a><br>
 • <a href="#f-skin_to_string">⚙️skin_to_string</a><br>
 • <a href="#f-layer_pt">⚙️layer_pt</a><br>
 • <a href="#f-layer_pts">⚙️layer_pts</a><br>
@@ -791,15 +791,15 @@ There are several files in this library set.
 • <a href="#f-skin_max_pt_distance_fn">⚙️skin_max_pt_distance_fn</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#skin-ch-skin_types">📑 <i>skin types</i></a></summary>
+<details><summary><a href="#ch-skin-skin_types">📑 <i>skin types</i></a></summary>
 <blockquote>
 • <a href="#t-skin">🧩skin</a><br>
-• <a href="#t-Face">🧩Face</a><br>
-• <a href="#t-SkinExtrude">🧩SkinExtrude</a><br>
-• <a href="#t-ColourLst">🧩ColourLst</a><br>
-• <a href="#t-ColourStr">🧩ColourStr</a><br>
-• <a href="#t-ColourName">🧩ColourName</a><br>
-• <a href="#t-DebugStyle">🧩DebugStyle</a><br>
+• <a href="#t-_face">🧩Face</a><br>
+• <a href="#t-_skin_extrude">🧩SkinExtrude</a><br>
+• <a href="#t-_colour_lst">🧩ColourLst</a><br>
+• <a href="#t-_colour_str">🧩ColourStr</a><br>
+• <a href="#t-_colour_name">🧩ColourName</a><br>
+• <a href="#t-_debug_style">🧩DebugStyle</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -809,11 +809,11 @@ There are several files in this library set.
 
 ## 📘range<a id='file-range'></a>
 
-### <i>📑How to Import</i><a id='range-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-range-_how_to__import'></a>
 
     use <range>
 
-### <i>📑Purpose</i><a id='range-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-range-_purpose'></a>
 
 A range is a structure that can be iterated over, like one can do with a
 list.  However, unlike in python, it:
@@ -836,7 +836,7 @@ This library is to help with those deficiencies.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Test</i><a id='range-ch-Test'></a>
+### <i>📑Test</i><a id='ch-range-_test'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -864,7 +864,7 @@ Returns `true` if object is a range, otherwise `false`.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Functions</i><a id='range-ch-Functions'></a>
+### <i>📑Functions</i><a id='ch-range-_functions'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -1065,7 +1065,7 @@ The positive index.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑range types</i><a id='range-ch-range_types'></a>
+### <i>📑range types</i><a id='ch-range-range_types'></a>
 
 #### 🧩range<a id='t-range'></a>
 
@@ -1108,19 +1108,19 @@ Stop value.
 
 ## 📘types<a id='file-types'></a>
 
-### <i>📑How to Import</i><a id='types-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-types-_how_to__import'></a>
 
     use <types>
     include <types_consts> // Symbol names for type enums.
 
-### <i>📑Purpose</i><a id='types-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-types-_purpose'></a>
 
 This library allows representing types as enumerated values, strings or
 minimal strings for complex types.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Tests</i><a id='types-ch-Tests'></a>
+### <i>📑Tests</i><a id='ch-types-_tests'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -1221,11 +1221,11 @@ Returns `true` if NaN, `false` otherwise.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Type Introspection</i><a id='types-ch-Type_Introspection'></a>
+### <i>📑Type Introspection</i><a id='ch-types-_type__introspection'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_TYPE\_NAMES<a id='t-_TYPE_NAMES'></a>
+#### 💠\_TYPE\_NAMES<a id='t-__t_y_p_e__n_a_m_e_s'></a>
 
 <code>*value* _TYPE_NAMES : list\[string]</code>
 
@@ -1370,9 +1370,9 @@ Give info for `o` as string.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑types types</i><a id='types-ch-types_types'></a>
+### <i>📑types types</i><a id='ch-types-types_types'></a>
 
-#### 🧩TypeEnum<a id='t-TypeEnum'></a>
+#### 🧩TypeEnum<a id='t-_type_enum'></a>
 
 <code>*type* TypeEnum = number</code>
 
@@ -1385,19 +1385,19 @@ to get name of type.
 
 ## 📘types_consts<a id='file-types_consts'></a>
 
-### <i>📑How to Import</i><a id='types_consts-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-types_consts-_how_to__import'></a>
 
     include <types_consts>
 
-### <i>📑Purpose</i><a id='types_consts-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-types_consts-_purpose'></a>
 
 Constants representing the types as enumerated values.
 
-### <i>📑Values</i><a id='types_consts-ch-Values'></a>
+### <i>📑Values</i><a id='ch-types_consts-_values'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠RANGE<a id='t-RANGE'></a>
+#### 💠RANGE<a id='t-_r_a_n_g_e'></a>
 
 <code>*value* RANGE : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1414,7 +1414,7 @@ Enum for range type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠LIST<a id='t-LIST'></a>
+#### 💠LIST<a id='t-_l_i_s_t'></a>
 
 <code>*value* LIST : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1427,7 +1427,7 @@ Enum for list type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠STR<a id='t-STR'></a>
+#### 💠STR<a id='t-_s_t_r'></a>
 
 <code>*value* STR : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1440,7 +1440,7 @@ Enum for string type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠UNKNOWN<a id='t-UNKNOWN'></a>
+#### 💠UNKNOWN<a id='t-_u_n_k_n_o_w_n'></a>
 
 <code>*value* UNKNOWN : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1453,7 +1453,7 @@ Enum for unknown type.  Shouldn't be possible to get this value.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SLICE<a id='t-SLICE'></a>
+#### 💠SLICE<a id='t-_s_l_i_c_e'></a>
 
 <code>*value* SLICE : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1466,7 +1466,7 @@ Enum for slice type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠UNDEF<a id='t-UNDEF'></a>
+#### 💠UNDEF<a id='t-_u_n_d_e_f'></a>
 
 <code>*value* UNDEF : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1479,7 +1479,7 @@ Enum for undef type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠BOOL<a id='t-BOOL'></a>
+#### 💠BOOL<a id='t-_b_o_o_l'></a>
 
 <code>*value* BOOL : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1492,7 +1492,7 @@ Enum for boolean type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠FUNC<a id='t-FUNC'></a>
+#### 💠FUNC<a id='t-_f_u_n_c'></a>
 
 <code>*value* FUNC : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1505,7 +1505,7 @@ Enum for function type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠NUM<a id='t-NUM'></a>
+#### 💠NUM<a id='t-_n_u_m'></a>
 
 <code>*value* NUM : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1518,7 +1518,7 @@ Enum for number type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠INT<a id='t-INT'></a>
+#### 💠INT<a id='t-_i_n_t'></a>
 
 <code>*value* INT : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1531,7 +1531,7 @@ Enum for integer type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠FLOAT<a id='t-FLOAT'></a>
+#### 💠FLOAT<a id='t-_f_l_o_a_t'></a>
 
 <code>*value* FLOAT : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1544,7 +1544,7 @@ Enum for floating point type
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠NAN<a id='t-NAN'></a>
+#### 💠NAN<a id='t-_n_a_n'></a>
 
 <code>*value* NAN : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1561,11 +1561,11 @@ Enum for NaN
 
 ## 📘birlei<a id='file-birlei'></a>
 
-### <i>📑How to Import</i><a id='birlei-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-birlei-_how_to__import'></a>
 
     use <birlei>
 
-### <i>📑Purpose</i><a id='birlei-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-birlei-_purpose'></a>
 
 This is the core of the library's algorithm set.  It evolved from having two
 indices,
@@ -1585,7 +1585,7 @@ faster.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Functions</i><a id='birlei-ch-Functions'></a>
+### <i>📑Functions</i><a id='ch-birlei-_functions'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -1679,9 +1679,9 @@ Returns a list or range describing the indices to traverse.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑birlei types</i><a id='birlei-ch-birlei_types'></a>
+### <i>📑birlei types</i><a id='ch-birlei-birlei_types'></a>
 
-#### 🧩Birl<a id='t-Birl'></a>
+#### 🧩Birl<a id='t-_birl'></a>
 
 <code>*type* Birl = number|<a href="#t-range">range</a>|list</code>
 
@@ -1691,7 +1691,7 @@ Returns a list or range describing the indices to traverse.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩EndI<a id='t-EndI'></a>
+#### 🧩EndI<a id='t-_end_i'></a>
 
 <code>*type* EndI = number|undef</code>
 
@@ -1703,7 +1703,7 @@ Returns a list or range describing the indices to traverse.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩SpaceshipFn<a id='t-SpaceshipFn'></a>
+#### 🧩SpaceshipFn<a id='t-_spaceship_fn'></a>
 
 <code>*callback* SpaceshipFn(probe: any) : number</code>
 
@@ -1748,7 +1748,7 @@ The probe value as defined above.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩PredFn<a id='t-PredFn'></a>
+#### 🧩PredFn<a id='t-_pred_fn'></a>
 
 <code>*callback* PredFn(probe: any) : bool</code>
 
@@ -1792,7 +1792,7 @@ The probe value as defined above.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ReductionFn<a id='t-ReductionFn'></a>
+#### 🧩ReductionFn<a id='t-_reduction_fn'></a>
 
 <code>*callback* ReductionFn(probe: any, accumulator: any) : any</code>
 
@@ -1846,7 +1846,7 @@ was empty.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ReductionAirFn<a id='t-ReductionAirFn'></a>
+#### 🧩ReductionAirFn<a id='t-_reduction_air_fn'></a>
 
 <code>*callback* ReductionAirFn(probe: any, accumulator: any) : list\[bool,any]</code>
 
@@ -1900,7 +1900,7 @@ value.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩PredMapFn<a id='t-PredMapFn'></a>
+#### 🧩PredMapFn<a id='t-_pred_map_fn'></a>
 
 <code>*callback* PredMapFn(probe: any, get\_value: bool) : any</code>
 
@@ -1951,7 +1951,7 @@ States if to return the predicate result or the probed value.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩MapperFn<a id='t-MapperFn'></a>
+#### 🧩MapperFn<a id='t-_mapper_fn'></a>
 
 <code>*callback* MapperFn(probe: any) : any</code>
 
@@ -1992,7 +1992,7 @@ Value that was mapped given the probe.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩PpmrrairFn<a id='t-PpmrrairFn'></a>
+#### 🧩PpmrrairFn<a id='t-_ppmrrair_fn'></a>
 
 <code>*type* PpmrrairFn = <a href="#t-SpaceshipFn">SpaceshipFn</a>|<a href="#t-PredFn">PredFn</a>|<a href="#t-ReductionFn">ReductionFn</a>|<a href="#t-ReductionAirFn">ReductionAirFn</a>|<a href="#t-PredMapFn">PredMapFn</a>|<a href="#t-MapperFn">MapperFn</a></code>
 
@@ -2001,7 +2001,7 @@ type you are interested in.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩MapBackFn<a id='t-MapBackFn'></a>
+#### 🧩MapBackFn<a id='t-_map_back_fn'></a>
 
 <code>*callback* MapBackFn(i: number|undef) : number|undef</code>
 
@@ -2033,11 +2033,11 @@ Index to remap or undef if no index to remap.
 
 ## 📘base_algos<a id='file-base_algos'></a>
 
-### <i>📑How to Import</i><a id='base_algos-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-base_algos-_how_to__import'></a>
 
     use <base_algos>
 
-### <i>📑Purpose</i><a id='base_algos-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-base_algos-_purpose'></a>
 
 The purpose of this library is to provide the minimum number of abstracted
 composable algorithms to be able to make coding easier, both when reading and
@@ -2046,7 +2046,7 @@ rolled implementations, IMHO this makes it easier to read and rationalise as
 to intent.  Also, the pattern used is repeated everywhere, making it easier
 to learn how to use.
 
-### <i>📑FYI: Functions and Iterating are Abound!</i><a id='base_algos-ch-FYI___Functions_and_Iterating_are_Abound_'></a>
+### <i>📑FYI: Functions and Iterating are Abound!</i><a id='ch-base_algos-_f_y_i____functions_and__iterating_are__abound_'></a>
 
 There is a lot of currying and passing of functions in this library.  (Mmmmmm
 curry!)  No, not that type of curry.  Currying relates to having a function
@@ -2077,7 +2077,7 @@ function signature.
 These 2 basic patterns are used everywhere in the library set, and though it
 might look odd at first, you'll find that it becomes natural quite quickly.
 
-### <i>📑Iterators:</i><a id='base_algos-ch-Iterators__'></a>
+### <i>📑Iterators:</i><a id='ch-base_algos-_iterators__'></a>
 
 The algorithms are index, not element centric, which means that a physical
 container (i.e. a list) is *not* needed.  A virtual container (i.e. function)
@@ -2099,7 +2099,7 @@ For each of these algorithms, the `birl` parameter (formally
    - Will go through each element in the list and use them as indices to pass
      to the algorithm.  `end_i` must be `undef`.
 
-### <i>📑Algorithms</i><a id='base_algos-ch-Algorithms'></a>
+### <i>📑Algorithms</i><a id='ch-base_algos-_algorithms'></a>
 
 There are 4 basic algorithms (`reduce`, `reduce_air`, `filter` and `map`),
 from which most other algorithms can be built.  For optimisation purposes,
@@ -2123,7 +2123,7 @@ range size.
 >
 > A: I've yet not seen a good reason to do this.
 
-### <i>📑Algorithm Signatures</i><a id='base_algos-ch-Algorithm_Signatures'></a>
+### <i>📑Algorithm Signatures</i><a id='ch-base_algos-_algorithm__signatures'></a>
 
 All of the algorithms have a compatible signature that have a `birlei` (one
 or two parameters, a `birl` and optional `end_i`).  When you call the
@@ -2134,7 +2134,7 @@ When it's passed a `birlei`, it returns a function that requires a PPMRRAIR
 function.  That function that is then called by the algorithm on each index
 that the `birlei` refers to.
 
-### <i>📑PPMRRAIR functions</i><a id='base_algos-ch-PPMRRAIR_functions'></a>
+### <i>📑PPMRRAIR functions</i><a id='ch-base_algos-_p_p_m_r_r_a_i_r_functions'></a>
 
 Named after the 4 function types: `P`redicate, `P`redicate/`M`ap, `R`eduction
 and `R`eduction that `A`llows for `I`ncomplete `R`eduction, these functions
@@ -2190,7 +2190,7 @@ over each `birlei` element:
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑The Base Algorithms</i><a id='base_algos-ch-The_Base_Algorithms'></a>
+### <i>📑The Base Algorithms</i><a id='ch-base_algos-_the__base__algorithms'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -2551,9 +2551,9 @@ Possible callchains:
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑base_algos types</i><a id='base_algos-ch-base_algos_types'></a>
+### <i>📑base_algos types</i><a id='ch-base_algos-base_algos_types'></a>
 
-#### 🧩BoundIndexFn<a id='t-BoundIndexFn'></a>
+#### 🧩BoundIndexFn<a id='t-_bound_index_fn'></a>
 
 <code>*callback* BoundIndexFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
@@ -2599,7 +2599,7 @@ Index of the selected bound, or `undef` if no such index exists.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩OptionalBirl<a id='t-OptionalBirl'></a>
+#### 🧩OptionalBirl<a id='t-_optional_birl'></a>
 
 <code>*type* OptionalBirl = number|<a href="#t-range">range</a>|list|undef</code>
 
@@ -2611,7 +2611,7 @@ Index of the selected bound, or `undef` if no such index exists.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩AlgoFn<a id='t-AlgoFn'></a>
+#### 🧩AlgoFn<a id='t-_algo_fn'></a>
 
 <code>*callback* AlgoFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
@@ -2645,19 +2645,19 @@ Returned value is based on the result of the function doing the iterating.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FindLowerFn<a id='t-FindLowerFn'></a>
+#### 🧩FindLowerFn<a id='t-_find_lower_fn'></a>
 
 <code>*callback* FindLowerFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FindLowerBirleiFn<a id='t-FindLowerBirleiFn'></a>
+#### 🧩FindLowerBirleiFn<a id='t-_find_lower_birlei_fn'></a>
 
 <code>*callback* FindLowerBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FindUpperFn<a id='t-FindUpperFn'></a>
+#### 🧩FindUpperFn<a id='t-_find_upper_fn'></a>
 
 <code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
@@ -2665,7 +2665,7 @@ Returns the first index `i` where `spaceship_fn(i) > 0`.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FindUpperFn<a id='t-FindUpperFn'></a>
+#### 🧩FindUpperFn<a id='t-_find_upper_fn'></a>
 
 <code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
@@ -2715,13 +2715,13 @@ The first index `i` where `spaceship_fn(i) > 0` or `undef` if none found.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FindUpperBirleiFn<a id='t-FindUpperBirleiFn'></a>
+#### 🧩FindUpperBirleiFn<a id='t-_find_upper_birlei_fn'></a>
 
 <code>*callback* FindUpperBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FindFn<a id='t-FindFn'></a>
+#### 🧩FindFn<a id='t-_find_fn'></a>
 
 <code>*callback* FindFn(pred\_fn: <a href="#t-PredFn">PredFn</a>) : number|undef</code>
 
@@ -2768,13 +2768,13 @@ First index where `pred_fn(i)` is `true`.  If none are found, returns
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FindBirleiFn<a id='t-FindBirleiFn'></a>
+#### 🧩FindBirleiFn<a id='t-_find_birlei_fn'></a>
 
 <code>*callback* FindBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ReduceFn<a id='t-ReduceFn'></a>
+#### 🧩ReduceFn<a id='t-_reduce_fn'></a>
 
 <code>*callback* ReduceFn(reduction\_fn: <a href="#t-ReductionFn">ReductionFn</a>) : any</code>
 
@@ -2821,13 +2821,13 @@ Final value of accumulator.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ReduceBirleiFn<a id='t-ReduceBirleiFn'></a>
+#### 🧩ReduceBirleiFn<a id='t-_reduce_birlei_fn'></a>
 
 <code>*callback* ReduceBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ReduceAirFn<a id='t-ReduceAirFn'></a>
+#### 🧩ReduceAirFn<a id='t-_reduce_air_fn'></a>
 
 <code>*callback* ReduceAirFn(reduction\_fn: <a href="#t-ReductionAirFn">ReductionAirFn</a>) : list\[bool,any]</code>
 
@@ -2875,13 +2875,13 @@ Last continue value and the final value of accumulator.  If the original
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ReduceAirBirleiFn<a id='t-ReduceAirBirleiFn'></a>
+#### 🧩ReduceAirBirleiFn<a id='t-_reduce_air_birlei_fn'></a>
 
 <code>*callback* ReduceAirBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FilterFn<a id='t-FilterFn'></a>
+#### 🧩FilterFn<a id='t-_filter_fn'></a>
 
 <code>*callback* FilterFn(ppm\_fn: <a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a>) : list\[any,...]</code>
 
@@ -2901,13 +2901,13 @@ A list of elements where the predicate returned true.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩FilterBirleiFn<a id='t-FilterBirleiFn'></a>
+#### 🧩FilterBirleiFn<a id='t-_filter_birlei_fn'></a>
 
 <code>*callback* FilterBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩MapFn<a id='t-MapFn'></a>
+#### 🧩MapFn<a id='t-_map_fn'></a>
 
 <code>*callback* MapFn(map\_fn: <a href="#t-MapperFn">MapperFn</a>) : list\[any,...]</code>
 
@@ -2946,7 +2946,7 @@ A list of elements that were mapped.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩MapBirleiFn<a id='t-MapBirleiFn'></a>
+#### 🧩MapBirleiFn<a id='t-_map_birlei_fn'></a>
 
 <code>*callback* MapBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
@@ -2956,11 +2956,11 @@ A list of elements that were mapped.
 
 ## 📘any_all<a id='file-any_all'></a>
 
-### <i>📑How to Import</i><a id='any_all-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-any_all-_how_to__import'></a>
 
     use <any_all>
 
-### <i>📑Purpose</i><a id='any_all-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-any_all-_purpose'></a>
 
 Implements any and all algorithms.
 
@@ -3056,9 +3056,9 @@ false.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑any_all types</i><a id='any_all-ch-any_all_types'></a>
+### <i>📑any_all types</i><a id='ch-any_all-any_all_types'></a>
 
-#### 🧩AnyFn<a id='t-AnyFn'></a>
+#### 🧩AnyFn<a id='t-_any_fn'></a>
 
 <code>*callback* AnyFn(pred\_fn: <a href="#t-PredFn">PredFn</a>) : bool</code>
 
@@ -3100,13 +3100,13 @@ First index where `pred_fn(i)` is `true` will result in `true`, else
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩AnyBirleiFn<a id='t-AnyBirleiFn'></a>
+#### 🧩AnyBirleiFn<a id='t-_any_birlei_fn'></a>
 
 <code>*callback* AnyBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩AllFn<a id='t-AllFn'></a>
+#### 🧩AllFn<a id='t-_all_fn'></a>
 
 <code>*callback* AllFn(pred\_fn: <a href="#t-PredFn">PredFn</a>) : number|undef</code>
 
@@ -3148,7 +3148,7 @@ First index where `pred_fn(i)` is `false` will result in `false`, else
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩AllBirleiFn<a id='t-AllBirleiFn'></a>
+#### 🧩AllBirleiFn<a id='t-_all_birlei_fn'></a>
 
 <code>*callback* AllBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
@@ -3158,14 +3158,14 @@ First index where `pred_fn(i)` is `false` will result in `false`, else
 
 ## 📘indexable<a id='file-indexable'></a>
 
-### <i>📑How to Import</i><a id='indexable-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-indexable-_how_to__import'></a>
 
     use <indexable>
 
     // Only necessary if implementing your own algo that takes a slice.
     include <indexable_consts>
 
-### <i>📑Purpose</i><a id='indexable-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-indexable-_purpose'></a>
 
 Treats all indexable objects similarly.  As a group, they are referred to as
 `slr`s (`s`tring, `l`ist or `r`ange).  Any function that can take an indexable
@@ -3271,7 +3271,7 @@ Would output
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Slices</i><a id='indexable-ch-Slices'></a>
+### <i>📑Slices</i><a id='ch-indexable-_slices'></a>
 
 A `slice` is an object similar to a `range`, but it's not a realised
 indexable object until it is paired with an `slr`.
@@ -3477,7 +3477,7 @@ The `slr` used as reference.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Algorithm Adaptors</i><a id='indexable-ch-Algorithm_Adaptors'></a>
+### <i>📑Algorithm Adaptors</i><a id='ch-indexable-_algorithm__adaptors'></a>
 
 The `PPMRRAIR` functions usually are passed an integer as it's first
 parameter, referring to the current index.  For convenience, there are
@@ -3698,7 +3698,7 @@ Possible callchains:
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Treat All Indexables the Same</i><a id='indexable-ch-Treat_All_Indexables_the_Same'></a>
+### <i>📑Treat All Indexables the Same</i><a id='ch-indexable-_treat__all__indexables_the__same'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -3942,7 +3942,7 @@ The elements at the indices specified or the substring.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Getting/Traversing Indices</i><a id='indexable-ch-Getting_Traversing_Indices'></a>
+### <i>📑Getting/Traversing Indices</i><a id='ch-indexable-_getting__traversing__indices'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -4181,7 +4181,7 @@ Previous element index in list.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Functions to Manipulate Strings and Lists</i><a id='indexable-ch-Functions_to_Manipulate_Strings_and_Lists'></a>
+### <i>📑Functions to Manipulate Strings and Lists</i><a id='ch-indexable-_functions_to__manipulate__strings_and__lists'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -5023,7 +5023,7 @@ Modified quicksort example from:
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑indexable types</i><a id='indexable-ch-indexable_types'></a>
+### <i>📑indexable types</i><a id='ch-indexable-indexable_types'></a>
 
 #### 🧩slice<a id='t-slice'></a>
 
@@ -5042,7 +5042,7 @@ indexable range.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Birls<a id='t-Birls'></a>
+#### 🧩Birls<a id='t-_birls'></a>
 
 <code>*type* Birls = number|<a href="#t-range">range</a>|list|<a href="#t-slice">slice</a></code>
 
@@ -5119,7 +5119,7 @@ Normalised end_i.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩GetPpmrrairFn<a id='t-GetPpmrrairFn'></a>
+#### 🧩GetPpmrrairFn<a id='t-_get_ppmrrair_fn'></a>
 
 <code>*callback* GetPpmrrairFn(ppmrrair\_fn: <a href="#t-PpmrrairFn">PpmrrairFn</a>) : any</code>
 
@@ -5143,7 +5143,7 @@ The result of the adaptor call.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩EqualFn<a id='t-EqualFn'></a>
+#### 🧩EqualFn<a id='t-_equal_fn'></a>
 
 <code>*callback* EqualFn(lhs: any, rhs: any) : bool</code>
 
@@ -5173,7 +5173,7 @@ The result of the equality test.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩GetEqualFn<a id='t-GetEqualFn'></a>
+#### 🧩GetEqualFn<a id='t-_get_equal_fn'></a>
 
 <code>*callback* GetEqualFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
 
@@ -5197,7 +5197,7 @@ The resulting value when done.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩RemoveAdjacentDupsFn<a id='t-RemoveAdjacentDupsFn'></a>
+#### 🧩RemoveAdjacentDupsFn<a id='t-_remove_adjacent_dups_fn'></a>
 
 <code>*callback* RemoveAdjacentDupsFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
 
@@ -5205,7 +5205,7 @@ Callback that removes the adjacent duplicates.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ReplaceEachFn<a id='t-ReplaceEachFn'></a>
+#### 🧩ReplaceEachFn<a id='t-_replace_each_fn'></a>
 
 <code>*callback* ReplaceEachFn(b: string|list|<a href="#t-range">range</a>, b\_birls: <a href="#t-Birls">Birls</a>, b\_end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
 
@@ -5242,7 +5242,7 @@ This is the updated list of elements.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩SearchFn<a id='t-SearchFn'></a>
+#### 🧩SearchFn<a id='t-_search_fn'></a>
 
 <code>*callback* SearchFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
 
@@ -5250,7 +5250,7 @@ Perform search.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩SearchNeedleFn<a id='t-SearchNeedleFn'></a>
+#### 🧩SearchNeedleFn<a id='t-_search_needle_fn'></a>
 
 <code>*callback* SearchNeedleFn(needle: string|list, n\_birls: <a href="#t-Birls">Birls</a>, n\_end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-SearchFn">SearchFn</a></code>
 
@@ -5297,20 +5297,20 @@ Possible callchains:
 
 ## 📘indexable_consts<a id='file-indexable_consts'></a>
 
-### <i>📑How to Import</i><a id='indexable_consts-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-indexable_consts-_how_to__import'></a>
 
     include <indexable_consts>
 
-### <i>📑Purpose</i><a id='indexable_consts-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-indexable_consts-_purpose'></a>
 
 Constants used by [`slr_cache`](#f-_slr_cache) for indexing the
 [slr_cache](#t-slr_cache) object.
 
-### <i>📑Values</i><a id='indexable_consts-ch-Values'></a>
+### <i>📑Values</i><a id='ch-indexable_consts-_values'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_CACHE\_HEADER<a id='t-_SLR_CACHE_HEADER'></a>
+#### 💠\_SLR\_CACHE\_HEADER<a id='t-__s_l_r__c_a_c_h_e__h_e_a_d_e_r'></a>
 
 <code>*value* _SLR_CACHE_HEADER : string</code>
 
@@ -5318,7 +5318,7 @@ Used to indicate if a list object is identified as an `_SLR_CACHE` object.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_LEN<a id='t-_SLR_LEN'></a>
+#### 💠\_SLR\_LEN<a id='t-__s_l_r__l_e_n'></a>
 
 <code>*value* _SLR_LEN : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5333,7 +5333,7 @@ Return type is number.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_TE<a id='t-_SLR_TE'></a>
+#### 💠\_SLR\_TE<a id='t-__s_l_r__t_e'></a>
 
 <code>*value* _SLR_TE : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5348,7 +5348,7 @@ Return type is `TypeEnum`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_ELD<a id='t-_SLR_ELD'></a>
+#### 💠\_SLR\_ELD<a id='t-__s_l_r__e_l_d'></a>
 
 <code>*value* _SLR_ELD : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5364,7 +5364,7 @@ Return type is `function(i): any`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_BLEN<a id='t-_SLR_BLEN'></a>
+#### 💠\_SLR\_BLEN<a id='t-__s_l_r__b_l_e_n'></a>
 
 <code>*value* _SLR_BLEN : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5379,7 +5379,7 @@ Return type is `number`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_ELI<a id='t-_SLR_ELI'></a>
+#### 💠\_SLR\_ELI<a id='t-__s_l_r__e_l_i'></a>
 
 <code>*value* _SLR_ELI : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5395,7 +5395,7 @@ Return type is `function(i): any`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_IDX<a id='t-_SLR_IDX'></a>
+#### 💠\_SLR\_IDX<a id='t-__s_l_r__i_d_x'></a>
 
 <code>*value* _SLR_IDX : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5410,7 +5410,7 @@ Return type is `function(i): number`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_STR<a id='t-_SLR_STR'></a>
+#### 💠\_SLR\_STR<a id='t-__s_l_r__s_t_r'></a>
 
 <code>*value* _SLR_STR : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5425,7 +5425,7 @@ Return type is `function() : string`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_BIRL<a id='t-_SLR_BIRL'></a>
+#### 💠\_SLR\_BIRL<a id='t-__s_l_r__b_i_r_l'></a>
 
 <code>*value* _SLR_BIRL : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5440,7 +5440,7 @@ Return type is `number | list | range`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_END\_I<a id='t-_SLR_END_I'></a>
+#### 💠\_SLR\_END\_I<a id='t-__s_l_r__e_n_d__i'></a>
 
 <code>*value* _SLR_END_I : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5455,9 +5455,9 @@ Return type is `number | undef`
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑indexable_consts types</i><a id='indexable_consts-ch-indexable_consts_types'></a>
+### <i>📑indexable_consts types</i><a id='ch-indexable_consts-indexable_consts_types'></a>
 
-#### 🧩SlrCacheEnum<a id='t-SlrCacheEnum'></a>
+#### 🧩SlrCacheEnum<a id='t-_slr_cache_enum'></a>
 
 <code>*type* SlrCacheEnum = number</code>
 
@@ -5469,15 +5469,15 @@ Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
 
 ## 📘function<a id='file-function'></a>
 
-### <i>📑How to Import</i><a id='function-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-function-_how_to__import'></a>
 
     use <function>
 
-### <i>📑Purpose</i><a id='function-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-function-_purpose'></a>
 
 Allows doing things with functions using introspection.
 
-### <i>📑Function Introspection</i><a id='function-ch-Function_Introspection'></a>
+### <i>📑Function Introspection</i><a id='ch-function-_function__introspection'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -5503,7 +5503,7 @@ The number of parameters that the function can take.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### ⚙️\_PARAM\_BEGIN\_I<a id='f-_PARAM_BEGIN_I'></a>
+#### ⚙️\_PARAM\_BEGIN\_I<a id='f-__p_a_r_a_m__b_e_g_i_n__i'></a>
 
 <code>*function* _PARAM_BEGIN_I()</code>
 
@@ -5663,16 +5663,16 @@ The return value of fn().
 
 ## 📘test<a id='file-test'></a>
 
-### <i>📑How to Import</i><a id='test-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-test-_how_to__import'></a>
 
     use <test>
 
-### <i>📑Purpose</i><a id='test-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-test-_purpose'></a>
 
 Used to generate code for using TDD methodology.  Tries to report useful
 error messages with an optional user configurable message.
 
-### <i>📑Test Your Code!</i><a id='test-ch-Test_Your_Code_'></a>
+### <i>📑Test Your Code!</i><a id='ch-test-_test__your__code_'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -5892,11 +5892,11 @@ A user message to append to failure message.
 
 ## 📘param_check<a id='file-param_check'></a>
 
-### <i>📑How to Import</i><a id='param_check-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-param_check-_how_to__import'></a>
 
     use <param_check>
 
-### <i>📑Purpose</i><a id='param_check-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-param_check-_purpose'></a>
 
 These functions do a minimal check to see if the parameters passed are what
 are expected.
@@ -5933,7 +5933,7 @@ release with it turned off.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Type Checks</i><a id='param_check-ch-Type_Checks'></a>
+### <i>📑Type Checks</i><a id='ch-param_check-_type__checks'></a>
 
 These check that the types are what they are expected to be.  They don't
 check values.
@@ -6206,7 +6206,7 @@ Value to check.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Value Checks</i><a id='param_check-ch-Value_Checks'></a>
+### <i>📑Value Checks</i><a id='ch-param_check-_value__checks'></a>
 
 These check that the values are within bounds.
 
@@ -6555,17 +6555,17 @@ Value to check.
 
 ## 📘transform<a id='file-transform'></a>
 
-### <i>📑How to Import</i><a id='transform-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-transform-_how_to__import'></a>
 
     use <transform>
 
-### <i>📑Purpose</i><a id='transform-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-transform-_purpose'></a>
 
 This library is for matrix math for a variety of things.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Generate Matrices for Vector Transforms</i><a id='transform-ch-Generate_Matrices_for_Vector_Transforms'></a>
+### <i>📑Generate Matrices for Vector Transforms</i><a id='ch-transform-_generate__matrices_for__vector__transforms'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -7135,7 +7135,7 @@ Homogeneous column-vector transform matrix T.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Matrix Math</i><a id='transform-ch-Matrix_Math'></a>
+### <i>📑Matrix Math</i><a id='ch-transform-_matrix__math'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -7432,9 +7432,9 @@ true if every element in every row is numeric.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑transform types</i><a id='transform-ch-transform_types'></a>
+### <i>📑transform types</i><a id='ch-transform-transform_types'></a>
 
-#### 🧩Matrix<a id='t-Matrix'></a>
+#### 🧩Matrix<a id='t-_matrix'></a>
 
 <code>*type* Matrix = list\[list\[number,...],...]</code>
 
@@ -7442,7 +7442,7 @@ Placeholder for NxM matrix.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Point2D<a id='t-Point2D'></a>
+#### 🧩Point2D<a id='t-_point2_d'></a>
 
 <code>*type* Point2D = list</code>
 
@@ -7463,7 +7463,7 @@ by property `.y`.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Point3D<a id='t-Point3D'></a>
+#### 🧩Point3D<a id='t-_point3_d'></a>
 
 <code>*type* Point3D = list</code>
 
@@ -7489,7 +7489,7 @@ by property `.z`.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Point<a id='t-Point'></a>
+#### 🧩Point<a id='t-_point'></a>
 
 <code>*type* Point = list</code>
 
@@ -7519,7 +7519,7 @@ This is the dimension `n` dimension of the point.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Vector2D<a id='t-Vector2D'></a>
+#### 🧩Vector2D<a id='t-_vector2_d'></a>
 
 <code>*type* Vector2D = list</code>
 
@@ -7540,7 +7540,7 @@ accessed by property `.y`.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Vector3D<a id='t-Vector3D'></a>
+#### 🧩Vector3D<a id='t-_vector3_d'></a>
 
 <code>*type* Vector3D = list</code>
 
@@ -7566,7 +7566,7 @@ accessed by property `.z`.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Vector<a id='t-Vector'></a>
+#### 🧩Vector<a id='t-_vector'></a>
 
 <code>*type* Vector = list</code>
 
@@ -7596,7 +7596,7 @@ This is the dimension `n` dimension of the vector.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩BVector2D<a id='t-BVector2D'></a>
+#### 🧩BVector2D<a id='t-_b_vector2_d'></a>
 
 <code>*type* BVector2D = list\[<a href="#t-Point2D">Point2D</a>,<a href="#t-Point2D">Point2D</a>]</code>
 
@@ -7616,7 +7616,7 @@ This is the ending point for this bound vector.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩BVector3D<a id='t-BVector3D'></a>
+#### 🧩BVector3D<a id='t-_b_vector3_d'></a>
 
 <code>*type* BVector3D = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
 
@@ -7636,7 +7636,7 @@ This is the ending point for this bound vector.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩BVector<a id='t-BVector'></a>
+#### 🧩BVector<a id='t-_b_vector'></a>
 
 <code>*type* BVector = list\[<a href="#t-Point">Point</a>,<a href="#t-Point">Point</a>]</code>
 
@@ -7660,12 +7660,12 @@ This is the ending point for this bound vector.
 
 ## 📘string<a id='file-string'></a>
 
-### <i>📑How to Import</i><a id='string-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-string-_how_to__import'></a>
 
     use <string>
     include <string_consts> // Constants for show_sign parameter.
 
-### <i>📑Purpose</i><a id='string-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-string-_purpose'></a>
 
 OpenSCAD doesn't have any string formatting, which can make reading debug
 output challenging.  This library is to help with that.
@@ -8157,9 +8157,9 @@ String with the aligned points.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑string types</i><a id='string-ch-string_types'></a>
+### <i>📑string types</i><a id='ch-string-string_types'></a>
 
-#### 🧩ShowSignEnum<a id='t-ShowSignEnum'></a>
+#### 🧩ShowSignEnum<a id='t-_show_sign_enum'></a>
 
 <code>*type* ShowSignEnum = number</code>
 
@@ -8171,19 +8171,19 @@ Used to specify how to show the sign of a number.
 
 ## 📘string_consts<a id='file-string_consts'></a>
 
-### <i>📑How to Import</i><a id='string_consts-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-string_consts-_how_to__import'></a>
 
     include <string_consts>
 
-### <i>📑Purpose</i><a id='string_consts-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-string_consts-_purpose'></a>
 
 Constants representing how to show the sign of a number in string library.
 
-### <i>📑Values for `show_sign` Parameters</i><a id='string_consts-ch-Values_for__show_sign__Parameters'></a>
+### <i>📑Values for `show_sign` Parameters</i><a id='ch-string_consts-_values_for__show_sign___parameters'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SHOW\_SIGN\_NEG<a id='t-SHOW_SIGN_NEG'></a>
+#### 💠SHOW\_SIGN\_NEG<a id='t-_s_h_o_w__s_i_g_n__n_e_g'></a>
 
 <code>*value* SHOW_SIGN_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
 
@@ -8197,7 +8197,7 @@ The enum that represents showing only -ve and never +ve sign
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SHOW\_SIGN\_POS\_NEG<a id='t-SHOW_SIGN_POS_NEG'></a>
+#### 💠SHOW\_SIGN\_POS\_NEG<a id='t-_s_h_o_w__s_i_g_n__p_o_s__n_e_g'></a>
 
 <code>*value* SHOW_SIGN_POS_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
 
@@ -8211,7 +8211,7 @@ The enum that represents showing only -ve and +ve signs
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SHOW\_SIGN\_SPC\_NEG<a id='t-SHOW_SIGN_SPC_NEG'></a>
+#### 💠SHOW\_SIGN\_SPC\_NEG<a id='t-_s_h_o_w__s_i_g_n__s_p_c__n_e_g'></a>
 
 <code>*value* SHOW_SIGN_SPC_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
 
@@ -8229,18 +8229,18 @@ The enum that represents showing only -ve and a space for +ve sign
 
 ## 📘helpers<a id='file-helpers'></a>
 
-### <i>📑How to Import</i><a id='helpers-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-helpers-_how_to__import'></a>
 
     use <helpers>
     include <helpers_consts> // Only needed if using vector_info().
 
-### <i>📑Purpose</i><a id='helpers-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-helpers-_purpose'></a>
 
 Miscellaneous helper functions.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Conversion functions</i><a id='helpers-ch-Conversion_functions'></a>
+### <i>📑Conversion functions</i><a id='ch-helpers-_conversion_functions'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -8292,7 +8292,7 @@ Equivalent radians.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Circular / Spherical Calculations</i><a id='helpers-ch-Circular___Spherical_Calculations'></a>
+### <i>📑Circular / Spherical Calculations</i><a id='ch-helpers-_circular____spherical__calculations'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -8567,7 +8567,7 @@ They would be undef if there is no solution for that direction.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Miscellaneous</i><a id='helpers-ch-Miscellaneous'></a>
+### <i>📑Miscellaneous</i><a id='ch-helpers-_miscellaneous'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
@@ -8730,7 +8730,7 @@ If v is defined, then return v, else d.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### ⚙️INCOMPLETE<a id='f-INCOMPLETE'></a>
+#### ⚙️INCOMPLETE<a id='f-_i_n_c_o_m_p_l_e_t_e'></a>
 
 <code>*function* INCOMPLETE()</code>
 
@@ -8862,7 +8862,7 @@ the terminal window.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### ⚙️Assert<a id='f-Assert'></a>
+#### ⚙️Assert<a id='f-_assert'></a>
 
 <code>*function* Assert(truth: bool, msg: string|function) : <a href="#t-IdentityFn">IdentityFn</a></code>
 
@@ -8959,9 +8959,9 @@ and `p1`.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑helpers types</i><a id='helpers-ch-helpers_types'></a>
+### <i>📑helpers types</i><a id='ch-helpers-helpers_types'></a>
 
-#### 🧩VectorInfo<a id='t-VectorInfo'></a>
+#### 🧩VectorInfo<a id='t-_vector_info'></a>
 
 <code>*type* VectorInfo = list</code>
 
@@ -8989,7 +8989,7 @@ resulting first dimension negative.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩IdentityFn<a id='t-IdentityFn'></a>
+#### 🧩IdentityFn<a id='t-_identity_fn'></a>
 
 <code>*callback* IdentityFn(return\_value: any) : any</code>
 
@@ -9015,19 +9015,19 @@ Returns `return_value`.
 
 ## 📘helpers_consts<a id='file-helpers_consts'></a>
 
-### <i>📑How to Import</i><a id='helpers_consts-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-helpers_consts-_how_to__import'></a>
 
     include <helpers_consts>
 
-### <i>📑Purpose</i><a id='helpers_consts-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-helpers_consts-_purpose'></a>
 
 Helper constants.
 
-### <i>📑For indexing type [VectorInfo](#t-VectorInfo).</i><a id='helpers_consts-ch-For_indexing_type__VectorInfo___t-VectorInfo__'></a>
+### <i>📑For indexing type [VectorInfo](#t-VectorInfo).</i><a id='ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠VI\_VECTOR<a id='t-VI_VECTOR'></a>
+#### 💠VI\_VECTOR<a id='t-_v_i__v_e_c_t_o_r'></a>
 
 <code>*value* VI_VECTOR : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9040,7 +9040,7 @@ ab vector
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠VI\_LENGTH<a id='t-VI_LENGTH'></a>
+#### 💠VI\_LENGTH<a id='t-_v_i__l_e_n_g_t_h'></a>
 
 <code>*value* VI_LENGTH : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9053,7 +9053,7 @@ length of ab
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠VI\_DIR<a id='t-VI_DIR'></a>
+#### 💠VI\_DIR<a id='t-_v_i__d_i_r'></a>
 
 <code>*value* VI_DIR : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9066,7 +9066,7 @@ unit ab vector
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠VI\_NORMAL<a id='t-VI_NORMAL'></a>
+#### 💠VI\_NORMAL<a id='t-_v_i__n_o_r_m_a_l'></a>
 
 <code>*value* VI_NORMAL : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9079,9 +9079,9 @@ vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑helpers_consts types</i><a id='helpers_consts-ch-helpers_consts_types'></a>
+### <i>📑helpers_consts types</i><a id='ch-helpers_consts-helpers_consts_types'></a>
 
-#### 🧩VectorInfoEnum<a id='t-VectorInfoEnum'></a>
+#### 🧩VectorInfoEnum<a id='t-_vector_info_enum'></a>
 
 <code>*type* VectorInfoEnum = number</code>
 
@@ -9093,11 +9093,11 @@ Enums to dereference [`VectorInfo`](#t-VectorInfo) type.
 
 ## 📘skin<a id='file-skin'></a>
 
-### <i>📑How to Import</i><a id='skin-ch-How_to_Import'></a>
+### <i>📑How to Import</i><a id='ch-skin-_how_to__import'></a>
 
     use <skin>
 
-### <i>📑Purpose</i><a id='skin-ch-Purpose'></a>
+### <i>📑Purpose</i><a id='ch-skin-_purpose'></a>
 
 The built in extrude module isn't powerful or flexible enough so this library
 was made.  It creates a skin by making layers of polygons with the same
@@ -9105,16 +9105,16 @@ number of vertices and then skins them by putting faces between layers.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑Design</i><a id='skin-ch-Design'></a>
+### <i>📑Design</i><a id='ch-skin-_design'></a>
 
 This requires keeping track of a bunch of data, which was put into a list.
 These constants are used for indexing the [skin](#t-skin) object.
 
-### <i>📑Values</i><a id='skin-ch-Values'></a>
+### <i>📑Values</i><a id='ch-skin-_values'></a>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_ID<a id='v-_SKIN_ID'></a>
+#### 💠\_SKIN\_ID<a id='v-__s_k_i_n__i_d'></a>
 
 <code>*value* _SKIN_ID : ???</code>
 
@@ -9122,7 +9122,7 @@ Header for skin
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_PTS\_IN\_LAYER<a id='v-_SKIN_PTS_IN_LAYER'></a>
+#### 💠\_SKIN\_PTS\_IN\_LAYER<a id='v-__s_k_i_n__p_t_s__i_n__l_a_y_e_r'></a>
 
 <code>*value* _SKIN_PTS_IN_LAYER : ???</code>
 
@@ -9130,7 +9130,7 @@ points in layer
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_LAYERS<a id='v-_SKIN_LAYERS'></a>
+#### 💠\_SKIN\_LAYERS<a id='v-__s_k_i_n__l_a_y_e_r_s'></a>
 
 <code>*value* _SKIN_LAYERS : ???</code>
 
@@ -9138,7 +9138,7 @@ points in layer
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_PTS<a id='v-_SKIN_PTS'></a>
+#### 💠\_SKIN\_PTS<a id='v-__s_k_i_n__p_t_s'></a>
 
 <code>*value* _SKIN_PTS : ???</code>
 
@@ -9146,7 +9146,7 @@ the list of points
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_DEBUG\_AXES<a id='v-_SKIN_DEBUG_AXES'></a>
+#### 💠\_SKIN\_DEBUG\_AXES<a id='v-__s_k_i_n__d_e_b_u_g__a_x_e_s'></a>
 
 <code>*value* _SKIN_DEBUG_AXES : ???</code>
 
@@ -9154,7 +9154,7 @@ debug axes
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_COMMENT<a id='v-_SKIN_COMMENT'></a>
+#### 💠\_SKIN\_COMMENT<a id='v-__s_k_i_n__c_o_m_m_e_n_t'></a>
 
 <code>*value* _SKIN_COMMENT : ???</code>
 
@@ -9162,7 +9162,7 @@ the comment if any
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_OPERATION<a id='v-_SKIN_OPERATION'></a>
+#### 💠\_SKIN\_OPERATION<a id='v-__s_k_i_n__o_p_e_r_a_t_i_o_n'></a>
 
 <code>*value* _SKIN_OPERATION : ???</code>
 
@@ -9170,7 +9170,7 @@ the operation (`[op, apply_to_next_count]`)
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SKIN\_WALL\_DIAG<a id='v-_SKIN_WALL_DIAG'></a>
+#### 💠\_SKIN\_WALL\_DIAG<a id='v-__s_k_i_n__w_a_l_l__d_i_a_g'></a>
 
 <code>*value* _SKIN_WALL_DIAG : ???</code>
 
@@ -10000,7 +10000,7 @@ TODO: Look into this. Not sure what I was attempting here.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑skin types</i><a id='skin-ch-skin_types'></a>
+### <i>📑skin types</i><a id='ch-skin-skin_types'></a>
 
 #### 🧩skin<a id='t-skin'></a>
 
@@ -10055,7 +10055,7 @@ point, it starts at slot 0 again.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩Face<a id='t-Face'></a>
+#### 🧩Face<a id='t-_face'></a>
 
 <code>*type* Face = list</code>
 
@@ -10076,7 +10076,7 @@ This is the third index to the point in the referenced point list.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩SkinExtrude<a id='t-SkinExtrude'></a>
+#### 🧩SkinExtrude<a id='t-_skin_extrude'></a>
 
 <code>*callback* SkinExtrude(pts\_fn: function) : <a href="#t-skin">skin</a></code>
 
@@ -10107,7 +10107,7 @@ The skin object.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ColourLst<a id='t-ColourLst'></a>
+#### 🧩ColourLst<a id='t-_colour_lst'></a>
 
 <code>*type* ColourLst = list</code>
 
@@ -10132,7 +10132,7 @@ Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ColourStr<a id='t-ColourStr'></a>
+#### 🧩ColourStr<a id='t-_colour_str'></a>
 
 <code>*type* ColourStr = string</code>
 
@@ -10148,7 +10148,7 @@ solid and `"0"` or `"00"` is transparent.
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ColourName<a id='t-ColourName'></a>
+#### 🧩ColourName<a id='t-_colour_name'></a>
 
 <code>*type* ColourName = string</code>
 
@@ -10217,7 +10217,7 @@ spellings of grey/gray including slategrey/slategray etc are valid):
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩DebugStyle<a id='t-DebugStyle'></a>
+#### 🧩DebugStyle<a id='t-_debug_style'></a>
 
 <code>*type* DebugStyle = list</code>
 
