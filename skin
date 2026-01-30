@@ -21,7 +21,6 @@ use <string>
 use <birlei>
 use <param_check>
 use <any_all>
-include <skin_consts>
 /**
  * ### Design
  *

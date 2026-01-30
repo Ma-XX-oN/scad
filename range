@@ -74,9 +74,9 @@ function is_range(o) =
 /** ### Functions */
 
 /**
- * @callchain range(count)                : resulting_range
- * @callchain range(begin_i, end_i)       : resulting_range
- * @callchain range(begin_i, step, end_i) : resulting_range
+ * @callchain range(count)                : (range|list)
+ * @callchain range(begin_i, end_i)       : (range|list)
+ * @callchain range(begin_i, step, end_i) : (range|list)
  *
  * Creates a range object.
  *
@@ -180,7 +180,7 @@ function range_len(r) =
 function range_el(r, i, _r_len) =
   let ( _ = verify_r(r) )
   let ( _ = verify_i(i) )
-  let ( _ = verify_lu(_r_len) )
+  let ( _ = verify_iu(_r_len) )
   // echo(str("range_el: r: ", r, " i: ", i))
   r[0] + r[1] * range_idx(r, i, _r_len)
 ;

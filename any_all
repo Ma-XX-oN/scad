@@ -9,13 +9,7 @@
  *
  * Implements any and all algorithms.
  */
-use <birlei>
 use <base_algos>
-use <helpers>
-use <test>
-
-use <indexable>
-include <indexable_consts>
 
 /**
  * @callback AnyFn
@@ -34,8 +28,8 @@ include <indexable_consts>
  */
 
 /**
- * @callchain any()            : AnyBirleiFn
- * @callchain any(birl, end_i) : bool
+ * @callchain any() (birl, end_i) : bool
+ * @callchain any(birl, end_i)    : bool
  *
  * Will determine if any of the calls to pred_fn(i) will result in a truthy
  * result.
@@ -43,7 +37,7 @@ include <indexable_consts>
  * @param {OptionalBirl} [birl]
  * @param {EndI} [end_i]
  *
- * @returns {AnyFn|bool}
+ * @returns {(AnyFn|bool)}
  *   - If `birl` is omitted, then will return type `AnyBirleiFn`.
  *   - Else returns type `AnyFn`.
  */

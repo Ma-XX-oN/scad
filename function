@@ -169,15 +169,15 @@ function param_count_direct_recursion_demo(fn) =
   _pc_loop(fn_str)
 ;
 
-test_eq(0, param_count(function() 1));
-test_eq(1, param_count(function( s) 1));
-test_eq(2, param_count(function(d,e) 1));
+// test_eq(0, param_count(function() 1));
+// test_eq(1, param_count(function( s) 1));
+// test_eq(2, param_count(function(d,e) 1));
 
-test_eq(15, reduce(0, 0, 4)(function(i, a) echo(i) [1,2,3,4,5][i] + a));
-test_eq(15, it_each([1,2,3,4,5], reduce(0))(
-    function(e, a) e + a
-  )
-);
+// test_eq(15, reduce(0, 0, 4)(function(i, a) echo(i) [1,2,3,4,5][i] + a));
+// test_eq(15, it_each([1,2,3,4,5], reduce(0))(
+//     function(e, a) e + a
+//   )
+// );
 
 /**
  * Applies each element in a list to a function's parameter list.

@@ -7,7 +7,7 @@
  *
  * ### Purpose
  *
- * Constants used by [`slr_cache`](f-slr_cache) for indexing the
+ * Constants used by [`slr_cache`](#f-_slr_cache) for indexing the
  * [slr_cache](#t-slr_cache) object.
  *
  * ### Values
@@ -24,62 +24,134 @@
 // returned is a global variable.  Not sure why.  Works locally, but not between
 // files.  Value is copied every time a function is called.
 //
-/** Used to indicate if a list object is identified as an `_SLR_CACHE` object */
+/** @type {string}
+ *
+ * Used to indicate if a list object is identified as an `_SLR_CACHE` object.
+ */
 _SLR_CACHE_HEADER = "_SLR_CACHE";
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_LEN] (number)
- *   Value representing the length of `slr`.
+ * @typedef {number} SlrCacheEnum
+ *
+ * Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
+ */
+
+/**
+ * @type {SlrCacheEnum}
+ *
+ * Value representing the length of `slr`.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_LEN]
+ *
+ * Return type is number.
  */
 _SLR_LEN  = 1;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_TE] (type_enum)
- *   Value representing the type of `slr`.
+ * @type {SlrCacheEnum}
+ *
+ * Value representing the type of `slr`.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_TE]
+ *
+ * Return type is `TypeEnum`
  */
 _SLR_TE   = 2;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_ELD] (function(i): any)
- *   Function dereferences the `slr` DIRECTLY.  E.g. index directly to `slr`
- *   without going through the BIRLEI.
+ * @type {SlrCacheEnum}
+ *
+ * Function dereferences the `slr` DIRECTLY.  E.g. index directly to `slr`
+ * without going through the BIRLEI.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_ELD]
+ *
+ * Return type is `function(i): any`
  */
 _SLR_ELD  = 3;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_BLEN] (number)
- *   Length of BIRLEI.
+ * @type {SlrCacheEnum}
+ *
+ * Length of BIRLEI.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_BLEN]
+ *
+ * Return type is `number`
  */
 _SLR_BLEN = 4;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_ELI] (function(i): any)
- *   Function dereferences the `slr` INDIRECTLY by getting index through the
- *   BIRLEI, and using that index to index the `slr`.
+ * @type {SlrCacheEnum}
+ *
+ * Function dereferences the `slr` INDIRECTLY by getting index through the
+ * BIRLEI, and using that index to index the `slr`.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_ELI]
+ *
+ * Return type is `function(i): any`
  */
 _SLR_ELI  = 5;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_IDX] (function(i): number)
- *   Function that dereferences the BIRLEI value.
+ * @type {SlrCacheEnum}
+ *
+ * Function that dereferences the BIRLEI value.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_IDX]
+ *
+ * Return type is `function(i): number`
  */
 _SLR_IDX  = 6;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_STR] (function() : string)
- *   Function converting normalised BIRLEI to string.
+ * @type {SlrCacheEnum}
+ *
+ * Function converting normalised BIRLEI to string.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_STR]
+ *
+ * Return type is `function() : string`
  */
 _SLR_STR  = 7;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_BIRL] (number | list | range)
- *   Normalised BIRL component of BIRLEI.
+ * @type {SlrCacheEnum}
+ *
+ * Normalised BIRL component of BIRLEI.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_BIRL]
+ *
+ * Return type is `number | list | range`
  */
 _SLR_BIRL = 8;
 
 /**
- * _slr_cache(slr, birls, end_i)[_SLR_END_I] (number | undef)
- *   Normalised END_I component of BIRLEI.
+ * @type {SlrCacheEnum}
+ *
+ * Normalised END_I component of BIRLEI.
+ *
+ * @example Usage
+ *
+ *     _slr_cache(slr, birls, end_i)[_SLR_END_I]
+ *
+ * Return type is `number | undef`
  */
 _SLR_END_I = 9;
 

@@ -12,27 +12,127 @@
  * ### Values
  */
 
-/** Enum for range type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for range type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum([0:1]) == RANGE);
+ *     assert(type_enum(range(0,1)) == RANGE)
+ *
+ *     // Beware, an empty range is a LIST!!
+ *     assert(type_enum(range(1,0)) == LIST)
+ */
 RANGE   =  0;
-/** Enum for list type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for list type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum([]) == LIST);
+ */
 LIST    =  1;
-/** Enum for string type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for string type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum("") == STR);
+ */
 STR     =  2;
-/** Enum for unknown type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for unknown type.  Shouldn't be possible to get this value.
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(???) == UNKNOWN);
+ */
 UNKNOWN =  3;
-/** Enum for slice type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for slice type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(slice(0, -1)) == SLICE);
+ */
 SLICE   =  4;
-/** Enum for undef type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for undef type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(undef) == UNDEF);
+ */
 UNDEF   =  5;
-/** Enum for boolean type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for boolean type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(true) == BOOL);
+ */
 BOOL    =  6;
-/** Enum for function type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for function type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(function() 0) == FUNC);
+ */
 FUNC    =  7;
-/** Enum for number type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for number type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(1) == NUM);
+ */
 NUM     =  8;
-/** Enum for integer type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for integer type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(1, true) == INT);
+ */
 INT     =  9;
-/** Enum for floating point type */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for floating point type
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(1.1, true) == FLOAT);
+ */
 FLOAT   = 10;
-/** Enum for NaN */
+/**
+ * @type {TypeEnum}
+ *
+ * Enum for NaN
+ *
+ * @example Usage
+ *
+ *     assert(type_enum(1/0) == NAN);
+ */
 NAN     = 11;

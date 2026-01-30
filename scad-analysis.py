@@ -78,6 +78,9 @@ RES_LIB = r'''
   (?# Characters till [;] or unmatched opening or closing of parenthesis, brace or bracket or end of string)
   (?<cmd_chars_mtws>(?:[^;{}()[\]"]++|\{(?&chars_mtws)\}|\((?&chars_mtws)\)|\[(?&chars_mtws)\]|(?&quote))*+)
 
+  (?# Characters till [:] or unmatched opening or closing of parenthesis, brace or bracket or end of string)
+  (?<ret_chars_mtws>(?:[^:{}()[\]"]++|\{(?&chars_mtws)\}|\((?&chars_mtws)\)|\[(?&chars_mtws)\]|(?&quote))*+)
+
   (?# Characters till [,] or unmatched opening or closing of parenthesis, brace or bracket or end of string)
   (?<param_chars_mtws>(?:[^,{}()[\]"]++|\{(?&chars_mtws)\}|\((?&chars_mtws)\)|\[(?&chars_mtws)\]|(?&quote))*+)
 
@@ -153,8 +156,8 @@ def mtime_to_utc(mtime: float) -> str:
     str: A string representing the time in UTC (format: 'YYYY-MM-DD HH:MM:SS GMT+0000').
   """
   # Convert the timestamp to a datetime object in UTC
-  gmt_datetime = datetime.fromtimestamp(mtime, tz=timezone.utc)
-  return gmt_datetime.strftime('%Y-%m-%d %H:%M:%S GMT%z')
+  gmt_datetime = datetime.fromtimestamp(mtime, tz=timezone.utc).replace(microsecond=0)
+  return gmt_datetime.isoformat()
 
 def get_line_positions(content: str) -> list[int]:
   '''
@@ -959,8 +962,7 @@ class Doc:
         (m.captures("type")[i], m.captures("id")[i], m.captures("desc")[i], m.captures("default")[i])
       )
 
-    assert not self.items["callchain"] or self.items["returns"] and self.items["returns"][0][self.TYPE], \
-      self.e("If any @callchain tags are defined, then a @returns tag and its type must also be defined.")
+    self.verify_callchain_returns()
     
     if sym_and_doc:
       # if there is a doc, ensure that the parameter names in the doc line up
@@ -989,6 +991,44 @@ class Doc:
         assert tag == "desc" or len(info) == 0, self.e(
           f"Logic error. Tag {tag} found where it shouldn't exist.")
       self.doc_type = "file"
+
+  RE_CALLCHAIN_RET = regex.compile(
+    r"""
+    (?&symbol)\s*+ (?<curry>\((?&ret_chars_mtws)\)\s*+)++ (?::\s*+ (?<ret_type>.++))?+
+    |""" + RES_LIB, regex.VERBOSE
+  )
+  def verify_callchain_returns(self):
+    rets = None
+    if self.items["returns"]:
+      rets = self.items["returns"][0][Doc.TYPE]
+    if not rets:
+      # - if @returns not defined, then any @callchain must not define a return type.
+      for _,_,desc,_ in self.items["callchain"]:
+        m = Doc.RE_CALLCHAIN_RET.match(desc)
+        assert m, self.e("regex error: Should always match something.")
+        assert not m["ret_type"], \
+          self.e("If @returns is not defined, @callchain must not define a return type.")
+    else:
+      # - if @returns defined, then any @callchain defined must define same return type, unless curried to another function
+
+      # TODO: Check if not a curried function that it matches return type.
+      #       Will need to determine what returned types are curried to ignore them.
+
+      # indiv_types: dict[str, bool] = {}
+      # for m in Doc.RE_SEP_TYPES.finditer(rets):
+      #   indiv_types[m["type"]] = False
+
+      for _,_,desc,_ in self.items["callchain"]:
+        m = Doc.RE_CALLCHAIN_RET.match(desc)
+        assert m, self.e("regex error: Should always match something.")
+        ret_type = m["ret_type"]
+        assert ret_type, \
+          self.e("If any @callchain tags are defined, then a @returns tag and its type must also be defined.")
+        # curry_count = len(m.spans("curry"))
+        # if curry_count == 1:
+        #   # called to check that type is valid
+        #   assert ret_type == rets[Doc.TYPE], \
+        #     self.e(f"@callchain ({ret_type}) and @returns ({rets[Doc.TYPE]}) types don't agree.")
 
   def verify_sig_with_doc(self, doc_item: SymWithDoc):
     declared_params = doc_item[DOC_S_PARAM_LST]
@@ -1535,11 +1575,27 @@ class Doc:
     "callback":     ("🧩⚙️", "t"), # callbacks are still types
   }
 
+  RE_EXAMPLE = regex.compile(
+    r"""
+    \G (?<pre_ex> (?: [^\n@]*+ (?: \n | $ | (?<!\n)@ ) )*+ )
+    (?# example with optional name for example )
+    @example (?: [ ]* (?<name> [ ] [^\r\n]++ ) )?+ \r?+\n
+    (?# example must contain at least one line. Any line starting with @ terminates example )
+    (?<desc> (?: [^\n@]*+ (?: \n | $ | (?<!\n)@ ) )++ )
+    (?# remove any @end tag if it exists )
+    (?: @end (?: \r?+\n)?+ )?+
+    """, regex.VERBOSE
+  )
   def output_desc(self, output_lines: list[str]):
     if self.items["desc"]:
       for (_, _, desc, _) in self.items["desc"]:
         if desc:
-          output_lines.append(Doc.RE_TRAILING_EMPTY_LINES.sub("", desc))
+          desc = Doc.RE_TRAILING_EMPTY_LINES.sub("", desc)
+          desc = Doc.RE_EXAMPLE.sub(
+            r"\g<pre_ex><details><summary>Example:\g<name></summary>" "\n"
+            r"\g<desc>"
+            "\n</details>", desc)
+          output_lines.append(desc)
           output_lines.append("")
 
   def output_doc(self, output_lines: list[str]):
@@ -1556,96 +1612,99 @@ class Doc:
 
       slots (for typedef) OR params + returns (for functions/modules/callbacks)
     """
-    # File-level documentation (no symbol)
-    if self.doc_type == "file":
-      if self.items["desc"]:
-        for (_, _, desc, _) in self.items["desc"]:
-          if desc:
-            output_lines.append(desc.strip() + "\n")
-      return
-
-    # Type definitions (typedef, callback, type)
-    if self.doc_type in ("typedef", "callback", "type"):
-      assert self.id is not None, "Type definitions must have an id"
-      link_prefix = "t"  # types
-
-      text_prefix = Doc.SYMBOL_RENDERING_INFO[
-        "value" if self.doc_type == "type" else "type"][0]
-      # output_lines.append("")
-      output_lines.append(f"#### {text_prefix}{self.id.replace("_", "\\_")}{make_anchor(link_prefix, self.id)}")
-      output_lines.append("")
-
-      # Signature
-      self.output_sig(output_lines, None)
-      output_lines.append("")
-
-      # Callchains (for callbacks and typedefs to callbacks)
-      if self.items["callchain"] or (self.doc_type == "typedef" and self.items["header"]):
-        callchain_lines = []
-        self.output_callchains(callchain_lines, None)
-        if callchain_lines:
-          callchain_lines.append("")
-          output_lines.append("Possible callchains:\n")
-          output_lines += callchain_lines
-
-      # Description
-      self.output_desc(output_lines)
-
-      # Slots for typedefs
-      if self.doc_type == "typedef":
-        self.output_slots(output_lines)
-
-      # Params and returns for callbacks
-      if self.doc_type == "callback":
-        self.output_params(output_lines)
-        self.output_rets(output_lines)
-
-      return
-
-    # Symbol with or without doc (function/module/value)
-    if is_sym_with_doc(self.doc_item) or is_symbol(self.doc_item):
-      assert self.id is not None, "Symbols must have an id"
-      sig_text = self.content[self.doc_item[DOC_S_SIG_SLC]]
-
-      # Determine prefix for anchor based on symbol type
-      if sig_text.startswith("function "):
-        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["function"]
-      elif sig_text.startswith("module test_"):
-        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["module-test"]
-      elif sig_text.startswith("module "):
-        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["module-build"]
-      else:
-        text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["value"]
-
-      # output_lines.append("")
-      output_lines.append(f"#### {text_prefix}{self.id.replace("_", "\\_")}{make_anchor(link_prefix, self.id)}")
-      output_lines.append("")
-
-      # Signature
-      self.output_sig(output_lines, None)
-      output_lines.append("")
-
-      # Only output description and details if doc exists
-      if is_sym_with_doc(self.doc_item):
-        # Callchains (explicit or auto-generated for functions that return callbacks)
-        callchain_lines: list[str] = []
-        self.output_callchains(callchain_lines, None)
-        if callchain_lines:
-          callchain_lines.append("")
-          output_lines.append("Possible callchains:\n")
-          output_lines += callchain_lines
-
-        # Description
+    try:
+      # File-level documentation (no symbol)
+      if self.doc_type == "file":
         if self.items["desc"]:
           for (_, _, desc, _) in self.items["desc"]:
             if desc:
-              output_lines.append(desc.strip())
-              output_lines.append("")
+              output_lines.append(desc.strip() + "\n")
+        return
 
-        # Params and returns
-        self.output_params(output_lines)
-        self.output_rets(output_lines)
+      # Type definitions (typedef, callback, type)
+      if self.doc_type in ("typedef", "callback", "type"):
+        assert self.id is not None, "Type definitions must have an id"
+        link_prefix = "t"  # types
 
+        text_prefix = Doc.SYMBOL_RENDERING_INFO[
+          "value" if self.doc_type == "type" else "type"][0]
+        # output_lines.append("")
+        output_lines.append(f"#### {text_prefix}{self.id.replace("_", "\\_")}{make_anchor(link_prefix, self.id)}")
+        output_lines.append("")
+
+        # Signature
+        self.output_sig(output_lines, None)
+        output_lines.append("")
+
+        # Callchains (for callbacks and typedefs to callbacks)
+        if self.items["callchain"] or (self.doc_type == "typedef" and self.items["header"]):
+          callchain_lines = []
+          self.output_callchains(callchain_lines, None)
+          if callchain_lines:
+            callchain_lines.append("")
+            output_lines.append("Possible callchains:\n")
+            output_lines += callchain_lines
+
+        # Description
+        self.output_desc(output_lines)
+
+        # Slots for typedefs
+        if self.doc_type == "typedef":
+          self.output_slots(output_lines)
+
+        # Params and returns for callbacks
+        if self.doc_type == "callback":
+          self.output_params(output_lines)
+          self.output_rets(output_lines)
+
+        return
+
+      # Symbol with or without doc (function/module/value)
+      if is_sym_with_doc(self.doc_item) or is_symbol(self.doc_item):
+        assert self.id is not None, "Symbols must have an id"
+        sig_text = self.content[self.doc_item[DOC_S_SIG_SLC]]
+
+        # Determine prefix for anchor based on symbol type
+        if sig_text.startswith("function "):
+          text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["function"]
+        elif sig_text.startswith("module test_"):
+          text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["module-test"]
+        elif sig_text.startswith("module "):
+          text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["module-build"]
+        else:
+          text_prefix, link_prefix = Doc.SYMBOL_RENDERING_INFO["value"]
+
+        # output_lines.append("")
+        output_lines.append(f"#### {text_prefix}{self.id.replace("_", "\\_")}{make_anchor(link_prefix, self.id)}")
+        output_lines.append("")
+
+        # Signature
+        self.output_sig(output_lines, None)
+        output_lines.append("")
+
+        # Only output description and details if doc exists
+        if is_sym_with_doc(self.doc_item):
+          # Callchains (explicit or auto-generated for functions that return callbacks)
+          callchain_lines: list[str] = []
+          self.output_callchains(callchain_lines, None)
+          if callchain_lines:
+            callchain_lines.append("")
+            output_lines.append("Possible callchains:\n")
+            output_lines += callchain_lines
+
+          # Description
+          if self.items["desc"]:
+            for (_, _, desc, _) in self.items["desc"]:
+              if desc:
+                output_lines.append(desc.strip())
+                output_lines.append("")
+
+          # Params and returns
+          self.output_params(output_lines)
+          self.output_rets(output_lines)
+    finally:
+      output_lines += ['<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>\n']
+        
 class Symbols:
   """
   Stores the Symbol info collected from the files.
@@ -1797,7 +1856,7 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
   RE_H3 = regex.compile(r"^(### )(.*)", regex.MULTILINE)
 
   def add_h2_emoji_anchor(m):
-    return f"{m.group(1)}📘{m.group(2)}{make_anchor('file', m.group(2))}"
+    return f"<hr/>\n\n{m.group(1)}📘{m.group(2)}{make_anchor('file', m.group(2))}"
 
   def add_h3_emoji_and_anchor(m):
     heading_text = m.group(2)
@@ -1810,7 +1869,7 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
     tmp = RE_H3.sub(add_h3_emoji_and_anchor, tmp)
     output_lines[i] = tmp
 
-def render_json(filename: str, item_count: int, content: str, track_ids: dict[str, TrackIds], track_docs: list[tuple[int, str]], track_symbols: list[str], item: ItemInfo):
+def render_json(filename: str, item_count: int, content: str, track_ids: dict[str, TrackIds], track_docs: list[tuple[int, str]], track_symbols: list[str], item: ItemInfo) -> int:
   # Generating json representation
   if len(item) > 2:
     # Generating json for symbol
@@ -1822,6 +1881,7 @@ def render_json(filename: str, item_count: int, content: str, track_ids: dict[st
     else:
       prefix = "v-"
 
+    global line_char_index
     s_line, e_line = get_lines(item[DOC_SLC], line_char_index)
     result: TrackIds = {
       "filename"  : filename,
@@ -1846,6 +1906,8 @@ def render_json(filename: str, item_count: int, content: str, track_ids: dict[st
     assert track_docs is not None
     track_docs.append( (item_count, content[item[DOC_SLC]]) )
     item_count += 1
+
+  return item_count
 
 def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = False) -> Optional[Track]:
   item_count = 0
@@ -1890,9 +1952,6 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
     track_docs = None
     track_symbols = None
     output_lines = []
-
-  assert show == "json" and track_ids is not None \
-    and track_docs is not None and track_symbols is not None
 
   if len(content):
     global line_char_index
@@ -1963,7 +2022,8 @@ def process_file(filename: str, write_ext: Optional[str], from_stdin: bool = Fal
           continue
 
         elif show == "json":
-          render_json(filename, item_count, content, track_ids, track_docs, track_symbols, item)
+          assert track_ids is not None and track_docs is not None and track_symbols is not None
+          item_count = render_json(filename, item_count, content, track_ids, track_docs, track_symbols, item)
           continue
 
         elif show == "sig-doc":
@@ -2055,7 +2115,7 @@ if len(tracking) and args.write_ext is None:
   merged_tracking: TrackFull = {
     "filenames": {},
     "ids": {},
-    "hash_algo": "SHA256",
+    "hash_algo": "sha256",
     "combined_hash": hash.hexdigest(),
     "mtime": ""
   }

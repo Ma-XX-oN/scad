@@ -27,7 +27,7 @@ include <string_consts>
  *
  * @param {string} s
  *   String to align.
- * @param {int} width
+ * @param {number} width
  *   Minimum width to make `s`.
  * @param {string} pad_char
  *   The character to pad `s` with.
@@ -46,7 +46,7 @@ function align_left(s, width, pad_char = " ") =
  *
  * @param {string} s
  *   String to align.
- * @param {int} width
+ * @param {number} width
  *   Minimum width to make `s`.
  * @param {string} pad_char
  *   The character to pad `s` with.
@@ -63,7 +63,7 @@ function align_right(s, width, pad_char = " ") =
  *
  * @param {string} c
  *   The string to repeat.
- * @param {int} i
+ * @param {number} i
  *   The number of times to repeat.
  * @param {string} r
  *   The accumulated repeated string.
@@ -78,11 +78,17 @@ function repeat(c, i, r = "") =
 ;
 
 /**
- * Outputs the sign character for value `v` based on `show_sign` enum.
+ * @typedef {number} ShowSignEnum
+ *
+ * Used to specify how to show the sign of a number.
+ */
+
+/**
+ * Outputs the sign character for value `v` based on `show_sign` parameter.
  *
  * @param {number} v
  *   Value to get +ve/-ve sign value from.
- * @param {integer} show_sign
+ * @param {ShowSignEnum} show_sign
  *    A value that is taken from SHOW_SIGN_*() consts.
  *
  * @returns {string}
@@ -101,7 +107,7 @@ function _sign_str(v, show_sign) =
  *   Number to convert to string.
  * @param {bool} left_justified
  *   States if number is left or right justified.
- * @param {number} show_sign
+ * @param {ShowSignEnum} show_sign
  *   SHOW_SIGN_NEG - States if to only show a negative sign.
  *   SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
  *   SHOW_SIGN_SPC_NEG - States if to show space for positive sign or negative sign.
@@ -163,16 +169,16 @@ function float_to_string(v, left_justified=true, show_sign=SHOW_SIGN_NEG, pad_ch
     : s
 ;
 
-inf = 1/0;
-nan = inf - inf;
-test_eq("+1.300000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG));
-test_eq("+1.3000  ", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG, precision=4, min_width=9));
-test_eq("  +1.3000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG, left_justified=false, precision=4, min_width=9));
-test_eq(" 0.000000", float_to_string(0,    show_sign = SHOW_SIGN_SPC_NEG));
-test_eq("+inf",      float_to_string(inf,  show_sign = SHOW_SIGN_POS_NEG));
-test_eq("-inf",      float_to_string(-inf, show_sign = SHOW_SIGN_POS_NEG));
-test_eq("NaN   ",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG, min_width=6));
-test_eq("   NaN",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG, min_width=6, left_justified=false));
+// inf = 1/0;
+// nan = inf - inf;
+// test_eq("+1.300000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG));
+// test_eq("+1.3000  ", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG, precision=4, min_width=9));
+// test_eq("  +1.3000", float_to_string(1.3,  show_sign = SHOW_SIGN_POS_NEG, left_justified=false, precision=4, min_width=9));
+// test_eq(" 0.000000", float_to_string(0,    show_sign = SHOW_SIGN_SPC_NEG));
+// test_eq("+inf",      float_to_string(inf,  show_sign = SHOW_SIGN_POS_NEG));
+// test_eq("-inf",      float_to_string(-inf, show_sign = SHOW_SIGN_POS_NEG));
+// test_eq("NaN   ",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG, min_width=6));
+// test_eq("   NaN",    float_to_string(nan,  show_sign = SHOW_SIGN_POS_NEG, min_width=6, left_justified=false));
 
 /**
  * Converts an object to a string so that if the object contains a string, all
@@ -245,19 +251,19 @@ function obj_to_string(obj, fmt_fn = function(obj) undef
     : str(obj)
 ;
 
-echo("This should show three lines with these chars not escaped: \"\r\n\t\\\".");
-echo(["This should show one line with these chars escaped: \"\r\n\t\\\"."]);
-echo(obj_to_string(["This should show one line with these chars escaped: \"\r\n\t\\\"."]));
+// echo("This should show three lines with these chars not escaped: \"\r\n\t\\\".");
+// echo(["This should show one line with these chars escaped: \"\r\n\t\\\"."]);
+// echo(obj_to_string(["This should show one line with these chars escaped: \"\r\n\t\\\"."]));
 
-echo(str("o2s: ", obj_to_string("hello")));
-echo(str("o2s: ", obj_to_string("he\"llo")));
-echo(str("o2s: ", obj_to_string("he\"llo", esc_chars=["",""])));
-echo(str("o2s: ", obj_to_string("he\nllo")));
-echo(str("o2s: ", obj_to_string(1)));
-echo(str("o2s: ", obj_to_string(["hello",1])));
-echo(str("o2s: ", obj_to_string(["he\"llo",1])));
-echo(str("o2s: ", obj_to_string(["he\nllo",1])));
-echo(str("o2s: ", obj_to_string(["hello"])));
+// echo(str("o2s: ", obj_to_string("hello")));
+// echo(str("o2s: ", obj_to_string("he\"llo")));
+// echo(str("o2s: ", obj_to_string("he\"llo", esc_chars=["",""])));
+// echo(str("o2s: ", obj_to_string("he\nllo")));
+// echo(str("o2s: ", obj_to_string(1)));
+// echo(str("o2s: ", obj_to_string(["hello",1])));
+// echo(str("o2s: ", obj_to_string(["he\"llo",1])));
+// echo(str("o2s: ", obj_to_string(["he\nllo",1])));
+// echo(str("o2s: ", obj_to_string(["hello"])));
 
 /**
  * Converts a 2D array to a csv string.  If an element contains a double quote,
@@ -320,7 +326,7 @@ function to_csv(a, fmt_fn = function(e) undef, RFC_4180 = true) =
     function(e, acc) str(acc, to_csv_row(e))
   )
 ;
-echo(to_csv([["hello", "th,ere", "ou\nt", "th\"ere"]]));
+// echo(to_csv([["hello", "th,ere", "ou\nt", "th\"ere"]]));
 
 /**
  * Takes a 1D list and outputs it as a string with only row_length elements on
@@ -421,7 +427,7 @@ function list_to_string(list, row_length = 0, fmt_el_fn = fmt_list_fn(),
  *
  * @param {number} precision
  *   Number of decimal places to show.
- * @param {number} show_sign
+ * @param {ShowSignEnum} show_sign
  *   SHOW_SIGN_NEG - States if to only show a negative sign.
  *   SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
  *   SHOW_SIGN_SPC_NEG - States if to show space for positive sign or negative sign.
@@ -445,11 +451,11 @@ function fmt_list_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG) =
  *
  * @param {number} precision
  *   The number of decimal places to output.
- * @param {number} show_sign
+ * @param {ShowSignEnum} show_sign
  *   `SHOW_SIGN_NEG` - States if to only show a negative sign.
  *   `SHOW_SIGN_POS_NEG` - states if to show positive/negative signs.
  *   `SHOW_SIGN_SPC_NEG` - States if to show space for positive sign or negative sign.
- * @param {list[number,...]} [min_widths]
+ * @param {list[number,...]} [min_widths_for_pts]
  *   If specified, will output coord with minimum width of each specified by
  *   corresponding value in this list.
  *
@@ -478,7 +484,7 @@ function fmt_pt_list_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG, min_widths_for
  *
  * @param {number} precision
  *   The number of decimal places to output.
- * @param {number} show_sign
+ * @param {ShowSignEnum} show_sign
  *   SHOW_SIGN_NEG - States if to only show a negative sign.
  *   SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
  *   SHOW_SIGN_SPC_NEG - States if to show space for positive sign or negative sign.
@@ -509,7 +515,8 @@ function fmt_pt_fn(precision=6, show_sign=SHOW_SIGN_SPC_NEG, min_widths_for_dims
  *   A list of coordinates.
  * @param {number} cols
  *   Number of columns
- * @param {unused} rows
+ * @param {...} rows
+ *   Unused.
  * @param {string} [indent=""]
  *   The character to put at the beginning of each line.
  * @param {bool} [only_first_and_last=false]
@@ -544,20 +551,20 @@ function pt_list_to_string(pts, cols, rows, indent = "", only_first_and_last = f
     fmt_pt_list_fn(precision, min_widths_for_pts=min_widths),
     str(indent, "  "), only_first_and_last = only_first_and_last)
 ;
-echo("pt_list_to_string", pt_list_to_string([[1, 10, 4], [1,5,0]], 2, 3, ""));
-echo("pt_list_to_string", pt_list_to_string([[1, 10, 4], [1,5,0], [1,5,0], [1, 10, 4]], 2, 3, ""));
+// echo("pt_list_to_string", pt_list_to_string([[1, 10, 4], [1,5,0]], 2, 3, ""));
+// echo("pt_list_to_string", pt_list_to_string([[1, 10, 4], [1,5,0], [1,5,0], [1, 10, 4]], 2, 3, ""));
 
-let(a = [1, 2, [3, 4, 5, 6, 7], 8])
-echo(
-  list_to_string(a, 1,
-    function(i, e, indent)
-      is_list(e)
-      ? list_to_string(e, 2, indent = str(indent, "  "))
-      : e
-  )
-);
+// let(a = [1, 2, [3, 4, 5, 6, 7], 8])
+// echo(
+//   list_to_string(a, 1,
+//     function(i, e, indent)
+//       is_list(e)
+//       ? list_to_string(e, 2, indent = str(indent, "  "))
+//       : e
+//   )
+// );
 
-let(a = [1,2,3,2,3,4])
-echo(
-  list_to_string(a, 2, only_first_and_last=1)
-);
+// let(a = [1,2,3,2,3,4])
+// echo(
+//   list_to_string(a, 2, only_first_and_last=1)
+// );

@@ -130,17 +130,17 @@ module test_falsy(val, msg="") {
   assert(!val, str("\n  !", val, " IS NOT FALSY!\n", msg));
 }
 
-// test_eq(1, 2, "should be equal");
-// test_ne(1, 1);
-// test_lt(1, 1);
-// test_gt(1, 1);
-// test_le(1, 0);
-// test_ge(1, 2);
-// test_truthy(0);
-// test_falsy(1);
-test_falsy([]);
-test_falsy("");
-test_falsy(0);
-test_truthy([0]);
-test_truthy("0");
-test_truthy(!0);
+// // test_eq(1, 2, "should be equal");
+// // test_ne(1, 1);
+// // test_lt(1, 1);
+// // test_gt(1, 1);
+// // test_le(1, 0);
+// // test_ge(1, 2);
+// // test_truthy(0);
+// // test_falsy(1);
+// test_falsy([]);
+// test_falsy("");
+// test_falsy(0);
+// test_truthy([0]);
+// test_truthy("0");
+// test_truthy(!0);

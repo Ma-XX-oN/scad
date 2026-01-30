@@ -15,7 +15,6 @@ use <range>
 use <types>
 include <types_consts>
 use <indexable>
-use <test>
 use <transform>
 use <any_all>
 use <param_check>
@@ -213,8 +212,8 @@ function _wrap_diff_deg(a1, a2) =
  * @param {number} b
  *   original y-intercept (default 0)
  *
- * @returns {number}
- *   Δs (nonnegative) or undef if the right-side intersection does not exist
+ * @returns {(number|undef)}
+ *   Δs (nonnegative) or `undef` if the right-side intersection does not exist
  *   before or after the shift.
  */
 function arc_len_for_shift(R, m, a, b = 0) =

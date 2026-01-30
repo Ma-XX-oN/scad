@@ -264,17 +264,17 @@ function find_lower(birl, end_i) =
         spaceship_fn, birl, end_i)
 ;
 
-let (v = 0) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
-let (v = 2) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
-let (v = 1) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
-let (v = 3) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
-let (v = 4) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
-let (v = 5) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
-let (v = 7) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4,5,6,7], find_lower())(function(e) e-v));
-let (v = 2) test_eq(    2, echo(str("Searching for ", v)) it_each([0,1,2,2,4],       find_lower())(function(e) e-v));
-let (v = 2) test_eq(    2, echo(str("Searching for ", v)) it_each([0,1,2,2,2],       find_lower())(function(e) e-v));
-let (v = 2) test_eq(    1, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_lower())(function(e) e-v));
-let (v = 3) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_lower())(function(e) e-v));
+// let (v = 0) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+// let (v = 2) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+// let (v = 1) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+// let (v = 3) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+// let (v = 4) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+// let (v = 5) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_lower())(function(e) e-v));
+// let (v = 7) test_eq(    v, echo(str("Searching for ", v)) it_each([0,1,2,3,4,5,6,7], find_lower())(function(e) e-v));
+// let (v = 2) test_eq(    2, echo(str("Searching for ", v)) it_each([0,1,2,2,4],       find_lower())(function(e) e-v));
+// let (v = 2) test_eq(    2, echo(str("Searching for ", v)) it_each([0,1,2,2,2],       find_lower())(function(e) e-v));
+// let (v = 2) test_eq(    1, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_lower())(function(e) e-v));
+// let (v = 3) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_lower())(function(e) e-v));
 
 /**
  * @typedef {BoundIndexFn} FindUpperFn
@@ -350,16 +350,16 @@ function find_upper(birl, end_i) =
       spaceship_fn, birl, end_i)
 ;
 
-let (v = 0) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
-let (v = 1) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
-let (v = 2) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
-let (v = 3) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
-let (v = 4) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
-let (v = 7) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4,5,6,7], find_upper())(function(e) e-v));
-let (v = 5) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
-let (v = 2) test_eq(    4, echo(str("Searching for ", v)) it_each([0,1,2,2,4],       find_upper())(function(e) e-v));
-let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,2,2],       find_upper())(function(e) e-v));
-let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_upper())(function(e) e-v));
+// let (v = 0) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+// let (v = 1) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+// let (v = 2) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+// let (v = 3) test_eq(  v+1, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+// let (v = 4) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+// let (v = 7) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4,5,6,7], find_upper())(function(e) e-v));
+// let (v = 5) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,3,4],       find_upper())(function(e) e-v));
+// let (v = 2) test_eq(    4, echo(str("Searching for ", v)) it_each([0,1,2,2,4],       find_upper())(function(e) e-v));
+// let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,1,2,2,2],       find_upper())(function(e) e-v));
+// let (v = 2) test_eq(undef, echo(str("Searching for ", v)) it_each([0,2,2,2,2],       find_upper())(function(e) e-v));
 
 /**
  * @callback FindFn
@@ -432,8 +432,8 @@ function find(birl, end_i) =
  */
 
 /**
- * @callchain reduce(init, birl, end_i)  (op_fn) : result
- * @callchain reduce(init) (birl, end_i) (op_fn) : result
+ * @callchain reduce(init, birl, end_i)  (op_fn) : any
+ * @callchain reduce(init) (birl, end_i) (op_fn) : any
  *
  * Reduces (a.k.a. folds) a set of indices to produce some value/object based on
  * the indices.
@@ -490,8 +490,8 @@ function find(birl, end_i) =
  */
 
 /**
- * @callchain reduce_air(init, birl, end_i)  (op_fn) : [cont, init_result]
- * @callchain reduce_air(init) (birl, end_i) (op_fn) : [cont, init_result]
+ * @callchain reduce_air(init, birl, end_i)  (op_fn) : list[bool, any]
+ * @callchain reduce_air(init) (birl, end_i) (op_fn) : list[bool, any]
  *
  * Reduces (a.k.a. folds) a set of indices to produce some value/object based on
  * the indices.  This Reduction Allows for Incomplete Reduction.

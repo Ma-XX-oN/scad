@@ -1,17 +1,60 @@
 /**
  * ## helpers_consts
  *
+ * ### How to Import
+ *
+ *     include <helpers_consts>
+ *
  * ### Purpose
  *
  * Helper constants.
  *
  * ### For indexing type [VectorInfo](#t-VectorInfo).
  */
-/** vector_info(a, b)[VI_VECTOR] = vector of ab */
+
+/**
+ * @typedef {number} VectorInfoEnum
+ *
+ * Enums to dereference [`VectorInfo`](#t-VectorInfo) type.
+ */
+
+/**
+ * @type {VectorInfoEnum}
+ *
+ * ab vector
+ *
+ * @example Usage
+ *
+ *     assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
+ */
 VI_VECTOR = 0;
-/** vector_info(a, b)[VI_LENGTH] = length of ab */
+/**
+ * @type {VectorInfoEnum}
+ *
+ * length of ab
+ *
+ * @example Usage
+ *
+ *     assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
+ */
 VI_LENGTH = 1;
-/** vector_info(a, b)[VI_DIR] = unit ab vector */
+/**
+ * @type {VectorInfoEnum}
+ *
+ * unit ab vector
+ *
+ * @example Usage
+ *
+ *     assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
+ */
 VI_DIR    = 2;
-/** vector_info(a, b)[VI_NORMAL] = normal unit vector of ab */
+/**
+ * @type {VectorInfoEnum}
+ *
+ * vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
+ *
+ * @example Usage
+ *
+ *     assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
+ */
 VI_NORMAL = 3;

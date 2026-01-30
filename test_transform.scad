@@ -328,25 +328,101 @@ module test_transform_augment() {
   test_eq(4, aug3[2][3], _fl(327));
 }
 
-module test_transform_reorient_single_point() {
-  // Single point reorientation
-  start = [[0, 0, 0], [0, 0, 1]];
-  end = [[1, 1, 1], [1, 1, 2]];
-  T = reorient(start, end);
+// test_reorient.scad
+use <test>
+use <transform>
 
-  // Result should be a 4x4 transformation matrix
-  test_eq(4, len(T), _fl(337));
-  test_eq(4, len(T[0]), _fl(338));
-}
+function _apply(T, pt) =
+  transform([pt], transpose(T))[0];
 
-module test_transform_reorient_two_points() {
-  // Two point reorientation (orientation + scale)
-  start = [[0, 0, 0], [0, 0, 1], [1, 0, 0]];
-  end = [[1, 1, 1], [1, 1, 2], [2, 1, 1]];
-  T = reorient(start, end);
+module test_reorient() {
+  eps = 1e-9;
 
-  test_eq(4, len(T), _fl(347));
-  test_eq(4, len(T[0]), _fl(348));
+  // ---- 2-point: rotate + translate, no scaling (default axis_scales=false)
+  let(
+    vs1 = [[0, 0, 0], [1, 0, 0]],
+    vs2 = [[1, 2, 3], [1, 3, 3]],
+    T = reorient(vs1, vs2)
+  ) {
+    test_approx_eq([1, 2, 3], _apply(T, [0, 0, 0]), eps, "2pt origin");
+    test_approx_eq([1, 3, 3], _apply(T, [1, 0, 0]), eps, "2pt x->y");
+    test_approx_eq([1, 4, 3], _apply(T, [2, 0, 0]), eps, "2pt linear");
+  }
+
+  // ---- 2-point: ratio scaling (true) uses |w|/|v| (here 3/1)
+  let(
+    vs1 = [[0, 0, 0], [1, 0, 0]],
+    vs2 = [[1, 2, 3], [1, 5, 3]],
+    T = reorient(vs1, vs2, true)
+  ) {
+    test_approx_eq([1, 5, 3], _apply(T, [1, 0, 0]), eps, "2pt ratio scale");
+  }
+
+  // ---- 2-point: numeric scaling (2) is uniform
+  let(
+    vs1 = [[0, 0, 0], [1, 0, 0]],
+    vs2 = [[1, 2, 3], [1, 3, 3]],
+    T = reorient(vs1, vs2, 2)
+  ) {
+    test_approx_eq([1, 4, 3], _apply(T, [1, 0, 0]), eps, "2pt scale=2");
+  }
+
+  // ---- 3-point: src axes x,y.  dst axes y(len=2), x(len=3)
+  let(
+    vs1 = [[0, 0, 0], [1, 0, 0], [0, 1, 0]],
+    vs2 = [[5, 5, 5], [5, 7, 5], [8, 5, 5]]
+  ) {
+    // default false: no scaling
+    let(T = reorient(vs1, vs2)) {
+      test_approx_eq([5, 5, 5], _apply(T, [0, 0, 0]), eps, "3pt origin");
+      test_approx_eq([5, 6, 5], _apply(T, [1, 0, 0]), eps, "3pt axis0");
+      test_approx_eq([6, 5, 5], _apply(T, [0, 1, 0]), eps, "3pt axis1");
+      test_approx_eq([6, 6, 5], _apply(T, [1, 1, 0]), eps, "3pt linear");
+    }
+
+    // true: ratio scaling to match target magnitudes
+    let(T = reorient(vs1, vs2, true)) {
+      test_approx_eq([5, 7, 5], _apply(T, [1, 0, 0]), eps, "3pt axis0 ratio");
+      test_approx_eq([8, 5, 5], _apply(T, [0, 1, 0]), eps, "3pt axis1 ratio");
+      test_approx_eq([8, 7, 5], _apply(T, [1, 1, 0]), eps, "3pt linear ratio");
+    }
+
+    // per-axis: [false, true]
+    let(T = reorient(vs1, vs2, [false, true])) {
+      test_approx_eq([5, 6, 5], _apply(T, [1, 0, 0]), eps, "3pt axis0 false");
+      test_approx_eq([8, 5, 5], _apply(T, [0, 1, 0]), eps, "3pt axis1 true");
+    }
+  }
+
+  // ---- 4-point: src x,y,z.  dst y(len=2), x(len=3), z(len=4)
+  let(
+    vs1 = [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]],
+    vs2 = [[1, 2, 3], [1, 4, 3], [4, 2, 3], [1, 2, 7]]
+  ) {
+    // default false: no scaling
+    let(T = reorient(vs1, vs2)) {
+      test_approx_eq([1, 2, 3], _apply(T, [0, 0, 0]), eps, "4pt origin");
+      test_approx_eq([1, 3, 3], _apply(T, [1, 0, 0]), eps, "4pt x->y unit");
+      test_approx_eq([2, 2, 3], _apply(T, [0, 1, 0]), eps, "4pt y->x unit");
+      test_approx_eq([1, 2, 4], _apply(T, [0, 0, 1]), eps, "4pt z->z unit");
+      test_approx_eq([2, 3, 4], _apply(T, [1, 1, 1]), eps, "4pt linear");
+    }
+
+    // true: ratio scaling to match target magnitudes
+    let(T = reorient(vs1, vs2, true)) {
+      test_approx_eq([1, 4, 3], _apply(T, [1, 0, 0]), eps, "4pt axis0 ratio");
+      test_approx_eq([4, 2, 3], _apply(T, [0, 1, 0]), eps, "4pt axis1 ratio");
+      test_approx_eq([1, 2, 7], _apply(T, [0, 0, 1]), eps, "4pt axis2 ratio");
+      test_approx_eq([4, 4, 7], _apply(T, [1, 1, 1]), eps, "4pt linear ratio");
+    }
+
+    // per-axis: [true, false, 2]
+    let(T = reorient(vs1, vs2, [true, false, 2])) {
+      test_approx_eq([1, 4, 3], _apply(T, [1, 0, 0]), eps, "4pt axis0 true");
+      test_approx_eq([2, 2, 3], _apply(T, [0, 1, 0]), eps, "4pt axis1 false");
+      test_approx_eq([1, 2, 5], _apply(T, [0, 0, 1]), eps, "4pt axis2 scale=2");
+    }
+  }
 }
 
 module test_transform_all() {
@@ -367,8 +443,7 @@ module test_transform_all() {
   test_transform_transform_points();
   test_transform_identity();
   test_transform_augment();
-  test_transform_reorient_single_point();
-  test_transform_reorient_two_points();
+  test_reorient();
 }
 
 test_transform_all();

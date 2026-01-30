@@ -12,9 +12,37 @@
  * ### Values for `show_sign` Parameters
  */
 
-/** The enum that represents showing only -ve and never +ve sign */
+
+/**
+ * @type {ShowSignEnum}
+ *
+ * The enum that represents showing only -ve and never +ve sign
+ *
+ * @example Usage
+ *
+ *     assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
+ *     assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+ */
 SHOW_SIGN_NEG = 0;
-/** The enum that represents showing only -ve and +ve signs */
+/**
+ * @type {ShowSignEnum}
+ *
+ * The enum that represents showing only -ve and +ve signs
+ *
+ * @example Usage
+ *
+ *     assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
+ *     assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+ */
 SHOW_SIGN_POS_NEG = 1;
-/** The enum that represents showing only -ve and a space for +ve sign */
+/**
+ * @type {ShowSignEnum}
+ *
+ * The enum that represents showing only -ve and a space for +ve sign
+ *
+ * @example Usage
+ *
+ *     assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
+ *     assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+ */
 SHOW_SIGN_SPC_NEG = 2;

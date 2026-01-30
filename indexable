@@ -181,8 +181,8 @@ function is_slice(o) =
  */
 
 /**
- * @callchain slice(begin_i, end_i)       : resulting_slice
- * @callchain slice(begin_i, step, end_i) : resulting_slice
+ * @callchain slice(begin_i, end_i)       : slice
+ * @callchain slice(begin_i, step, end_i) : slice
  *
  * Create a `slice` object.
  *
@@ -216,8 +216,8 @@ function slice(begin_i, step_or_end_i, end_i) =
 ;
 
 /**
- * @callchain slice_to_range(slice, slr)
- * @callchain slice_to_range(slice, slr, _slr_len)
+ * @callchain slice_to_range(slice, slr)           : (range|list)
+ * @callchain slice_to_range(slice, slr, _slr_len) : (range|list)
  *
  * Converts a slice to a range when given a particular `slr`.
  *
@@ -298,7 +298,7 @@ function slice_to_range(slice, slr, _slr_len) =
  *
  * @slot {number} _SLR_LEN
  *   Length of `slr`.
- * @slot {type_enum} _SLR_TE
+ * @slot {TypeEnum} _SLR_TE
  *   Type enum of `slr`.
  * @slot {function(i: number): any} _SLR_ELD
  *   `i` is the index to dereference the `slr` (Direct addressing).

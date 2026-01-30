@@ -41,6 +41,7 @@ use <param_check>
  *   over.
  *   - If this value is less than the related birl's value, then nothing is
  *     iterated over.
+ * - Else must be `undef`.
  */
 
 /**
