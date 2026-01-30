@@ -202,7 +202,9 @@ else:
       f_out.write("\n## Table of Contents\n\n")
       f_out.write("*If viewing on GitHub, you can also use the"
                   " outline button (☰) near the top right of the page"
-                  " to navigate by heading.*\n\n")
+                  " to navigate by heading.  However, I would suggest looking"
+                  " [directly at the file](README.md) rather then from the repo"
+                  " page since it doesn't work properly from there.*\n\n")
       f_out.write(toc)
       # f_out.write("\n")
     f_out.write(result.stdout)
