@@ -2230,10 +2230,10 @@ function quicksort_list_comp_ex(arr) =
  */
 function quicksort_lib_ex1(l, birls = 0, end_i = undef) =
   let (
-    _l      = _slr_cache(l, birl, end_i),
+    _l      = _slr_cache(l, birls, end_i),
     l_len   = _l[_SLR_LEN],
     l_birl  = _l[_SLR_BIRL],
-    l_end_i = _l[_SLR_END_I],
+    l_end_i = _l[_SLR_END_I]
   )
   l_len == 0
   ? []
@@ -2249,7 +2249,7 @@ function quicksort_lib_ex1(l, birls = 0, end_i = undef) =
       // greater = filter(l_birl, l_end_i)(function(i) let (e = l[i]) e  > pivot)
     )
     concat(
-      quicksort_lib_ex(els(l, lesser)), els(l, equal), quicksort_lib_ex(els(l, greater))
+      quicksort_lib_ex1(els(l, lesser)), els(l, equal), quicksort_lib_ex1(els(l, greater))
     )
 ;
 
@@ -2267,10 +2267,10 @@ function quicksort_lib_ex1(l, birls = 0, end_i = undef) =
  */
 function quicksort_lib_ex2(l, birls = 0, end_i = undef) =
   let (
-    _l      = _slr_cache(l, birl, end_i),
+    _l      = _slr_cache(l, birls, end_i),
     l_len   = _l[_SLR_LEN],
     l_birl  = _l[_SLR_BIRL],
-    l_end_i = _l[_SLR_END_I],
+    l_end_i = _l[_SLR_END_I]
   )
   l_len == 0
   ? []
@@ -2286,7 +2286,7 @@ function quicksort_lib_ex2(l, birls = 0, end_i = undef) =
       // greater = filter(l_birl, l_end_i)(function(i, v) let (e = l[i]) v ? e : e  > pivot)
     )
     concat(
-      quicksort_lib_ex(lesser), equal, quicksort_lib_ex(greater)
+      quicksort_lib_ex2(lesser), equal, quicksort_lib_ex2(greater)
     )
 ;
 
@@ -2294,7 +2294,7 @@ function quicksort_lib_ex2(l, birls = 0, end_i = undef) =
 unsorted = [for (a = rands(1, 10, 6, 3)) ceil(a)];
 echo(str("unsorted: ", unsorted));            // ECHO: [1, 9, 2, 6, 5, 1]
 // echo(str("  sorted: ", quicksort_lib_ex(unsorted))); // ECHO: [1, 1, 2, 5, 6, 9]
-echo(str("  sorted: ", quicksort_lib_ex(unsorted, fwd_i(unsorted, 2, -1)))); // ECHO: [1, 1, 2, 5, 6, 9]
+echo(str("  sorted: ", quicksort_lib_ex1(unsorted, fwd_i(unsorted, 2, -1)))); // ECHO: [1, 1, 2, 5, 6, 9]
 
 // local file line function as variable so it doesn't get exported.
 _fl = function(l)
