@@ -83,91 +83,91 @@ function param_count(fn) =
   params
 ;
 
-/** Constant stating what character to start scanning stringified function. */
-function _PARAM_BEGIN_I() = 9;
+// /** Constant stating what character to start scanning stringified function. */
+// function _PARAM_BEGIN_I() = 9;
 
-/**
- * Main processing loop to count function parameters.
- *
- * THIS IS A DEMO to show amount of code noise generated when using direct
- * recursion vs reduce_air().  Made by translating that loop.
- *
- * @param {string} fn_str
- *   String representation of function.
- * @param {number} i
- *   Current index being looked at.
- * @param {number} params
- *   Parameter count so far.
- * @param {number} escaping
- *   This char is escaped.
- * @param {number} quoting
- *   Currently in a string.
- * @param {number} nwscf
- *   Non-whitespace character found.
- * @param {number} b_depth
- *   Current bracket depth.
- * @param {number} p_depth
- *   Current parenthesis depth.
- *
- * @returns {number}
- *   Number of parameters counted.
- */
-function _pc_loop(fn_str, i = _PARAM_BEGIN_I(), params = 0, escaping = 0, quoting = 0, nwscf = 0, b_depth = 0, p_depth = 1) =
-  let (
-    c = fn_str[i]
-  )
-  quoting
-  ? escaping
-    ? _pc_loop(fn_str, i+1, params, !escaping, quoting, nwscf, b_depth, p_depth)          // escaping this char, so no longer escaping
-    : c == "\\"
-      ? _pc_loop(fn_str, i+1, params, !escaping, quoting, nwscf, b_depth, p_depth)        // escape next char
-      : c == "\""
-        ? _pc_loop(fn_str, i+1, params, escaping, !quoting, nwscf, b_depth, p_depth)      // next chars are not quoted
-        : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth)                                                   // no state change
-  : c == "\""
-    ? _pc_loop(fn_str, i+1, params, escaping, !quoting, nwscf, b_depth, p_depth)          // next chars are quoted
-    : c == ")"
-      ? // reduce paren depth. finished searching if new p_depth == 0
-        b_depth || p_depth-1
-          ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth-1)
-          : params
-      : c == "("
-        ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth+1)     // increment paren depth
-        : c == "["
-          ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth+1, p_depth)   // increment bracket depth
-          : c == "]"
-            ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth-1, p_depth) // decrement bracket depth
-            : !b_depth && p_depth == 1
-              ? c == ","
-                ? _pc_loop(fn_str, i+1, params+1, escaping, quoting, false, b_depth, p_depth) // increment param count only if at main param def level
-                : c != " " && c != "\n" && c != "\t" && c != "\r"
-                  ? // found what should be a param name. If no params yet, add a parameter to the count.
-                    _pc_loop(fn_str, i+1, params == 0 && !nwscf ? 1 : params, escaping, quoting, true, b_depth, p_depth)
-                  : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth)                                             // no state change
-              : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth)                                                 // no state change
-;
+// /**
+//  * Main processing loop to count function parameters.
+//  *
+//  * THIS IS A DEMO to show amount of code noise generated when using direct
+//  * recursion vs reduce_air().  Made by translating that loop.
+//  *
+//  * @param {string} fn_str
+//  *   String representation of function.
+//  * @param {number} i
+//  *   Current index being looked at.
+//  * @param {number} params
+//  *   Parameter count so far.
+//  * @param {number} escaping
+//  *   This char is escaped.
+//  * @param {number} quoting
+//  *   Currently in a string.
+//  * @param {number} nwscf
+//  *   Non-whitespace character found.
+//  * @param {number} b_depth
+//  *   Current bracket depth.
+//  * @param {number} p_depth
+//  *   Current parenthesis depth.
+//  *
+//  * @returns {number}
+//  *   Number of parameters counted.
+//  */
+// function _pc_loop(fn_str, i = _PARAM_BEGIN_I(), params = 0, escaping = 0, quoting = 0, nwscf = 0, b_depth = 0, p_depth = 1) =
+//   let (
+//     c = fn_str[i]
+//   )
+//   quoting
+//   ? escaping
+//     ? _pc_loop(fn_str, i+1, params, !escaping, quoting, nwscf, b_depth, p_depth)          // escaping this char, so no longer escaping
+//     : c == "\\"
+//       ? _pc_loop(fn_str, i+1, params, !escaping, quoting, nwscf, b_depth, p_depth)        // escape next char
+//       : c == "\""
+//         ? _pc_loop(fn_str, i+1, params, escaping, !quoting, nwscf, b_depth, p_depth)      // next chars are not quoted
+//         : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth)                                                   // no state change
+//   : c == "\""
+//     ? _pc_loop(fn_str, i+1, params, escaping, !quoting, nwscf, b_depth, p_depth)          // next chars are quoted
+//     : c == ")"
+//       ? // reduce paren depth. finished searching if new p_depth == 0
+//         b_depth || p_depth-1
+//           ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth-1)
+//           : params
+//       : c == "("
+//         ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth+1)     // increment paren depth
+//         : c == "["
+//           ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth+1, p_depth)   // increment bracket depth
+//           : c == "]"
+//             ? _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth-1, p_depth) // decrement bracket depth
+//             : !b_depth && p_depth == 1
+//               ? c == ","
+//                 ? _pc_loop(fn_str, i+1, params+1, escaping, quoting, false, b_depth, p_depth) // increment param count only if at main param def level
+//                 : c != " " && c != "\n" && c != "\t" && c != "\r"
+//                   ? // found what should be a param name. If no params yet, add a parameter to the count.
+//                     _pc_loop(fn_str, i+1, params == 0 && !nwscf ? 1 : params, escaping, quoting, true, b_depth, p_depth)
+//                   : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth)                                             // no state change
+//               : _pc_loop(fn_str, i+1, params, escaping, quoting, nwscf, b_depth, p_depth)                                                 // no state change
+// ;
 
-/**
- * Counts the number of parameters that can be passed to the function fn.
- *
- * THIS IS A DEMO of how this would look if using direct recursion.
- *
- * @see _pc_loop for processing function.
- *
- * TODO: Should benchmark this against main param_count() version which uses
- *       reduce_air() to see how much overhead reduce_air() adds.
- *
- * @param {function(...): any} fn
- *
- * @returns {number}
- *   The number of parameters that the function can take.
- */
-function param_count_direct_recursion_demo(fn) =
-  let ( _ = verify_fn(fn) )
-  let (fn_str = str(fn))
-  assert(fn_str[_PARAM_BEGIN_I()-1] == "(", str("lambda parameters expected to start at ", _PARAM_BEGIN_I()))
-  _pc_loop(fn_str)
-;
+// /**
+//  * Counts the number of parameters that can be passed to the function fn.
+//  *
+//  * THIS IS A DEMO of how this would look if using direct recursion.
+//  *
+//  * @see _pc_loop for processing function.
+//  *
+//  * TODO: Should benchmark this against main param_count() version which uses
+//  *       reduce_air() to see how much overhead reduce_air() adds.
+//  *
+//  * @param {function(...): any} fn
+//  *
+//  * @returns {number}
+//  *   The number of parameters that the function can take.
+//  */
+// function param_count_direct_recursion_demo(fn) =
+//   let ( _ = verify_fn(fn) )
+//   let (fn_str = str(fn))
+//   assert(fn_str[_PARAM_BEGIN_I()-1] == "(", str("lambda parameters expected to start at ", _PARAM_BEGIN_I()))
+//   _pc_loop(fn_str)
+// ;
 
 // test_eq(0, param_count(function() 1));
 // test_eq(1, param_count(function( s) 1));
@@ -182,8 +182,10 @@ function param_count_direct_recursion_demo(fn) =
 /**
  * Applies each element in a list to a function's parameter list.
  *
- * TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
- *       overhead.  NEED TO BENCHMARK to determine which to keep.
+ * > TODO:
+ * > 
+ * > apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
+ * > overhead.  NEED TO BENCHMARK to determine which to keep.
  *
  * @param {function(...): any} fn
  *   A lambda that takes between 0 and 15 parameters.
@@ -230,8 +232,10 @@ function apply_to_fn(fn, p) =
 /**
  * Applies each element in a list to a function's parameter list.
  *
- * TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
- *       overhead.  NEED TO BENCHMARK to determine which to keep.
+ * > TODO:
+ * > 
+ * > apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
+ * > overhead.  NEED TO BENCHMARK to determine which to keep.
  *
  * @param {function(...): any} fn
  *   A lambda that takes between 0 and 15 parameters.

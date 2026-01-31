@@ -18,16 +18,19 @@
  *
  * #### Example
  *
- *     hello = "hello"
- *     echo(els(hello, range(4, -1, 0)));
- *     echo(els(hello, rev_i(hello)));
- *     echo(els(hello, slice(-1, -1, 0)));
+ * ```openscad
+ * hello = "hello"
+ * echo(els(hello, range(4, -1, 0)));
+ * echo(els(hello, rev_i(hello)));
+ * echo(els(hello, slice(-1, -1, 0)));
+ * ```
  *
  * Would output
- *
- *     ECHO: "olleh"
- *     ECHO: "olleh"
- *     ECHO: "olleh"
+ * ```
+ * ECHO: "olleh"
+ * ECHO: "olleh"
+ * ECHO: "olleh"
+ * ```
  *
  * > NOTE:
  * >
@@ -292,9 +295,13 @@ function slice_to_range(slice, slr, _slr_len) =
 /**
  * @typedef {list} slr_cache
  *
- * Cache returned by `_slr_cache(slr, birls, end_i)`.  Usage example:
+ * Cache returned by `_slr_cache(slr, birls, end_i)`.
  *
- *     len_of_slr = cache_obj[_SLR_LEN]
+ * @example Usage
+ *
+ * ```openscad
+ * len_of_slr = cache_obj[_SLR_LEN]
+ * ```
  *
  * @slot {number} _SLR_LEN
  *   Length of `slr`.
@@ -704,20 +711,21 @@ function _slr_cache(slr, birls=0, end_i=undef) =
  * `slr` as a reference so that `birlsei` can be partially or fully omitted.
  * The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
  *
- * **Example:**
+ * @example Using algorithm directly
  *
- * Normal usage:
+ * ```openscad
+ * a = [1,2,3,4,5]
+ * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
  *
- *     a = [1,2,3,4,5]
- *     even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
- *     even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * @example Using algorithm indirectly with `it_each()`
  *
- * vs `it_each()` usage:
- *
- *     a = [1,2,3,4,5]
- *     even_indices = it_each(a, filter())(function(e) e % 2);
- *     even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
- *
+ * ```openscad
+ * a = [1,2,3,4,5]
+ * even_indices = it_each(a, filter())(function(e) e % 2);
+ * even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
+ * ```
  *
  * @param {(string|list|range)} slr
  *   This is the list to take element data from.
@@ -756,20 +764,21 @@ function _it_each(slr, algo_fn, birl, end_i, _eld) =
  * `slr` as a reference so that `birlsei` can be partially or fully omitted.
  * The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
  *
- * **Example:**
+ * @example Using algorithm directly
  *
- * Normal usage:
+ * ```openscad
+ * a = [1,2,3,4,5]
+ * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
  *
- *     a = [1,2,3,4,5]
- *     even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
- *     even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * @example Using algorithm indirectly with `it_idxs()`
  *
- * vs `it_idxs()` usage:
- *
- *     a = [1,2,3,4,5]
- *     even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
- *     even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
- *
+ * ```openscad
+ * a = [1,2,3,4,5]
+ * even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
+ * even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
  *
  * @param {(string|list|range)} slr
  *   This is the list to take element data from.
@@ -799,18 +808,21 @@ function it_idxs(slr, algo_fn, birls=0, end_i=undef) =
  *
  * **Example:**
  *
- * Normal usage:
+ * @example Using algorithm directly
  *
- *     a = [1,2,3,4,5]
- *     even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
- *     even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * ```openscad
+ * a = [1,2,3,4,5]
+ * even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+ * even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+ * ```
  *
- * vs `it_enum()` usage:
+ * @example Using algorithm indirectly with `it_enum()`
  *
- *     a = [1,2,3,4,5]
- *     even_indices = it_enum(a, filter())(function(p) p[0] % 2);
- *     even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
- *
+ * ```openscad
+ * a = [1,2,3,4,5]
+ * even_indices = it_enum(a, filter())(function(p) p[0] % 2);
+ * even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
+ * ```
  *
  * @param {(string|list|range)} slr
  *   This is the list to take element data from.
@@ -1003,22 +1015,24 @@ function _els(slr, birl, end_i, _eld, _blen) =
  *   list.
  * - Else a new range is computed
  *
- * Example:
+ * @example
  *
- *     range_els([1 : 10], [2 : 2 : 5])
- *     //  1  2  3  4  5  6  7  8  9 10  // element of     [ 1 : 1 : 10 ]
- *     //     2     3                    // indices        [ 2 : 2 :  5 ]
- *     //     2     3                    // final elements [ 2 : 2 :  4 ]
+ * ```openscad
+ * range_els([1 : 10], [2 : 2 : 5])
+ * //  1  2  3  4  5  6  7  8  9 10  // element of     [ 1 : 1 : 10 ]
+ * //     2     3                    // indices        [ 2 : 2 :  5 ]
+ * //     2     3                    // final elements [ 2 : 2 :  4 ]
  *
- *     range_els([1 : 2 : 15], [2 : 3 : 5])
- *     //  1  3  5  7  9  11 13 15       // elements of    [ 1 : 2 : 15 ]
- *     //        2         5             // indices        [ 2 : 3 :  5 ]
- *     //        5        11             // final elements [ 5 : 6 : 11 ]
+ * range_els([1 : 2 : 15], [2 : 3 : 5])
+ * //  1  3  5  7  9  11 13 15       // elements of    [ 1 : 2 : 15 ]
+ * //        2         5             // indices        [ 2 : 3 :  5 ]
+ * //        5        11             // final elements [ 5 : 6 : 11 ]
  *
- *     range_els([2 : 10], [1, 3, 6])
- *     //  2  3  4  5  6  7  8  9 10     // elements of    [ 2 : 1 : 10 ]
- *     //     1     4        6           // indices        [ 1, 3, 6 ]
- *     //     3     5        8           // final elements [ 3, 5, 8 ]
+ * ([2 : 10], [1, 3, 6])
+ *   2  3  4  5  6  7  8  9 10     // elements of    [ 2 : 1 : 10 ]
+ *      1     4        6           // indices        [ 1, 3, 6 ]
+ *      3     5        8           // final elements [ 3, 5, 8 ]
+ * ```
  *
  * @param {range} r
  *   The r to get the elements from.

@@ -527,16 +527,46 @@ class TrackFull(Track):
 
 from abc import ABC, abstractmethod
 
+def camel_to_snake_case(m: regex.Match):
+  """
+  Changes a capital letter to a _ + it's lowercase letter.
+
+  Parameters
+  ----------
+  m : regex.Match
+      matched group
+
+  Returns
+  -------
+  str
+      Replace matched string with this.
+  """
+  return "_" + m[0].lower()
+  
+def fix_for_githubs_fascist_overreach(s: str) -> str:
+  """
+  GitHub mandates that all internal links be lowercase for no particular reason.
+  This hammers down those righteous capitalistic letters!
+
+  Parameters
+  ----------
+  s : str
+      String of the masses.
+
+  Returns
+  -------
+  str
+      The beaten down string.
+  """
+  return regex.sub(r"[A-Z]", camel_to_snake_case, s)
+
 def sanitize_anchor_id(id: str) -> str:
   """Sanitize an id for use in an HTML anchor.
   Colons are replaced with ``__``, spaces and other
   URL-specific punctuation are replaced with ``_``."""
   id = id.replace(":", "__")
   id = regex.sub(r"[^\w-]", "_", id)
-  # GitHub mandates that all internal links be lowercase for no particular reason.
-  # Have to be able to differentiate between upper and lowercase so prefixing _
-  # to a lowercase capital letter.
-  id = regex.sub(r"[A-Z]", lambda m: "_" + m[0].lower(), id)
+  id = fix_for_githubs_fascist_overreach(id)
   return id
 
 def make_anchor(prefix: str, id: str):
@@ -1596,9 +1626,9 @@ class Doc:
         if desc:
           desc = Doc.RE_TRAILING_EMPTY_LINES.sub("", desc)
           desc = Doc.RE_EXAMPLE.sub(
-            r"\g<pre_ex><details><summary>Example:\g<name></summary>" "\n"
-            r"\g<desc>"
-            "\n</details>", desc)
+            r"\g<pre_ex><details><summary><b>Example:</b><i>\g<name></i></summary>" "\n\n"
+            r"\g<desc>" "\n\n"
+            r"</details>", desc)
           output_lines.append(desc)
           output_lines.append("")
 
@@ -1697,17 +1727,14 @@ class Doc:
             output_lines += callchain_lines
 
           # Description
-          if self.items["desc"]:
-            for (_, _, desc, _) in self.items["desc"]:
-              if desc:
-                output_lines.append(desc.strip())
-                output_lines.append("")
+          self.output_desc(output_lines)
 
           # Params and returns
           self.output_params(output_lines)
           self.output_rets(output_lines)
     finally:
-      output_lines += ['<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>\n']
+      if self.id:
+        output_lines += ['<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>\n']
         
 class Symbols:
   """
@@ -1858,7 +1885,18 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
   # Prepend emojis to header markers.
   RE_H2 = regex.compile(r"^(## )(.*)", regex.MULTILINE)
   RE_H3 = regex.compile(r"^(### )(.*)", regex.MULTILINE)
-
+  RE_MD_LINKS = regex.compile(
+    r"""
+    (?<!\\)
+    (
+      \[[^\]]++\]
+      \( \#[a-z_-]*
+    )
+    (
+      [ A-Z][^\)]*+\)
+    )
+    """, regex.VERBOSE)
+  
   def add_h2_emoji_anchor(m):
     return f"<hr/>\n\n{m.group(1)}📘{m.group(2)}{make_anchor('file', m.group(2))}"
 
@@ -1871,6 +1909,7 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
     tmp = output_lines[i]
     tmp = RE_H2.sub(add_h2_emoji_anchor, tmp)
     tmp = RE_H3.sub(add_h3_emoji_and_anchor, tmp)
+    tmp = RE_MD_LINKS.sub(lambda m: m[1] + fix_for_githubs_fascist_overreach(m[2]), tmp)
     output_lines[i] = tmp
 
 def render_json(filename: str, item_count: int, content: str, track_ids: dict[str, TrackIds], track_docs: list[tuple[int, str]], track_symbols: list[str], item: ItemInfo) -> int:

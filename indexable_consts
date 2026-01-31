@@ -43,7 +43,9 @@ _SLR_CACHE_HEADER = "_SLR_CACHE";
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_LEN]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_LEN]
+ * ```
  *
  * Return type is number.
  */
@@ -56,7 +58,9 @@ _SLR_LEN  = 1;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_TE]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_TE]
+ * ```
  *
  * Return type is `TypeEnum`
  */
@@ -70,7 +74,9 @@ _SLR_TE   = 2;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_ELD]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_ELD]
+ * ```
  *
  * Return type is `function(i): any`
  */
@@ -83,7 +89,9 @@ _SLR_ELD  = 3;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_BLEN]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_BLEN]
+ * ```
  *
  * Return type is `number`
  */
@@ -97,7 +105,9 @@ _SLR_BLEN = 4;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_ELI]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_ELI]
+ * ```
  *
  * Return type is `function(i): any`
  */
@@ -110,7 +120,9 @@ _SLR_ELI  = 5;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_IDX]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_IDX]
+ * ```
  *
  * Return type is `function(i): number`
  */
@@ -123,7 +135,9 @@ _SLR_IDX  = 6;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_STR]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_STR]
+ * ```
  *
  * Return type is `function() : string`
  */
@@ -136,7 +150,9 @@ _SLR_STR  = 7;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_BIRL]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_BIRL]
+ * ```
  *
  * Return type is `number | list | range`
  */
@@ -149,7 +165,9 @@ _SLR_BIRL = 8;
  *
  * @example Usage
  *
- *     _slr_cache(slr, birls, end_i)[_SLR_END_I]
+ * ```openscad
+ * _slr_cache(slr, birls, end_i)[_SLR_END_I]
+ * ```
  *
  * Return type is `number | undef`
  */

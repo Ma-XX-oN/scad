@@ -25,7 +25,9 @@
  *
  * @example Usage
  *
- *     assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
+ * ```openscad
+ * assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
+ * ```
  */
 VI_VECTOR = 0;
 /**
@@ -35,7 +37,9 @@ VI_VECTOR = 0;
  *
  * @example Usage
  *
- *     assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
+ * ```openscad
+ * assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
+ * ```
  */
 VI_LENGTH = 1;
 /**
@@ -45,7 +49,9 @@ VI_LENGTH = 1;
  *
  * @example Usage
  *
- *     assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
+ * ```openscad
+ * assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
+ * ```
  */
 VI_DIR    = 2;
 /**
@@ -54,7 +60,8 @@ VI_DIR    = 2;
  * vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
  *
  * @example Usage
- *
- *     assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
+ * ```openscad
+ * assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
+ * ```
  */
 VI_NORMAL = 3;

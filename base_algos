@@ -22,18 +22,22 @@
  * want to find the first instance of the letter "t" in a string.  Using this
  * library, the following could be done:
  *
- *     s = "Hello there!";
- *     i = find(fwd_i(s))(function(i)
- *           s[i] == "t"
- *         );
+ * ```openscad
+ * s = "Hello there!";
+ * i = find(fwd_i(s))(function(i)
+ *       s[i] == "t"
+ *     );
+ * ```
  *
  * Or it could be done using the algorithm adaptor `it_each` (See
  * [Algorithm Adaptors](#algorithm-adaptors)):
  *
- *     s = "Hello there!";
- *     i = it_each(s, find())(function(c)
- *           c == "t"
- *         );
+ * ```openscad
+ * s = "Hello there!";
+ * i = it_each(s, find())(function(c)
+ *       c == "t"
+ *     );
+ * ```
  *
  * You'll notice the occurrence of `)(`.  This ends the algorithm or adaptor
  * call and start the next call which takes a function to test each element.
@@ -233,6 +237,36 @@ use <function>
  * > is monotonically nondecreasing over the searched indices; or the results
  * > are **UB**.
  *
+ * @example Find first element >= target in a sorted list
+ * ```openscad
+ * use <base_algos>
+ * use <indexable>
+ * 
+ * xs = [1, 3, 3, 5, 8];
+ * target = 3;
+ * 
+ * // spaceship_fn(i) is negative when xs[i] < target,
+ * // zero when xs[i] == target,
+ * // positive when xs[i] > target.
+ * idx = find_lower(fwd_i(xs))(
+ *   function(i) xs[i] - target
+ * );
+ * 
+ * // idx == 1  (first 3)
+ * ```
+ *
+ * @example If not found, result is undef
+ * ```openscad
+ * xs = [1, 3, 3, 5, 8];
+ * target = 9;
+ * 
+ * idx = find_lower(fwd_i(xs))(
+ *   function(i) xs[i] - target
+ * );
+ * 
+ * assert(idx == undef);
+ * ```
+ * 
  * @param {OptionalBirl} [birl]
  * @param {EndI} [end_i]
  *

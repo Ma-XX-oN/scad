@@ -20,8 +20,10 @@
  *
  * @example Usage
  *
- *     assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
- *     assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+ * ```openscad
+ * assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
+ * assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+ * ```
  */
 SHOW_SIGN_NEG = 0;
 /**
@@ -31,8 +33,10 @@ SHOW_SIGN_NEG = 0;
  *
  * @example Usage
  *
- *     assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
- *     assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+ * ```openscad
+ * assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
+ * assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+ * ```
  */
 SHOW_SIGN_POS_NEG = 1;
 /**
@@ -42,7 +46,9 @@ SHOW_SIGN_POS_NEG = 1;
  *
  * @example Usage
  *
- *     assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
- *     assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+ * ```openscad
+ * assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
+ * assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+ * ```
  */
 SHOW_SIGN_SPC_NEG = 2;

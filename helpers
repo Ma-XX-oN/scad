@@ -495,7 +495,9 @@ module axis(l, t=1) {
  *
  * To make it easier in a file, create the following variable in that file:
  *
- *     _fl = function(l) fl("<this-file-name>", l);
+ * ```openscad
+ * _fl = function(l) fl("<this-file-name>", l);
+ * ```
  *
  * As a variable, it won't get exported.  Use that in your file.
  *
@@ -574,10 +576,11 @@ function Assert(truth, msg = "") =
  * > `p0` and `p1` must be the same shape and must consist of values that have
  * > `+`, `-` and `/` operations defined for them.
  *
- * Example
- *
- *     interpolated_values(1, 2, 1) == [1.5]
- *     interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
+ * @example
+ * ```openscad
+ * interpolated_values(1, 2, 1) == [1.5]
+ * interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
+ * ```
  *
  * @param {(number|list)} p0
  *   Starting point.

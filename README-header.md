@@ -1,4 +1,21 @@
-# OpenSCAD Standard Library (OSL) (potential)
+# OpenSCAD Curry Library (OCL)
+
+- [Purpose](#purpose)
+- [About this file](#about-this-file)
+- [Installation](#installation)
+  - [Importing Library Files](#importing-library-files)
+- [Compatibility](#compatibility)
+- [Status](#status)
+- [Licence](#licence)
+  - [Reading the Documentation](#reading-the-documentation)
+    - [Callout Blocks](#callout-blocks)
+    - [Section Emojis](#section-emojis)
+    - [Symbol Emojis](#symbol-emojis)
+  - [Signature Specifications](#signature-specifications)
+  - [Libraries](#libraries)
+    - [Parameter Names That Infer Types](#parameter-names-that-infer-types)
+    - [Synopses of Files](#synopses-of-files)
+- [API Table of Contents](#api-table-of-contents)
 
 ## Purpose
 
@@ -208,3 +225,11 @@ There are several files in this library set.
     - Miscellaneous functions that don't fit elsewhere.
  13. [skin](#file-skin)
     - Generates a polyhedron using slices.
+
+## API Table of Contents
+
+*If viewing on GitHub, you can also use the outline button (☰) near the top
+ right of the page to navigate by heading.  However, I would suggest looking
+ [directly at the file](README.md) rather then from the repo page since it
+ doesn't work properly from there.*
+

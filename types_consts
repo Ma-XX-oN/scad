@@ -19,11 +19,15 @@
  *
  * @example Usage
  *
- *     assert(type_enum([0:1]) == RANGE);
- *     assert(type_enum(range(0,1)) == RANGE)
+ * ```openscad
+ * assert(type_enum([0:1]) == RANGE);
+ * assert(type_enum(range(0,1)) == RANGE)
+ * ```
  *
- *     // Beware, an empty range is a LIST!!
- *     assert(type_enum(range(1,0)) == LIST)
+ * ```openscad
+ * // Beware, an empty range is a LIST!!
+ * assert(type_enum(range(1,0)) == LIST)
+ * ```
  */
 RANGE   =  0;
 /**
@@ -33,7 +37,9 @@ RANGE   =  0;
  *
  * @example Usage
  *
- *     assert(type_enum([]) == LIST);
+ * ```openscad
+ * assert(type_enum([]) == LIST);
+ * ```
  */
 LIST    =  1;
 /**
@@ -43,7 +49,9 @@ LIST    =  1;
  *
  * @example Usage
  *
- *     assert(type_enum("") == STR);
+ * ```openscad
+ * assert(type_enum("") == STR);
+ * ```
  */
 STR     =  2;
 /**
@@ -53,7 +61,9 @@ STR     =  2;
  *
  * @example Usage
  *
- *     assert(type_enum(???) == UNKNOWN);
+ * ```openscad
+ * assert(type_enum(???) == UNKNOWN);
+ * ```
  */
 UNKNOWN =  3;
 /**
@@ -63,7 +73,9 @@ UNKNOWN =  3;
  *
  * @example Usage
  *
- *     assert(type_enum(slice(0, -1)) == SLICE);
+ * ```openscad
+ * assert(type_enum(slice(0, -1)) == SLICE);
+ * ```
  */
 SLICE   =  4;
 /**
@@ -73,7 +85,9 @@ SLICE   =  4;
  *
  * @example Usage
  *
- *     assert(type_enum(undef) == UNDEF);
+ * ```openscad
+ * assert(type_enum(undef) == UNDEF);
+ * ```
  */
 UNDEF   =  5;
 /**
@@ -83,7 +97,9 @@ UNDEF   =  5;
  *
  * @example Usage
  *
- *     assert(type_enum(true) == BOOL);
+ * ```openscad
+ * assert(type_enum(true) == BOOL);
+ * ```
  */
 BOOL    =  6;
 /**
@@ -93,7 +109,9 @@ BOOL    =  6;
  *
  * @example Usage
  *
- *     assert(type_enum(function() 0) == FUNC);
+ * ```openscad
+ * assert(type_enum(function() 0) == FUNC);
+ * ```
  */
 FUNC    =  7;
 /**
@@ -103,7 +121,9 @@ FUNC    =  7;
  *
  * @example Usage
  *
- *     assert(type_enum(1) == NUM);
+ * ```openscad
+ * assert(type_enum(1) == NUM);
+ * ```
  */
 NUM     =  8;
 /**
@@ -113,7 +133,9 @@ NUM     =  8;
  *
  * @example Usage
  *
- *     assert(type_enum(1, true) == INT);
+ * ```openscad
+ * assert(type_enum(1, true) == INT);
+ * ```
  */
 INT     =  9;
 /**
@@ -123,7 +145,9 @@ INT     =  9;
  *
  * @example Usage
  *
- *     assert(type_enum(1.1, true) == FLOAT);
+ * ```openscad
+ * assert(type_enum(1.1, true) == FLOAT);
+ * ```
  */
 FLOAT   = 10;
 /**
@@ -133,6 +157,8 @@ FLOAT   = 10;
  *
  * @example Usage
  *
- *     assert(type_enum(1/0) == NAN);
+ * ```openscad
+ * assert(type_enum(1/0) == NAN);
+ * ```
  */
 NAN     = 11;

@@ -1,4 +1,21 @@
-# OpenSCAD Standard Library (OSL) (potential)
+# OpenSCAD Curry Library (OCL)
+
+- [Purpose](#purpose)
+- [About this file](#about-this-file)
+- [Installation](#installation)
+  - [Importing Library Files](#importing-library-files)
+- [Compatibility](#compatibility)
+- [Status](#status)
+- [Licence](#licence)
+  - [Reading the Documentation](#reading-the-documentation)
+    - [Callout Blocks](#callout-blocks)
+    - [Section Emojis](#section-emojis)
+    - [Symbol Emojis](#symbol-emojis)
+  - [Signature Specifications](#signature-specifications)
+  - [Libraries](#libraries)
+    - [Parameter Names That Infer Types](#parameter-names-that-infer-types)
+    - [Synopses of Files](#synopses-of-files)
+- [API Table of Contents](#api-table-of-contents)
 
 ## Purpose
 
@@ -209,9 +226,12 @@ There are several files in this library set.
  13. [skin](#file-skin)
     - Generates a polyhedron using slices.
 
-## Table of Contents
+## API Table of Contents
 
-*If viewing on GitHub, you can also use the outline button (☰) near the top right of the page to navigate by heading.  However, I would suggest looking [directly at the file](README.md) rather then from the repo page since it doesn't work properly from there.*
+*If viewing on GitHub, you can also use the outline button (☰) near the top
+ right of the page to navigate by heading.  However, I would suggest looking
+ [directly at the file](README.md) rather then from the repo page since it
+ doesn't work properly from there.*
 
 <details><summary><a href="#file-range">📘 <b>range</b></a></summary>
 <blockquote>
@@ -509,9 +529,6 @@ There are several files in this library set.
 <details><summary><a href="#ch-function-_function__introspection">📑 <i>Function Introspection</i></a></summary>
 <blockquote>
 • <a href="#f-param_count">⚙️param_count</a><br>
-• <a href="#f-__p_a_r_a_m__b_e_g_i_n__i">⚙️_PARAM_BEGIN_I</a><br>
-• <a href="#f-_pc_loop">⚙️_pc_loop</a><br>
-• <a href="#f-param_count_direct_recursion_demo">⚙️param_count_direct_recursion_demo</a><br>
 • <a href="#f-apply_to_fn">⚙️apply_to_fn</a><br>
 • <a href="#f-apply_to_fn2">⚙️apply_to_fn2</a><br>
 </blockquote>
@@ -731,7 +748,7 @@ There are several files in this library set.
 <blockquote>
 • <a href="#ch-helpers_consts-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-helpers_consts-_purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__">📑 <i>For indexing type [VectorInfo](#t-VectorInfo).</i></a></summary>
+<details><summary><a href="#ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__">📑 <i>For indexing type [VectorInfo](#t-_vector_info).</i></a></summary>
 <blockquote>
 • <a href="#t-_v_i__v_e_c_t_o_r">💠VI_VECTOR</a><br>
 • <a href="#t-_v_i__l_e_n_g_t_h">💠VI_LENGTH</a><br>
@@ -834,11 +851,7 @@ This library is to help with those deficiencies.
 > like that used in python, where `range(1, 5)` would iterate on `1`, `2`,
 > `3`, and `4`.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Test</i><a id='ch-range-_test'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_range<a id='f-is_range'></a>
 
@@ -862,11 +875,9 @@ Returns `true` if object is a range, otherwise `false`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Functions</i><a id='ch-range-_functions'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️range<a id='f-range'></a>
 
@@ -918,7 +929,7 @@ step > 0 and begin_i > end_i or count <= 0`, then returns an empty list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️range\_len<a id='f-range_len'></a>
 
@@ -948,7 +959,7 @@ The number of indices the range contains.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️range\_el<a id='f-range_el'></a>
 
@@ -991,7 +1002,7 @@ The index to have retrieved if iterated over `i` times.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️range\_el\_pos\_idx<a id='f-range_el_pos_idx'></a>
 
@@ -1024,7 +1035,7 @@ The index to have retrieved if iterated over `i` times.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️range\_idx<a id='f-range_idx'></a>
 
@@ -1063,7 +1074,7 @@ The positive index.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑range types</i><a id='ch-range-range_types'></a>
 
@@ -1102,7 +1113,7 @@ Stop value.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -1118,11 +1129,7 @@ Stop value.
 This library allows representing types as enumerated values, strings or
 minimal strings for complex types.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Tests</i><a id='ch-types-_tests'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_indexable\_te<a id='f-is_indexable_te'></a>
 
@@ -1135,7 +1142,7 @@ States if a te (type_enum) represents an indexable type, either directly with
 
 **<code>type_enum</code>**: <code><a href="#t-TypeEnum">TypeEnum</a></code>
 
-Enum for type (See [type_enum](#t-TypeEnum))
+Enum for type (See [type_enum](#t-_type_enum))
 
 </details>
 
@@ -1147,7 +1154,7 @@ Returns `true` if indexable, `false` otherwise.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_int<a id='f-is_int'></a>
 
@@ -1171,7 +1178,7 @@ Returns `true` if integer, `false` otherwise.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_float<a id='f-is_float'></a>
 
@@ -1195,7 +1202,7 @@ Returns `true` if float, `false` otherwise.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_nan<a id='f-is_nan'></a>
 
@@ -1219,11 +1226,9 @@ Returns `true` if NaN, `false` otherwise.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Type Introspection</i><a id='ch-types-_type__introspection'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_TYPE\_NAMES<a id='t-__t_y_p_e__n_a_m_e_s'></a>
 
@@ -1231,7 +1236,7 @@ Returns `true` if NaN, `false` otherwise.
 
 The names of the types indexed by the type enums.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️type\_enum<a id='f-type_enum'></a>
 
@@ -1260,7 +1265,7 @@ The number corresponding to the type enum.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️type\_enum\_to\_str<a id='f-type_enum_to_str'></a>
 
@@ -1285,7 +1290,7 @@ return "*INVALID TYPE*".
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️type<a id='f-type'></a>
 
@@ -1313,7 +1318,7 @@ Returns string representation of `o`'s type.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️type\_structure<a id='f-type_structure'></a>
 
@@ -1344,7 +1349,7 @@ This string is a representation of the type structure of o.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️type\_value<a id='f-type_value'></a>
 
@@ -1368,7 +1373,7 @@ Give info for `o` as string.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑types types</i><a id='ch-types-types_types'></a>
 
@@ -1379,7 +1384,7 @@ Give info for `o` as string.
 Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
 to get name of type.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -1395,8 +1400,6 @@ Constants representing the types as enumerated values.
 
 ### <i>📑Values</i><a id='ch-types_consts-_values'></a>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 #### 💠RANGE<a id='t-_r_a_n_g_e'></a>
 
 <code>*value* RANGE : <a href="#t-TypeEnum">TypeEnum</a></code>
@@ -1406,15 +1409,19 @@ Enum for range type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum([0:1]) == RANGE);
-    assert(type_enum(range(0,1)) == RANGE)
+```openscad
+assert(type_enum([0:1]) == RANGE);
+assert(type_enum(range(0,1)) == RANGE)
+```
 
-    // Beware, an empty range is a LIST!!
-    assert(type_enum(range(1,0)) == LIST)
+```openscad
+// Beware, an empty range is a LIST!!
+assert(type_enum(range(1,0)) == LIST)
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠LIST<a id='t-_l_i_s_t'></a>
 
@@ -1425,11 +1432,13 @@ Enum for list type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum([]) == LIST);
+```openscad
+assert(type_enum([]) == LIST);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠STR<a id='t-_s_t_r'></a>
 
@@ -1440,11 +1449,13 @@ Enum for string type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum("") == STR);
+```openscad
+assert(type_enum("") == STR);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠UNKNOWN<a id='t-_u_n_k_n_o_w_n'></a>
 
@@ -1455,11 +1466,13 @@ Enum for unknown type.  Shouldn't be possible to get this value.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(???) == UNKNOWN);
+```openscad
+assert(type_enum(???) == UNKNOWN);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠SLICE<a id='t-_s_l_i_c_e'></a>
 
@@ -1470,11 +1483,13 @@ Enum for slice type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(slice(0, -1)) == SLICE);
+```openscad
+assert(type_enum(slice(0, -1)) == SLICE);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠UNDEF<a id='t-_u_n_d_e_f'></a>
 
@@ -1485,11 +1500,13 @@ Enum for undef type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(undef) == UNDEF);
+```openscad
+assert(type_enum(undef) == UNDEF);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠BOOL<a id='t-_b_o_o_l'></a>
 
@@ -1500,11 +1517,13 @@ Enum for boolean type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(true) == BOOL);
+```openscad
+assert(type_enum(true) == BOOL);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠FUNC<a id='t-_f_u_n_c'></a>
 
@@ -1515,11 +1534,13 @@ Enum for function type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(function() 0) == FUNC);
+```openscad
+assert(type_enum(function() 0) == FUNC);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠NUM<a id='t-_n_u_m'></a>
 
@@ -1530,11 +1551,13 @@ Enum for number type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(1) == NUM);
+```openscad
+assert(type_enum(1) == NUM);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠INT<a id='t-_i_n_t'></a>
 
@@ -1545,11 +1568,13 @@ Enum for integer type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(1, true) == INT);
+```openscad
+assert(type_enum(1, true) == INT);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠FLOAT<a id='t-_f_l_o_a_t'></a>
 
@@ -1560,11 +1585,13 @@ Enum for floating point type
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(1.1, true) == FLOAT);
+```openscad
+assert(type_enum(1.1, true) == FLOAT);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠NAN<a id='t-_n_a_n'></a>
 
@@ -1575,11 +1602,13 @@ Enum for NaN
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(type_enum(1/0) == NAN);
+```openscad
+assert(type_enum(1/0) == NAN);
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -1607,11 +1636,7 @@ Keeping this in the user facing API was done because just counting from N to
 M is very common, and without dereferencing a list or range it's marginally
 faster.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Functions</i><a id='ch-birlei-_functions'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️birlei\_to\_begin\_i\_end\_i<a id='f-birlei_to_begin_i_end_i'></a>
 
@@ -1667,7 +1692,7 @@ Result of `algo_fn()`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️birlei\_to\_indices<a id='f-birlei_to_indices'></a>
 
@@ -1701,7 +1726,7 @@ Returns a list or range describing the indices to traverse.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑birlei types</i><a id='ch-birlei-birlei_types'></a>
 
@@ -1713,7 +1738,7 @@ Returns a list or range describing the indices to traverse.
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩EndI<a id='t-_end_i'></a>
 
@@ -1725,7 +1750,7 @@ Returns a list or range describing the indices to traverse.
     iterated over.
 - Else must be `undef`.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩SpaceshipFn<a id='t-_spaceship_fn'></a>
 
@@ -1770,7 +1795,7 @@ The probe value as defined above.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩PredFn<a id='t-_pred_fn'></a>
 
@@ -1814,7 +1839,7 @@ The probe value as defined above.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReductionFn<a id='t-_reduction_fn'></a>
 
@@ -1868,7 +1893,7 @@ was empty.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReductionAirFn<a id='t-_reduction_air_fn'></a>
 
@@ -1922,7 +1947,7 @@ value.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩PredMapFn<a id='t-_pred_map_fn'></a>
 
@@ -1973,7 +1998,7 @@ States if to return the predicate result or the probed value.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩MapperFn<a id='t-_mapper_fn'></a>
 
@@ -2014,7 +2039,7 @@ Value that was mapped given the probe.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩PpmrrairFn<a id='t-_ppmrrair_fn'></a>
 
@@ -2023,7 +2048,7 @@ Value that was mapped given the probe.
 The exact meaning depends on the type expected.  For more info, go to the
 type you are interested in.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩MapBackFn<a id='t-_map_back_fn'></a>
 
@@ -2051,7 +2076,7 @@ Index to remap or undef if no index to remap.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -2079,20 +2104,20 @@ want to find the first instance of the letter "t" in a string.  Using this
 library, the following could be done:
 
 ```openscad
-    s = "Hello there!";
-    i = find(fwd_i(s))(function(i)
-          s[i] == "t"
-        );
+s = "Hello there!";
+i = find(fwd_i(s))(function(i)
+      s[i] == "t"
+    );
 ```
 
 Or it could be done using the algorithm adaptor `it_each` (See
 [Algorithm Adaptors](#algorithm-adaptors)):
 
 ```openscad
-    s = "Hello there!";
-    i = it_each(s, find())(function(c)
-          c == "t"
-        );
+s = "Hello there!";
+i = it_each(s, find())(function(c)
+      c == "t"
+    );
 ```
 
 You'll notice the occurrence of `)(`.  This ends the algorithm or adaptor
@@ -2216,11 +2241,7 @@ over each `birlei` element:
 
 **See also** [Algorithm Adaptors](#algorithm-adaptors).
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑The Base Algorithms</i><a id='ch-base_algos-_the__base__algorithms'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️find\_lower<a id='f-find_lower'></a>
 
@@ -2310,7 +2331,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️find\_upper<a id='f-find_upper'></a>
 
@@ -2364,7 +2385,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️find<a id='f-find'></a>
 
@@ -2412,7 +2433,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️reduce<a id='f-reduce'></a>
 
@@ -2465,7 +2486,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️reduce\_air<a id='f-reduce_air'></a>
 
@@ -2518,7 +2539,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️filter<a id='f-filter'></a>
 
@@ -2565,7 +2586,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️map<a id='f-map'></a>
 
@@ -2613,7 +2634,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑base_algos types</i><a id='ch-base_algos-base_algos_types'></a>
 
@@ -2661,7 +2682,7 @@ Index of the selected bound, or `undef` if no such index exists.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩OptionalBirl<a id='t-_optional_birl'></a>
 
@@ -2673,7 +2694,7 @@ Index of the selected bound, or `undef` if no such index exists.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩AlgoFn<a id='t-_algo_fn'></a>
 
@@ -2707,19 +2728,19 @@ Returned value is based on the result of the function doing the iterating.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindLowerFn<a id='t-_find_lower_fn'></a>
 
 <code>*callback* FindLowerFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindLowerBirleiFn<a id='t-_find_lower_birlei_fn'></a>
 
 <code>*callback* FindLowerBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindUpperFn<a id='t-_find_upper_fn'></a>
 
@@ -2727,7 +2748,7 @@ Returned value is based on the result of the function doing the iterating.
 
 Returns the first index `i` where `spaceship_fn(i) > 0`.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindUpperFn<a id='t-_find_upper_fn'></a>
 
@@ -2777,13 +2798,13 @@ The first index `i` where `spaceship_fn(i) > 0` or `undef` if none found.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindUpperBirleiFn<a id='t-_find_upper_birlei_fn'></a>
 
 <code>*callback* FindUpperBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindFn<a id='t-_find_fn'></a>
 
@@ -2830,13 +2851,13 @@ First index where `pred_fn(i)` is `true`.  If none are found, returns
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindBirleiFn<a id='t-_find_birlei_fn'></a>
 
 <code>*callback* FindBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReduceFn<a id='t-_reduce_fn'></a>
 
@@ -2883,13 +2904,13 @@ Final value of accumulator.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReduceBirleiFn<a id='t-_reduce_birlei_fn'></a>
 
 <code>*callback* ReduceBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReduceAirFn<a id='t-_reduce_air_fn'></a>
 
@@ -2937,13 +2958,13 @@ Last continue value and the final value of accumulator.  If the original
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReduceAirBirleiFn<a id='t-_reduce_air_birlei_fn'></a>
 
 <code>*callback* ReduceAirBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FilterFn<a id='t-_filter_fn'></a>
 
@@ -2963,13 +2984,13 @@ A list of elements where the predicate returned true.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FilterBirleiFn<a id='t-_filter_birlei_fn'></a>
 
 <code>*callback* FilterBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩MapFn<a id='t-_map_fn'></a>
 
@@ -3008,13 +3029,13 @@ A list of elements that were mapped.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩MapBirleiFn<a id='t-_map_birlei_fn'></a>
 
 <code>*callback* MapBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -3027,8 +3048,6 @@ A list of elements that were mapped.
 ### <i>📑Purpose</i><a id='ch-any_all-_purpose'></a>
 
 Implements any and all algorithms.
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️any<a id='f-any'></a>
 
@@ -3075,7 +3094,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️all<a id='f-all'></a>
 
@@ -3118,7 +3137,7 @@ false.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑any_all types</i><a id='ch-any_all-any_all_types'></a>
 
@@ -3162,13 +3181,13 @@ First index where `pred_fn(i)` is `true` will result in `true`, else
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩AnyBirleiFn<a id='t-_any_birlei_fn'></a>
 
 <code>*callback* AnyBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩AllFn<a id='t-_all_fn'></a>
 
@@ -3210,13 +3229,13 @@ First index where `pred_fn(i)` is `false` will result in `false`, else
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩AllBirleiFn<a id='t-_all_birlei_fn'></a>
 
 <code>*callback* AllBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -3239,16 +3258,19 @@ backwards, use a reverse `range`, `rev_i`, or a reverse `slice` (step < 0).
 
 #### Example
 
-    hello = "hello"
-    echo(els(hello, range(4, -1, 0)));
-    echo(els(hello, rev_i(hello)));
-    echo(els(hello, slice(-1, -1, 0)));
+```openscad
+hello = "hello"
+echo(els(hello, range(4, -1, 0)));
+echo(els(hello, rev_i(hello)));
+echo(els(hello, slice(-1, -1, 0)));
+```
 
 Would output
-
-    ECHO: "olleh"
-    ECHO: "olleh"
-    ECHO: "olleh"
+```
+ECHO: "olleh"
+ECHO: "olleh"
+ECHO: "olleh"
+```
 
 > ℹ️ NOTE:
 >
@@ -3333,14 +3355,10 @@ Would output
 >
 > </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Slices</i><a id='ch-indexable-_slices'></a>
 
 A `slice` is an object similar to a `range`, but it's not a realised
 indexable object until it is paired with an `slr`.
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_slice<a id='f-is_slice'></a>
 
@@ -3364,7 +3382,7 @@ Object to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️slice<a id='f-slice'></a>
 
@@ -3409,7 +3427,7 @@ Returns a slice object.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️slice\_to\_range<a id='f-slice_to_range'></a>
 
@@ -3452,7 +3470,7 @@ If the slice is completely before or after the slr, returns [].
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_slr\_cache<a id='f-_slr_cache'></a>
 
@@ -3539,7 +3557,7 @@ The `slr` used as reference.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Algorithm Adaptors</i><a id='ch-indexable-_algorithm__adaptors'></a>
 
@@ -3553,8 +3571,6 @@ adaptor functions which allow referencing a `slr`'s element values.
 
 Using these adaptors allows the use the length of the `slr` as reference if
 the `birlsei` is partially or fully omitted.
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️it\_each<a id='f-it_each'></a>
 
@@ -3570,19 +3586,27 @@ so that it receives the <i>`element`</i> rather than the *index*.  Uses the
 `slr` as a reference so that `birlsei` can be partially or fully omitted.
 The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
 
-**Example:**
+<details><summary><b>Example:</b><i> Using algorithm directly</i></summary>
 
-Normal usage:
 
-    a = [1,2,3,4,5]
-    even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
-    even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+```openscad
+a = [1,2,3,4,5]
+even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+```
 
-vs `it_each()` usage:
 
-    a = [1,2,3,4,5]
-    even_indices = it_each(a, filter())(function(e) e % 2);
-    even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
+
+</details><details><summary><b>Example:</b><i> Using algorithm indirectly with `it_each()`</i></summary>
+
+
+```openscad
+a = [1,2,3,4,5]
+even_indices = it_each(a, filter())(function(e) e % 2);
+even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
+```
+
+</details>
 
 <details><summary>parameters</summary>
 
@@ -3623,7 +3647,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️it\_idxs<a id='f-it_idxs'></a>
 
@@ -3638,19 +3662,27 @@ on a collection, `ppmrrair_fn` will still receive the *index*.  Uses the
 `slr` as a reference so that `birlsei` can be partially or fully omitted.
 The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
 
-**Example:**
+<details><summary><b>Example:</b><i> Using algorithm directly</i></summary>
 
-Normal usage:
 
-    a = [1,2,3,4,5]
-    even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
-    even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+```openscad
+a = [1,2,3,4,5]
+even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+```
 
-vs `it_idxs()` usage:
 
-    a = [1,2,3,4,5]
-    even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
-    even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
+
+</details><details><summary><b>Example:</b><i> Using algorithm indirectly with `it_idxs()`</i></summary>
+
+
+```openscad
+a = [1,2,3,4,5]
+even_indices = it_idxs(a, filter())(function(i) a[i] % 2);
+even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
+```
+
+</details>
 
 <details><summary>parameters</summary>
 
@@ -3691,7 +3723,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️it\_enum<a id='f-it_enum'></a>
 
@@ -3709,17 +3741,27 @@ The `birlsei` is then normalised to a `birlei` and forwarded to `algo_fn`.
 
 **Example:**
 
-Normal usage:
+<details><summary><b>Example:</b><i> Using algorithm directly</i></summary>
 
-    a = [1,2,3,4,5]
-    even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
-    even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
 
-vs `it_enum()` usage:
+```openscad
+a = [1,2,3,4,5]
+even_indices = filter(fwd_i(a))(function(i) a[i] % 2);
+even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
+```
 
-    a = [1,2,3,4,5]
-    even_indices = it_enum(a, filter())(function(p) p[0] % 2);
-    even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
+
+
+</details><details><summary><b>Example:</b><i> Using algorithm indirectly with `it_enum()`</i></summary>
+
+
+```openscad
+a = [1,2,3,4,5]
+even_indices = it_enum(a, filter())(function(p) p[0] % 2);
+even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
+```
+
+</details>
 
 <details><summary>parameters</summary>
 
@@ -3760,11 +3802,9 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Treat All Indexables the Same</i><a id='ch-indexable-_treat__all__indexables_the__same'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️slr\_len<a id='f-slr_len'></a>
 
@@ -3788,7 +3828,7 @@ The number of elements the `slr` contains.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️idx<a id='f-idx'></a>
 
@@ -3832,7 +3872,7 @@ The positive index.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️el<a id='f-el'></a>
 
@@ -3866,7 +3906,7 @@ The element at the index specified.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️el\_pos\_idx<a id='f-el_pos_idx'></a>
 
@@ -3899,7 +3939,7 @@ The element at the index specified.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️els<a id='f-els'></a>
 
@@ -3943,7 +3983,7 @@ The elements at the indices specified or the substring.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️range\_els<a id='f-range_els'></a>
 
@@ -3956,22 +3996,27 @@ or list.
   list.
 - Else a new range is computed
 
-Example:
+<details><summary><b>Example:</b><i></i></summary>
 
-    range_els([1 : 10], [2 : 2 : 5])
-    //  1  2  3  4  5  6  7  8  9 10  // element of     [ 1 : 1 : 10 ]
-    //     2     3                    // indices        [ 2 : 2 :  5 ]
-    //     2     3                    // final elements [ 2 : 2 :  4 ]
 
-    range_els([1 : 2 : 15], [2 : 3 : 5])
-    //  1  3  5  7  9  11 13 15       // elements of    [ 1 : 2 : 15 ]
-    //        2         5             // indices        [ 2 : 3 :  5 ]
-    //        5        11             // final elements [ 5 : 6 : 11 ]
+```openscad
+range_els([1 : 10], [2 : 2 : 5])
+//  1  2  3  4  5  6  7  8  9 10  // element of     [ 1 : 1 : 10 ]
+//     2     3                    // indices        [ 2 : 2 :  5 ]
+//     2     3                    // final elements [ 2 : 2 :  4 ]
 
-    range_els([2 : 10], [1, 3, 6])
-    //  2  3  4  5  6  7  8  9 10     // elements of    [ 2 : 1 : 10 ]
-    //     1     4        6           // indices        [ 1, 3, 6 ]
-    //     3     5        8           // final elements [ 3, 5, 8 ]
+range_els([1 : 2 : 15], [2 : 3 : 5])
+//  1  3  5  7  9  11 13 15       // elements of    [ 1 : 2 : 15 ]
+//        2         5             // indices        [ 2 : 3 :  5 ]
+//        5        11             // final elements [ 5 : 6 : 11 ]
+
+([2 : 10], [1, 3, 6])
+  2  3  4  5  6  7  8  9 10     // elements of    [ 2 : 1 : 10 ]
+     1     4        6           // indices        [ 1, 3, 6 ]
+     3     5        8           // final elements [ 3, 5, 8 ]
+```
+
+</details>
 
 <details><summary>parameters</summary>
 
@@ -4004,11 +4049,9 @@ The elements at the indices specified or the substring.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Getting/Traversing Indices</i><a id='ch-indexable-_getting__traversing__indices'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️idxs<a id='f-idxs'></a>
 
@@ -4047,7 +4090,7 @@ The indices the `birlsei` would iterate over.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️fwd\_i<a id='f-fwd_i'></a>
 
@@ -4099,7 +4142,7 @@ end_offset.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rev\_i<a id='f-rev_i'></a>
 
@@ -4151,7 +4194,7 @@ end_offset.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️next\_in<a id='f-next_in'></a>
 
@@ -4197,7 +4240,7 @@ Next element index in list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️prev\_in<a id='f-prev_in'></a>
 
@@ -4243,11 +4286,9 @@ Previous element index in list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Functions to Manipulate Strings and Lists</i><a id='ch-indexable-_functions_to__manipulate__strings_and__lists'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️push<a id='f-push'></a>
 
@@ -4279,7 +4320,7 @@ The updated string or list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️pop<a id='f-pop'></a>
 
@@ -4320,7 +4361,7 @@ The updated sl.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️unshift<a id='f-unshift'></a>
 
@@ -4352,7 +4393,7 @@ The updated sl.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️shift<a id='f-shift'></a>
 
@@ -4393,7 +4434,7 @@ The updated sl.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️insert<a id='f-insert'></a>
 
@@ -4451,7 +4492,7 @@ The updated sl.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️remove<a id='f-remove'></a>
 
@@ -4502,7 +4543,7 @@ The updated sl.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️remove\_adjacent\_dups<a id='f-remove_adjacent_dups'></a>
 
@@ -4547,7 +4588,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️remove\_each<a id='f-remove_each'></a>
 
@@ -4590,7 +4631,7 @@ The updated sl.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️replace<a id='f-replace'></a>
 
@@ -4642,7 +4683,7 @@ This is the updated list of elements.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️replace\_each<a id='f-replace_each'></a>
 
@@ -4698,7 +4739,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️swap<a id='f-swap'></a>
 
@@ -4741,7 +4782,7 @@ List with ranges swapped.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rotate\_left<a id='f-rotate_left'></a>
 
@@ -4780,7 +4821,7 @@ Returns the rotated list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rotate\_right<a id='f-rotate_right'></a>
 
@@ -4820,7 +4861,7 @@ Returns the rotated list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️head<a id='f-head'></a>
 
@@ -4853,7 +4894,7 @@ Object at the head of the list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️head\_multi<a id='f-head_multi'></a>
 
@@ -4890,7 +4931,7 @@ Objects at the head of the list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️tail<a id='f-tail'></a>
 
@@ -4914,7 +4955,7 @@ Object at the tail of the list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️tail\_multi<a id='f-tail_multi'></a>
 
@@ -4942,7 +4983,7 @@ Objects at the tail of the list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️osearch<a id='f-osearch'></a>
 
@@ -4992,7 +5033,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️csearch<a id='f-csearch'></a>
 
@@ -5042,7 +5083,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️quicksort\_list\_comp\_ex<a id='f-quicksort_list_comp_ex'></a>
 
@@ -5051,7 +5092,7 @@ Possible callchains:
 Example quick sort algorithm from:
   (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️quicksort\_lib\_ex1<a id='f-quicksort_lib_ex1'></a>
 
@@ -5068,7 +5109,7 @@ Modified quicksort example from:
 > If done this way, could sort a subset, but the overhead would be
 > significant.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️quicksort\_lib\_ex2<a id='f-quicksort_lib_ex2'></a>
 
@@ -5085,7 +5126,7 @@ Modified quicksort example from:
 > If done this way, could sort a subset, but the overhead would be
 > significant.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑indexable types</i><a id='ch-indexable-indexable_types'></a>
 
@@ -5104,7 +5145,7 @@ indexable range.
 > `begin_i` from getting to `end_i` or the referred to `slr` has a length of
 > `0`.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Birls<a id='t-_birls'></a>
 
@@ -5115,15 +5156,22 @@ indexable range.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩slr\_cache<a id='t-slr_cache'></a>
 
 <code>*type* slr_cache = list</code>
 
-Cache returned by `_slr_cache(slr, birls, end_i)`.  Usage example:
+Cache returned by `_slr_cache(slr, birls, end_i)`.
 
-    len_of_slr = cache_obj[_SLR_LEN]
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+len_of_slr = cache_obj[_SLR_LEN]
+```
+
+</details>
 
 <details><summary>slots</summary>
 <code><b>_SLR_LEN</b></code>: <code>number</code>
@@ -5181,13 +5229,13 @@ Normalised end_i.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩GetPpmrrairFn<a id='t-_get_ppmrrair_fn'></a>
 
 <code>*callback* GetPpmrrairFn(ppmrrair\_fn: <a href="#t-PpmrrairFn">PpmrrairFn</a>) : any</code>
 
-Gets the PPMRRAIR function to apply the [AlgoFn](#t-AlgoFn) to.
+Gets the PPMRRAIR function to apply the [AlgoFn](#t-_algo_fn) to.
 
 <details><summary>parameters</summary>
 
@@ -5205,7 +5253,7 @@ The result of the adaptor call.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩EqualFn<a id='t-_equal_fn'></a>
 
@@ -5235,7 +5283,7 @@ The result of the equality test.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩GetEqualFn<a id='t-_get_equal_fn'></a>
 
@@ -5259,7 +5307,7 @@ The resulting value when done.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩RemoveAdjacentDupsFn<a id='t-_remove_adjacent_dups_fn'></a>
 
@@ -5267,7 +5315,7 @@ The resulting value when done.
 
 Callback that removes the adjacent duplicates.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReplaceEachFn<a id='t-_replace_each_fn'></a>
 
@@ -5304,7 +5352,7 @@ This is the updated list of elements.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩SearchFn<a id='t-_search_fn'></a>
 
@@ -5312,7 +5360,7 @@ This is the updated list of elements.
 
 Perform search.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩SearchNeedleFn<a id='t-_search_needle_fn'></a>
 
@@ -5355,7 +5403,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -5372,15 +5420,13 @@ Constants used by [`slr_cache`](#f-_slr_cache) for indexing the
 
 ### <i>📑Values</i><a id='ch-indexable_consts-_values'></a>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 #### 💠\_SLR\_CACHE\_HEADER<a id='t-__s_l_r__c_a_c_h_e__h_e_a_d_e_r'></a>
 
 <code>*value* _SLR_CACHE_HEADER : string</code>
 
 Used to indicate if a list object is identified as an `_SLR_CACHE` object.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_LEN<a id='t-__s_l_r__l_e_n'></a>
 
@@ -5391,13 +5437,15 @@ Value representing the length of `slr`.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_LEN]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_LEN]
+```
 
 Return type is number.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_TE<a id='t-__s_l_r__t_e'></a>
 
@@ -5408,13 +5456,15 @@ Value representing the type of `slr`.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_TE]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_TE]
+```
 
 Return type is `TypeEnum`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_ELD<a id='t-__s_l_r__e_l_d'></a>
 
@@ -5426,13 +5476,15 @@ without going through the BIRLEI.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_ELD]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_ELD]
+```
 
 Return type is `function(i): any`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_BLEN<a id='t-__s_l_r__b_l_e_n'></a>
 
@@ -5443,13 +5495,15 @@ Length of BIRLEI.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_BLEN]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_BLEN]
+```
 
 Return type is `number`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_ELI<a id='t-__s_l_r__e_l_i'></a>
 
@@ -5461,13 +5515,15 @@ BIRLEI, and using that index to index the `slr`.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_ELI]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_ELI]
+```
 
 Return type is `function(i): any`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_IDX<a id='t-__s_l_r__i_d_x'></a>
 
@@ -5478,13 +5534,15 @@ Function that dereferences the BIRLEI value.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_IDX]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_IDX]
+```
 
 Return type is `function(i): number`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_STR<a id='t-__s_l_r__s_t_r'></a>
 
@@ -5495,13 +5553,15 @@ Function converting normalised BIRLEI to string.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_STR]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_STR]
+```
 
 Return type is `function() : string`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_BIRL<a id='t-__s_l_r__b_i_r_l'></a>
 
@@ -5512,13 +5572,15 @@ Normalised BIRL component of BIRLEI.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_BIRL]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_BIRL]
+```
 
 Return type is `number | list | range`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SLR\_END\_I<a id='t-__s_l_r__e_n_d__i'></a>
 
@@ -5529,13 +5591,15 @@ Normalised END_I component of BIRLEI.
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    _slr_cache(slr, birls, end_i)[_SLR_END_I]
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_END_I]
+```
 
 Return type is `number | undef`
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑indexable_consts types</i><a id='ch-indexable_consts-indexable_consts_types'></a>
 
@@ -5545,7 +5609,7 @@ Return type is `number | undef`
 
 Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -5560,8 +5624,6 @@ Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
 Allows doing things with functions using introspection.
 
 ### <i>📑Function Introspection</i><a id='ch-function-_function__introspection'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️param\_count<a id='f-param_count'></a>
 
@@ -5583,99 +5645,7 @@ The number of parameters that the function can take.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
-#### ⚙️\_PARAM\_BEGIN\_I<a id='f-__p_a_r_a_m__b_e_g_i_n__i'></a>
-
-<code>*function* _PARAM_BEGIN_I()</code>
-
-Constant stating what character to start scanning stringified function.
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
-#### ⚙️\_pc\_loop<a id='f-_pc_loop'></a>
-
-<code>*function* _pc_loop(fn\_str: string, i: number, params: number, escaping: number, quoting: number, nwscf: number, b\_depth: number, p\_depth: number) : number</code>
-
-Main processing loop to count function parameters.
-
-THIS IS A DEMO to show amount of code noise generated when using direct
-recursion vs reduce_air().  Made by translating that loop.
-
-<details><summary>parameters</summary>
-
-**<code>fn_str</code>**: <code>string</code>
-
-String representation of function.
-
-**<code>i</code>**: <code>number</code> *(Default: `_PARAM_BEGIN_I()`)*
-
-Current index being looked at.
-
-**<code>params</code>**: <code>number</code> *(Default: `0`)*
-
-Parameter count so far.
-
-**<code>escaping</code>**: <code>number</code> *(Default: `0`)*
-
-This char is escaped.
-
-**<code>quoting</code>**: <code>number</code> *(Default: `0`)*
-
-Currently in a string.
-
-**<code>nwscf</code>**: <code>number</code> *(Default: `0`)*
-
-Non-whitespace character found.
-
-**<code>b_depth</code>**: <code>number</code> *(Default: `0`)*
-
-Current bracket depth.
-
-**<code>p_depth</code>**: <code>number</code> *(Default: `1`)*
-
-Current parenthesis depth.
-
-</details>
-
-<details><summary>returns</summary>
-
-**Returns**: <code>number</code>
-
-Number of parameters counted.
-
-</details>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
-#### ⚙️param\_count\_direct\_recursion\_demo<a id='f-param_count_direct_recursion_demo'></a>
-
-<code>*function* param_count_direct_recursion_demo(fn: function) : number</code>
-
-Counts the number of parameters that can be passed to the function fn.
-
-THIS IS A DEMO of how this would look if using direct recursion.
-
-@see _pc_loop for processing function.
-
-TODO: Should benchmark this against main param_count() version which uses
-      reduce_air() to see how much overhead reduce_air() adds.
-
-<details><summary>parameters</summary>
-
-**<code>fn</code>**: <code>function</code>
-
-</details>
-
-<details><summary>returns</summary>
-
-**Returns**: <code>number</code>
-
-The number of parameters that the function can take.
-
-</details>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️apply\_to\_fn<a id='f-apply_to_fn'></a>
 
@@ -5683,8 +5653,10 @@ The number of parameters that the function can take.
 
 Applies each element in a list to a function's parameter list.
 
-TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
-      overhead.  NEED TO BENCHMARK to determine which to keep.
+> 📌 TO DO:
+> 
+> apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
+> overhead.  NEED TO BENCHMARK to determine which to keep.
 
 <details><summary>parameters</summary>
 
@@ -5707,7 +5679,7 @@ The return value of fn().
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️apply\_to\_fn2<a id='f-apply_to_fn2'></a>
 
@@ -5715,8 +5687,10 @@ The return value of fn().
 
 Applies each element in a list to a function's parameter list.
 
-TODO: apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
-      overhead.  NEED TO BENCHMARK to determine which to keep.
+> 📌 TO DO:
+> 
+> apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
+> overhead.  NEED TO BENCHMARK to determine which to keep.
 
 <details><summary>parameters</summary>
 
@@ -5739,7 +5713,7 @@ The return value of fn().
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -5755,8 +5729,6 @@ Used to generate code for using TDD methodology.  Tries to report useful
 error messages with an optional user configurable message.
 
 ### <i>📑Test Your Code!</i><a id='ch-test-_test__your__code_'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_eq<a id='m-test_eq'></a>
 
@@ -5780,7 +5752,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_approx\_eq<a id='m-test_approx_eq'></a>
 
@@ -5808,7 +5780,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_ne<a id='m-test_ne'></a>
 
@@ -5832,7 +5804,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_lt<a id='m-test_lt'></a>
 
@@ -5856,7 +5828,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_le<a id='m-test_le'></a>
 
@@ -5880,7 +5852,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_gt<a id='m-test_gt'></a>
 
@@ -5904,7 +5876,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_ge<a id='m-test_ge'></a>
 
@@ -5928,7 +5900,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_truthy<a id='m-test_truthy'></a>
 
@@ -5948,7 +5920,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧪test\_falsy<a id='m-test_falsy'></a>
 
@@ -5968,7 +5940,7 @@ A user message to append to failure message.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -5986,26 +5958,28 @@ are expected.
 As this library is to be as fast as possible, the way this is done is by
 adding to the beginning of the function a `let ( verify_... )` for each
 parameter.  In this way, all parameter checks can be turned off by running:
-
-    find . -maxdepth 1 -type f ! -name '*.*' -print0 |
-      while IFS= read -r -d '' f; do
-        gawk '{ pattern = /^(\s+)(let \( _ = verify_)/;
-                print gensub(pattern, "\\1// \\2", 1) }' "$f" > "$f.tmp" && \
-          mv "$f.tmp" "$f" && \
-          echo "Update to $f succeeded" || \
-          echo "Failed to update $f"
-      done
+```bash
+find . -maxdepth 1 -type f ! -name '*.*' -print0 |
+  while IFS= read -r -d '' f; do
+    gawk '{ pattern = /^(\s+)(let \( _ = verify_)/;
+            print gensub(pattern, "\\1// \\2", 1) }' "$f" > "$f.tmp" && \
+      mv "$f.tmp" "$f" && \
+      echo "Update to $f succeeded" || \
+      echo "Failed to update $f"
+  done
+```
 
 And turned on by running:
-
-    find . -maxdepth 1 -type f ! -name '*.*' -print0 |
-      while IFS= read -r -d '' f; do
-        gawk '{ pattern = /^(\s+)\/\/ (let \( _ = verify_)/;
-                print gensub(pattern, "\\1\\2", 1) }' "$f" > "$f.tmp" && \
-          mv "$f.tmp" "$f" && \
-          echo "Update to $f succeeded" || \
-          echo "Failed to update $f"
-      done
+```bash
+find . -maxdepth 1 -type f ! -name '*.*' -print0 |
+  while IFS= read -r -d '' f; do
+    gawk '{ pattern = /^(\s+)\/\/ (let \( _ = verify_)/;
+            print gensub(pattern, "\\1\\2", 1) }' "$f" > "$f.tmp" && \
+      mv "$f.tmp" "$f" && \
+      echo "Update to $f succeeded" || \
+      echo "Failed to update $f"
+  done
+```
 
 Although this modifies the library, this will result in disabled parameter
 checks having 0 effect on runtime performance.
@@ -6013,14 +5987,10 @@ checks having 0 effect on runtime performance.
 Can make two libraries, one debug with parameter checking turned on and one
 release with it turned off.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Type Checks</i><a id='ch-param_check-_type__checks'></a>
 
 These check that the types are what they are expected to be.  They don't
 check values.
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_slr<a id='f-verify_slr'></a>
 
@@ -6036,7 +6006,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_sl<a id='f-verify_sl'></a>
 
@@ -6052,7 +6022,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_s<a id='f-verify_s'></a>
 
@@ -6068,7 +6038,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_l<a id='f-verify_l'></a>
 
@@ -6084,7 +6054,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_r<a id='f-verify_r'></a>
 
@@ -6100,7 +6070,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_i<a id='f-verify_i'></a>
 
@@ -6116,7 +6086,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_iu<a id='f-verify_iu'></a>
 
@@ -6132,7 +6102,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_lu<a id='f-verify_lu'></a>
 
@@ -6148,7 +6118,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_u<a id='f-verify_u'></a>
 
@@ -6164,7 +6134,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_fn<a id='f-verify_fn'></a>
 
@@ -6180,7 +6150,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_uu<a id='f-verify_uu'></a>
 
@@ -6200,7 +6170,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_slice<a id='f-verify_slice'></a>
 
@@ -6216,7 +6186,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_birlei<a id='f-verify_birlei'></a>
 
@@ -6245,7 +6215,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_birlsei<a id='f-verify_birlsei'></a>
 
@@ -6266,7 +6236,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_biei<a id='f-verify_biei'></a>
 
@@ -6286,13 +6256,11 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Value Checks</i><a id='ch-param_check-_value__checks'></a>
 
 These check that the values are within bounds.
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_precache<a id='f-verify_precache'></a>
 
@@ -6317,7 +6285,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vbis<a id='f-verify_vbis'></a>
 
@@ -6345,7 +6313,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vbsis<a id='f-verify_vbsis'></a>
 
@@ -6374,7 +6342,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_get\_slr\_len<a id='f-_get_slr_len'></a>
 
@@ -6403,7 +6371,7 @@ Length of `slr`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vi<a id='f-verify_vi'></a>
 
@@ -6427,7 +6395,7 @@ Cache value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vie<a id='f-verify_vie'></a>
 
@@ -6452,7 +6420,7 @@ Cache value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vpi<a id='f-verify_vpi'></a>
 
@@ -6487,7 +6455,7 @@ Verifies valid positive `i`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vpie<a id='f-verify_vpie'></a>
 
@@ -6518,7 +6486,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vlen<a id='f-verify_vlen'></a>
 
@@ -6539,7 +6507,7 @@ Value to reference.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vblen<a id='f-verify_vblen'></a>
 
@@ -6563,7 +6531,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vbinc<a id='f-verify_vbinc'></a>
 
@@ -6583,7 +6551,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vnz<a id='f-verify_vnz'></a>
 
@@ -6599,7 +6567,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_vpos<a id='f-verify_vpos'></a>
 
@@ -6615,7 +6583,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️verify\_nesl<a id='f-verify_nesl'></a>
 
@@ -6631,7 +6599,7 @@ Value to check.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -6645,11 +6613,7 @@ Value to check.
 
 This library is for matrix math for a variety of things.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Generate Matrices for Vector Transforms</i><a id='ch-transform-_generate__matrices_for__vector__transforms'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️transpose<a id='f-transpose'></a>
 
@@ -6681,7 +6645,7 @@ The transpose of matrix A.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️homogenise<a id='f-homogenise'></a>
 
@@ -6713,7 +6677,7 @@ List of n-dimensional points with homogeneous coordinate 1 at index n-1.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️dehomogenise<a id='f-dehomogenise'></a>
 
@@ -6754,7 +6718,7 @@ List of n-dimensional Euclidean points.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️homogenise\_transform<a id='f-homogenise_transform'></a>
 
@@ -6793,7 +6757,7 @@ elsewhere.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rot\_x<a id='f-rot_x'></a>
 
@@ -6824,7 +6788,7 @@ Column-vector rotation matrix M.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rot\_y<a id='f-rot_y'></a>
 
@@ -6855,7 +6819,7 @@ Column-vector rotation matrix M.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rot\_z<a id='f-rot_z'></a>
 
@@ -6886,7 +6850,7 @@ Column-vector rotation matrix M.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_point<a id='f-is_point'></a>
 
@@ -6914,7 +6878,7 @@ True if has the shape of a point of `dim` `number`s.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_vector<a id='f-is_vector'></a>
 
@@ -6942,7 +6906,7 @@ True if has the shape of a free vector of `dim` `number`s.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_bound\_vector<a id='f-is_bound_vector'></a>
 
@@ -6971,7 +6935,7 @@ True if has the shape of 2 bound points of `dim` `number`s.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rot\_axis<a id='f-rot_axis'></a>
 
@@ -7008,7 +6972,7 @@ Column-vector rotation matrix M.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️rotate<a id='f-rotate'></a>
 
@@ -7073,7 +7037,7 @@ Column-vector rotation matrix M.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️translate<a id='f-translate'></a>
 
@@ -7104,7 +7068,7 @@ Homogeneous column-vector translation matrix T.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️scale<a id='f-scale'></a>
 
@@ -7135,7 +7099,7 @@ Column-vector scaling matrix S.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️transform<a id='f-transform'></a>
 
@@ -7175,7 +7139,7 @@ Transformed points.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️reorient<a id='f-reorient'></a>
 
@@ -7215,11 +7179,9 @@ Homogeneous column-vector transform matrix T.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Matrix Math</i><a id='ch-transform-_matrix__math'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️invert<a id='f-invert'></a>
 
@@ -7254,7 +7216,7 @@ Example
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️row\_reduction<a id='f-row_reduction'></a>
 
@@ -7293,7 +7255,7 @@ Assertion failure if `|pivot| < eps` at any step.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️identity<a id='f-identity'></a>
 
@@ -7317,7 +7279,7 @@ The identity matrix of order n.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️augment<a id='f-augment'></a>
 
@@ -7347,7 +7309,7 @@ Assertion failure if A and B do not have the same non-zero row count.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_right\_half<a id='f-_right_half'></a>
 
@@ -7375,7 +7337,7 @@ The right n×n block.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_swap\_rows<a id='f-_swap_rows'></a>
 
@@ -7407,7 +7369,7 @@ Matrix with rows i and j exchanged.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_argmax\_abs\_col<a id='f-_argmax_abs_col'></a>
 
@@ -7440,7 +7402,7 @@ Row index of the maximal absolute entry in the given column slice.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_is\_rect\_matrix<a id='f-_is_rect_matrix'></a>
 
@@ -7464,7 +7426,7 @@ true if M is a non-empty list of rows with equal positive length.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_is\_square\_matrix<a id='f-_is_square_matrix'></a>
 
@@ -7488,7 +7450,7 @@ true if M is rectangular and `len(M) == len(M[0])`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_all\_numeric<a id='f-_all_numeric'></a>
 
@@ -7512,7 +7474,7 @@ true if every element in every row is numeric.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑transform types</i><a id='ch-transform-transform_types'></a>
 
@@ -7522,7 +7484,7 @@ true if every element in every row is numeric.
 
 Placeholder for NxM matrix.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Point2D<a id='t-_point2_d'></a>
 
@@ -7543,7 +7505,7 @@ by property `.y`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Point3D<a id='t-_point3_d'></a>
 
@@ -7569,7 +7531,7 @@ by property `.z`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Point<a id='t-_point'></a>
 
@@ -7599,7 +7561,7 @@ This is the dimension `n` dimension of the point.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Vector2D<a id='t-_vector2_d'></a>
 
@@ -7620,7 +7582,7 @@ accessed by property `.y`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Vector3D<a id='t-_vector3_d'></a>
 
@@ -7646,7 +7608,7 @@ accessed by property `.z`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Vector<a id='t-_vector'></a>
 
@@ -7676,7 +7638,7 @@ This is the dimension `n` dimension of the vector.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩BVector2D<a id='t-_b_vector2_d'></a>
 
@@ -7696,7 +7658,7 @@ This is the ending point for this bound vector.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩BVector3D<a id='t-_b_vector3_d'></a>
 
@@ -7716,7 +7678,7 @@ This is the ending point for this bound vector.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩BVector<a id='t-_b_vector'></a>
 
@@ -7736,7 +7698,7 @@ This is the ending point for this bound vector.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -7751,8 +7713,6 @@ This is the ending point for this bound vector.
 
 OpenSCAD doesn't have any string formatting, which can make reading debug
 output challenging.  This library is to help with that.
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️align\_left<a id='f-align_left'></a>
 
@@ -7786,7 +7746,7 @@ The padded string.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️align\_right<a id='f-align_right'></a>
 
@@ -7820,7 +7780,7 @@ The padded string.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️repeat<a id='f-repeat'></a>
 
@@ -7852,7 +7812,7 @@ The final repeated string.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sign\_str<a id='f-_sign_str'></a>
 
@@ -7880,7 +7840,7 @@ Value to get +ve/-ve sign value from.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️float\_to\_string<a id='f-float_to_string'></a>
 
@@ -7928,7 +7888,7 @@ Formatted number.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️obj\_to\_string<a id='f-obj_to_string'></a>
 
@@ -7983,7 +7943,7 @@ String rep of object.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️to\_csv<a id='f-to_csv'></a>
 
@@ -8021,7 +7981,7 @@ Returns a string of the 2D list `a` as a CSV string.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️list\_to\_string<a id='f-list_to_string'></a>
 
@@ -8083,7 +8043,7 @@ Prettified list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️fmt\_list\_fn<a id='f-fmt_list_fn'></a>
 
@@ -8115,7 +8075,7 @@ Returns the lambda to render an element.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️fmt\_pt\_list\_fn<a id='f-fmt_pt_list_fn'></a>
 
@@ -8155,7 +8115,7 @@ the element was.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️fmt\_pt\_fn<a id='f-fmt_pt_fn'></a>
 
@@ -8193,7 +8153,7 @@ the element was.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️pt\_list\_to\_string<a id='f-pt_list_to_string'></a>
 
@@ -8237,7 +8197,7 @@ String with the aligned points.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑string types</i><a id='ch-string-string_types'></a>
 
@@ -8247,7 +8207,7 @@ String with the aligned points.
 
 Used to specify how to show the sign of a number.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -8263,8 +8223,6 @@ Constants representing how to show the sign of a number in string library.
 
 ### <i>📑Values for `show_sign` Parameters</i><a id='ch-string_consts-_values_for__show_sign___parameters'></a>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 #### 💠SHOW\_SIGN\_NEG<a id='t-_s_h_o_w__s_i_g_n__n_e_g'></a>
 
 <code>*value* SHOW_SIGN_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
@@ -8274,12 +8232,14 @@ The enum that represents showing only -ve and never +ve sign
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
-    assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+```openscad
+assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
+assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠SHOW\_SIGN\_POS\_NEG<a id='t-_s_h_o_w__s_i_g_n__p_o_s__n_e_g'></a>
 
@@ -8290,12 +8250,14 @@ The enum that represents showing only -ve and +ve signs
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
-    assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+```openscad
+assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
+assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠SHOW\_SIGN\_SPC\_NEG<a id='t-_s_h_o_w__s_i_g_n__s_p_c__n_e_g'></a>
 
@@ -8306,12 +8268,14 @@ The enum that represents showing only -ve and a space for +ve sign
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
-    assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+```openscad
+assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
+assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -8326,11 +8290,7 @@ The enum that represents showing only -ve and a space for +ve sign
 
 Miscellaneous helper functions.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Conversion functions</i><a id='ch-helpers-_conversion_functions'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️r2d<a id='f-r2d'></a>
 
@@ -8354,7 +8314,7 @@ Equivalent degrees.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️d2r<a id='f-d2r'></a>
 
@@ -8378,11 +8338,9 @@ Equivalent radians.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Circular / Spherical Calculations</i><a id='ch-helpers-_circular____spherical__calculations'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️arc\_len<a id='f-arc_len'></a>
 
@@ -8421,7 +8379,7 @@ R.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️arc\_len\_angle<a id='f-arc_len_angle'></a>
 
@@ -8452,7 +8410,7 @@ Angle in degrees. Sign follows arc_len.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_circle\_line\_intersections<a id='f-_circle_line_intersections'></a>
 
@@ -8488,7 +8446,7 @@ returned points are identical.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_pick\_right<a id='f-_pick_right'></a>
 
@@ -8518,7 +8476,7 @@ it selects the point with the smaller y (the lower point).
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_theta\_deg<a id='f-_theta_deg'></a>
 
@@ -8543,7 +8501,7 @@ usual range (-180, 180].
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_wrap\_diff\_deg<a id='f-_wrap_diff_deg'></a>
 
@@ -8572,7 +8530,7 @@ the minimal rotation in degrees that moves a1 onto a2.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️arc\_len\_for\_shift<a id='f-arc_len_for_shift'></a>
 
@@ -8612,7 +8570,7 @@ before or after the shift.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️shift\_for\_arc\_len<a id='f-shift_for_arc_len'></a>
 
@@ -8653,11 +8611,9 @@ They would be undef if there is no solution for that direction.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑Miscellaneous</i><a id='ch-helpers-_miscellaneous'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️not<a id='f-not'></a>
 
@@ -8681,7 +8637,7 @@ Return the lambda that will invert a lambda's truth value.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️clamp<a id='f-clamp'></a>
 
@@ -8713,7 +8669,7 @@ Value v that is clamped between `[lo, hi]`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️vector\_info<a id='f-vector_info'></a>
 
@@ -8745,7 +8701,7 @@ for details.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️equal<a id='f-equal'></a>
 
@@ -8780,7 +8736,7 @@ True if the objects are equal within tolerance.  False otherwise.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️function\_equal<a id='f-function_equal'></a>
 
@@ -8788,7 +8744,7 @@ True if the objects are equal within tolerance.  False otherwise.
 
 Hoists function into variable namespace to be able to be passed as a lambda.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️default<a id='f-default'></a>
 
@@ -8816,7 +8772,7 @@ If v is defined, then return v, else d.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️INCOMPLETE<a id='f-_i_n_c_o_m_p_l_e_t_e'></a>
 
@@ -8824,7 +8780,7 @@ If v is defined, then return v, else d.
 
 Used to mark code as incomplete.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️offset\_angle<a id='f-offset_angle'></a>
 
@@ -8860,7 +8816,7 @@ The rotated vector.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧊arrow<a id='m-arrow'></a>
 
@@ -8891,7 +8847,7 @@ Same as color() module's optional second parameter.  Alpha value between
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧊axis<a id='m-axis'></a>
 
@@ -8912,7 +8868,7 @@ Thickness of arrowhead shaft.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️fl<a id='f-fl'></a>
 
@@ -8923,7 +8879,9 @@ to jump to the file/line in VSCode easier.
 
 To make it easier in a file, create the following variable in that file:
 
-    _fl = function(l) fl("<this-file-name>", l);
+```openscad
+_fl = function(l) fl("<this-file-name>", l);
+```
 
 As a variable, it won't get exported.  Use that in your file.
 
@@ -8948,7 +8906,7 @@ the terminal window.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️Assert<a id='f-_assert'></a>
 
@@ -9002,7 +8960,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️interpolated\_values<a id='f-interpolated_values'></a>
 
@@ -9015,10 +8973,14 @@ Gets a list of `number_of_values` between `p0` and `p1`.
 > `p0` and `p1` must be the same shape and must consist of values that have
 > `+`, `-` and `/` operations defined for them.
 
-Example
+<details><summary><b>Example:</b><i></i></summary>
 
-    interpolated_values(1, 2, 1) == [1.5]
-    interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
+```openscad
+interpolated_values(1, 2, 1) == [1.5]
+interpolated_values(1, 2, 3) == [1.25, 1.5, 1.75]
+```
+
+</details>
 
 <details><summary>parameters</summary>
 
@@ -9045,7 +9007,7 @@ and `p1`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑helpers types</i><a id='ch-helpers-helpers_types'></a>
 
@@ -9075,7 +9037,7 @@ resulting first dimension negative.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩IdentityFn<a id='t-_identity_fn'></a>
 
@@ -9097,7 +9059,7 @@ Returns `return_value`.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -9111,9 +9073,7 @@ Returns `return_value`.
 
 Helper constants.
 
-### <i>📑For indexing type [VectorInfo](#t-VectorInfo).</i><a id='ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__'></a>
-
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+### <i>📑For indexing type [VectorInfo](#t-_vector_info).</i><a id='ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__'></a>
 
 #### 💠VI\_VECTOR<a id='t-_v_i__v_e_c_t_o_r'></a>
 
@@ -9123,13 +9083,14 @@ ab vector
 
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
+
 ```openscad
 assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
 ```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠VI\_LENGTH<a id='t-_v_i__l_e_n_g_t_h'></a>
 
@@ -9140,11 +9101,13 @@ length of ab
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
+```openscad
+assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠VI\_DIR<a id='t-_v_i__d_i_r'></a>
 
@@ -9155,11 +9118,13 @@ unit ab vector
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
-    assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
+```openscad
+assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠VI\_NORMAL<a id='t-_v_i__n_o_r_m_a_l'></a>
 
@@ -9169,12 +9134,13 @@ vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
 
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
-
-    assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
+```openscad
+assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
+```
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑helpers_consts types</i><a id='ch-helpers_consts-helpers_consts_types'></a>
 
@@ -9182,9 +9148,9 @@ vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
 
 <code>*type* VectorInfoEnum = number</code>
 
-Enums to dereference [`VectorInfo`](#t-VectorInfo) type.
+Enums to dereference [`VectorInfo`](#t-_vector_info) type.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -9200,8 +9166,6 @@ The built in extrude module isn't powerful or flexible enough so this library
 was made.  It creates a skin by making layers of polygons with the same
 number of vertices and then skins them by putting faces between layers.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 ### <i>📑Design</i><a id='ch-skin-_design'></a>
 
 This requires keeping track of a bunch of data, which was put into a list.
@@ -9209,15 +9173,13 @@ These constants are used for indexing the [skin](#t-skin) object.
 
 ### <i>📑Values</i><a id='ch-skin-_values'></a>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
-
 #### 💠\_SKIN\_ID<a id='v-__s_k_i_n__i_d'></a>
 
 <code>*value* _SKIN_ID : ???</code>
 
 Header for skin
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_PTS\_IN\_LAYER<a id='v-__s_k_i_n__p_t_s__i_n__l_a_y_e_r'></a>
 
@@ -9225,7 +9187,7 @@ Header for skin
 
 points in layer
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_LAYERS<a id='v-__s_k_i_n__l_a_y_e_r_s'></a>
 
@@ -9233,7 +9195,7 @@ points in layer
 
 # of point layers - 1
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_PTS<a id='v-__s_k_i_n__p_t_s'></a>
 
@@ -9241,7 +9203,7 @@ points in layer
 
 the list of points
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_DEBUG\_AXES<a id='v-__s_k_i_n__d_e_b_u_g__a_x_e_s'></a>
 
@@ -9249,7 +9211,7 @@ the list of points
 
 debug axes
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_COMMENT<a id='v-__s_k_i_n__c_o_m_m_e_n_t'></a>
 
@@ -9257,7 +9219,7 @@ debug axes
 
 the comment if any
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_OPERATION<a id='v-__s_k_i_n__o_p_e_r_a_t_i_o_n'></a>
 
@@ -9265,7 +9227,7 @@ the comment if any
 
 the operation (`[op, apply_to_next_count]`)
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_WALL\_DIAG<a id='v-__s_k_i_n__w_a_l_l__d_i_a_g'></a>
 
@@ -9273,7 +9235,7 @@ the operation (`[op, apply_to_next_count]`)
 
 wall diagonal info
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_to\_string<a id='f-skin_to_string'></a>
 
@@ -9305,7 +9267,7 @@ The string representation of the skin object.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️layer\_pt<a id='f-layer_pt'></a>
 
@@ -9346,7 +9308,7 @@ The linear index of the specified point.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️layer\_pts<a id='f-layer_pts'></a>
 
@@ -9381,7 +9343,7 @@ A list of linear layer_i corresponding to the given points.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️layer\_side\_faces<a id='f-layer_side_faces'></a>
 
@@ -9394,7 +9356,7 @@ stored contiguously, and layers stored in sequence. Points within each
 layer must be ordered **clockwise when looking into the object**.
 
 Each wall segment is formed from two triangles connecting corresponding
-points between adjacent layers.  Each triangle is a [`Face`](#t-Face).
+points between adjacent layers.  Each triangle is a [`Face`](#t-_face).
 
 <details><summary>parameters</summary>
 
@@ -9430,7 +9392,7 @@ A list of triangle layer_i forming the side walls.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_ear\_cw<a id='t-_ear_cw'></a>
 
@@ -9441,7 +9403,7 @@ are convex, or undef if concave or colinear.
 
 This is for clockwise polygons when looking towards -z.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_ear\_ccw<a id='t-_ear_ccw'></a>
 
@@ -9452,7 +9414,7 @@ are convex, or undef if concave or colinear.
 
 This is for counter-clockwise polygons when looking towards -z.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_pt\_in\_triangle<a id='f-_pt_in_triangle'></a>
 
@@ -9461,7 +9423,7 @@ This is for counter-clockwise polygons when looking towards -z.
 Determines if `pt` is in triangle `(pt0, pt1, pt2)`. `_*` parameters are
 cached values.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_any\_point\_in\_ear<a id='f-_any_point_in_ear'></a>
 
@@ -9470,7 +9432,7 @@ cached values.
 Checks if any point indexed by pt_is that is not `pt_i{0, 1, 2}` is inclusively
 bounded by the triangle `pts[pt_is[pt_i{0, 1, 2}]]`.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_cap\_ears<a id='f-_cap_ears'></a>
 
@@ -9518,7 +9480,7 @@ Faces
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_proj\_pts<a id='f-_proj_pts'></a>
 
@@ -9547,7 +9509,7 @@ Returns points with the specified dimension removed.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_proj\_to\_what\_norm<a id='f-_proj_to_what_norm'></a>
 
@@ -9587,7 +9549,7 @@ The best projection axis with it's corresponding best normal.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_cap\_layer<a id='f-_cap_layer'></a>
 
@@ -9615,7 +9577,7 @@ List of faces.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_cap\_layers<a id='f-_cap_layers'></a>
 
@@ -9656,7 +9618,7 @@ Generated faces.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️is\_skin<a id='f-is_skin'></a>
 
@@ -9664,7 +9626,7 @@ Generated faces.
 
 Checks to see if object is a skin object
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_new<a id='f-skin_new'></a>
 
@@ -9728,7 +9690,7 @@ skin_show_debug_axis().
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_extrude<a id='f-skin_extrude'></a>
 
@@ -9803,7 +9765,7 @@ Possible callchains:
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_create\_faces<a id='f-skin_create_faces'></a>
 
@@ -9835,7 +9797,7 @@ A list of triangle face definitions.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_transform<a id='f-skin_transform'></a>
 
@@ -9866,7 +9828,7 @@ A new skin object with the points transformed.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧊skin\_to\_polyhedron<a id='m-skin_to_polyhedron'></a>
 
@@ -9883,7 +9845,7 @@ The skin object or list of skin objects to make into a polyhedron.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_add\_layer\_if<a id='f-skin_add_layer_if'></a>
 
@@ -9928,7 +9890,7 @@ Updated skin.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_add\_point\_in\_layer<a id='f-skin_add_point_in_layer'></a>
 
@@ -9936,7 +9898,7 @@ Updated skin.
 
 TODO: Look into this. Not sure what I was attempting here.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧊skin\_show\_debug\_axes<a id='m-skin_show_debug_axes'></a>
 
@@ -9961,7 +9923,7 @@ will go backwards to find one that does and uses that.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️interpolate<a id='f-interpolate'></a>
 
@@ -9974,7 +9936,7 @@ Interpolates value between v0 and v1.
 > This function should be ***deprecated*** and should be replaced with
 > [`interpolated_values()`](#f-interpolated_values).
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_limit<a id='f-skin_limit'></a>
 
@@ -10015,7 +9977,7 @@ cut off EXACTLY at value.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_verify<a id='f-skin_verify'></a>
 
@@ -10048,7 +10010,7 @@ A prettified/simplified view of points in the object.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_max\_layer\_distance\_fn<a id='f-skin_max_layer_distance_fn'></a>
 
@@ -10087,7 +10049,7 @@ of layers to add.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️skin\_max\_pt\_distance\_fn<a id='f-skin_max_pt_distance_fn'></a>
 
@@ -10095,7 +10057,7 @@ of layers to add.
 
 TODO: Look into this. Not sure what I was attempting here.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 ### <i>📑skin types</i><a id='ch-skin-skin_types'></a>
 
@@ -10150,7 +10112,7 @@ point, it starts at slot 0 again.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩Face<a id='t-_face'></a>
 
@@ -10171,7 +10133,7 @@ This is the third index to the point in the referenced point list.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩SkinExtrude<a id='t-_skin_extrude'></a>
 
@@ -10202,7 +10164,7 @@ The skin object.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ColourLst<a id='t-_colour_lst'></a>
 
@@ -10227,7 +10189,7 @@ Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ColourStr<a id='t-_colour_str'></a>
 
@@ -10243,7 +10205,7 @@ Can be specified in 4 different formats:
 Alpha value between `["0","f"]` or `["00","ff"]`, where `"f"` or `"ff"` means
 solid and `"0"` or `"00"` is transparent.
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ColourName<a id='t-_colour_name'></a>
 
@@ -10312,7 +10274,7 @@ spellings of grey/gray including slategrey/slategray etc are valid):
 |                        | - Khaki                |                        |
 |                        | - DarkKhaki            |                        |
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩DebugStyle<a id='t-_debug_style'></a>
 
@@ -10342,5 +10304,5 @@ Thickness that is passed to [`arrow()`](#m-arrow) module.
 
 </details>
 
-<p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 

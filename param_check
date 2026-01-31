@@ -13,26 +13,28 @@
  * As this library is to be as fast as possible, the way this is done is by
  * adding to the beginning of the function a `let ( verify_... )` for each
  * parameter.  In this way, all parameter checks can be turned off by running:
- *
- *     find . -maxdepth 1 -type f ! -name '*.*' -print0 |
- *       while IFS= read -r -d '' f; do
- *         gawk '{ pattern = /^(\s+)(let \( _ = verify_)/;
- *                 print gensub(pattern, "\\1// \\2", 1) }' "$f" > "$f.tmp" && \
- *           mv "$f.tmp" "$f" && \
- *           echo "Update to $f succeeded" || \
- *           echo "Failed to update $f"
- *       done
+ * ```bash
+ * find . -maxdepth 1 -type f ! -name '*.*' -print0 |
+ *   while IFS= read -r -d '' f; do
+ *     gawk '{ pattern = /^(\s+)(let \( _ = verify_)/;
+ *             print gensub(pattern, "\\1// \\2", 1) }' "$f" > "$f.tmp" && \
+ *       mv "$f.tmp" "$f" && \
+ *       echo "Update to $f succeeded" || \
+ *       echo "Failed to update $f"
+ *   done
+ * ```
  *
  * And turned on by running:
- *
- *     find . -maxdepth 1 -type f ! -name '*.*' -print0 |
- *       while IFS= read -r -d '' f; do
- *         gawk '{ pattern = /^(\s+)\/\/ (let \( _ = verify_)/;
- *                 print gensub(pattern, "\\1\\2", 1) }' "$f" > "$f.tmp" && \
- *           mv "$f.tmp" "$f" && \
- *           echo "Update to $f succeeded" || \
- *           echo "Failed to update $f"
- *       done
+ * ```bash
+ * find . -maxdepth 1 -type f ! -name '*.*' -print0 |
+ *   while IFS= read -r -d '' f; do
+ *     gawk '{ pattern = /^(\s+)\/\/ (let \( _ = verify_)/;
+ *             print gensub(pattern, "\\1\\2", 1) }' "$f" > "$f.tmp" && \
+ *       mv "$f.tmp" "$f" && \
+ *       echo "Update to $f succeeded" || \
+ *       echo "Failed to update $f"
+ *   done
+ * ```
  *
  * Although this modifies the library, this will result in disabled parameter
  * checks having 0 effect on runtime performance.
