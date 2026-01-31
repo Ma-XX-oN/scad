@@ -233,6 +233,12 @@ There are several files in this library set.
  [directly at the file](README.md) rather then from the repo page since it
  doesn't work properly from there.*
 
+Since there are **a lot** of functions here and other supplementary
+documentation, all top level headings are shown and the headings below them have
+been minimised.  To Navigate:
+
+- Click on the link to go to the heading.
+- Click to the right of the heading to open it up and see the headings below it.
 <details><summary><a href="#file-range">📘 <b>range</b></a></summary>
 <blockquote>
 • <a href="#ch-range-_how_to__import">📑 <i>How to Import</i></a><br>
