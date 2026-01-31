@@ -533,6 +533,9 @@ def sanitize_anchor_id(id: str) -> str:
   URL-specific punctuation are replaced with ``_``."""
   id = id.replace(":", "__")
   id = regex.sub(r"[^\w-]", "_", id)
+  # GitHub mandates that all internal links be lowercase for no particular reason.
+  # Have to be able to differentiate between upper and lowercase so prefixing _
+  # to a lowercase capital letter.
   id = regex.sub(r"[A-Z]", lambda m: "_" + m[0].lower(), id)
   return id
 
