@@ -1621,14 +1621,18 @@ class Doc:
     """, regex.VERBOSE
   )
   def output_desc(self, output_lines: list[str]):
+    RE_CODE = regex.compile(r"`([^`]++)`")
+    def code(s: str|None) -> str:
+      return RE_CODE.sub(r"<code>\1</code>", s) if s else ""
+    
     if self.items["desc"]:
       for (_, _, desc, _) in self.items["desc"]:
         if desc:
           desc = Doc.RE_TRAILING_EMPTY_LINES.sub("", desc)
-          desc = Doc.RE_EXAMPLE.sub(
-            r"\g<pre_ex><details><summary><b>Example:</b><i>\g<name></i></summary>" "\n\n"
-            r"\g<desc>" "\n\n"
-            r"</details>", desc)
+          desc = Doc.RE_EXAMPLE.sub(lambda m:
+            f"{m['pre_ex']}<details><summary><b>Example:</b><i>{code(m['name'])}</i></summary>\n\n"
+            f"{m['desc']}\n\n"
+            "</details>", desc)
           output_lines.append(desc)
           output_lines.append("")
 

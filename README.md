@@ -3597,7 +3597,7 @@ even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
 
 
 
-</details><details><summary><b>Example:</b><i> Using algorithm indirectly with `it_each()`</i></summary>
+</details><details><summary><b>Example:</b><i> Using algorithm indirectly with <code>it_each()</code></i></summary>
 
 
 ```openscad
@@ -3673,7 +3673,7 @@ even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
 
 
 
-</details><details><summary><b>Example:</b><i> Using algorithm indirectly with `it_idxs()`</i></summary>
+</details><details><summary><b>Example:</b><i> Using algorithm indirectly with <code>it_idxs()</code></i></summary>
 
 
 ```openscad
@@ -3752,7 +3752,7 @@ even_values  = filter(fwd_i(a))(function(i, v) v ? a[i] : a[i] % 2);
 
 
 
-</details><details><summary><b>Example:</b><i> Using algorithm indirectly with `it_enum()`</i></summary>
+</details><details><summary><b>Example:</b><i> Using algorithm indirectly with <code>it_enum()</code></i></summary>
 
 
 ```openscad
