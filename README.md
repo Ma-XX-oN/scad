@@ -1403,13 +1403,15 @@ Constants representing the types as enumerated values.
 
 Enum for range type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum([0:1]) == RANGE);
     assert(type_enum(range(0,1)) == RANGE)
 
     // Beware, an empty range is a LIST!!
     assert(type_enum(range(1,0)) == LIST)
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1420,9 +1422,11 @@ Enum for range type
 
 Enum for list type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum([]) == LIST);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1433,9 +1437,11 @@ Enum for list type
 
 Enum for string type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum("") == STR);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1446,9 +1452,11 @@ Enum for string type
 
 Enum for unknown type.  Shouldn't be possible to get this value.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(???) == UNKNOWN);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1459,9 +1467,11 @@ Enum for unknown type.  Shouldn't be possible to get this value.
 
 Enum for slice type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(slice(0, -1)) == SLICE);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1472,9 +1482,11 @@ Enum for slice type
 
 Enum for undef type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(undef) == UNDEF);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1485,9 +1497,11 @@ Enum for undef type
 
 Enum for boolean type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(true) == BOOL);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1498,9 +1512,11 @@ Enum for boolean type
 
 Enum for function type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(function() 0) == FUNC);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1511,9 +1527,11 @@ Enum for function type
 
 Enum for number type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(1) == NUM);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1524,9 +1542,11 @@ Enum for number type
 
 Enum for integer type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(1, true) == INT);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1537,9 +1557,11 @@ Enum for integer type
 
 Enum for floating point type
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(1.1, true) == FLOAT);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -1550,9 +1572,11 @@ Enum for floating point type
 
 Enum for NaN
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(type_enum(1/0) == NAN);
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -2054,18 +2078,22 @@ return a function and using that function immediately.  For instance.  Say I
 want to find the first instance of the letter "t" in a string.  Using this
 library, the following could be done:
 
+```openscad
     s = "Hello there!";
     i = find(fwd_i(s))(function(i)
           s[i] == "t"
         );
+```
 
 Or it could be done using the algorithm adaptor `it_each` (See
 [Algorithm Adaptors](#algorithm-adaptors)):
 
+```openscad
     s = "Hello there!";
     i = it_each(s, find())(function(c)
           c == "t"
         );
+```
 
 You'll notice the occurrence of `)(`.  This ends the algorithm or adaptor
 call and start the next call which takes a function to test each element.
@@ -2211,6 +2239,42 @@ Like C++'s `lower_bound`: returns the first index `i` for which
 > The specified `birlei` of indices must be such that `spaceship_fn(i)`
 > is monotonically nondecreasing over the searched indices; or the results
 > are **UB**.
+
+<details><summary><b>Example:</b><i> Find first element >= target in a sorted list</i></summary>
+
+```openscad
+use <base_algos>
+use <indexable>
+
+xs = [1, 3, 3, 5, 8];
+target = 3;
+
+// spaceship_fn(i) is negative when xs[i] < target,
+// zero when xs[i] == target,
+// positive when xs[i] > target.
+idx = find_lower(fwd_i(xs))(
+  function(i) xs[i] - target
+);
+
+// idx == 1  (first 3)
+```
+
+
+
+</details><details><summary><b>Example:</b><i> If not found, result is undef</i></summary>
+
+```openscad
+xs = [1, 3, 3, 5, 8];
+target = 9;
+
+idx = find_lower(fwd_i(xs))(
+  function(i) xs[i] - target
+);
+
+assert(idx == undef);
+```
+
+</details>
 
 <details><summary>parameters</summary>
 
@@ -5324,11 +5388,13 @@ Used to indicate if a list object is identified as an `_SLR_CACHE` object.
 
 Value representing the length of `slr`.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_LEN]
 
 Return type is number.
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5339,11 +5405,13 @@ Return type is number.
 
 Value representing the type of `slr`.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_TE]
 
 Return type is `TypeEnum`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5355,11 +5423,13 @@ Return type is `TypeEnum`
 Function dereferences the `slr` DIRECTLY.  E.g. index directly to `slr`
 without going through the BIRLEI.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_ELD]
 
 Return type is `function(i): any`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5370,11 +5440,13 @@ Return type is `function(i): any`
 
 Length of BIRLEI.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_BLEN]
 
 Return type is `number`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5386,11 +5458,13 @@ Return type is `number`
 Function dereferences the `slr` INDIRECTLY by getting index through the
 BIRLEI, and using that index to index the `slr`.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_ELI]
 
 Return type is `function(i): any`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5401,11 +5475,13 @@ Return type is `function(i): any`
 
 Function that dereferences the BIRLEI value.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_IDX]
 
 Return type is `function(i): number`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5416,11 +5492,13 @@ Return type is `function(i): number`
 
 Function converting normalised BIRLEI to string.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_STR]
 
 Return type is `function() : string`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5431,11 +5509,13 @@ Return type is `function() : string`
 
 Normalised BIRL component of BIRLEI.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_BIRL]
 
 Return type is `number | list | range`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -5446,11 +5526,13 @@ Return type is `number | list | range`
 
 Normalised END_I component of BIRLEI.
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     _slr_cache(slr, birls, end_i)[_SLR_END_I]
 
 Return type is `number | undef`
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -8189,10 +8271,12 @@ Constants representing how to show the sign of a number in string library.
 
 The enum that represents showing only -ve and never +ve sign
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
     assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -8203,10 +8287,12 @@ The enum that represents showing only -ve and never +ve sign
 
 The enum that represents showing only -ve and +ve signs
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
     assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -8217,10 +8303,12 @@ The enum that represents showing only -ve and +ve signs
 
 The enum that represents showing only -ve and a space for +ve sign
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
     assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -9033,9 +9121,12 @@ Helper constants.
 
 ab vector
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
 
-    assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
+```openscad
+assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
+```
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -9046,9 +9137,11 @@ ab vector
 
 length of ab
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -9059,9 +9152,11 @@ length of ab
 
 unit ab vector
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
@@ -9072,9 +9167,11 @@ unit ab vector
 
 vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
 
-<details><summary>Example: Usage</summary>
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
 
     assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
+
 </details>
 
 <p align="right">[<a href="#table-of-contents">TOC</a>]</p><hr/>
