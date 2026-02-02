@@ -279,7 +279,7 @@ been minimised.  To Navigate:
 </details>
 <details><summary><a href="#ch-types-_type__introspection">📑 <i>Type Introspection</i></a></summary>
 <blockquote>
-• <a href="#t-__t_y_p_e__n_a_m_e_s">💠_TYPE_NAMES</a><br>
+• <a href="#v-__t_y_p_e__n_a_m_e_s">💠_TYPE_NAMES</a><br>
 • <a href="#f-type_enum">⚙️type_enum</a><br>
 • <a href="#f-type_enum_to_str">⚙️type_enum_to_str</a><br>
 • <a href="#f-type">⚙️type</a><br>
@@ -301,18 +301,18 @@ been minimised.  To Navigate:
 • <a href="#ch-types_consts-_purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#ch-types_consts-_values">📑 <i>Values</i></a></summary>
 <blockquote>
-• <a href="#t-_r_a_n_g_e">💠RANGE</a><br>
-• <a href="#t-_l_i_s_t">💠LIST</a><br>
-• <a href="#t-_s_t_r">💠STR</a><br>
-• <a href="#t-_u_n_k_n_o_w_n">💠UNKNOWN</a><br>
-• <a href="#t-_s_l_i_c_e">💠SLICE</a><br>
-• <a href="#t-_u_n_d_e_f">💠UNDEF</a><br>
-• <a href="#t-_b_o_o_l">💠BOOL</a><br>
-• <a href="#t-_f_u_n_c">💠FUNC</a><br>
-• <a href="#t-_n_u_m">💠NUM</a><br>
-• <a href="#t-_i_n_t">💠INT</a><br>
-• <a href="#t-_f_l_o_a_t">💠FLOAT</a><br>
-• <a href="#t-_n_a_n">💠NAN</a><br>
+• <a href="#v-_r_a_n_g_e">💠RANGE</a><br>
+• <a href="#v-_l_i_s_t">💠LIST</a><br>
+• <a href="#v-_s_t_r">💠STR</a><br>
+• <a href="#v-_u_n_k_n_o_w_n">💠UNKNOWN</a><br>
+• <a href="#v-_s_l_i_c_e">💠SLICE</a><br>
+• <a href="#v-_u_n_d_e_f">💠UNDEF</a><br>
+• <a href="#v-_b_o_o_l">💠BOOL</a><br>
+• <a href="#v-_f_u_n_c">💠FUNC</a><br>
+• <a href="#v-_n_u_m">💠NUM</a><br>
+• <a href="#v-_i_n_t">💠INT</a><br>
+• <a href="#v-_f_l_o_a_t">💠FLOAT</a><br>
+• <a href="#v-_n_a_n">💠NAN</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -508,16 +508,16 @@ been minimised.  To Navigate:
 • <a href="#ch-indexable_consts-_purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#ch-indexable_consts-_values">📑 <i>Values</i></a></summary>
 <blockquote>
-• <a href="#t-__s_l_r__c_a_c_h_e__h_e_a_d_e_r">💠_SLR_CACHE_HEADER</a><br>
-• <a href="#t-__s_l_r__l_e_n">💠_SLR_LEN</a><br>
-• <a href="#t-__s_l_r__t_e">💠_SLR_TE</a><br>
-• <a href="#t-__s_l_r__e_l_d">💠_SLR_ELD</a><br>
-• <a href="#t-__s_l_r__b_l_e_n">💠_SLR_BLEN</a><br>
-• <a href="#t-__s_l_r__e_l_i">💠_SLR_ELI</a><br>
-• <a href="#t-__s_l_r__i_d_x">💠_SLR_IDX</a><br>
-• <a href="#t-__s_l_r__s_t_r">💠_SLR_STR</a><br>
-• <a href="#t-__s_l_r__b_i_r_l">💠_SLR_BIRL</a><br>
-• <a href="#t-__s_l_r__e_n_d__i">💠_SLR_END_I</a><br>
+• <a href="#v-__s_l_r__c_a_c_h_e__h_e_a_d_e_r">💠_SLR_CACHE_HEADER</a><br>
+• <a href="#v-__s_l_r__l_e_n">💠_SLR_LEN</a><br>
+• <a href="#v-__s_l_r__t_e">💠_SLR_TE</a><br>
+• <a href="#v-__s_l_r__e_l_d">💠_SLR_ELD</a><br>
+• <a href="#v-__s_l_r__b_l_e_n">💠_SLR_BLEN</a><br>
+• <a href="#v-__s_l_r__e_l_i">💠_SLR_ELI</a><br>
+• <a href="#v-__s_l_r__i_d_x">💠_SLR_IDX</a><br>
+• <a href="#v-__s_l_r__s_t_r">💠_SLR_STR</a><br>
+• <a href="#v-__s_l_r__b_i_r_l">💠_SLR_BIRL</a><br>
+• <a href="#v-__s_l_r__e_n_d__i">💠_SLR_END_I</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#ch-indexable_consts-indexable_consts_types">📑 <i>indexable_consts types</i></a></summary>
@@ -627,7 +627,7 @@ been minimised.  To Navigate:
 • <a href="#f-translate">⚙️translate</a><br>
 • <a href="#f-scale">⚙️scale</a><br>
 • <a href="#f-transform">⚙️transform</a><br>
-• <a href="#f-reorient">⚙️reorient</a><br>
+• <a href="#f-frame_transform">⚙️frame_transform</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#ch-transform-_matrix__math">📑 <i>Matrix Math</i></a></summary>
@@ -647,6 +647,10 @@ been minimised.  To Navigate:
 <details><summary><a href="#ch-transform-transform_types">📑 <i>transform types</i></a></summary>
 <blockquote>
 • <a href="#t-_matrix">🧩Matrix</a><br>
+• <a href="#t-_row3">🧩Row3</a><br>
+• <a href="#t-_row4">🧩Row4</a><br>
+• <a href="#t-_matrix3x3">🧩Matrix3x3</a><br>
+• <a href="#t-_matrix4x4">🧩Matrix4x4</a><br>
 • <a href="#t-_point2_d">🧩Point2D</a><br>
 • <a href="#t-_point3_d">🧩Point3D</a><br>
 • <a href="#t-_point">🧩Point</a><br>
@@ -656,6 +660,10 @@ been minimised.  To Navigate:
 • <a href="#t-_b_vector2_d">🧩BVector2D</a><br>
 • <a href="#t-_b_vector3_d">🧩BVector3D</a><br>
 • <a href="#t-_b_vector">🧩BVector</a><br>
+• <a href="#t-_axis_frame_ref">🧩AxisFrameRef</a><br>
+• <a href="#t-_planar_frame_ref">🧩PlanarFrameRef</a><br>
+• <a href="#t-_spatial_frame_ref">🧩SpatialFrameRef</a><br>
+• <a href="#t-_frame_ref">🧩FrameRef</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -694,9 +702,9 @@ been minimised.  To Navigate:
 • <a href="#ch-string_consts-_purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#ch-string_consts-_values_for__show_sign___parameters">📑 <i>Values for `show_sign` Parameters</i></a></summary>
 <blockquote>
-• <a href="#t-_s_h_o_w__s_i_g_n__n_e_g">💠SHOW_SIGN_NEG</a><br>
-• <a href="#t-_s_h_o_w__s_i_g_n__p_o_s__n_e_g">💠SHOW_SIGN_POS_NEG</a><br>
-• <a href="#t-_s_h_o_w__s_i_g_n__s_p_c__n_e_g">💠SHOW_SIGN_SPC_NEG</a><br>
+• <a href="#v-_s_h_o_w__s_i_g_n__n_e_g">💠SHOW_SIGN_NEG</a><br>
+• <a href="#v-_s_h_o_w__s_i_g_n__p_o_s__n_e_g">💠SHOW_SIGN_POS_NEG</a><br>
+• <a href="#v-_s_h_o_w__s_i_g_n__s_p_c__n_e_g">💠SHOW_SIGN_SPC_NEG</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -756,10 +764,10 @@ been minimised.  To Navigate:
 • <a href="#ch-helpers_consts-_purpose">📑 <i>Purpose</i></a><br>
 <details><summary><a href="#ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__">📑 <i>For indexing type [VectorInfo](#t-_vector_info).</i></a></summary>
 <blockquote>
-• <a href="#t-_v_i__v_e_c_t_o_r">💠VI_VECTOR</a><br>
-• <a href="#t-_v_i__l_e_n_g_t_h">💠VI_LENGTH</a><br>
-• <a href="#t-_v_i__d_i_r">💠VI_DIR</a><br>
-• <a href="#t-_v_i__n_o_r_m_a_l">💠VI_NORMAL</a><br>
+• <a href="#v-_v_i__v_e_c_t_o_r">💠VI_VECTOR</a><br>
+• <a href="#v-_v_i__l_e_n_g_t_h">💠VI_LENGTH</a><br>
+• <a href="#v-_v_i__d_i_r">💠VI_DIR</a><br>
+• <a href="#v-_v_i__n_o_r_m_a_l">💠VI_NORMAL</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#ch-helpers_consts-helpers_consts_types">📑 <i>helpers_consts types</i></a></summary>
@@ -789,8 +797,8 @@ been minimised.  To Navigate:
 • <a href="#f-layer_pt">⚙️layer_pt</a><br>
 • <a href="#f-layer_pts">⚙️layer_pts</a><br>
 • <a href="#f-layer_side_faces">⚙️layer_side_faces</a><br>
-• <a href="#t-_ear_cw">💠_ear_cw</a><br>
-• <a href="#t-_ear_ccw">💠_ear_ccw</a><br>
+• <a href="#v-_ear_cw">💠_ear_cw</a><br>
+• <a href="#v-_ear_ccw">💠_ear_ccw</a><br>
 • <a href="#f-_pt_in_triangle">⚙️_pt_in_triangle</a><br>
 • <a href="#f-_any_point_in_ear">⚙️_any_point_in_ear</a><br>
 • <a href="#f-_cap_ears">⚙️_cap_ears</a><br>
@@ -1236,7 +1244,7 @@ Returns `true` if NaN, `false` otherwise.
 
 ### <i>📑Type Introspection</i><a id='ch-types-_type__introspection'></a>
 
-#### 💠\_TYPE\_NAMES<a id='t-__t_y_p_e__n_a_m_e_s'></a>
+#### 💠\_TYPE\_NAMES<a id='v-__t_y_p_e__n_a_m_e_s'></a>
 
 <code>*value* _TYPE_NAMES : list\[string]</code>
 
@@ -1406,7 +1414,7 @@ Constants representing the types as enumerated values.
 
 ### <i>📑Values</i><a id='ch-types_consts-_values'></a>
 
-#### 💠RANGE<a id='t-_r_a_n_g_e'></a>
+#### 💠RANGE<a id='v-_r_a_n_g_e'></a>
 
 <code>*value* RANGE : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1429,7 +1437,7 @@ assert(type_enum(range(1,0)) == LIST)
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠LIST<a id='t-_l_i_s_t'></a>
+#### 💠LIST<a id='v-_l_i_s_t'></a>
 
 <code>*value* LIST : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1446,7 +1454,7 @@ assert(type_enum([]) == LIST);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠STR<a id='t-_s_t_r'></a>
+#### 💠STR<a id='v-_s_t_r'></a>
 
 <code>*value* STR : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1463,7 +1471,7 @@ assert(type_enum("") == STR);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠UNKNOWN<a id='t-_u_n_k_n_o_w_n'></a>
+#### 💠UNKNOWN<a id='v-_u_n_k_n_o_w_n'></a>
 
 <code>*value* UNKNOWN : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1480,7 +1488,7 @@ assert(type_enum(???) == UNKNOWN);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SLICE<a id='t-_s_l_i_c_e'></a>
+#### 💠SLICE<a id='v-_s_l_i_c_e'></a>
 
 <code>*value* SLICE : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1497,7 +1505,7 @@ assert(type_enum(slice(0, -1)) == SLICE);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠UNDEF<a id='t-_u_n_d_e_f'></a>
+#### 💠UNDEF<a id='v-_u_n_d_e_f'></a>
 
 <code>*value* UNDEF : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1514,7 +1522,7 @@ assert(type_enum(undef) == UNDEF);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠BOOL<a id='t-_b_o_o_l'></a>
+#### 💠BOOL<a id='v-_b_o_o_l'></a>
 
 <code>*value* BOOL : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1531,7 +1539,7 @@ assert(type_enum(true) == BOOL);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠FUNC<a id='t-_f_u_n_c'></a>
+#### 💠FUNC<a id='v-_f_u_n_c'></a>
 
 <code>*value* FUNC : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1548,7 +1556,7 @@ assert(type_enum(function() 0) == FUNC);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠NUM<a id='t-_n_u_m'></a>
+#### 💠NUM<a id='v-_n_u_m'></a>
 
 <code>*value* NUM : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1565,7 +1573,7 @@ assert(type_enum(1) == NUM);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠INT<a id='t-_i_n_t'></a>
+#### 💠INT<a id='v-_i_n_t'></a>
 
 <code>*value* INT : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1582,7 +1590,7 @@ assert(type_enum(1, true) == INT);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠FLOAT<a id='t-_f_l_o_a_t'></a>
+#### 💠FLOAT<a id='v-_f_l_o_a_t'></a>
 
 <code>*value* FLOAT : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -1599,7 +1607,7 @@ assert(type_enum(1.1, true) == FLOAT);
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠NAN<a id='t-_n_a_n'></a>
+#### 💠NAN<a id='v-_n_a_n'></a>
 
 <code>*value* NAN : <a href="#t-TypeEnum">TypeEnum</a></code>
 
@@ -5426,7 +5434,7 @@ Constants used by [`slr_cache`](#f-_slr_cache) for indexing the
 
 ### <i>📑Values</i><a id='ch-indexable_consts-_values'></a>
 
-#### 💠\_SLR\_CACHE\_HEADER<a id='t-__s_l_r__c_a_c_h_e__h_e_a_d_e_r'></a>
+#### 💠\_SLR\_CACHE\_HEADER<a id='v-__s_l_r__c_a_c_h_e__h_e_a_d_e_r'></a>
 
 <code>*value* _SLR_CACHE_HEADER : string</code>
 
@@ -5434,7 +5442,7 @@ Used to indicate if a list object is identified as an `_SLR_CACHE` object.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_LEN<a id='t-__s_l_r__l_e_n'></a>
+#### 💠\_SLR\_LEN<a id='v-__s_l_r__l_e_n'></a>
 
 <code>*value* _SLR_LEN : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5453,7 +5461,7 @@ Return type is number.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_TE<a id='t-__s_l_r__t_e'></a>
+#### 💠\_SLR\_TE<a id='v-__s_l_r__t_e'></a>
 
 <code>*value* _SLR_TE : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5472,7 +5480,7 @@ Return type is `TypeEnum`
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_ELD<a id='t-__s_l_r__e_l_d'></a>
+#### 💠\_SLR\_ELD<a id='v-__s_l_r__e_l_d'></a>
 
 <code>*value* _SLR_ELD : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5492,7 +5500,7 @@ Return type is `function(i): any`
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_BLEN<a id='t-__s_l_r__b_l_e_n'></a>
+#### 💠\_SLR\_BLEN<a id='v-__s_l_r__b_l_e_n'></a>
 
 <code>*value* _SLR_BLEN : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5511,7 +5519,7 @@ Return type is `number`
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_ELI<a id='t-__s_l_r__e_l_i'></a>
+#### 💠\_SLR\_ELI<a id='v-__s_l_r__e_l_i'></a>
 
 <code>*value* _SLR_ELI : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5531,7 +5539,7 @@ Return type is `function(i): any`
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_IDX<a id='t-__s_l_r__i_d_x'></a>
+#### 💠\_SLR\_IDX<a id='v-__s_l_r__i_d_x'></a>
 
 <code>*value* _SLR_IDX : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5550,7 +5558,7 @@ Return type is `function(i): number`
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_STR<a id='t-__s_l_r__s_t_r'></a>
+#### 💠\_SLR\_STR<a id='v-__s_l_r__s_t_r'></a>
 
 <code>*value* _SLR_STR : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5569,7 +5577,7 @@ Return type is `function() : string`
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_BIRL<a id='t-__s_l_r__b_i_r_l'></a>
+#### 💠\_SLR\_BIRL<a id='v-__s_l_r__b_i_r_l'></a>
 
 <code>*value* _SLR_BIRL : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -5588,7 +5596,7 @@ Return type is `number | list | range`
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_SLR\_END\_I<a id='t-__s_l_r__e_n_d__i'></a>
+#### 💠\_SLR\_END\_I<a id='v-__s_l_r__e_n_d__i'></a>
 
 <code>*value* _SLR_END_I : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
 
@@ -6632,7 +6640,8 @@ Transpose of a matrix.
 > ℹ️ NOTE:
 >
 > There is no need to transpose a vector to a column vector.  When OpenSCAD
-> sees M \* V or V \* M, the vector V is automatically treated as a column or
+> sees `M * V` or `V * M`, the vector `V` is automatically treated as a
+> column or
 > row vector as appropriate.
 
 <details><summary>parameters</summary>
@@ -6767,7 +6776,7 @@ elsewhere.
 
 #### ⚙️rot\_x<a id='f-rot_x'></a>
 
-<code>*function* rot_x(a: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* rot_x(a: number) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about the X axis.
 
@@ -6788,7 +6797,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6798,7 +6807,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rot\_y<a id='f-rot_y'></a>
 
-<code>*function* rot_y(a: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* rot_y(a: number) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about the Y axis.
 
@@ -6819,7 +6828,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6829,7 +6838,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rot\_z<a id='f-rot_z'></a>
 
-<code>*function* rot_z(a: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* rot_z(a: number) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about the Z axis.
 
@@ -6850,7 +6859,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6945,7 +6954,7 @@ True if has the shape of 2 bound points of `dim` `number`s.
 
 #### ⚙️rot\_axis<a id='f-rot_axis'></a>
 
-<code>*function* rot_axis(angle: number, axis: <a href="#t-Vector3D">Vector3D</a>) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* rot_axis(angle: number, axis: <a href="#t-Vector3D">Vector3D</a>) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about an arbitrary axis.
 
@@ -6972,7 +6981,7 @@ Rotation axis vector (must be non-zero).
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6982,7 +6991,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rotate<a id='f-rotate'></a>
 
-<code>*function* rotate(a: number|list\[number,number,number], v: <a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a>) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* rotate(a: number|list\[number,number,number], v: <a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a>) : <a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a></code>
 
 Rotation matrix that parallels OpenSCAD's rotate() module, with the
 additional feature that it can also take a `BVector3D` for `v`, meaning that
@@ -7032,7 +7041,7 @@ or if don't want to worry about having to use
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a></code>
 
 Column-vector rotation matrix M.
 
@@ -7047,7 +7056,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️translate<a id='f-translate'></a>
 
-<code>*function* translate(v: list\[number]) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* translate(v: list\[number]) : <a href="#t-Matrix4x4">Matrix4x4</a></code>
 
 Translation matrix that parallels OpenSCAD's translate() module.
 
@@ -7068,7 +7077,7 @@ Translation vector.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix4x4">Matrix4x4</a></code>
 
 Homogeneous column-vector translation matrix T.
 
@@ -7078,7 +7087,7 @@ Homogeneous column-vector translation matrix T.
 
 #### ⚙️scale<a id='f-scale'></a>
 
-<code>*function* scale(v: list\[number]) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* scale(v: list\[number]) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Scale matrix that parallels OpenSCAD's scale() module.
 
@@ -7099,7 +7108,7 @@ Per-axis scale factors.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
 
 Column-vector scaling matrix S.
 
@@ -7109,7 +7118,7 @@ Column-vector scaling matrix S.
 
 #### ⚙️transform<a id='f-transform'></a>
 
-<code>*function* transform(pts: list\[<a href="#t-Point">Point</a>], matrix\_or\_fn: <a href="#t-Matrix">Matrix</a>|function) : list\[<a href="#t-Point">Point</a>]</code>
+<code>*function* transform(pts: list\[<a href="#t-Point">Point</a>], matrix\_or\_fn: <a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function) : list\[<a href="#t-Point">Point</a>]</code>
 
 Transform a list of points using either a matrix or a point-mapping function.
 
@@ -7128,7 +7137,7 @@ Points in pts are treated as **row vectors** (each point is a 1×d row).
 
 List of points (rows).  All points must have the same dimension.
 
-**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix">Matrix</a>|function</code>
+**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function</code>
 
 Either:
 
@@ -7147,31 +7156,74 @@ Transformed points.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### ⚙️reorient<a id='f-reorient'></a>
+#### ⚙️frame\_transform<a id='f-frame_transform'></a>
 
-<code>*function* reorient(vector\_space\_1: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], vector\_space\_2: list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>], axis\_scales: bool|number|list\[bool|number,...]) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* frame_transform(src\_ref: <a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a>, dst\_ref: <a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a>, axis\_scales: bool|number|list\[bool|number,...]) : <a href="#t-Matrix4x4">Matrix4x4</a></code>
 
-Returns a homogeneous column-vector transform matrix T (4×4) that maps one
-vector space to another.
+Possible callchains:
 
-Each vector space is:
-  [origin, end0, ..., endN] where N ∈ {0,1,2}
-i.e. 1-3 axes defined by endpoint vectors (end_i - origin).
+    frame_transform(src_axis_ref,  dst_axis_ref,  axis_scales) : Matrix4x4
+    frame_transform(src_plane_ref, dst_plane_ref, axis_scales) : Matrix4x4
+    frame_transform(src_frame_ref, dst_frame_ref, axis_scales) : Matrix4x4
 
-axis_scales controls per-axis scaling:
-  - false: reorient only (no scaling)
-  - true:  scale each axis by |w_i|/|v_i| (match target vector magnitudes)
-  - number: scale each axis by that factor
-  - list[(bool|number), ...]: per-axis control in axis order
+Returns a homogeneous transform matrix T (4×4) that maps one reference frame
+to another (move + orientation, with optional scaling).
 
-Special case:
-  - 2-point overload uses uniform scaling (same factor in x/y/z).
+Each reference frame is given as a "vector space" list:
+
+  `[origin, end0, ..., endN]` where `N ∈ {0,1,2}`.  (So length is 2-4.)
+
+The axis directions are defined by:
+
+  `v_i = end_i - origin`   (for i = 0..N)
+
+Axis order is the endpoint order:
+
+    end0 -> axis 0 (x),  end1 -> axis 1 (y),  end2 -> axis 2 (z).
+
+Mapping contract:
+  - The origin maps exactly: `T * [src_origin,1] = [dst_origin,1]`
+    (in homogeneous coordinates, i.e. the 3D point with a 1 appended).
+  - Axis directions are reoriented so axis i in space 1 aligns to axis i in
+    space 2.
+  - If scaling is enabled (see axis_scales), axis magnitudes are adjusted per
+    the selected rule.
+
+Overloads (by input length):
+  - 2-point ([`AxisFrameRef`](#t-_axis_frame_ref)):  aligns a single axis
+    direction (end0-origin). Roll about that axis is not defined by the
+    inputs.  When the directions are opposite (180°), a deterministic
+    perpendicular axis is chosen to define the rotation.
+
+    > ℹ️ NOTE:
+    >
+    > Scaling is uniform (same factor in x/y/z); axis_scales controls that
+    > single uniform factor.
+
+  - 3-point ([`PlanarFrameRef`](#t-_planar_frame_ref)):  aligns two axes in a
+    plane.  The third axis is derived as the right-hand normal:
+    `cross(axis0, axis1)`.  The normal axis is not scaled.
+  - 4-point ([`SpatialFrameRef`](#t-_spatial_frame_ref)):  aligns a full 3D
+    frame (three axes).  The three axis vectors must be linearly independent
+    (i.e. not coplanar).
+
+axis_scales controls scaling along the defined axes:
+  - false: reorient only (no scaling).
+  - true:  per-axis ratio scaling:  `s_i = |dst_axis_i| / |src_axis_i|`.
+  - number: scale each defined axis by that factor.
+  - `list[(bool|number), ...]`: per-axis control in endpoint order.
+
+> ℹ️ NOTE:
+>
+> This returns a matrix intended for column-vector style application, i.e.
+> vertices `v=[x,y,z,1]` are transformed as `m*v`.  The 4th row is
+> `[0,0,0,1]`.
 
 <details><summary>parameters</summary>
 
-**<code>vector_space_1</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+**<code>src_ref</code>**: <code><a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a></code>
 
-**<code>vector_space_2</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+**<code>dst_ref</code>**: <code><a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a></code>
 
 **<code>axis_scales</code>**: <code>bool|number|list\[bool|number,...]</code> *(Default: `false`)*
 
@@ -7179,9 +7231,9 @@ Special case:
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-Matrix4x4">Matrix4x4</a></code>
 
-Homogeneous column-vector transform matrix T.
+Homogeneous 4×4 transform matrix, mapping `src_ref` -> `dst_ref`.
 
 </details>
 
@@ -7492,6 +7544,41 @@ Placeholder for NxM matrix.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
+#### 🧩Row3<a id='t-_row3'></a>
+
+<code>*type* Row3 = list\[number,number,number]</code>
+
+A row of 3 numbers used in a Matrix3x3 type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩Row4<a id='t-_row4'></a>
+
+<code>*type* Row4 = list\[number,number,number,number]</code>
+
+A row of 4 numbers used in a Matrix4x4 type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩Matrix3x3<a id='t-_matrix3x3'></a>
+
+<code>*type* Matrix3x3 = list\[<a href="#t-Row3">Row3</a>,<a href="#t-Row3">Row3</a>,<a href="#t-Row3">Row3</a>]</code>
+
+A 3×3 non-homogeneous transformation matrix used for rotations and scaling
+in 3D space.  Operates on 3-element vectors/points directly.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩Matrix4x4<a id='t-_matrix4x4'></a>
+
+<code>*type* Matrix4x4 = list\[<a href="#t-Row4">Row4</a>,<a href="#t-Row4">Row4</a>,<a href="#t-Row4">Row4</a>,<a href="#t-Row4">Row4</a>]</code>
+
+A 4×4 homogeneous transformation matrix used for translations, rotations
+about arbitrary points, and combined transformations in 3D space.  Operates
+on homogeneous 4-element vectors `[x,y,z,1]`.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
 #### 🧩Point2D<a id='t-_point2_d'></a>
 
 <code>*type* Point2D = list</code>
@@ -7703,6 +7790,51 @@ This is the starting point for this bound vector.
 This is the ending point for this bound vector.
 
 </details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩AxisFrameRef<a id='t-_axis_frame_ref'></a>
+
+<code>*type* AxisFrameRef = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+
+Frame reference defined by an origin and a single axis endpoint:
+
+    [origin, end0]
+
+Note: roll about the axis is under-determined by this reference alone.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩PlanarFrameRef<a id='t-_planar_frame_ref'></a>
+
+<code>*type* PlanarFrameRef = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+
+Frame reference defined by an origin and two axis endpoints:
+
+    [origin, end0, end1]
+
+The third axis is implied by the right-hand normal `cross(end0-origin,
+end1-origin)`.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩SpatialFrameRef<a id='t-_spatial_frame_ref'></a>
+
+<code>*type* SpatialFrameRef = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+
+Frame reference defined by an origin and three axis endpoints:
+
+    [origin, end0, end1, end2]
+
+This defines a full 3D frame (must be non-singular).
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩FrameRef<a id='t-_frame_ref'></a>
+
+<code>*type* FrameRef = <a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a></code>
+
+  Any supported frame reference shape.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -8229,7 +8361,7 @@ Constants representing how to show the sign of a number in string library.
 
 ### <i>📑Values for `show_sign` Parameters</i><a id='ch-string_consts-_values_for__show_sign___parameters'></a>
 
-#### 💠SHOW\_SIGN\_NEG<a id='t-_s_h_o_w__s_i_g_n__n_e_g'></a>
+#### 💠SHOW\_SIGN\_NEG<a id='v-_s_h_o_w__s_i_g_n__n_e_g'></a>
 
 <code>*value* SHOW_SIGN_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
 
@@ -8247,7 +8379,7 @@ assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SHOW\_SIGN\_POS\_NEG<a id='t-_s_h_o_w__s_i_g_n__p_o_s__n_e_g'></a>
+#### 💠SHOW\_SIGN\_POS\_NEG<a id='v-_s_h_o_w__s_i_g_n__p_o_s__n_e_g'></a>
 
 <code>*value* SHOW_SIGN_POS_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
 
@@ -8265,7 +8397,7 @@ assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SHOW\_SIGN\_SPC\_NEG<a id='t-_s_h_o_w__s_i_g_n__s_p_c__n_e_g'></a>
+#### 💠SHOW\_SIGN\_SPC\_NEG<a id='v-_s_h_o_w__s_i_g_n__s_p_c__n_e_g'></a>
 
 <code>*value* SHOW_SIGN_SPC_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
 
@@ -9081,7 +9213,7 @@ Helper constants.
 
 ### <i>📑For indexing type [VectorInfo](#t-_vector_info).</i><a id='ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__'></a>
 
-#### 💠VI\_VECTOR<a id='t-_v_i__v_e_c_t_o_r'></a>
+#### 💠VI\_VECTOR<a id='v-_v_i__v_e_c_t_o_r'></a>
 
 <code>*value* VI_VECTOR : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9098,7 +9230,7 @@ assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠VI\_LENGTH<a id='t-_v_i__l_e_n_g_t_h'></a>
+#### 💠VI\_LENGTH<a id='v-_v_i__l_e_n_g_t_h'></a>
 
 <code>*value* VI_LENGTH : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9115,7 +9247,7 @@ assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠VI\_DIR<a id='t-_v_i__d_i_r'></a>
+#### 💠VI\_DIR<a id='v-_v_i__d_i_r'></a>
 
 <code>*value* VI_DIR : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9132,7 +9264,7 @@ assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠VI\_NORMAL<a id='t-_v_i__n_o_r_m_a_l'></a>
+#### 💠VI\_NORMAL<a id='v-_v_i__n_o_r_m_a_l'></a>
 
 <code>*value* VI_NORMAL : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
 
@@ -9400,7 +9532,7 @@ A list of triangle layer_i forming the side walls.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_ear\_cw<a id='t-_ear_cw'></a>
+#### 💠\_ear\_cw<a id='v-_ear_cw'></a>
 
 <code>*value* _ear_cw : function</code>
 
@@ -9409,9 +9541,41 @@ are convex, or undef if concave or colinear.
 
 This is for clockwise polygons when looking towards -z.
 
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+
+A list of 2D points
+
+**<code>pt_i0</code>**: <code>number</code>
+
+Index into the `pts` list.
+
+**<code>pt_i1</code>**: <code>number</code>
+
+Index into the `pts` list.
+
+**<code>pt_i2</code>**: <code>number</code>
+
+Index into the `pts` list.
+
+**<code>eps</code>**: <code>number</code> *(Default: `1e-6`)*
+
+Biggest abs value to consider as 0.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-Face">Face</a>|undef</code>
+
+Face if convex, or undef if concave or colinear.
+
+</details>
+
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠\_ear\_ccw<a id='t-_ear_ccw'></a>
+#### 💠\_ear\_ccw<a id='v-_ear_ccw'></a>
 
 <code>*value* _ear_ccw : function</code>
 
@@ -9419,6 +9583,38 @@ Given a set of points and an index, returns a face if `pts[pt_is[i..i+2]]`
 are convex, or undef if concave or colinear.
 
 This is for counter-clockwise polygons when looking towards -z.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+
+A list of 2D points
+
+**<code>pt_i0</code>**: <code>number</code>
+
+Index into the `pts` list.
+
+**<code>pt_i1</code>**: <code>number</code>
+
+Index into the `pts` list.
+
+**<code>pt_i2</code>**: <code>number</code>
+
+Index into the `pts` list.
+
+**<code>eps</code>**: <code>number</code> *(Default: `1e-6`)*
+
+Biggest abs value to consider as 0.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-Face">Face</a>|undef</code>
+
+Face if convex, or undef if concave or colinear.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -9807,7 +10003,7 @@ A list of triangle face definitions.
 
 #### ⚙️skin\_transform<a id='f-skin_transform'></a>
 
-<code>*function* skin_transform(obj\_or\_objs: <a href="#t-skin">skin</a>, matrix\_or\_fn: <a href="#t-Matrix">Matrix</a>|function) : <a href="#t-skin">skin</a></code>
+<code>*function* skin_transform(obj\_or\_objs: <a href="#t-skin">skin</a>, matrix\_or\_fn: <a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function) : <a href="#t-skin">skin</a></code>
 
 Performs a transformation on the points stored in the skin object.
 
@@ -9818,7 +10014,7 @@ Performs a transformation on the points stored in the skin object.
 The skin object where the points are coming from to transform.
 TODO: Update doc to state `list[skin]`
 
-**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix">Matrix</a>|function</code>
+**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function</code>
 
 The matrix or function to do the transformation with.  If the
 transformation is homogenous, then will convert the points to a homogeneous

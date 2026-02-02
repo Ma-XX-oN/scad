@@ -1659,8 +1659,8 @@ class Doc:
               output_lines.append(desc.strip() + "\n")
         return
 
-      # Type definitions (typedef, callback, type)
-      if self.doc_type in ("typedef", "callback", "type"):
+      # Type definitions (typedef, callback)
+      if self.doc_type in ("typedef", "callback"):
         assert self.id is not None, "Type definitions must have an id"
         link_prefix = "t"  # types
 

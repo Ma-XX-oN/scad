@@ -758,7 +758,7 @@ function skin_create_faces(skin) =
  * @param {skin} obj_or_objs
  *   The skin object where the points are coming from to transform.
  *   TODO: Update doc to state `list[skin]`
- * @param {(Matrix|function(pt: Point3D): Point3D)} matrix_or_fn
+ * @param {(Matrix3x3|Matrix4x4|function(pt: Point3D): Point3D)} matrix_or_fn
  *   The matrix or function to do the transformation with.  If the
  *   transformation is homogenous, then will convert the points to a homogeneous
  *   basis, perform the transformation and then remove the basis.

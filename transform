@@ -22,6 +22,33 @@ use <param_check>
  */
 
 /**
+ * @typedef {list[number,number,number]} Row3
+ *
+ * A row of 3 numbers used in a Matrix3x3 type.
+ */
+ 
+/**
+ * @typedef {list[number,number,number,number]} Row4
+ *
+ * A row of 4 numbers used in a Matrix4x4 type.
+ */
+ 
+/**
+ * @typedef {list[Row3,Row3,Row3]} Matrix3x3
+ *
+ * A 3×3 non-homogeneous transformation matrix used for rotations and scaling
+ * in 3D space.  Operates on 3-element vectors/points directly.
+ */
+
+/**
+ * @typedef {list[Row4,Row4,Row4,Row4]} Matrix4x4
+ *
+ * A 4×4 homogeneous transformation matrix used for translations, rotations
+ * about arbitrary points, and combined transformations in 3D space.  Operates
+ * on homogeneous 4-element vectors `[x,y,z,1]`.
+ */
+
+/**
  * Transpose of a matrix.
  *
  * - Matrix (list of equal-length rows) → transposed matrix
@@ -29,7 +56,8 @@ use <param_check>
  * > NOTE:
  * >
  * > There is no need to transpose a vector to a column vector.  When OpenSCAD
- * > sees M \* V or V \* M, the vector V is automatically treated as a column or
+ * > sees `M * V` or `V * M`, the vector `V` is automatically treated as a
+ * > column or
  * > row vector as appropriate.
  *
  * @param {Matrix} A
@@ -311,7 +339,7 @@ function homogenise_transform(A, n=4) =
  * @param {number} a
  *   Rotation angle in degrees.
  *
- * @returns {Matrix}
+ * @returns {Matrix3x3}
  *   Column-vector rotation matrix M.
  */
 function rot_x(a) =
@@ -335,7 +363,7 @@ function rot_x(a) =
  * @param {number} a
  *   Rotation angle in degrees.
  *
- * @returns {Matrix}
+ * @returns {Matrix3x3}
  *   Column-vector rotation matrix M.
  */
 function rot_y(a) =
@@ -359,7 +387,7 @@ function rot_y(a) =
  * @param {number} a
  *   Rotation angle in degrees.
  *
- * @returns {Matrix}
+ * @returns {Matrix3x3}
  *   Column-vector rotation matrix M.
  */
 function rot_z(a) =
@@ -433,7 +461,7 @@ function is_bound_vector(o, dim=3) =
  * @param {Vector3D} axis
  *   Rotation axis vector (must be non-zero).
  *
- * @returns {Matrix}
+ * @returns {Matrix3x3}
  *   Column-vector rotation matrix M.
  */
 function rot_axis(angle, axis) =
@@ -494,7 +522,7 @@ function rot_axis(angle, axis) =
  *       and `v[0]` as the rotation point.
  *     - Otherwise axis vector is Z.
  *
- * @returns {Matrix}
+ * @returns {(Matrix3x3|Matrix4x4)}
  *   Column-vector rotation matrix M.
  *
  *   - If `v` is a `BVector3D`, then returns a homogenised transform matrix
@@ -534,7 +562,7 @@ function rotate(a, v=undef) =
  * @param {list[number]} v
  *   Translation vector.
  *
- * @returns {Matrix}
+ * @returns {Matrix4x4}
  *   Homogeneous column-vector translation matrix T.
  */
 function translate(v) =
@@ -559,7 +587,7 @@ function translate(v) =
  * @param {list[number]} v
  *   Per-axis scale factors.
  *
- * @returns {Matrix}
+ * @returns {Matrix3x3}
  *   Column-vector scaling matrix S.
  */
 function scale(v) =
@@ -586,7 +614,7 @@ function scale(v) =
  *
  * @param {list[Point]} pts
  *   List of points (rows).  All points must have the same dimension.
- * @param {(Matrix|function(pt: Point): Point)} matrix_or_fn
+ * @param {(Matrix3x3|Matrix4x4|function(pt: Point): Point)} matrix_or_fn
  *   Either:
  *
  *   - a matrix in row-vector orientation (typically `transpose(M)`), or
@@ -605,33 +633,110 @@ function transform(pts, matrix_or_fn) =
 ;
 
 /**
- * Returns a homogeneous column-vector transform matrix T (4×4) that maps one
- * vector space to another.
+ * @typedef {list[Point3D, Point3D]} AxisFrameRef
  *
- * Each vector space is:
- *   [origin, end0, ..., endN] where N ∈ {0,1,2}
- * i.e. 1-3 axes defined by endpoint vectors (end_i - origin).
+ * Frame reference defined by an origin and a single axis endpoint:
  *
- * axis_scales controls per-axis scaling:
- *   - false: reorient only (no scaling)
- *   - true:  scale each axis by |w_i|/|v_i| (match target vector magnitudes)
- *   - number: scale each axis by that factor
- *   - list[(bool|number), ...]: per-axis control in axis order
+ *     [origin, end0]
  *
- * Special case:
- *   - 2-point overload uses uniform scaling (same factor in x/y/z).
+ * Note: roll about the axis is under-determined by this reference alone.
+ */
+
+/**
+ * @typedef {list[Point3D, Point3D, Point3D]} PlanarFrameRef
  *
- * @param {list[Point3D,Point3D]|list[Point3D,Point3D,Point3D]|list[Point3D,Point3D,Point3D,Point3D]} vector_space_1
- * @param {list[Point3D,Point3D]|list[Point3D,Point3D,Point3D]|list[Point3D,Point3D,Point3D,Point3D]} vector_space_2
+ * Frame reference defined by an origin and two axis endpoints:
+ *
+ *     [origin, end0, end1]
+ *
+ * The third axis is implied by the right-hand normal `cross(end0-origin,
+ * end1-origin)`.
+ */
+
+/**
+ * @typedef {list[Point3D, Point3D, Point3D, Point3D]} SpatialFrameRef
+ *
+ * Frame reference defined by an origin and three axis endpoints:
+ *
+ *     [origin, end0, end1, end2]
+ *
+ * This defines a full 3D frame (must be non-singular).
+ */
+
+/**
+ * @typedef {(AxisFrameRef|PlanarFrameRef|SpatialFrameRef)} FrameRef
+ *   Any supported frame reference shape.
+ */
+
+/**
+ * @callchain frame_transform(src_axis_ref,  dst_axis_ref,  axis_scales) : Matrix4x4
+ * @callchain frame_transform(src_plane_ref, dst_plane_ref, axis_scales) : Matrix4x4
+ * @callchain frame_transform(src_frame_ref, dst_frame_ref, axis_scales) : Matrix4x4
+ *
+ * Returns a homogeneous transform matrix T (4×4) that maps one reference frame
+ * to another (move + orientation, with optional scaling).
+ *
+ * Each reference frame is given as a "vector space" list:
+ *
+ *   `[origin, end0, ..., endN]` where `N ∈ {0,1,2}`.  (So length is 2-4.)
+ *
+ * The axis directions are defined by:
+ *
+ *   `v_i = end_i - origin`   (for i = 0..N)
+ *
+ * Axis order is the endpoint order:
+ *
+ *     end0 -> axis 0 (x),  end1 -> axis 1 (y),  end2 -> axis 2 (z).
+ *
+ * Mapping contract:
+ *   - The origin maps exactly: `T * [src_origin,1] = [dst_origin,1]`
+ *     (in homogeneous coordinates, i.e. the 3D point with a 1 appended).
+ *   - Axis directions are reoriented so axis i in space 1 aligns to axis i in
+ *     space 2.
+ *   - If scaling is enabled (see axis_scales), axis magnitudes are adjusted per
+ *     the selected rule.
+ *
+ * Overloads (by input length):
+ *   - 2-point ([`AxisFrameRef`](#t-AxisFrameRef)):  aligns a single axis
+ *     direction (end0-origin). Roll about that axis is not defined by the
+ *     inputs.  When the directions are opposite (180°), a deterministic
+ *     perpendicular axis is chosen to define the rotation.
+ *
+ *     > NOTE:
+ *     >
+ *     > Scaling is uniform (same factor in x/y/z); axis_scales controls that
+ *     > single uniform factor.
+ *
+ *   - 3-point ([`PlanarFrameRef`](#t-PlanarFrameRef)):  aligns two axes in a
+ *     plane.  The third axis is derived as the right-hand normal:
+ *     `cross(axis0, axis1)`.  The normal axis is not scaled.
+ *   - 4-point ([`SpatialFrameRef`](#t-SpatialFrameRef)):  aligns a full 3D
+ *     frame (three axes).  The three axis vectors must be linearly independent
+ *     (i.e. not coplanar).
+ *
+ * axis_scales controls scaling along the defined axes:
+ *   - false: reorient only (no scaling).
+ *   - true:  per-axis ratio scaling:  `s_i = |dst_axis_i| / |src_axis_i|`.
+ *   - number: scale each defined axis by that factor.
+ *   - `list[(bool|number), ...]`: per-axis control in endpoint order.
+ *
+ * > NOTE:
+ * >
+ * > This returns a matrix intended for column-vector style application, i.e.
+ * > vertices `v=[x,y,z,1]` are transformed as `m*v`.  The 4th row is
+ * > `[0,0,0,1]`.
+ *
+ * @param {(AxisFrameRef|PlanarFrameRef|SpatialFrameRef)} src_ref
+ * @param {(AxisFrameRef|PlanarFrameRef|SpatialFrameRef)} dst_ref
  * @param {(bool|number|list[(bool|number),...])} [axis_scales=false]
  *
- * @returns {Matrix}
- *   Homogeneous column-vector transform matrix T.
+ * @returns {Matrix4x4}
+ *   Homogeneous 4×4 transform matrix, mapping `src_ref` -> `dst_ref`.
  */
-function reorient(vector_space_1, vector_space_2, axis_scales = false) =
+function frame_transform(src_ref, dst_ref, axis_scales = false) =
   let(
-    nA = len(vector_space_1),
-    nB = len(vector_space_2),
+    nA = len(src_ref),
+    nB = len(dst_ref),
     axis_cnt = nA - 1,
 
     ctrls =
@@ -660,8 +765,8 @@ function reorient(vector_space_1, vector_space_2, axis_scales = false) =
   (nA == 2)
   ? (
       let(
-        P0 = vector_space_1[0],  P1 = vector_space_1[1],
-        Q0 = vector_space_2[0],  Q1 = vector_space_2[1],
+        P0 = src_ref[0],  P1 = src_ref[1],
+        Q0 = dst_ref[0],  Q1 = dst_ref[1],
         v  = P1 - P0,            w  = Q1 - Q0,
         lv = norm(v),            lw = norm(w)
       )
@@ -715,10 +820,10 @@ function reorient(vector_space_1, vector_space_2, axis_scales = false) =
   : (nA == 3)
     ? (
         let(
-          P0 = vector_space_1[0],  P1 = vector_space_1[1],
-          P2 = vector_space_1[2],
-          Q0 = vector_space_2[0],  Q1 = vector_space_2[1],
-          Q2 = vector_space_2[2],
+          P0 = src_ref[0],  P1 = src_ref[1],
+          P2 = src_ref[2],
+          Q0 = dst_ref[0],  Q1 = dst_ref[1],
+          Q2 = dst_ref[2],
 
           v1 = P1 - P0,            v2 = P2 - P0,
           w1 = Q1 - Q0,            w2 = Q2 - Q0,
@@ -794,10 +899,10 @@ function reorient(vector_space_1, vector_space_2, axis_scales = false) =
     // ---------- 4-point overload: full 3D frame map + per-axis scaling ----------
     : (
         let(
-          P0 = vector_space_1[0],  P1 = vector_space_1[1],
-          P2 = vector_space_1[2],  P3 = vector_space_1[3],
-          Q0 = vector_space_2[0],  Q1 = vector_space_2[1],
-          Q2 = vector_space_2[2],  Q3 = vector_space_2[3],
+          P0 = src_ref[0],  P1 = src_ref[1],
+          P2 = src_ref[2],  P3 = src_ref[3],
+          Q0 = dst_ref[0],  Q1 = dst_ref[1],
+          Q2 = dst_ref[2],  Q3 = dst_ref[3],
 
           v1 = P1 - P0,            v2 = P2 - P0,            v3 = P3 - P0,
           w1 = Q1 - Q0,            w2 = Q2 - Q0,            w3 = Q3 - Q0,
@@ -887,7 +992,8 @@ function reorient(vector_space_1, vector_space_2, axis_scales = false) =
           T2 = translate(Q0)
         )
         T2 * homogenise_transform(L3) * T1
-      );
+      )
+;
 
 ////////////////////////////////////////////////////////////////////////////////
 // INVERT MATRIX
