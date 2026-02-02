@@ -1,0 +1,807 @@
+/**
+ * ## spline
+ *
+ * ### How to Import
+ *
+ *     use <spline>
+ *
+ * ### Purpose
+ *
+ * Provides spline curves and sampled polyline representations for use with
+ * path-based extrusions.  A [spline](#t-spline) defines a smooth curve through
+ * control points.  An [spoly](#t-spoly) is the adaptively-sampled polyline
+ * representation, with control point indices preserved for synchronizing
+ * rail and guide paths.
+ */
+use <helpers>
+include <spline_consts>
+
+/**
+ * ### Design
+ *
+ * Two object types are defined:
+ *
+ * - **spline** - the mathematical curve definition (control points, type,
+ *   tension, open/closed).
+ * - **spoly** - the sampled polyline with cached arc lengths, tangents,
+ *   and an index map back to the original control points.
+ */
+
+/**
+ * @typedef {list} spline
+ *
+ * Represents a spline curve through control points.
+ *
+ * @slot {string} _SPLINE_ID
+ *   Type identifier, always `"SPLINE"`.
+ * @slot {list[Point3D,...]} SPLINE_PTS
+ *   The control points defining the curve.  For Catmull-Rom, these are the
+ *   interpolation points.  For cubic Bezier, the layout is
+ *   `[P0, H0out, H1in, P1, H1out, H2in, P2, ...]` where anchor points are
+ *   at indices `0, 3, 6, ...` and handles are between them.
+ * @slot {bool} SPLINE_CLOSED
+ *   Whether the spline forms a closed loop.
+ * @slot {number} _SPLINE_TYPE
+ *   Spline type enum: `SPLINE_T_CATMULL_ROM` or `SPLINE_T_BEZIER`.
+ * @slot {number} _SPLINE_TENSION
+ *   Tension parameter for Catmull-Rom (default 0.5).  Ignored for Bezier.
+ */
+
+/**
+ * @typedef {list} spoly
+ *
+ * Represents an adaptively-sampled polyline derived from a spline, with
+ * control point correspondence preserved.
+ *
+ * @slot {list[Point3D,...]} SPOLY_PTS
+ *   The sampled polyline points.
+ * @slot {list[number,...]} SPOLY_CTRL_IS
+ *   Indices into `SPOLY_PTS` for the original spline control points.
+ * @slot {list[number,...]} _SPOLY_ARC_LENS
+ *   Cumulative arc length at each polyline point.
+ * @slot {list[Vector3D,...]} _SPOLY_TANGENTS
+ *   Unit tangent vector at each polyline point.
+ * @slot {bool} SPOLY_CLOSED
+ *   Whether this polyline represents a closed loop.
+ */
+
+/**
+ * ### SPLINE Functions
+ */
+
+/**
+ * Type check for spline objects.
+ *
+ * @param {any} obj
+ *   The value to test.
+ * @returns {bool}
+ *   `true` if `obj` is a spline.
+ */
+function is_spline(obj) = is_list(obj) && obj[0] == _SPLINE_ID;
+
+/**
+ * Create a new spline object.
+ *
+ * @param {list[Point3D,...]} pts
+ *   Control points (3D).
+ * @param {bool} closed
+ *   Whether the spline is a closed loop.  Default `false`.
+ * @param {number} type
+ *   Spline type enum.  Default `SPLINE_T_CATMULL_ROM`.
+ * @param {number} tension
+ *   Tension for Catmull-Rom.  Default `0.5`.
+ * @returns {spline}
+ *   A new spline object.
+ */
+function spline_new(pts, closed = false, type = SPLINE_T_CATMULL_ROM, tension = 0.5) =
+  [ _SPLINE_ID, pts, closed, type, tension ];
+
+/**
+ * Number of segments in a spline.
+ *
+ * @param {spline} s
+ *   A spline object.
+ * @returns {number}
+ *   The number of curve segments.
+ */
+function spline_segment_count(s) =
+  let(n = len(s[SPLINE_PTS]))
+  s[_SPLINE_TYPE] == SPLINE_T_BEZIER
+    ? (s[SPLINE_CLOSED] ? n / 3 : (n - 1) / 3)
+    : (s[SPLINE_CLOSED] ? n : n - 1);
+
+/**
+ * Evaluate a spline at parameter `t` in the given segment.
+ *
+ * For Catmull-Rom splines, each segment spans between consecutive control
+ * points.  For cubic Bezier splines, control points are laid out as
+ * `[P0, H0, H1, P1, H2, H3, P2, ...]` where each segment uses 4 points:
+ * segment `i` uses indices `[3*i, 3*i+1, 3*i+2, 3*i+3]`.
+ *
+ * @param {spline} s
+ *   A spline object.
+ * @param {number} seg
+ *   Segment index (0-based).
+ * @param {number} t
+ *   Parameter in [0, 1].
+ * @returns {Point3D}
+ *   The point on the curve.
+ */
+function spline_point_at(s, seg, t) =
+  s[_SPLINE_TYPE] == SPLINE_T_BEZIER
+    ? _spline_bezier_point(s, seg, t)
+    : _spline_catmull_rom_point(s, seg, t);
+
+/**
+ * Catmull-Rom point evaluation.
+ * @private
+ */
+function _spline_catmull_rom_point(s, seg, t) =
+  let(
+    pts    = s[SPLINE_PTS],
+    n      = len(pts),
+    closed = s[SPLINE_CLOSED],
+    tau    = s[_SPLINE_TENSION],
+    i1 = closed ? (seg % n)       : seg,
+    i0 = closed ? ((seg - 1 + n) % n) : max(0, seg - 1),
+    i2 = closed ? ((seg + 1) % n) : min(n - 1, seg + 1),
+    i3 = closed ? ((seg + 2) % n) : min(n - 1, seg + 2),
+    p0 = pts[i0],
+    p1 = pts[i1],
+    p2 = pts[i2],
+    p3 = pts[i3],
+    t2 = t * t,
+    t3 = t2 * t
+  )
+  let(ts = 2 * tau)
+  [
+    for (d = [0:2])
+      ts * (
+        p1[d]
+        + (-p0[d] + p2[d]) * 0.5 * t
+        + (p0[d] - 2.5*p1[d] + 2*p2[d] - 0.5*p3[d]) * t2
+        + (-0.5*p0[d] + 1.5*p1[d] - 1.5*p2[d] + 0.5*p3[d]) * t3
+      ) / ts
+  ];
+
+/**
+ * Cubic Bezier point evaluation.
+ *
+ * B(t) = (1-t)³·P0 + 3·(1-t)²·t·P1 + 3·(1-t)·t²·P2 + t³·P3
+ *
+ * @private
+ */
+function _spline_bezier_point(s, seg, t) =
+  let(
+    pts = s[SPLINE_PTS],
+    n   = len(pts),
+    closed = s[SPLINE_CLOSED],
+    base = 3 * seg,
+    i0 = closed ? (base % n)       : base,
+    i1 = closed ? ((base + 1) % n) : base + 1,
+    i2 = closed ? ((base + 2) % n) : base + 2,
+    i3 = closed ? ((base + 3) % n) : base + 3,
+    p0 = pts[i0],
+    p1 = pts[i1],
+    p2 = pts[i2],
+    p3 = pts[i3],
+    u  = 1 - t,
+    u2 = u * u,
+    u3 = u2 * u,
+    t2 = t * t,
+    t3 = t2 * t
+  )
+  u3 * p0 + 3 * u2 * t * p1 + 3 * u * t2 * p2 + t3 * p3;
+
+/**
+ * Evaluate the tangent (derivative) of a spline at parameter `t`.
+ *
+ * @param {spline} s
+ *   A spline object.
+ * @param {number} seg
+ *   Segment index (0-based).
+ * @param {number} t
+ *   Parameter in [0, 1].
+ * @returns {Vector3D}
+ *   The (unnormalized) tangent vector.
+ */
+function spline_tangent_at(s, seg, t) =
+  s[_SPLINE_TYPE] == SPLINE_T_BEZIER
+    ? _spline_bezier_tangent(s, seg, t)
+    : _spline_catmull_rom_tangent(s, seg, t);
+
+/**
+ * Catmull-Rom tangent evaluation.
+ * @private
+ */
+function _spline_catmull_rom_tangent(s, seg, t) =
+  let(
+    pts    = s[SPLINE_PTS],
+    n      = len(pts),
+    closed = s[SPLINE_CLOSED],
+    tau    = s[_SPLINE_TENSION],
+    i1 = closed ? (seg % n)       : seg,
+    i0 = closed ? ((seg - 1 + n) % n) : max(0, seg - 1),
+    i2 = closed ? ((seg + 1) % n) : min(n - 1, seg + 1),
+    i3 = closed ? ((seg + 2) % n) : min(n - 1, seg + 2),
+    p0 = pts[i0],
+    p1 = pts[i1],
+    p2 = pts[i2],
+    p3 = pts[i3],
+    t2 = t * t
+  )
+  [
+    for (d = [0:2])
+      0.5 * (
+        (-p0[d] + p2[d])
+        + 2 * (p0[d] - 2.5*p1[d] + 2*p2[d] - 0.5*p3[d]) * t
+        + 3 * (-0.5*p0[d] + 1.5*p1[d] - 1.5*p2[d] + 0.5*p3[d]) * t2
+      )
+  ];
+
+/**
+ * Cubic Bezier tangent evaluation.
+ *
+ * B'(t) = 3·(1-t)²·(P1-P0) + 6·(1-t)·t·(P2-P1) + 3·t²·(P3-P2)
+ *
+ * @private
+ */
+function _spline_bezier_tangent(s, seg, t) =
+  let(
+    pts = s[SPLINE_PTS],
+    n   = len(pts),
+    closed = s[SPLINE_CLOSED],
+    base = 3 * seg,
+    i0 = closed ? (base % n)       : base,
+    i1 = closed ? ((base + 1) % n) : base + 1,
+    i2 = closed ? ((base + 2) % n) : base + 2,
+    i3 = closed ? ((base + 3) % n) : base + 3,
+    p0 = pts[i0],
+    p1 = pts[i1],
+    p2 = pts[i2],
+    p3 = pts[i3],
+    u  = 1 - t
+  )
+  3 * u * u * (p1 - p0) + 6 * u * t * (p2 - p1) + 3 * t * t * (p3 - p2);
+
+/**
+ * ### Adaptive Sampling
+ */
+
+/**
+ * Recursively subdivide a spline segment until the midpoint deviation from
+ * the chord is within tolerance.
+ *
+ * @param {spline} s
+ *   The spline.
+ * @param {number} seg
+ *   Segment index.
+ * @param {number} t0
+ *   Start parameter.
+ * @param {Point3D} p0
+ *   Point at t0.
+ * @param {number} t1
+ *   End parameter.
+ * @param {Point3D} p1
+ *   Point at t1.
+ * @param {number} tol
+ *   Maximum allowed deviation.
+ * @param {number} depth
+ *   Recursion depth limit.
+ * @returns {list[Point3D,...]}
+ *   Interior points (not including p0 or p1).
+ */
+function _spline_subdivide(s, seg, t0, p0, t1, p1, tol, depth) =
+  let(
+    tmid = (t0 + t1) / 2,
+    pmid = spline_point_at(s, seg, tmid),
+    // midpoint of chord
+    chord_mid = (p0 + p1) / 2,
+    dev = norm(pmid - chord_mid)
+  )
+  (dev <= tol || depth <= 0)
+    ? []
+    : let(
+        left  = _spline_subdivide(s, seg, t0, p0, tmid, pmid, tol, depth - 1),
+        right = _spline_subdivide(s, seg, tmid, pmid, t1, p1, tol, depth - 1)
+      )
+      concat(left, [pmid], right);
+
+/**
+ * Sample a single segment adaptively.
+ *
+ * @param {spline} s
+ *   The spline.
+ * @param {number} seg
+ *   Segment index.
+ * @param {number} tol
+ *   Tolerance.
+ * @returns {list[Point3D,...]}
+ *   Points for this segment, starting with the segment start point.
+ *   The segment end point is NOT included (it will be the start of the next
+ *   segment, or appended for the last segment).
+ */
+function _spline_sample_segment(s, seg, tol) =
+  let(
+    p0 = spline_point_at(s, seg, 0),
+    p1 = spline_point_at(s, seg, 1),
+    interior = _spline_subdivide(s, seg, 0, p0, 1, p1, tol, 10)
+  )
+  concat([p0], interior);
+
+/**
+ * Convert a spline to a sampled polyline (spoly).
+ *
+ * @param {spline} s
+ *   The spline to sample.
+ * @param {number} tolerance
+ *   Maximum deviation from the true curve.  Default `0.01`.
+ * @returns {spoly}
+ *   The sampled polyline with control point indices, arc lengths, and tangents.
+ */
+function spline_to_spoly(s, tolerance = 0.01) =
+  let(
+    seg_count = spline_segment_count(s),
+    closed    = s[SPLINE_CLOSED],
+
+    // Collect points and track control point indices.
+    // Each segment contributes its start point + interior points.
+    // The final endpoint is appended after the loop.
+    _seg_results = [for (seg = [0 : seg_count - 1]) _spline_sample_segment(s, seg, tolerance)],
+
+    // Build flat point list and control indices.
+    _build = _spoly_build_pts(_seg_results, seg_count, closed, s),
+
+    pts     = _build[0],
+    ctrl_is = _build[1],
+
+    // Compute cumulative arc lengths.
+    arc_lens = _spoly_compute_arc_lens(pts),
+
+    // Compute unit tangents from adjacent points.
+    tangents = _spoly_compute_tangents(pts, closed)
+  )
+  [ _SPOLY_ID, pts, ctrl_is, arc_lens, tangents, closed ];
+
+/**
+ * Build the flat point list and control point index list from per-segment
+ * sample results.
+ *
+ * @param {list} seg_results
+ *   Per-segment sample point lists.
+ * @param {number} seg_count
+ *   Number of segments.
+ * @param {bool} closed
+ *   Whether the spline is closed.
+ * @param {spline} s
+ *   The spline (for evaluating the final endpoint).
+ * @returns {list}
+ *   `[pts, ctrl_is]`
+ */
+function _spoly_build_pts(seg_results, seg_count, closed, s) =
+  let(
+    // Flatten: for each segment, accumulate points and record the index of
+    // the first point (which is the control point) in ctrl_is.
+    _acc = _spoly_flatten_segs(seg_results, 0, seg_count),
+    flat_pts = _acc[0],
+    ctrl_is  = _acc[1],
+
+    // Append final endpoint.
+    last_pt = spline_point_at(s, seg_count - 1, 1),
+    pts     = concat(flat_pts, [last_pt]),
+
+    // For closed splines, the last control point index is the last point.
+    // For open splines, same - the final point is the last control point.
+    final_ctrl_is = concat(ctrl_is, [len(pts) - 1])
+  )
+  [pts, final_ctrl_is];
+
+/**
+ * Flatten per-segment results into a single point list, tracking control
+ * point indices.
+ *
+ * @param {list} seg_results
+ *   Per-segment sample point lists.
+ * @param {number} offset
+ *   Current index offset into the flat list.
+ * @param {number} seg_count
+ *   Total number of segments.
+ * @returns {list}
+ *   `[flat_pts, ctrl_is]`
+ */
+function _spoly_flatten_segs(seg_results, offset, seg_count) =
+  let(
+    // Use a recursive accumulator.
+    _result = _spoly_flatten_segs_acc(seg_results, 0, seg_count, 0, [], [])
+  )
+  [_result[0], _result[1]];
+
+function _spoly_flatten_segs_acc(seg_results, seg_i, seg_count, offset, pts_acc, ctrl_acc) =
+  seg_i >= seg_count
+    ? [pts_acc, ctrl_acc]
+    : let(
+        seg_pts = seg_results[seg_i],
+        new_pts = concat(pts_acc, seg_pts),
+        new_ctrl = concat(ctrl_acc, [offset]),
+        new_offset = offset + len(seg_pts)
+      )
+      _spoly_flatten_segs_acc(seg_results, seg_i + 1, seg_count, new_offset, new_pts, new_ctrl);
+
+/**
+ * Compute cumulative arc lengths for a polyline.
+ *
+ * @param {list[Point3D,...]} pts
+ *   The polyline points.
+ * @returns {list[number,...]}
+ *   Cumulative arc length at each point (first is 0).
+ */
+function _spoly_compute_arc_lens(pts) =
+  let(n = len(pts))
+  _spoly_arc_lens_acc(pts, 1, n, [0]);
+
+function _spoly_arc_lens_acc(pts, i, n, acc) =
+  i >= n
+    ? acc
+    : let(
+        d = norm(pts[i] - pts[i - 1]),
+        new_acc = concat(acc, [acc[i - 1] + d])
+      )
+      _spoly_arc_lens_acc(pts, i + 1, n, new_acc);
+
+/**
+ * Compute unit tangent vectors for a polyline.
+ *
+ * @param {list[Point3D,...]} pts
+ *   The polyline points.
+ * @param {bool} closed
+ *   Whether the polyline is closed.
+ * @returns {list[Vector3D,...]}
+ *   Unit tangent at each point.
+ */
+function _spoly_compute_tangents(pts, closed) =
+  let(n = len(pts))
+  [
+    for (i = [0 : n - 1])
+      let(
+        prev = closed ? pts[(i - 1 + n) % n] : (i > 0 ? pts[i - 1] : pts[i]),
+        next = closed ? pts[(i + 1) % n]     : (i < n - 1 ? pts[i + 1] : pts[i]),
+        diff = next - prev,
+        l    = norm(diff)
+      )
+      l > 0 ? diff / l : [0, 0, 1]
+  ];
+
+/**
+ * ### SPOLY Functions
+ */
+
+/**
+ * Type check for spoly objects.
+ *
+ * @param {any} obj
+ *   The value to test.
+ * @returns {bool}
+ *   `true` if `obj` is a spoly.
+ */
+function is_spoly(obj) = is_list(obj) && obj[0] == _SPOLY_ID;
+
+/**
+ * Create a new spoly object directly.
+ *
+ * @param {list[Point3D,...]} pts
+ *   Polyline points.
+ * @param {list[number,...]} ctrl_is
+ *   Indices into `pts` for original control points.
+ * @param {list[number,...]} arc_lens
+ *   Cumulative arc length at each point.
+ * @param {list[Vector3D,...]} tangents
+ *   Unit tangent at each point.
+ * @param {bool} closed
+ *   Whether this is a closed loop.
+ * @returns {spoly}
+ *   A new spoly object.
+ */
+function spoly_new(pts, ctrl_is, arc_lens, tangents, closed = false) =
+  [ _SPOLY_ID, pts, ctrl_is, arc_lens, tangents, closed ];
+
+/**
+ * Query a point on an spoly at a given control point index plus a percentage
+ * toward the next control point.
+ *
+ * @param {spoly} sp
+ *   An spoly object.
+ * @param {number} ctrl_idx
+ *   Index into the control point list (0-based).
+ * @param {number} pct
+ *   Percentage [0, 1] along the segment from `ctrl_idx` to `ctrl_idx + 1`.
+ * @returns {Point3D}
+ *   The interpolated point.
+ */
+function spoly_point_at(sp, ctrl_idx, pct) =
+  let(
+    pts      = sp[SPOLY_PTS],
+    ctrl_is  = sp[SPOLY_CTRL_IS],
+    arc_lens = sp[_SPOLY_ARC_LENS],
+    i_start  = ctrl_is[ctrl_idx],
+    i_end    = ctrl_is[ctrl_idx + 1],
+    al_start = arc_lens[i_start],
+    al_end   = arc_lens[i_end],
+    target_al = al_start + pct * (al_end - al_start)
+  )
+  _spoly_lerp_at_arc_len(pts, arc_lens, i_start, i_end, target_al);
+
+/**
+ * Query a tangent on an spoly at a given control point index plus a percentage
+ * toward the next control point.
+ *
+ * @param {spoly} sp
+ *   An spoly object.
+ * @param {number} ctrl_idx
+ *   Index into the control point list (0-based).
+ * @param {number} pct
+ *   Percentage [0, 1] along the segment.
+ * @returns {Vector3D}
+ *   The interpolated unit tangent.
+ */
+function spoly_tangent_at(sp, ctrl_idx, pct) =
+  let(
+    pts      = sp[SPOLY_PTS],
+    tangents = sp[_SPOLY_TANGENTS],
+    ctrl_is  = sp[SPOLY_CTRL_IS],
+    arc_lens = sp[_SPOLY_ARC_LENS],
+    i_start  = ctrl_is[ctrl_idx],
+    i_end    = ctrl_is[ctrl_idx + 1],
+    al_start = arc_lens[i_start],
+    al_end   = arc_lens[i_end],
+    target_al = al_start + pct * (al_end - al_start),
+    // Find the segment containing target_al.
+    seg_i = _spoly_find_segment(arc_lens, i_start, i_end, target_al),
+    frac  = (arc_lens[seg_i + 1] - arc_lens[seg_i]) > 0
+            ? (target_al - arc_lens[seg_i]) / (arc_lens[seg_i + 1] - arc_lens[seg_i])
+            : 0,
+    t0 = tangents[seg_i],
+    t1 = tangents[seg_i + 1],
+    interp = t0 + frac * (t1 - t0),
+    l = norm(interp)
+  )
+  l > 0 ? interp / l : [0, 0, 1];
+
+/**
+ * Find the polyline segment index containing a target arc length, searching
+ * within the range [i_start, i_end].
+ *
+ * @param {list[number,...]} arc_lens
+ *   Cumulative arc lengths.
+ * @param {number} i_start
+ *   Start index of search range.
+ * @param {number} i_end
+ *   End index of search range.
+ * @param {number} target
+ *   Target arc length.
+ * @returns {number}
+ *   Index `i` such that `arc_lens[i] <= target < arc_lens[i+1]`.
+ */
+function _spoly_find_segment(arc_lens, i_start, i_end, target) =
+  _spoly_find_seg_acc(arc_lens, i_start, i_end, target);
+
+function _spoly_find_seg_acc(arc_lens, lo, hi, target) =
+  lo >= hi - 1
+    ? lo
+    : let(mid = floor((lo + hi) / 2))
+      arc_lens[mid] <= target
+        ? _spoly_find_seg_acc(arc_lens, mid, hi, target)
+        : _spoly_find_seg_acc(arc_lens, lo, mid, target);
+
+/**
+ * Linearly interpolate a point along the polyline at a target arc length.
+ *
+ * @param {list[Point3D,...]} pts
+ *   Polyline points.
+ * @param {list[number,...]} arc_lens
+ *   Cumulative arc lengths.
+ * @param {number} i_start
+ *   Start index for search.
+ * @param {number} i_end
+ *   End index for search.
+ * @param {number} target_al
+ *   Target arc length.
+ * @returns {Point3D}
+ *   Interpolated point.
+ */
+function _spoly_lerp_at_arc_len(pts, arc_lens, i_start, i_end, target_al) =
+  let(
+    seg_i = _spoly_find_segment(arc_lens, i_start, i_end, target_al),
+    seg_len = arc_lens[seg_i + 1] - arc_lens[seg_i],
+    frac = seg_len > 0 ? (target_al - arc_lens[seg_i]) / seg_len : 0
+  )
+  pts[seg_i] + frac * (pts[seg_i + 1] - pts[seg_i]);
+
+/**
+ * Split an spoly into two at a given control point index and percentage.
+ *
+ * @param {spoly} sp
+ *   An spoly object.
+ * @param {number} ctrl_idx
+ *   Index into the control point list.
+ * @param {number} pct
+ *   Percentage [0, 1] along the segment from `ctrl_idx` to `ctrl_idx + 1`.
+ * @returns {list[spoly, spoly]}
+ *   A list of two spoly objects: `[before, after]`.
+ */
+function spoly_split(sp, ctrl_idx, pct) =
+  let(
+    pts      = sp[SPOLY_PTS],
+    ctrl_is  = sp[SPOLY_CTRL_IS],
+    arc_lens = sp[_SPOLY_ARC_LENS],
+    tangents = sp[_SPOLY_TANGENTS],
+    closed   = sp[SPOLY_CLOSED],
+
+    i_start  = ctrl_is[ctrl_idx],
+    i_end    = ctrl_is[ctrl_idx + 1],
+    al_start = arc_lens[i_start],
+    al_end   = arc_lens[i_end],
+    target_al = al_start + pct * (al_end - al_start),
+
+    // Find the exact split segment and interpolated point.
+    seg_i    = _spoly_find_segment(arc_lens, i_start, i_end, target_al),
+    seg_len  = arc_lens[seg_i + 1] - arc_lens[seg_i],
+    frac     = seg_len > 0 ? (target_al - arc_lens[seg_i]) / seg_len : 0,
+    split_pt = pts[seg_i] + frac * (pts[seg_i + 1] - pts[seg_i]),
+    split_tan = let(
+      t = tangents[seg_i] + frac * (tangents[seg_i + 1] - tangents[seg_i]),
+      l = norm(t)
+    ) l > 0 ? t / l : [0, 0, 1],
+
+    // First half: points[0..seg_i] + split_pt
+    pts_a = concat(
+      [for (i = [0 : seg_i]) pts[i]],
+      [split_pt]
+    ),
+    // Control indices for first half: ctrl_is[0..ctrl_idx] plus the split point.
+    ctrl_is_a = concat(
+      [for (i = [0 : ctrl_idx]) ctrl_is[i]],
+      [len(pts_a) - 1]
+    ),
+    arc_lens_a = _spoly_compute_arc_lens(pts_a),
+    tangents_a = concat(
+      [for (i = [0 : seg_i]) tangents[i]],
+      [split_tan]
+    ),
+
+    // Second half: split_pt + points[seg_i+1..end]
+    pts_b = concat(
+      [split_pt],
+      [for (i = [seg_i + 1 : len(pts) - 1]) pts[i]]
+    ),
+    // Control indices for second half: 0 (split point), then offset remaining ctrl_is.
+    // Remaining control points are ctrl_idx+1 onwards.
+    offset_b = seg_i + 1,
+    ctrl_is_b = concat(
+      [0],
+      [for (i = [ctrl_idx + 1 : len(ctrl_is) - 1]) ctrl_is[i] - offset_b + 1]
+    ),
+    arc_lens_b = _spoly_compute_arc_lens(pts_b),
+    tangents_b = concat(
+      [split_tan],
+      [for (i = [seg_i + 1 : len(pts) - 1]) tangents[i]]
+    )
+  )
+  [
+    [ _SPOLY_ID, pts_a, ctrl_is_a, arc_lens_a, tangents_a, false ],
+    [ _SPOLY_ID, pts_b, ctrl_is_b, arc_lens_b, tangents_b, false ]
+  ];
+
+/**
+ * ### String Conversion
+ */
+
+/**
+ * Convert a spline to a debug string.
+ *
+ * @param {spline} s
+ *   A spline object.
+ * @returns {string}
+ *   A human-readable representation.
+ */
+function spline_to_string(s) =
+  str(
+    "SPLINE[type=",
+    s[_SPLINE_TYPE] == SPLINE_T_CATMULL_ROM ? "catmull-rom" : "bezier",
+    ", tension=", s[_SPLINE_TENSION],
+    ", closed=", s[SPLINE_CLOSED],
+    ", pts(", len(s[SPLINE_PTS]), ")=", s[SPLINE_PTS],
+    "]"
+  );
+
+/**
+ * Convert an spoly to a debug string.
+ *
+ * @param {spoly} sp
+ *   An spoly object.
+ * @returns {string}
+ *   A human-readable representation.
+ */
+function spoly_to_string(sp) =
+  str(
+    "SPOLY[closed=", sp[SPOLY_CLOSED],
+    ", pts(", len(sp[SPOLY_PTS]), ")",
+    ", ctrl_is=", sp[SPOLY_CTRL_IS],
+    ", total_len=", sp[_SPOLY_ARC_LENS][len(sp[_SPOLY_ARC_LENS]) - 1],
+    "]"
+  );
+
+/**
+ * ### Examples
+ */
+
+/**
+ * @example
+ *
+ * Basic Catmull-Rom spline through 5 points, converted to a polyline and
+ * rendered as a series of spheres.
+ */
+module spline_example1() {
+  pts = [
+    [0, 0, 0],
+    [10, 5, 0],
+    [20, 0, 5],
+    [30, 10, 5],
+    [40, 0, 0]
+  ];
+
+  s = spline_new(pts);
+  sp = spline_to_spoly(s, tolerance = 0.1);
+
+  echo(spline_to_string(s));
+  echo(spoly_to_string(sp));
+
+  // Draw polyline points.
+  poly_pts = sp[SPOLY_PTS];
+  for (i = [0 : len(poly_pts) - 2])
+    hull() {
+      translate(poly_pts[i]) sphere(0.3, $fn = 8);
+      translate(poly_pts[i + 1]) sphere(0.3, $fn = 8);
+    }
+
+  // Highlight control points.
+  ctrl_is = sp[SPOLY_CTRL_IS];
+  for (i = ctrl_is)
+    translate(poly_pts[i]) color("red") sphere(0.8, $fn = 16);
+}
+
+/**
+ * @example
+ *
+ * Cubic Bezier spline with 2 segments (7 points: 3 anchors + 4 handles),
+ * converted to a polyline.  Anchor control points are highlighted in red.
+ */
+module spline_example2() {
+  pts = [
+    [0, 0, 0],       // P0 anchor
+    [5, 10, 0],      // H0out handle
+    [15, 10, 0],     // H1in handle
+    [20, 0, 0],      // P1 anchor
+    [25, -10, 0],    // H1out handle
+    [35, -10, 0],    // H2in handle
+    [40, 0, 0]       // P2 anchor
+  ];
+
+  s = spline_new(pts, type = SPLINE_T_BEZIER);
+  sp = spline_to_spoly(s, tolerance = 0.1);
+
+  echo(spline_to_string(s));
+  echo(spoly_to_string(sp));
+
+  // Draw polyline.
+  poly_pts = sp[SPOLY_PTS];
+  for (i = [0 : len(poly_pts) - 2])
+    hull() {
+      translate(poly_pts[i]) sphere(0.3, $fn = 8);
+      translate(poly_pts[i + 1]) sphere(0.3, $fn = 8);
+    }
+
+  // Highlight anchor control points.
+  ctrl_is = sp[SPOLY_CTRL_IS];
+  for (i = ctrl_is)
+    translate(poly_pts[i]) color("red") sphere(0.8, $fn = 16);
+}
