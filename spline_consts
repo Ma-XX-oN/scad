@@ -1,0 +1,71 @@
+/**
+ * ## spline_consts
+ *
+ * ### How to Import
+ *
+ *     include <spline_consts>
+ *
+ * ### Purpose
+ *
+ * Constants for spline and spoly objects: type enums and slot indices.
+ *
+ * ### Spline Type Enums
+ */
+
+/**
+ * @type {SplineTypeEnum}
+ *
+ * Catmull-Rom spline type.
+ *
+ * @example Usage
+ *
+ * ```openscad
+ * s = spline_new(pts, type = SPLINE_T_CATMULL_ROM);
+ * ```
+ */
+SPLINE_T_CATMULL_ROM = 0;
+
+/**
+ * @type {SplineTypeEnum}
+ *
+ * Cubic Bezier spline type.
+ *
+ * @example Usage
+ *
+ * ```openscad
+ * s = spline_new(pts, type = SPLINE_T_BEZIER);
+ * ```
+ */
+SPLINE_T_BEZIER = 1;
+
+/**
+ * ### Spline Slot Indices
+ */
+
+/** Header for spline */
+_SPLINE_ID      = "SPLINE";
+/** control points (list of Point3D) */
+SPLINE_PTS      = 1;
+/** true if closed loop */
+SPLINE_CLOSED   = 2;
+/** spline type enum */
+_SPLINE_TYPE    = 3;
+/** tension parameter (Catmull-Rom) */
+_SPLINE_TENSION = 4;
+
+/**
+ * ### Spoly Slot Indices
+ */
+
+/** Header for spoly */
+_SPOLY_ID       = "SPOLY";
+/** sampled polyline points (list of Point3D) */
+SPOLY_PTS       = 1;
+/** indices into PTS that correspond to original control points */
+SPOLY_CTRL_IS   = 2;
+/** cumulative arc length at each point */
+_SPOLY_ARC_LENS = 3;
+/** unit tangent vector at each point */
+_SPOLY_TANGENTS = 4;
+/** true if closed loop */
+SPOLY_CLOSED    = 5;

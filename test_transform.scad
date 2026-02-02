@@ -328,21 +328,21 @@ module test_transform_augment() {
   test_eq(4, aug3[2][3], _fl(327));
 }
 
-// test_reorient.scad
+// test_frame_transform.scad
 use <test>
 use <transform>
 
 function _apply(T, pt) =
   transform([pt], transpose(T))[0];
 
-module test_reorient() {
+module test_frame_transform() {
   eps = 1e-9;
 
   // ---- 2-point: rotate + translate, no scaling (default axis_scales=false)
   let(
     vs1 = [[0, 0, 0], [1, 0, 0]],
     vs2 = [[1, 2, 3], [1, 3, 3]],
-    T = reorient(vs1, vs2)
+    T = frame_transform(vs1, vs2)
   ) {
     test_approx_eq([1, 2, 3], _apply(T, [0, 0, 0]), eps, "2pt origin");
     test_approx_eq([1, 3, 3], _apply(T, [1, 0, 0]), eps, "2pt x->y");
@@ -353,7 +353,7 @@ module test_reorient() {
   let(
     vs1 = [[0, 0, 0], [1, 0, 0]],
     vs2 = [[1, 2, 3], [1, 5, 3]],
-    T = reorient(vs1, vs2, true)
+    T = frame_transform(vs1, vs2, true)
   ) {
     test_approx_eq([1, 5, 3], _apply(T, [1, 0, 0]), eps, "2pt ratio scale");
   }
@@ -362,7 +362,7 @@ module test_reorient() {
   let(
     vs1 = [[0, 0, 0], [1, 0, 0]],
     vs2 = [[1, 2, 3], [1, 3, 3]],
-    T = reorient(vs1, vs2, 2)
+    T = frame_transform(vs1, vs2, 2)
   ) {
     test_approx_eq([1, 4, 3], _apply(T, [1, 0, 0]), eps, "2pt scale=2");
   }
@@ -373,7 +373,7 @@ module test_reorient() {
     vs2 = [[5, 5, 5], [5, 7, 5], [8, 5, 5]]
   ) {
     // default false: no scaling
-    let(T = reorient(vs1, vs2)) {
+    let(T = frame_transform(vs1, vs2)) {
       test_approx_eq([5, 5, 5], _apply(T, [0, 0, 0]), eps, "3pt origin");
       test_approx_eq([5, 6, 5], _apply(T, [1, 0, 0]), eps, "3pt axis0");
       test_approx_eq([6, 5, 5], _apply(T, [0, 1, 0]), eps, "3pt axis1");
@@ -381,14 +381,14 @@ module test_reorient() {
     }
 
     // true: ratio scaling to match target magnitudes
-    let(T = reorient(vs1, vs2, true)) {
+    let(T = frame_transform(vs1, vs2, true)) {
       test_approx_eq([5, 7, 5], _apply(T, [1, 0, 0]), eps, "3pt axis0 ratio");
       test_approx_eq([8, 5, 5], _apply(T, [0, 1, 0]), eps, "3pt axis1 ratio");
       test_approx_eq([8, 7, 5], _apply(T, [1, 1, 0]), eps, "3pt linear ratio");
     }
 
     // per-axis: [false, true]
-    let(T = reorient(vs1, vs2, [false, true])) {
+    let(T = frame_transform(vs1, vs2, [false, true])) {
       test_approx_eq([5, 6, 5], _apply(T, [1, 0, 0]), eps, "3pt axis0 false");
       test_approx_eq([8, 5, 5], _apply(T, [0, 1, 0]), eps, "3pt axis1 true");
     }
@@ -400,7 +400,7 @@ module test_reorient() {
     vs2 = [[1, 2, 3], [1, 4, 3], [4, 2, 3], [1, 2, 7]]
   ) {
     // default false: no scaling
-    let(T = reorient(vs1, vs2)) {
+    let(T = frame_transform(vs1, vs2)) {
       test_approx_eq([1, 2, 3], _apply(T, [0, 0, 0]), eps, "4pt origin");
       test_approx_eq([1, 3, 3], _apply(T, [1, 0, 0]), eps, "4pt x->y unit");
       test_approx_eq([2, 2, 3], _apply(T, [0, 1, 0]), eps, "4pt y->x unit");
@@ -409,7 +409,7 @@ module test_reorient() {
     }
 
     // true: ratio scaling to match target magnitudes
-    let(T = reorient(vs1, vs2, true)) {
+    let(T = frame_transform(vs1, vs2, true)) {
       test_approx_eq([1, 4, 3], _apply(T, [1, 0, 0]), eps, "4pt axis0 ratio");
       test_approx_eq([4, 2, 3], _apply(T, [0, 1, 0]), eps, "4pt axis1 ratio");
       test_approx_eq([1, 2, 7], _apply(T, [0, 0, 1]), eps, "4pt axis2 ratio");
@@ -417,7 +417,7 @@ module test_reorient() {
     }
 
     // per-axis: [true, false, 2]
-    let(T = reorient(vs1, vs2, [true, false, 2])) {
+    let(T = frame_transform(vs1, vs2, [true, false, 2])) {
       test_approx_eq([1, 4, 3], _apply(T, [1, 0, 0]), eps, "4pt axis0 true");
       test_approx_eq([2, 2, 3], _apply(T, [0, 1, 0]), eps, "4pt axis1 false");
       test_approx_eq([1, 2, 5], _apply(T, [0, 0, 1]), eps, "4pt axis2 scale=2");
@@ -443,7 +443,7 @@ module test_transform_all() {
   test_transform_transform_points();
   test_transform_identity();
   test_transform_augment();
-  test_reorient();
+  test_frame_transform();
 }
 
 test_transform_all();
