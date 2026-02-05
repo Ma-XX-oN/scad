@@ -1145,7 +1145,7 @@ class Doc:
         "which has not been defined yet."
       )
       symbols.type_refed.add(type_name)
-      return f'<a href="#t-{type_name}">{type_name}</a>'
+      return f'<a href="#t-{fix_for_githubs_fascist_overreach(type_name)}">{type_name}</a>'
 
     return type_name
 

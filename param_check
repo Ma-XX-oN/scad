@@ -636,3 +636,8 @@ function verify_nesl(sl) =
   assert((is_string(sl) || is_list(sl)) && len(sl) >= 1,
     str("Must be a non-empty string or list.  Got: ", sl))
 ;
+
+function verify_between(v, lower, upper) =
+  assert(lower <= v && v <= upper,
+    str("'", v, "' must be between '", lower, "' and '", upper, "', inclusive."))
+;

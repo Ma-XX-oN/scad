@@ -12,6 +12,11 @@
  * ### Values for `show_sign` Parameters
  */
 
+/**
+ * @typedef {number} ShowSignEnum
+ *
+ * Used to specify how to show the sign of a number.
+ */
 
 /**
  * @type {ShowSignEnum}

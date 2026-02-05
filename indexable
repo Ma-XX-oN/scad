@@ -11,10 +11,11 @@
  * ### Purpose
  *
  * Treats all indexable objects similarly.  As a group, they are referred to as
- * `slr`s (`s`tring, `l`ist or `r`ange).  Any function that can take an indexable
- * reference and a `birlsei` can have the `birlsei` partially or completely
- * omitted (defaults to the start and end indices of the indexable).  To iterate
- * backwards, use a reverse `range`, `rev_i`, or a reverse `slice` (step < 0).
+ * `slr`s (`s`tring, `l`ist or `r`ange).  Any function that can take an
+ * indexable reference and a `birlsei` can have the `birlsei` partially or
+ * completely omitted (defaults to the start and end indices of the indexable).
+ * To iterate backwards, use a reverse `range`, `rev_i`, or a reverse `slice`
+ * (step < 0).
  *
  * #### Example
  *
@@ -294,6 +295,7 @@ function slice_to_range(slice, slr, _slr_len) =
 
 /**
  * @typedef {list} slr_cache
+ * @deref {SlrCacheEnum}
  *
  * Cache returned by `_slr_cache(slr, birls, end_i)`.
  *
@@ -905,6 +907,32 @@ function idx(slr, i, _slr_len) =
   i >= 0
   ? i
   : i + (is_undef(_slr_len) ? slr_len(slr) : _slr_len)
+;
+
+/**
+ * Reverses `slr` entirely or in part.
+ *
+ * @param {(string|list|range)} slr
+ *   The `slr` to reverse.
+ * @param {Birls} [birls=0]
+ * @param {EndI} [end_i=idx(slr, -1)]
+ *
+ * @returns {(string|list|range)}
+ *   The reversed slr (partly or entirely).
+ */
+function reverse(slr, birls=0, end_i) =
+  birls == 0 && is_undef(end_i)
+  ? is_string(slr) || is_list(slr)
+    ? [ for (i = rev_i(slr)) slr[i] ]
+    : [ range_el(slr, -1) : -slr[1] : range_el(slr, 0) ]
+  : let (
+      _slr = _slr_cache(slr, birls, end_i)
+    )
+    _reverse(slr, _slr[_SLR_BIRL], _slr[_SLR_END_I])
+;
+
+function _reverse(slr, birl, end_i) =
+  replace_each(slr, birl, end_i)(slr, birlei_reverse(birl, end_i))
 ;
 
 /**
@@ -2217,8 +2245,8 @@ function csearch(haystack, birls=0, end_i=undef) =
 // }
 
 /**
- * Example quick sort algorithm from:
- *   (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+ * Example quick sort algorithm from [OpenSCAD User Manual](
+ * https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions#Sorting_a_vector)
  */
 function quicksort_list_comp_ex(arr) =
   !(len(arr)>0) ? [] : let(
@@ -2233,8 +2261,8 @@ function quicksort_list_comp_ex(arr) =
 /**
  * Example of quick sort algorithm using library.
  *
- * Modified quicksort example from:
- *   (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+ * Modified quicksort example from [OpenSCAD User Manual](
+ * https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions#Sorting_a_vector)
  *
  * > NOTE:
  * >
@@ -2270,8 +2298,8 @@ function quicksort_lib_ex1(l, birls = 0, end_i = undef) =
 /**
  * Example of quick sort algorithm using library.
  *
- * Modified quicksort example from:
- *   (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+ * Modified quicksort example from [OpenSCAD User Manual](
+ * https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions#Sorting_a_vector)
  *
  * > NOTE:
  * >

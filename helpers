@@ -321,6 +321,7 @@ function clamp(v, lo, hi) = v < lo ? lo : v > hi ? hi : v;
 
 /**
  * @typedef {list} VectorInfo
+ * @deref {VectorInfoEnum}
  *
  * Results of the [vector_info()](#f-vector_info) call.
  *
@@ -450,15 +451,21 @@ function offset_angle(ref_vec, vec, delta_angle_deg) =
  *   Length of arrow.
  * @param {number} t
  *   Thickness of arrowhead shaft.
+ * @param {bool} [origin_tip]
+ *   If truthy, puts the origin at the tip of the arrow, otherwise origin is at
+ *   the base of the shaft.
  * @param {(list|string|undef)} c
  *   Same as color() module's first parameter. `[r, g, b]`, `[r, g, b, a]`,
- *   `"color_name"`, `"#hex_value"`.  If not defined, no colour is applied.
+ *   `"color_name"`, `"#hex_value"`.  If not specified, no colour is applied.
  * @param {number} a
  *   Same as color() module's optional second parameter.  Alpha value between
  *   `[0, 1]`.
  */
-module arrow(l, t=1, c, a) {
-  if (is_undef(c)) {
+module arrow(l, t=1, origin_tip, c, a) {
+  if (origin_tip) {
+    translate([0,0,-l])
+      arrow(l, t, false, c, a);
+  } else if (is_undef(c)) {
     cylinder(h = l*0.75, r = t); // shaft
     translate([0, 0, l*0.75])
       cylinder(h = l*0.25, r1 = t * 1.5, r2 = 0); // head

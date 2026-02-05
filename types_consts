@@ -9,7 +9,14 @@
  *
  * Constants representing the types as enumerated values.
  *
- * ### Values
+ * ### Values Used to Represent Types
+ */
+
+/**
+ * @typedef {number} TypeEnum
+ *
+ * Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
+ * to get name of type.
  */
 
 /**

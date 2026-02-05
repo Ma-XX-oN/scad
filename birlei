@@ -355,6 +355,24 @@ function birlei_to_indices(birl, end_i) =
   : birl
 ;
 
+/**
+ * Reverses the birlei's iteration.
+ *
+ * @param {Birl} birl
+ * @param {EndI} end_i
+ *
+ * @returns {(range|list)}
+ *   Result is a single object as `(NUM, NUM)` pair is converted to a `range`.
+ */
+function birlei_reverse(birl, end_i) =
+  let ( _ = verify_birlei(birl, end_i) )
+  is_num(birl)
+  ? range(end_i, -1, birl)
+  : is_list(birl)
+    ? [ for (i=rev_i(birl)) birl[i] ]
+    : range(range_el(birl, -1), -birl[1], range_el(birl, 0))
+;
+
 // /**
 //  * Validates if the range specified by `(birl, end_i)` are within the bounds of
 //  * [`valid_min`, `valid_max`].  Asserts if not within range.

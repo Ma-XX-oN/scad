@@ -78,10 +78,89 @@ function repeat(c, i, r = "") =
 ;
 
 /**
- * @typedef {number} ShowSignEnum
+ * Convert a hex nibble value to a lower-case digit.
  *
- * Used to specify how to show the sign of a number.
+ * @param {number} v
+ *   Integer value in range [0, 15].
+ *
+ * @returns {string}
+ *   One character in [0-9a-f].
  */
+function hex_digit(v) =
+  let ( _ = verify_between(v, 0, 15) )
+  v <= 9
+  ? chr(ord("0") + v)
+  : chr(ord("a") + v - 10)
+;
+
+/**
+ * Convert a non-negative integer to a lower-case hex string.
+ *
+ * @param {number} v
+ *   Value to convert.
+ * @param {number} [l=0]
+ *   Minimum output length. Left-pads with "0" when needed.
+ * @param {string} [out=""]
+ *   Recursive accumulator.
+ *
+ * @returns {string}
+ *   Hex representation of `v`.
+ */
+function to_hex(v, l=0, out="") =
+  v == 0
+  ? str(repeat("0", l - len(out)), out)
+  : let (
+      new_v = floor(v / 16),
+      digit = v % 16
+    )
+    to_hex(new_v, l, str(hex_digit(digit), out))
+;
+
+/**
+ * Convert a hex string to decimal.
+ *
+ * Accepts lower or upper case hex digits.
+ *
+ * @param {string} v
+ *   Hex string, e.g. "ff" or "FF".
+ *
+ * @returns {number}
+ *   Decimal value.
+ */
+function to_dec(v) =
+  _to_dec(v, len(v))
+;
+
+/**
+ * Recursive implementation for `to_dec`.
+ *
+ * @param {string} v
+ *   Hex string.
+ * @param {number} l
+ *   Length of `v`.
+ * @param {number} [col=0]
+ *   Current digit column from the right.
+ * @param {number} [out=0]
+ *   Accumulated decimal value.
+ *
+ * @returns {number}
+ *   Decimal value.
+ */
+function _to_dec(v, l, col=0, out=0) =
+  col == l
+  ? out
+  : let (
+      d = v[l-1-col],
+      digit = "0" <= d && d <= "9"
+        ? ord(d) - ord("0")
+        : "a" <= d && d <= "f"
+          ? 10 + ord(d) - ord("a")
+          : 
+            let ( _ = verify_between(d, "A", "F") )
+            10 + ord(d) - ord("A")
+    )
+    _to_dec(v, l, col+1, out + digit * 16^col)
+;
 
 /**
  * Outputs the sign character for value `v` based on `show_sign` parameter.

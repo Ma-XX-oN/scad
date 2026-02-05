@@ -10,7 +10,7 @@
  * Constants used by [`slr_cache`](#f-_slr_cache) for indexing the
  * [slr_cache](#t-slr_cache) object.
  *
- * ### Values
+ * ### `slr_cache` Slot Related Constants
  */
 
 // Was going to make header as a function because it would have be faster to
@@ -24,14 +24,14 @@
 // returned is a global variable.  Not sure why.  Works locally, but not between
 // files.  Value is copied every time a function is called.
 //
-/** @type {string}
+/** @type {ObjTypeId}
  *
  * Used to indicate if a list object is identified as an `_SLR_CACHE` object.
  */
 _SLR_CACHE_HEADER = "_SLR_CACHE";
 
 /**
- * @typedef {number} SlrCacheEnum
+ * @typedef {MemberIndex} SlrCacheEnum
  *
  * Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
  */
