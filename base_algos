@@ -172,6 +172,7 @@ use <function>
 
 /**
  * @callback BoundIndexFn
+ *
  * @param {SpaceshipFn} spaceship_fn
  *
  * @returns {(number|undef)}
@@ -185,6 +186,7 @@ use <function>
 
 /**
  * @typedef {(number|range|list|undef)} OptionalBirl
+ *
  * - If `number`, start index to iterate over
  * - If `range`, indices to iterate over
  * - If `list`, indices to iterate over
@@ -241,17 +243,17 @@ use <function>
  * ```openscad
  * use <base_algos>
  * use <indexable>
- * 
+ *
  * xs = [1, 3, 3, 5, 8];
  * target = 3;
- * 
+ *
  * // spaceship_fn(i) is negative when xs[i] < target,
  * // zero when xs[i] == target,
  * // positive when xs[i] > target.
  * idx = find_lower(fwd_i(xs))(
  *   function(i) xs[i] - target
  * );
- * 
+ *
  * // idx == 1  (first 3)
  * ```
  *
@@ -259,14 +261,14 @@ use <function>
  * ```openscad
  * xs = [1, 3, 3, 5, 8];
  * target = 9;
- * 
+ *
  * idx = find_lower(fwd_i(xs))(
  *   function(i) xs[i] - target
  * );
- * 
+ *
  * assert(idx == undef);
  * ```
- * 
+ *
  * @param {OptionalBirl} [birl]
  * @param {EndI} [end_i]
  *
@@ -312,6 +314,7 @@ function find_lower(birl, end_i) =
 
 /**
  * @typedef {BoundIndexFn} FindUpperFn
+ *
  * Returns the first index `i` where `spaceship_fn(i) > 0`.
  */
 
@@ -397,7 +400,9 @@ function find_upper(birl, end_i) =
 
 /**
  * @callback FindFn
+ *
  * @param {PredFn} pred_fn
+ *
  * @returns {(number|undef)}
  *   First index where `pred_fn(i)` is `true`.  If none are found, returns
  *   `undef`.
@@ -453,7 +458,9 @@ function find(birl, end_i) =
 
 /**
  * @callback ReduceFn
+ *
  * @param {ReductionFn} reduction_fn
+ *
  * @returns {any}
  *   Final value of accumulator.
  */
@@ -508,7 +515,9 @@ function find(birl, end_i) =
 
 /**
  * @callback ReduceAirFn
+ *
  * @param {ReductionAirFn} reduction_fn
+ *
  * @returns {list[bool,any]}
  *   Last continue value and the final value of accumulator.  If the original
  *  `birlei` was empty will contain `[true, init]`.
@@ -568,7 +577,9 @@ function reduce_air(init, birl, end_i) =
 
 /**
  * @callback FilterFn
+ *
  * @param {(PredFn|PredMapFn)} ppm_fn
+ *
  * @returns {list[any,...]}
  *   A list of elements where the predicate returned true.
  */
@@ -615,7 +626,9 @@ function filter(birl, end_i) =
 
 /**
  * @callback MapFn
+ *
  * @param {MapperFn} map_fn
+ *
  * @returns {list[any,...]}
  *   A list of elements that were mapped.
  */

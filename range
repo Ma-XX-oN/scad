@@ -25,8 +25,6 @@
  * > will iterate on `1`, `2`, `3`, `4` *and* `5`, opposed to half open ranges
  * > like that used in python, where `range(1, 5)` would iterate on `1`, `2`,
  * > `3`, and `4`.
- *
- * ### Functions
  */
 use <indexable>
 use <param_check>

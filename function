@@ -183,7 +183,7 @@ function param_count(fn) =
  * Applies each element in a list to a function's parameter list.
  *
  * > TODO:
- * > 
+ * >
  * > apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
  * > overhead.  NEED TO BENCHMARK to determine which to keep.
  *
@@ -233,7 +233,7 @@ function apply_to_fn(fn, p) =
  * Applies each element in a list to a function's parameter list.
  *
  * > TODO:
- * > 
+ * >
  * > apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
  * > overhead.  NEED TO BENCHMARK to determine which to keep.
  *

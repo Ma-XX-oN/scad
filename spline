@@ -35,6 +35,7 @@ include <spline_consts>
 
 /**
  * @typedef {list} spline
+ *
  * @deref {SplineEnum}
  *
  * Represents a spline curve through control points.
@@ -54,6 +55,7 @@ include <spline_consts>
 
 /**
  * @typedef {list} spoly
+ *
  * @deref {SpolyEnum}
  *
  * Represents an adaptively-sampled polyline derived from a spline, with
@@ -80,6 +82,7 @@ include <spline_consts>
  *
  * @param {any} obj
  *   The value to test.
+ *
  * @returns {bool}
  *   `true` if `obj` is a spline.
  */
@@ -112,6 +115,7 @@ function verify_spline(s) =
  *   Spline type enum.  Default `SPLINE_T_CATMULL_ROM`.
  * @param {number} [tension=0.5]
  *   Tension for Catmull-Rom.
+ *
  * @returns {spline}
  *   A new spline object.
  */
@@ -123,6 +127,7 @@ function spline_new(pts, closed = false, type = SPLINE_T_CATMULL_ROM, tension = 
  *
  * @param {spline} s
  *   A spline object.
+ *
  * @returns {number}
  *   The number of curve segments.
  */
@@ -144,6 +149,7 @@ function spline_segment_count(s) =
  *
  * @param {spline} s
  *   A Catmull-Rom spline object.
+ *
  * @returns {spline}
  *   An equivalent cubic Bezier spline.
  */
@@ -190,6 +196,7 @@ function spline_cr_to_bezier(s) =
  * @param {number} [max_pts=undef]
  *   Maximum number of control points in the result.  `undef` means
  *   unlimited.
+ *
  * @returns {list}
  *   `[cr_spline, achieved_tolerance]` - the Catmull-Rom approximation and
  *   the maximum deviation measured.  If `achieved_tolerance <= tolerance`,
@@ -232,6 +239,7 @@ function spline_bezier_to_cr(s, tolerance = 0.01, max_pts = undef) =
  *   Number of arc-length samples for deviation measurement.
  * @param {number} depth
  *   Remaining recursion depth.
+ *
  * @returns {list}
  *   `[cr_spline, max_deviation]`.
  */
@@ -265,6 +273,7 @@ function _bcr_iter(b_sp, cr_pts, closed, tol, max_pts, n_samp, depth) =
  *   Catmull-Rom candidate spoly.
  * @param {number} n_samp
  *   Number of sample fractions (excludes endpoints).
+ *
  * @returns {list}
  *   `[max_deviation, worst_bezier_point]`.
  */
@@ -310,6 +319,7 @@ function _bcr_max_dev(b_sp, c_sp, n_samp) =
  *   Largest deviation found so far.
  * @param {Point3D} best_pt
  *   Bezier point at the largest deviation.
+ *
  * @returns {list}
  *   `[max_deviation, worst_bezier_point]`.
  */
@@ -345,6 +355,7 @@ function _bcr_max_dev_acc(b_pts, b_arcs, b_n, b_total,
  *   Segment start.
  * @param {Point3D} b
  *   Segment end.
+ *
  * @returns {number}
  *   Distance from `p` to the nearest point on segment `a`–`b`.
  */
@@ -370,6 +381,7 @@ function _bcr_pt_seg_dist(p, a, b) =
  *   Point to insert.
  * @param {bool} closed
  *   Whether the polygon wraps around.
+ *
  * @returns {number}
  *   Insertion index into `pts`.
  */
@@ -397,6 +409,7 @@ function _bcr_insert_i(pts, p, closed) =
  *   Index of the nearest segment found so far.
  * @param {number} best_d
  *   Distance of the nearest segment found so far.
+ *
  * @returns {number}
  *   Index of the nearest segment.
  */
@@ -425,6 +438,7 @@ function _bcr_insert_i_acc(pts, p, n, n_segs, i, best_i, best_d) =
  *   Segment index (0-based).
  * @param {number} t
  *   Parameter in [0, 1].
+ *
  * @returns {Point3D}
  *   The point on the curve.
  */
@@ -444,6 +458,7 @@ function spline_point_at(s, seg, t) =
  *   Segment index (0-based).
  * @param {number} t
  *   Parameter in [0, 1].
+ *
  * @returns {Point3D}
  *   The point on the curve.
  */
@@ -486,6 +501,7 @@ function _spline_catmull_rom_point(s, seg, t) =
  *   Segment index (0-based).
  * @param {number} t
  *   Parameter in [0, 1].
+ *
  * @returns {Point3D}
  *   The point on the curve.
  */
@@ -520,6 +536,7 @@ function _spline_bezier_point(s, seg, t) =
  *   Segment index (0-based).
  * @param {number} t
  *   Parameter in [0, 1].
+ *
  * @returns {Vector3D}
  *   The (unnormalized) tangent vector.
  */
@@ -539,6 +556,7 @@ function spline_tangent_at(s, seg, t) =
  *   Segment index (0-based).
  * @param {number} t
  *   Parameter in [0, 1].
+ *
  * @returns {Vector3D}
  *   The (unnormalised) tangent vector.
  */
@@ -578,6 +596,7 @@ function _spline_catmull_rom_tangent(s, seg, t) =
  *   Segment index (0-based).
  * @param {number} t
  *   Parameter in [0, 1].
+ *
  * @returns {Vector3D}
  *   The (unnormalised) tangent vector.
  */
@@ -623,6 +642,7 @@ function _spline_bezier_tangent(s, seg, t) =
  *   Maximum allowed deviation.
  * @param {number} depth
  *   Recursion depth limit.
+ *
  * @returns {list[Point3D,...]}
  *   Interior points (not including p0 or p1).
  */
@@ -651,6 +671,7 @@ function _spline_subdivide(s, seg, t0, p0, t1, p1, tol, depth) =
  *   Segment index.
  * @param {number} tol
  *   Tolerance.
+ *
  * @returns {list[Point3D,...]}
  *   Points for this segment, starting with the segment start point.
  *   The segment end point is NOT included (it will be the start of the next
@@ -671,6 +692,7 @@ function _spline_sample_segment(s, seg, tol) =
  *   The spline to sample.
  * @param {number} tolerance
  *   Maximum deviation from the true curve.  Default `0.01`.
+ *
  * @returns {spoly}
  *   The sampled polyline with control point indices, arc lengths, and tangents.
  */
@@ -710,6 +732,7 @@ function spline_to_spoly(s, tolerance = 0.01) =
  *   Whether the spline is closed.
  * @param {spline} s
  *   The spline (for evaluating the final endpoint).
+ *
  * @returns {list}
  *   `[pts, ctrl_is]`
  */
@@ -741,6 +764,7 @@ function _spoly_build_pts(seg_results, seg_count, closed, s) =
  *   Current index offset into the flat list.
  * @param {number} seg_count
  *   Total number of segments.
+ *
  * @returns {list}
  *   `[flat_pts, ctrl_is]`
  */
@@ -767,6 +791,7 @@ function _spoly_flatten_segs_acc(seg_results, seg_i, seg_count, offset, pts_acc,
  *
  * @param {list[Point3D,...]} pts
  *   The polyline points.
+ *
  * @returns {list[number,...]}
  *   Cumulative arc length at each point (first is 0).
  */
@@ -790,6 +815,7 @@ function _spoly_arc_lens_acc(pts, i, n, acc) =
  *   The polyline points.
  * @param {bool} closed
  *   Whether the polyline is closed.
+ *
  * @returns {list[Vector3D,...]}
  *   Unit tangent at each point.
  */
@@ -815,6 +841,7 @@ function _spoly_compute_tangents(pts, closed) =
  *
  * @param {any} obj
  *   The value to test.
+ *
  * @returns {bool}
  *   `true` if `obj` is a spoly.
  */
@@ -833,6 +860,7 @@ function is_spoly(obj) = is_list(obj) && obj[0] == _SPOLY_ID;
  *   Unit tangent at each point.
  * @param {bool} closed
  *   Whether this is a closed loop.
+ *
  * @returns {spoly}
  *   A new spoly object.
  */
@@ -849,6 +877,7 @@ function spoly_new(pts, ctrl_is, arc_lens, tangents, closed = false) =
  *   Index into the control point list (0-based).
  * @param {number} pct
  *   Percentage [0, 1] along the segment from `ctrl_idx` to `ctrl_idx + 1`.
+ *
  * @returns {Point3D}
  *   The interpolated point.
  */
@@ -875,6 +904,7 @@ function spoly_point_at(sp, ctrl_idx, pct) =
  *   Index into the control point list (0-based).
  * @param {number} pct
  *   Percentage [0, 1] along the segment.
+ *
  * @returns {Vector3D}
  *   The interpolated unit tangent.
  */
@@ -913,6 +943,7 @@ function spoly_tangent_at(sp, ctrl_idx, pct) =
  *   End index of search range.
  * @param {number} target
  *   Target arc length.
+ *
  * @returns {number}
  *   Index `i` such that `arc_lens[i] <= target < arc_lens[i+1]`.
  */
@@ -940,6 +971,7 @@ function _spoly_find_seg_acc(arc_lens, lo, hi, target) =
  *   End index for search.
  * @param {number} target_al
  *   Target arc length.
+ *
  * @returns {Point3D}
  *   Interpolated point.
  */
@@ -960,6 +992,7 @@ function _spoly_lerp_at_arc_len(pts, arc_lens, i_start, i_end, target_al) =
  *   Index into the control point list.
  * @param {number} pct
  *   Percentage [0, 1] along the segment from `ctrl_idx` to `ctrl_idx + 1`.
+ *
  * @returns {list[spoly, spoly]}
  *   A list of two spoly objects: `[before, after]`.
  */
@@ -1035,12 +1068,13 @@ function spoly_split(sp, ctrl_idx, pct) =
  *
  * @param {spline} s
  *   A spline object.
+ *
  * @returns {string}
  *   A human-readable representation.
  */
 function spline_to_string(s) =
   assert(is_spline(s))
-  s[_SPLINE_TYPE] == SPLINE_T_CATMULL_ROM 
+  s[_SPLINE_TYPE] == SPLINE_T_CATMULL_ROM
   ? str(
       "SPLINE[type=catmull-rom",
       ", tension=", s[_SPLINE_TENSION],
@@ -1061,6 +1095,7 @@ function spline_to_string(s) =
  *
  * @param {spoly} sp
  *   An spoly object.
+ *
  * @returns {string}
  *   A human-readable representation.
  */

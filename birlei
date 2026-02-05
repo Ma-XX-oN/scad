@@ -22,8 +22,6 @@
  * Keeping this in the user facing API was done because just counting from N to
  * M is very common, and without dereferencing a list or range it's marginally
  * faster.
- *
- * ### Functions
  */
 use <range>
 use <function>
@@ -32,6 +30,7 @@ use <param_check>
 
 /**
  * @typedef {(number|range|list)} Birl
+ *
  * - If `number`, start index to iterate over
  * - If `range`, indices to iterate over
  * - If `list`, indices to iterate over
@@ -39,6 +38,7 @@ use <param_check>
 
 /**
  * @typedef {(number|undef)} EndI
+ *
  * - If related `birl` is a number, then this is the end index to iterate
  *   over.
  *   - If this value is less than the related birl's value, then nothing is
@@ -48,6 +48,7 @@ use <param_check>
 
 /**
  * @callback SpaceshipFn
+ *
  * Compares a derived comparison value against an internally stored value.
  *
  * Definitions:
@@ -80,6 +81,7 @@ use <param_check>
 
 /**
  * @callback PredFn
+ *
  * Compares a derived comparison value against an internally stored value.
  *
  * Definitions:
@@ -191,6 +193,7 @@ use <param_check>
 
 /**
  * @callback PredMapFn
+ *
  * Compares a derived comparison value against an internally stored value or
  * returns a value, depending on the second parameter's truthiness.
  *
@@ -227,6 +230,7 @@ use <param_check>
 
 /**
  * @callback MapperFn
+ *
  * Maps a probed value to a list.
  *
  * Definitions:

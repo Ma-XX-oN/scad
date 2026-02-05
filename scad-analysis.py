@@ -542,7 +542,7 @@ def camel_to_snake_case(m: regex.Match):
       Replace matched string with this.
   """
   return "_" + m[0].lower()
-  
+
 def fix_for_githubs_fascist_overreach(s: str) -> str:
   """
   GitHub mandates that all internal links be lowercase for no particular reason.
@@ -593,12 +593,21 @@ class Doc:
       (?:(?<CC_MATCHED>
         (?(HEADER_MATCHED)(?&empty_line))
         (?&CALLCHAIN)))*+                (?# 0..N callchains, must be contiguous )
-      (?(CC_MATCHED)(?&empty_line))      (?# consume blank lines after callchains if present )
+      (?(CC_MATCHED)
+        (?&empty_line)                   (?# consume blank lines after callchains if present )
+      |
+        (?&empty_line)?+
+        (?:(?<DEREF_MATCHED>
+          (?&DEREF)
+        ))?+
+      )
+
       (?:(?&DOC_DESC))?+                 (?# 0..1 doc-level description block )
       (?:
-          (?(CC_MATCHED)(?!))            (?# if has callchain, then can't be slotted object )
+          (?(CC_MATCHED)(?!))            (?# if has @callchain, then can't be slotted object )
           (?:(?&SLOT))++                 (?# slots path )
         |
+          (?(DEREF_MATCHED)(?!))         (?# if has a @deref, then should have found a slot )
           (?:(?&PARAM))*+                (?# params path )
           (?:(?&RETURNS))?+              (?# optional returns )
       )
@@ -611,9 +620,9 @@ class Doc:
 
     (?<ws>[\t ]++)
     (?<empty_line>(?:\r?+\n))
-    
+
     (?# recognised tag sentinel used to stop description blocks )
-    (?<is_recognised_tag>@(?:type|callback|typedef|callchain|slot|param|returns)[\t ])
+    (?<is_recognised_tag>@(?:type|callback|typedef|deref|callchain|slot|param|returns)[\t ])
     (?<is_rec_tag_bol>(?&at_bol)(?&is_recognised_tag))
 
     (?# consume lines until the next recognised tag at BOL )
@@ -635,6 +644,11 @@ class Doc:
         |         (?<tag>callback)  (?&ws) (?&type_none)          (?<id>(?&symbol)) (?&eol)
       )
       (?<default>) (?<desc>)
+    )
+
+    (?<DEREF>
+      (?&at_bol) @(?<tag>deref)     (?&ws) (?&type_req)           (?<id>) (?<default>)
+      (?<desc>)                                                                     (?&eol)
     )
 
     (?<CALLCHAIN>
@@ -692,10 +706,11 @@ class Doc:
 
   tag         | type | id | default | desc | Assertions
   ------------|------|----|---------|------|-----------------
-  "callchain" |      |    |         |   O  | Must start at index 0.
-  "type"      |  R   |    |         |   O  | Must start at index 0 or follow callchains.
-  "typedef"   |  O   |  R |         |   O  | Must start at index 0 or follow callchains.
-  "callback"  |      |  R |         |   O  | Must start at index 0 or follow callchains.
+  "type"      |  R   |    |         |   O  | Header must start at index 0.
+  "typedef"   |  O   |  R |         |   O  | Header must start at index 0.
+  "callback"  |      |  R |         |   O  | Header must start at index 0.
+  "callchain" |      |    |         |   O  | Must start at index 0 or follow header.
+  "deref"     |  R   |    |         |      | Must start after typedef (maybe type).
   <empty>     |      |    |         |   O  | Must start at index 0 or follow an item above.
   "slot"      |  O   |  R |    O*   |   O  | Must follow itself or an item above.
               |      |    |         |      | *Default is `]` if optional.
@@ -735,7 +750,7 @@ class Doc:
    *   functions that just do checks.
    */
    function fn1(p1, p2, p3) = ...;
-  
+
   /**
    * @callback Cb1
    *
@@ -747,7 +762,7 @@ class Doc:
    * @returns {list}
    *   Returns a list for some reason.
    */
-   
+
   /** @typedef {list} UserType
    *
    *  Some user type
@@ -769,7 +784,7 @@ class Doc:
    *   of the return types return a callback, will autogenerate the callchains
    *   for *all* return types.
    */
-   
+
   /**
    * @callchain fn2(p1, p2) (p3) : (number|undef)
    * @callchain fn2(p1) (p2) (p3) : (number|undef)
@@ -792,7 +807,7 @@ class Doc:
    *   for *all* return types.
    */
    function fn2(p1, p2) = ...;
-  
+
   /** #### Does bar */
 
   /**
@@ -801,7 +816,7 @@ class Doc:
    * This describes a type for a value.
    */
    value1 = ...;
-  
+
   /**
    * @type {function}
    *
@@ -845,16 +860,16 @@ class Doc:
    *   Like the function description, will also accept the aliaseddoc tag which
    *   would be replaced by the aliased returns tag description.
    */
-  
+
   Here is some example output, which is incomplete based on my original output
   from Outputable commented out hierarchy.
 
   ### filename
-  
+
   #### Purpose
-  
+
   This is an example of a test doc of `filename`.
-  
+
   #### Does foo
 
   #####  <a id="#f-fn1">**fn1**</a>
@@ -863,9 +878,9 @@ class Doc:
 
   Function doc.  Module docs will have the same format except there wouldn't
   ever be any returns tag.
-  
+
   <details><summary>parameters</summary>
-  
+
   ##### `p1`: <code>number</code>
   Param 1 is required
 
@@ -875,13 +890,13 @@ class Doc:
   ##### `p3`: <code>number</code> **Optional**
   Param 3 is optional (default is `undef`)
   </details>
-  
+
   <details><summary>return info</summary>
   ##### **Returns**: <code>list</code>
   Returns a list for some reason.  This returns tag can be omitted for
   functions that just do checks.
   </details>
-  
+
   ...
   """
 
@@ -896,10 +911,10 @@ class Doc:
   doc_type: "Doc.DocHeader"
   "Indicates what kind of document this is"
 
-  Tag: TypeAlias = Literal[ "header", "callchain", "desc", "slot", "param", "returns" ]
+  Tag: TypeAlias = Literal[ "header", "callchain", "deref", "desc", "slot", "param", "returns" ]
   items : dict["Doc.Tag", list[tuple[str,str,str,str]]]
   "A dictionary that describes the doc"
-    
+
   TYPE = 0
   ID   = 1
   DESC = 2
@@ -909,11 +924,11 @@ class Doc:
   @staticmethod
   def is_tag(tag: str) -> TypeGuard["Doc.Tag"]:
     return tag in typing.get_args(Doc.Tag)
-  
+
   @staticmethod
   def is_doc_type(doc_type: str) -> TypeGuard["Doc.DocHeader"]:
     return doc_type in typing.get_args(Doc.DocHeader)
-  
+
   def e(self, msg: str):
     return f"{self.filename}{f':{self.id}' if self.id else ''}{get_lines(self.doc_item[DOC_SLC], line_char_index)}: {msg}"
 
@@ -941,7 +956,7 @@ class Doc:
       if not sym_and_doc:
         self.doc_type = "none"
         return
-        
+
     doc: str = content[doc_item[DOC_S_DOC_SLC]] if sym_and_doc else content[doc_item[DOC_SLC]]
     # remove line leading "/**", " * ", " */"
     doc = RE_J_DOC_BOX.sub("", doc)
@@ -961,7 +976,8 @@ class Doc:
     assert all(len(tags) == len(m.captures(col)) for col in self.ATTR), \
       self.e("Regex is not creating same length parallel arrays.")
 
-    self.items = {
+    self.items = {     #  *TYPE, *DESC means optional
+                       #
       "header":    [], # Only one header: type, typedef, callback, nontype
                        #   type populates:      TYPE, ID, *DESC
                        #   typedef populates:  *TYPE, ID, *DESC
@@ -969,6 +985,8 @@ class Doc:
                        #   nontype populates:         ID, *DESC
       "callchain": [], # Can be used with headers: type, typedef, callback, nontype
                        #   Populates:                      DESC
+      "deref":     [], # Can be used with object: typedef
+                       #   Populates:           TYPE
       "desc":      [], # Can be used with headers: type, typedef, callback, nontype, file
                        #   Populates:                      DESC
       "slot":      [], # Can be used with headers: type, typedef
@@ -997,12 +1015,12 @@ class Doc:
       )
 
     self.verify_callchain_returns()
-    
+
     if sym_and_doc:
       # if there is a doc, ensure that the parameter names in the doc line up
       # with the parameter names defined.
       self.verify_sig_with_doc(doc_item)
-      
+
       if self.doc_type == "nontype":
         sym_id = content[doc_item[DOC_S_ID_SLC]]
         sig = content[doc_item[DOC_S_SIG_SLC]]
@@ -1068,7 +1086,7 @@ class Doc:
     declared_params = doc_item[DOC_S_PARAM_LST]
     if declared_params is None:
       return
-    
+
     documented_params = self.items["param"]
     if len(documented_params) > len(declared_params):
       # There are more parameter documented then were found declared.
@@ -1185,9 +1203,9 @@ class Doc:
   def output_sig(self, output_lines: list[str], id_override: Optional[str]):
     """
     Outputs the signature.
-    
+
     Examples:
-    
+
       If a doc:
         If a callback:
           * @callback <id>
@@ -1219,7 +1237,7 @@ class Doc:
         * @param {t0} p0
         * ...
         * @param {tN} pN
-        * 
+        *
         * @returns {ret_type}
         function <id>(<p0>, ..., <pN>) = ...;
 
@@ -1361,7 +1379,14 @@ class Doc:
 
       sig += ", ".join(params) + ")"
       output_lines.append(f"<code>{sig}</code>")
-  
+
+  def output_deref(self, output_lines: list[str]):
+    if self.items["deref"]:
+      output_lines += [
+        "",
+        f"Best to dereference with <code>{self.link_types(self.items['deref'][0][Doc.TYPE])}</code> type."
+      ]
+
   def output_callchains(self, output_lines: list[str], id_override: Optional[str]):
     """
     Outputs callchains if specified or if a function callback or typedef to
@@ -1432,7 +1457,7 @@ class Doc:
                   "All parameters shown for each return type. "
                   "Use @callchain tags for accurate curried function documentation.",
                   file=sys.stderr)
-  
+
   def output_slots(self, output_lines: list[str]):
     """
     Outputs slot documentation for typedef types.
@@ -1446,7 +1471,7 @@ class Doc:
     # output_lines.append("")
 
     for (slot_type, slot_id, slot_desc, slot_opt) in self.items["slot"]:
-      line = f"<code><b>{slot_id}</b></code>"
+      line = f"<code><b>[{slot_id}]</b></code>"
       if slot_type:
         line += f": <code>{self.link_types(slot_type)}</code>"
       if slot_opt:
@@ -1476,7 +1501,7 @@ class Doc:
     # output_lines.append("")
     output_lines.append("</details>")
     output_lines.append("")
-  
+
   def output_params(self, output_lines: list[str]):
     """
     Outputs parameter documentation for functions/modules/callbacks.
@@ -1534,7 +1559,7 @@ class Doc:
     # output_lines.append("")
     output_lines.append("</details>")
     output_lines.append("")
-    
+
   RE_INDENT = regex.compile("^  ", regex.MULTILINE)
   RE_TRAILING_EMPTY_LINES = regex.compile(
     r"(?:\r?+\n)++$"
@@ -1598,7 +1623,7 @@ class Doc:
     # output_lines.append("")
     output_lines.append("</details>")
     output_lines.append("")
-  
+
   SymbolType : TypeAlias = Literal["function", "module-test", "module-build", "value", "type", "callback"]
   SYMBOL_RENDERING_INFO : dict[SymbolType, tuple[str, str]] = {
     "function":     ("⚙️",   "f"),
@@ -1624,7 +1649,7 @@ class Doc:
     RE_CODE = regex.compile(r"`([^`]++)`")
     def code(s: str|None) -> str:
       return RE_CODE.sub(r"<code>\1</code>", s) if s else ""
-    
+
     if self.items["desc"]:
       for (_, _, desc, _) in self.items["desc"]:
         if desc:
@@ -1672,6 +1697,8 @@ class Doc:
 
         # Signature
         self.output_sig(output_lines, None)
+        self.output_deref(output_lines)
+
         output_lines.append("")
 
         # Callchains (for callbacks and typedefs to callbacks)
@@ -1739,7 +1766,7 @@ class Doc:
     finally:
       if self.id:
         output_lines += ['<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>\n']
-        
+
 class Symbols:
   """
   Stores the Symbol info collected from the files.
@@ -1758,7 +1785,7 @@ class Symbols:
     "module symbol -> doc"
     self.value_dict:      dict[str, Doc] = {}
     "value symbol -> doc"
-    
+
   def get_callchains(self, symbol_name: str, require_curry: bool = False) -> str:
     symbol_name = symbol_name.rstrip()
     if not symbol_name or symbol_name.startswith("(") or symbol_name.startswith("list["):
@@ -1900,7 +1927,7 @@ def render_md(filename: str, content: str, output_lines: list[str], items: list[
       [ A-Z][^\)]*+\)
     )
     """, regex.VERBOSE)
-  
+
   def add_h2_emoji_anchor(m):
     return f"<hr/>\n\n{m.group(1)}📘{m.group(2)}{make_anchor('file', m.group(2))}"
 

@@ -104,6 +104,7 @@ _SKIN_CLOSED       = 8;
 
 /**
  * @typedef {list} skin
+ *
  * @deref {SkinEnum}
  *
  * Represents a skin object.

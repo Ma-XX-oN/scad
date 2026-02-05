@@ -15,7 +15,9 @@ use <base_algos>
 
 /**
  * @callback AnyFn
+ *
  * @param {PredFn} pred_fn
+ *
  * @returns {bool}
  *   First index where `pred_fn(i)` is `true` will result in `true`, else
  *   `false`.
@@ -52,7 +54,9 @@ function any(birl, end_i) =
 
 /**
  * @callback AllFn
+ *
  * @param {PredFn} pred_fn
+ *
  * @returns {(number|undef)}
  *   First index where `pred_fn(i)` is `false` will result in `false`, else
  *   `true`.

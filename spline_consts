@@ -214,6 +214,7 @@ SP_HANDLE = 7;
 
 /**
  * @typedef {list} SpPalette
+ *
  * @deref {SpPaletteEnum}
  *
  * Colour palette for spline and sampled-polyline debug visualisation.

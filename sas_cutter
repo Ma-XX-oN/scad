@@ -148,7 +148,7 @@ function _ignored(x) = x;
  *   value of 1 would result in a "sawtooth wave".
  *
  *   Example:
- *   
+ *
  *                     latitude travel   Square wave           Sawtooth wave
  *             ___     |↔|__              ___     ___
  *            /   \    |/   \            |   |   |   |           /\  /\

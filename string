@@ -157,7 +157,7 @@ function _to_dec(v, l, col=0, out=0) =
         ? ord(d) - ord("0")
         : "a" <= d && d <= "f"
           ? 10 + ord(d) - ord("a")
-          : 
+          :
             let ( _ = verify_between(d, "A", "F") )
             10 + ord(d) - ord("A")
     )

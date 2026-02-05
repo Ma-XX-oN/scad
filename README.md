@@ -307,6 +307,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#ch-types-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-types-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-types-_functions">📑 <i>Functions</i></a><br>
 <details><summary><a href="#ch-types-_tests">📑 <i>Tests</i></a></summary>
 <blockquote>
 • <a href="#f-is_indexable_te">⚙️is_indexable_te</a><br>
@@ -411,7 +412,8 @@ been minimised.  To Navigate:
 <details><summary><a href="#file-any_all">📘 <b>any_all</b></a></summary>
 <blockquote>
 • <a href="#ch-any_all-_how_to__import">📑 <i>How to Import</i></a><br>
-<details><summary><a href="#ch-any_all-_purpose">📑 <i>Purpose</i></a></summary>
+• <a href="#ch-any_all-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-any_all-_functions">📑 <i>Functions</i></a></summary>
 <blockquote>
 • <a href="#f-any">⚙️any</a><br>
 • <a href="#f-all">⚙️all</a><br>
@@ -432,6 +434,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#ch-object-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-object-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-object-_functions">📑 <i>Functions</i></a><br>
 <details><summary><a href="#ch-object-object_types">📑 <i>object types</i></a></summary>
 <blockquote>
 • <a href="#t-_member_index">🧩MemberIndex</a><br>
@@ -591,6 +594,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#ch-param_check-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-param_check-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-param_check-_functions">📑 <i>Functions</i></a><br>
 <details><summary><a href="#ch-param_check-_type__checks">📑 <i>Type Checks</i></a></summary>
 <blockquote>
 • <a href="#f-verify_slr">⚙️verify_slr</a><br>
@@ -635,6 +639,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#ch-transform-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-transform-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-transform-_functions">📑 <i>Functions</i></a><br>
 <details><summary><a href="#ch-transform-_generate__matrices_for__vector__transforms">📑 <i>Generate Matrices for Vector Transforms</i></a></summary>
 <blockquote>
 • <a href="#f-transpose">⚙️transpose</a><br>
@@ -716,7 +721,8 @@ been minimised.  To Navigate:
 <details><summary><a href="#file-string">📘 <b>string</b></a></summary>
 <blockquote>
 • <a href="#ch-string-_how_to__import">📑 <i>How to Import</i></a><br>
-<details><summary><a href="#ch-string-_purpose">📑 <i>Purpose</i></a></summary>
+• <a href="#ch-string-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-string-_functions">📑 <i>Functions</i></a></summary>
 <blockquote>
 • <a href="#f-align_left">⚙️align_left</a><br>
 • <a href="#f-align_right">⚙️align_right</a><br>
@@ -763,6 +769,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#ch-helpers-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-helpers-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-helpers-_functions_and__modules">📑 <i>Functions and Modules</i></a><br>
 <details><summary><a href="#ch-helpers-_conversion_functions">📑 <i>Conversion functions</i></a></summary>
 <blockquote>
 • <a href="#f-r2d">⚙️r2d</a><br>
@@ -810,7 +817,8 @@ been minimised.  To Navigate:
 <details><summary><a href="#file-color">📘 <b>color</b></a></summary>
 <blockquote>
 • <a href="#ch-color-_how_to__import">📑 <i>How to Import</i></a><br>
-<details><summary><a href="#ch-color-_purpose">📑 <i>Purpose</i></a></summary>
+• <a href="#ch-color-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-color-_functions">📑 <i>Functions</i></a></summary>
 <blockquote>
 • <a href="#f-color_alpha">⚙️color_alpha</a><br>
 </blockquote>
@@ -830,6 +838,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#ch-skin-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-skin-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-skin-_functions_and__modules">📑 <i>Functions and Modules</i></a><br>
 • <a href="#ch-skin-_design">📑 <i>Design</i></a><br>
 <details><summary><a href="#ch-skin-_skin___slot__related__constants">📑 <i>`skin` Slot Related Constants</i></a></summary>
 <blockquote>
@@ -944,6 +953,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#ch-spline-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-spline-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-spline-_functions_and__modules">📑 <i>Functions and Modules</i></a><br>
 • <a href="#ch-spline-_design">📑 <i>Design</i></a><br>
 <details><summary><a href="#ch-spline-_s_p_l_i_n_e__functions">📑 <i>SPLINE Functions</i></a></summary>
 <blockquote>
@@ -1016,7 +1026,8 @@ been minimised.  To Navigate:
 <details><summary><a href="#file-skin_follow">📘 <b>skin_follow</b></a></summary>
 <blockquote>
 • <a href="#ch-skin_follow-_how_to__import">📑 <i>How to Import</i></a><br>
-<details><summary><a href="#ch-skin_follow-_purpose">📑 <i>Purpose</i></a></summary>
+• <a href="#ch-skin_follow-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-skin_follow-_functions_and__modules">📑 <i>Functions and Modules</i></a></summary>
 <blockquote>
 • <a href="#v-__s_f__r_g__r_a_i_l">💠_SF_RG_RAIL</a><br>
 • <a href="#v-__s_f__r_g__g_u_i_d_e">💠_SF_RG_GUIDE</a><br>
@@ -1329,15 +1340,15 @@ If step allows, stop is included in the range.
 > instead.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 Beginning value.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 Step value.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 Stop value.
 
@@ -1593,6 +1604,8 @@ to get name of type.
 
 This library allows representing types as enumerated values, strings or
 minimal strings for complex types.
+
+### <i>📑Functions</i><a id='ch-types-_functions'></a>
 
 ### <i>📑Tests</i><a id='ch-types-_tests'></a>
 
@@ -3313,6 +3326,8 @@ A list of elements that were mapped.
 
 Implements any and all algorithms.
 
+### <i>📑Functions</i><a id='ch-any_all-_functions'></a>
+
 #### ⚙️any<a id='f-any'></a>
 
 <code>*function* any(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_any_fn">AnyFn</a>|bool</code>
@@ -3513,6 +3528,8 @@ Does *NOT* need to be imported.
 
 This specifies some types used for specifying objects and doesn't need to be
 imported.
+
+### <i>📑Functions</i><a id='ch-object-_functions'></a>
 
 ### <i>📑object types</i><a id='ch-object-object_types'></a>
 
@@ -5703,7 +5720,7 @@ indexable range.
 
 <code>*type* slr_cache = list</code>
 
-@deref {SlrCacheEnum}
+Best to dereference with <code><a href="#t-_slr_cache_enum">SlrCacheEnum</a></code> type.
 
 Cache returned by `_slr_cache(slr, birls, end_i)`.
 
@@ -5717,15 +5734,15 @@ len_of_slr = cache_obj[_SLR_LEN]
 </details>
 
 <details><summary>slots</summary>
-<code><b>_SLR_LEN</b></code>: <code>number</code>
+<code><b>[_SLR_LEN]</b></code>: <code>number</code>
 
 Length of `slr`.
 
-<code><b>_SLR_TE</b></code>: <code><a href="#t-_type_enum">TypeEnum</a></code>
+<code><b>[_SLR_TE]</b></code>: <code><a href="#t-_type_enum">TypeEnum</a></code>
 
 Type enum of `slr`.
 
-<code><b>_SLR_ELD</b></code>: <code>function(i: number): any</code>
+<code><b>[_SLR_ELD]</b></code>: <code>function(i: number): any</code>
 
 `i` is the index to dereference the `slr` (Direct addressing).
 
@@ -5735,11 +5752,11 @@ Returns roughly `slr[i]`, where `0 <= i < slr_len`.
   calculating it by the formula `slr_len - i` is required.  This maximises
   throughput for most common case.
 
-<code><b>_SLR_BLEN</b></code>: <code>number</code>
+<code><b>[_SLR_BLEN]</b></code>: <code>number</code>
 
 Length of normalised `birlsei`.
 
-<code><b>_SLR_ELI</b></code>: <code>function(j: number): any</code>
+<code><b>[_SLR_ELI]</b></code>: <code>function(j: number): any</code>
 
 `j` is the index to dereference the normalised `birlsei` to index the `slr`
 (Indirect addressing).  Returns roughly `slr[birlei[j]]`, where
@@ -5749,7 +5766,7 @@ Length of normalised `birlsei`.
   calculating it by the formula `birlei_len - j` is required.  This
   maximises throughput for most common case.
 
-<code><b>_SLR_IDX</b></code>: <code>function(k: number): number</code>
+<code><b>[_SLR_IDX]</b></code>: <code>function(k: number): number</code>
 
 `k` is the index to dereference the normalised `birlsei`.  Returns roughly
 `birlei[k]`, where `0 <= k < birlei_len`.
@@ -5758,15 +5775,15 @@ Length of normalised `birlsei`.
   calculating it by the formula `birlei_len - k` is required.  This
   maximises throughput for most common case.
 
-<code><b>_SLR_STR</b></code>: <code>function(): string</code>
+<code><b>[_SLR_STR]</b></code>: <code>function(): string</code>
 
 String representation of normalised `birlsei`.
 
-<code><b>_SLR_BIRL</b></code>: <code>number|<a href="#t-range">range</a>|list</code>
+<code><b>[_SLR_BIRL]</b></code>: <code>number|<a href="#t-range">range</a>|list</code>
 
 Normalised birls.
 
-<code><b>_SLR_END_I</b></code>: <code>number|undef</code>
+<code><b>[_SLR_END_I]</b></code>: <code>number|undef</code>
 
 Normalised end_i.
 
@@ -5991,7 +6008,7 @@ The number of parameters that the function can take.
 Applies each element in a list to a function's parameter list.
 
 > 📌 TO DO:
-> 
+>
 > apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
 > overhead.  NEED TO BENCHMARK to determine which to keep.
 
@@ -6025,7 +6042,7 @@ The return value of fn().
 Applies each element in a list to a function's parameter list.
 
 > 📌 TO DO:
-> 
+>
 > apply_to_fn has allocation overhead, where as apply_to_fn2 has lookup
 > overhead.  NEED TO BENCHMARK to determine which to keep.
 
@@ -6323,6 +6340,8 @@ checks having 0 effect on runtime performance.
 
 Can make two libraries, one debug with parameter checking turned on and one
 release with it turned off.
+
+### <i>📑Functions</i><a id='ch-param_check-_functions'></a>
 
 ### <i>📑Type Checks</i><a id='ch-param_check-_type__checks'></a>
 
@@ -6949,6 +6968,8 @@ Value to check.
 ### <i>📑Purpose</i><a id='ch-transform-_purpose'></a>
 
 This library is for matrix math for a variety of things.
+
+### <i>📑Functions</i><a id='ch-transform-_functions'></a>
 
 ### <i>📑Generate Matrices for Vector Transforms</i><a id='ch-transform-_generate__matrices_for__vector__transforms'></a>
 
@@ -7909,12 +7930,12 @@ on homogeneous 4-element vectors `[x,y,z,1]`.
 A 2D point.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 This is the dimension `0` or x dimension of the point.  Can also be accessed
 by property `.x`.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 This is the dimension `1` or y dimension of the point.  Can also be accessed
 by property `.y`.
@@ -7930,17 +7951,17 @@ by property `.y`.
 A 3D point.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 This is the dimension `0` or x dimension of the point.  Can also be accessed
 by property `.x`.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 This is the dimension `1` or y dimension of the point.  Can also be accessed
 by property `.y`.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 This is the dimension `2` or z dimension of the point.  Can also be accessed
 by property `.z`.
@@ -7956,22 +7977,22 @@ by property `.z`.
 An ND point.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 This is the dimension `0` or x dimension of the point.  Can also be accessed
 by property `.x`.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 This is the dimension `1` or y dimension of the point.  Can also be accessed
 by property `.y`.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 This is the dimension `2` or z dimension of the point.  Can also be accessed
 by property `.z`.
 
-<code><b>n</b></code>: <code>number</code> *(Optional)*
+<code><b>[n]</b></code>: <code>number</code> *(Optional)*
 
 This is the dimension `n` dimension of the point.
 
@@ -7986,12 +8007,12 @@ This is the dimension `n` dimension of the point.
 A bound 2D vector, which starts from the origin.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 This is the dimension `0` or x dimension of the vector.  Can also be
 accessed by property `.x`.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 This is the dimension `1` or y dimension of the vector.  Can also be
 accessed by property `.y`.
@@ -8007,17 +8028,17 @@ accessed by property `.y`.
 A bound 3D vector, which starts from the origin.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 This is the dimension `0` or x dimension of the vector.  Can also be
 accessed by property `.x`.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 This is the dimension `1` or y dimension of the vector.  Can also be
 accessed by property `.y`.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 This is the dimension `2` or z dimension of the vector.  Can also be
 accessed by property `.z`.
@@ -8033,22 +8054,22 @@ accessed by property `.z`.
 A bound ND vector, which starts from the origin.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 This is the dimension `0` or x dimension of the vector.  Can also be
 accessed by property `.x`.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 This is the dimension `1` or y dimension of the vector.  Can also be
 accessed by property `.y`.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 This is the dimension `2` or z dimension of the vector.  Can also be
 accessed by property `.z`.
 
-<code><b>n</b></code>: <code>number</code> *(Optional)*
+<code><b>[n]</b></code>: <code>number</code> *(Optional)*
 
 This is the dimension `n` dimension of the vector.
 
@@ -8064,11 +8085,11 @@ A bound 2D vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-_point2_d">Point2D</a></code>
+<code><b>[0]</b></code>: <code><a href="#t-_point2_d">Point2D</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a href="#t-_point2_d">Point2D</a></code>
+<code><b>[1]</b></code>: <code><a href="#t-_point2_d">Point2D</a></code>
 
 This is the ending point for this bound vector.
 
@@ -8084,11 +8105,11 @@ A bound 3D vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-_point3_d">Point3D</a></code>
+<code><b>[0]</b></code>: <code><a href="#t-_point3_d">Point3D</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a href="#t-_point3_d">Point3D</a></code>
+<code><b>[1]</b></code>: <code><a href="#t-_point3_d">Point3D</a></code>
 
 This is the ending point for this bound vector.
 
@@ -8104,11 +8125,11 @@ A bound ND vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-_point">Point</a></code>
+<code><b>[0]</b></code>: <code><a href="#t-_point">Point</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a href="#t-_point">Point</a></code>
+<code><b>[1]</b></code>: <code><a href="#t-_point">Point</a></code>
 
 This is the ending point for this bound vector.
 
@@ -8157,7 +8178,7 @@ This defines a full 3D frame (must be non-singular).
 
 <code>*type* FrameRef = <a href="#t-_axis_frame_ref">AxisFrameRef</a>|<a href="#t-_planar_frame_ref">PlanarFrameRef</a>|<a href="#t-_spatial_frame_ref">SpatialFrameRef</a></code>
 
-  Any supported frame reference shape.
+Any supported frame reference shape.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -8252,6 +8273,8 @@ Used to specify how to show the sign of a number.
 
 OpenSCAD doesn't have any string formatting, which can make reading debug
 output challenging.  This library is to help with that.
+
+### <i>📑Functions</i><a id='ch-string-_functions'></a>
 
 #### ⚙️align\_left<a id='f-align_left'></a>
 
@@ -8959,6 +8982,8 @@ Enums to dereference [`VectorInfo`](#t-_vector_info) type.
 ### <i>📑Purpose</i><a id='ch-helpers-_purpose'></a>
 
 Miscellaneous helper functions.
+
+### <i>📑Functions and Modules</i><a id='ch-helpers-_functions_and__modules'></a>
 
 ### <i>📑Conversion functions</i><a id='ch-helpers-_conversion_functions'></a>
 
@@ -9690,24 +9715,24 @@ and `p1`.
 
 <code>*type* VectorInfo = list</code>
 
-@deref {VectorInfoEnum}
+Best to dereference with <code><a href="#t-_vector_info_enum">VectorInfoEnum</a></code> type.
 
 Results of the [vector_info()](#f-vector_info) call.
 
 <details><summary>slots</summary>
-<code><b>VI_VECTOR</b></code>: <code><a href="#t-_point">Point</a></code>
+<code><b>[VI_VECTOR]</b></code>: <code><a href="#t-_point">Point</a></code>
 
 Direction of the ab vector.
 
-<code><b>VI_LENGTH</b></code>: <code>number</code>
+<code><b>[VI_LENGTH]</b></code>: <code>number</code>
 
 Length of ab vector.
 
-<code><b>VI_DIR</b></code>: <code><a href="#t-_point">Point</a></code>
+<code><b>[VI_DIR]</b></code>: <code><a href="#t-_point">Point</a></code>
 
 Unit ab vector.
 
-<code><b>VI_NORMAL</b></code>: <code><a href="#t-_point">Point</a></code>
+<code><b>[VI_NORMAL]</b></code>: <code><a href="#t-_point">Point</a></code>
 
 A normal unit vector by swapping first two dimensions and then making the
 resulting first dimension negative.
@@ -9749,6 +9774,8 @@ Returns `return_value`.
 ### <i>📑Purpose</i><a id='ch-color-_purpose'></a>
 
 Colour type aliases and helpers for working with OpenSCAD colour values.
+
+### <i>📑Functions</i><a id='ch-color-_functions'></a>
 
 #### ⚙️color\_alpha<a id='f-color_alpha'></a>
 
@@ -9823,19 +9850,19 @@ The value would replace/be added to the `Color` object.
 <code>*type* ColorLst = list</code>
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 Red value between `[0,1]`.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 Green value between `[0,1]`.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 Blue value between `[0,1]`.
 
-<code><b>3</b></code>: <code>number</code> *(Default: `1.0`)*
+<code><b>[3]</b></code>: <code>number</code> *(Default: `1.0`)*
 
 Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
 
@@ -9951,6 +9978,8 @@ name (`ColorName`).
 The built in extrude module isn't powerful or flexible enough so this library
 was made.  It creates a skin by making layers of polygons with the same
 number of vertices and then skins them by putting faces between layers.
+
+### <i>📑Functions and Modules</i><a id='ch-skin-_functions_and__modules'></a>
 
 ### <i>📑Design</i><a id='ch-skin-_design'></a>
 
@@ -10887,8 +10916,6 @@ the distance between layers don't exceed some length.
 
 **<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
-@deref {SkinEnum}
-
 Represents a skin object.
 
 **<code>max_diff</code>**: <code>number</code>
@@ -10937,26 +10964,26 @@ Enum used to dereference a [`skin`](#t-skin) type.
 
 <code>*type* skin = list</code>
 
-@deref {SkinEnum}
+Best to dereference with <code><a href="#t-_skin_enum">SkinEnum</a></code> type.
 
 Represents a skin object.
 
 <details><summary>slots</summary>
-<code><b>_SKIN_PTS_IN_LAYER</b></code>: <code>number</code>
+<code><b>[_SKIN_PTS_IN_LAYER]</b></code>: <code>number</code>
 
 Number of points in a layer.
 
-<code><b>_SKIN_LAYERS</b></code>: <code>number</code>
+<code><b>[_SKIN_LAYERS]</b></code>: <code>number</code>
 
 Number of layers-1.
 
-<code><b>_SKIN_PTS</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+<code><b>[_SKIN_PTS]</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 A list of points representing the skin object.  This is a flattened list of
 points in layer order.  Points are in clockwise order when looking towards
 the next layer.
 
-<code><b>_SKIN_DEBUG_AXES</b></code>: <code>...</code>
+<code><b>[_SKIN_DEBUG_AXES]</b></code>: <code>...</code>
 
 A set of points that gets transformed with the skin points.
 
@@ -10964,11 +10991,11 @@ A set of points that gets transformed with the skin points.
 >
 > Rendering is still under development.  **Untested**.
 
-<code><b>_SKIN_COMMENT</b></code>: <code>string</code>
+<code><b>[_SKIN_COMMENT]</b></code>: <code>string</code>
 
 A string to give meaning as to what this object represents.
 
-<code><b>_SKIN_OPERATION</b></code>: <code>...</code>
+<code><b>[_SKIN_OPERATION]</b></code>: <code>...</code>
 
 This is to allow operations between adjacent skin objects in a list.
 
@@ -10976,7 +11003,7 @@ This is to allow operations between adjacent skin objects in a list.
 >
 > Rendering is still under development.  **Untested**.
 
-<code><b>_SKIN_WALL_DIAG</b></code>: <code>list\[bool,...]</code>
+<code><b>[_SKIN_WALL_DIAG]</b></code>: <code>list\[bool,...]</code>
 
 When skinning the side walls of the skin, there are two ways to skin a 4
 point polygon.  This allows controlling that by specifying the direction.
@@ -10984,7 +11011,7 @@ The first polygon is rendered by what slot 0 states.  The second, by what
 slot 1 states.  This continues till the list slots are exhausted, at which
 point, it starts at slot 0 again.
 
-<code><b>_SKIN_CLOSED</b></code>: <code>bool</code>
+<code><b>[_SKIN_CLOSED]</b></code>: <code>bool</code>
 
 If a skin is closed, it means that the last layer will join to the first
 layer and no end caps are generated.
@@ -10998,15 +11025,15 @@ layer and no end caps are generated.
 <code>*type* Face = list</code>
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
+<code><b>[0]</b></code>: <code>number</code>
 
 This is the first index to the point in the referenced point list.
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 This is the second index to the point in the referenced point list.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 This is the third index to the point in the referenced point list.
 
@@ -11052,13 +11079,13 @@ The skin object.
 Style for a debug vector.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[0]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Any colour value accepted by OpenSCAD's `color()` module: an RGB/RGBA
 vector (`ColorLst`), a CSS hex string (`ColorStr`), or an SVG colour
 name (`ColorName`).
 
-<code><b>1</b></code>: <code>number</code>
+<code><b>[1]</b></code>: <code>number</code>
 
 Alpha value between `[0, 1]`.
 
@@ -11068,7 +11095,7 @@ Alpha value between `[0, 1]`.
 > precedence, even if alpha is specified in the ColorLst or ColorStr
 > style specifications.
 
-<code><b>2</b></code>: <code>number</code>
+<code><b>[2]</b></code>: <code>number</code>
 
 Thickness that is passed to [`arrow()`](#m-arrow) module.
 
@@ -11370,7 +11397,7 @@ Enum used to dereference a [`SpPalette`](#t-_sp_palette) type.
 
 <code>*type* SpPalette = list</code>
 
-@deref {SpPaletteEnum}
+Best to dereference with <code><a href="#t-_sp_palette_enum">SpPaletteEnum</a></code> type.
 
 Colour palette for spline and sampled-polyline debug visualisation.
 Each slot holds a colour value (RGB vector or CSS hex string) used to
@@ -11378,31 +11405,31 @@ indicate segment position within a control-point section, or to identify
 spline structural elements.
 
 <details><summary>slots</summary>
-<code><b>SP_START</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[SP_START]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for the first segment in a control-point section.
 
-<code><b>SP_START_STOP</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[SP_START_STOP]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour when a section has only one segment.
 
-<code><b>SP_STOP</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[SP_STOP]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for the last segment in a control-point section.
 
-<code><b>SP_CONT</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[SP_CONT]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for middle segments.
 
-<code><b>SP_CTRL_PT</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[SP_CTRL_PT]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for control-point arrows.
 
-<code><b>SP_CTRL_POLY</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[SP_CTRL_POLY]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for control polygon segments.
 
-<code><b>SP_HANDLE</b></code>: <code><a href="#t-_color">Color</a></code>
+<code><b>[SP_HANDLE]</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for Bezier handle lines.
 
@@ -11425,6 +11452,8 @@ path-based extrusions.  A [spline](#t-spline) defines a smooth curve through
 control points.  An [spoly](#t-spoly) is the adaptively-sampled polyline
 representation, with control point indices preserved for synchronizing
 rail and guide paths.
+
+### <i>📑Functions and Modules</i><a id='ch-spline-_functions_and__modules'></a>
 
 ### <i>📑Design</i><a id='ch-spline-_design'></a>
 
@@ -12760,27 +12789,27 @@ converted to a polyline.  Anchor control points are highlighted in red.
 
 <code>*type* spline = list</code>
 
-@deref {SplineEnum}
+Best to dereference with <code><a href="#t-_spline_enum">SplineEnum</a></code> type.
 
 Represents a spline curve through control points.
 
 <details><summary>slots</summary>
-<code><b>SPLINE_PTS</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+<code><b>[SPLINE_PTS]</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 The control points defining the curve.  For Catmull-Rom, these are the
 interpolation points.  For cubic Bezier, the layout is
 `[P0, H0out, H1in, P1, H1out, H2in, P2, ...]` where anchor points are
 at indices `0, 3, 6, ...` and handles are between them.
 
-<code><b>SPLINE_CLOSED</b></code>: <code>bool</code>
+<code><b>[SPLINE_CLOSED]</b></code>: <code>bool</code>
 
 Whether the spline forms a closed loop.
 
-<code><b>_SPLINE_TYPE</b></code>: <code>number</code>
+<code><b>[_SPLINE_TYPE]</b></code>: <code>number</code>
 
 Spline type enum: `SPLINE_T_CATMULL_ROM` or `SPLINE_T_BEZIER`.
 
-<code><b>_SPLINE_TENSION</b></code>: <code>number</code>
+<code><b>[_SPLINE_TENSION]</b></code>: <code>number</code>
 
 Tension parameter for Catmull-Rom (default 0.5).  Ignored for Bezier.
 
@@ -12792,29 +12821,29 @@ Tension parameter for Catmull-Rom (default 0.5).  Ignored for Bezier.
 
 <code>*type* spoly = list</code>
 
-@deref {SpolyEnum}
+Best to dereference with <code><a href="#t-_spoly_enum">SpolyEnum</a></code> type.
 
 Represents an adaptively-sampled polyline derived from a spline, with
 control point correspondence preserved.
 
 <details><summary>slots</summary>
-<code><b>SPOLY_PTS</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+<code><b>[SPOLY_PTS]</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 The sampled polyline points.
 
-<code><b>SPOLY_CTRL_IS</b></code>: <code>list\[number,...]</code>
+<code><b>[SPOLY_CTRL_IS]</b></code>: <code>list\[number,...]</code>
 
 Indices into `SPOLY_PTS` for the original spline control points.
 
-<code><b>_SPOLY_ARC_LENS</b></code>: <code>list\[number,...]</code>
+<code><b>[_SPOLY_ARC_LENS]</b></code>: <code>list\[number,...]</code>
 
 Cumulative arc length at each polyline point.
 
-<code><b>_SPOLY_TANGENTS</b></code>: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+<code><b>[_SPOLY_TANGENTS]</b></code>: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
 
 Unit tangent vector at each polyline point.
 
-<code><b>SPOLY_CLOSED</b></code>: <code>bool</code>
+<code><b>[SPOLY_CLOSED]</b></code>: <code>bool</code>
 
 Whether this polyline represents a closed loop.
 
@@ -12852,6 +12881,8 @@ Three guide-generation algorithms are provided:
 All three produce an R&G object (a pair of matched spolys).  `skin_follow`
 then walks the R&G stations, builds a `frame_transform` at each, applies
 the user's profile function, and assembles the result into a skin.
+
+### <i>📑Functions and Modules</i><a id='ch-skin_follow-_functions_and__modules'></a>
 
 #### 💠\_SF\_RG\_RAIL<a id='v-__s_f__r_g__r_a_i_l'></a>
 
@@ -13085,14 +13116,10 @@ the denser one.
 
 **<code>sp_a</code>**: <code><a href="#t-spoly">spoly</a></code>
 
-@deref {SpolyEnum}
-
 Represents an adaptively-sampled polyline derived from a spline, with
 control point correspondence preserved.
 
 **<code>sp_b</code>**: <code><a href="#t-spoly">spoly</a></code>
-
-@deref {SpolyEnum}
 
 Represents an adaptively-sampled polyline derived from a spline, with
 control point correspondence preserved.
@@ -13119,14 +13146,10 @@ Synchronize corresponding segments between two spolys.
 
 **<code>sp_a</code>**: <code><a href="#t-spoly">spoly</a></code>
 
-@deref {SpolyEnum}
-
 Represents an adaptively-sampled polyline derived from a spline, with
 control point correspondence preserved.
 
 **<code>sp_b</code>**: <code><a href="#t-spoly">spoly</a></code>
-
-@deref {SpolyEnum}
 
 Represents an adaptively-sampled polyline derived from a spline, with
 control point correspondence preserved.
@@ -13236,8 +13259,6 @@ Build a spoly from raw points, copying structure from a reference spoly.
 **<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 **<code>ref_sp</code>**: <code><a href="#t-spoly">spoly</a></code>
-
-@deref {SpolyEnum}
 
 Represents an adaptively-sampled polyline derived from a spline, with
 control point correspondence preserved.
@@ -13535,16 +13556,16 @@ Enum used to dereference a [`RailGuide`](#t-_rail_guide) type.
 
 <code>*type* RailGuide = list</code>
 
-@deref {RailGuideEnum}
+Best to dereference with <code><a href="#t-_rail_guide_enum">RailGuideEnum</a></code> type.
 
 A synchronized rail-and-guide pair for follow-me extrusion.
 
 <details><summary>slots</summary>
-<code><b>_SF_RG_RAIL</b></code>: <code><a href="#t-spoly">spoly</a></code>
+<code><b>[_SF_RG_RAIL]</b></code>: <code><a href="#t-spoly">spoly</a></code>
 
 The rail spoly (center path).
 
-<code><b>_SF_RG_GUIDE</b></code>: <code><a href="#t-spoly">spoly</a></code>
+<code><b>[_SF_RG_GUIDE]</b></code>: <code><a href="#t-spoly">spoly</a></code>
 
 The guide spoly (orientation reference).
 

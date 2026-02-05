@@ -28,13 +28,13 @@ use <param_check>
  *
  * A row of 3 numbers used in a Matrix3x3 type.
  */
- 
+
 /**
  * @typedef {list[number,number,number,number]} Row4
  *
  * A row of 4 numbers used in a Matrix4x4 type.
  */
- 
+
 /**
  * @typedef {list[Row3,Row3,Row3]} Matrix3x3
  *
@@ -667,7 +667,8 @@ function transform(pts, matrix_or_fn) =
 
 /**
  * @typedef {(AxisFrameRef|PlanarFrameRef|SpatialFrameRef)} FrameRef
- *   Any supported frame reference shape.
+ *
+ * Any supported frame reference shape.
  */
 
 /**

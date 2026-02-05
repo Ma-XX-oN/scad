@@ -57,6 +57,7 @@ _SF_RG_GUIDE = 1;
 
 /**
  * @typedef {list} RailGuide
+ *
  * @deref {RailGuideEnum}
  *
  * A synchronized rail-and-guide pair for follow-me extrusion.
@@ -72,6 +73,7 @@ _SF_RG_GUIDE = 1;
  *
  * @param {RailGuide} rg
  *   The RailGuide object to convert.
+ *
  * @returns {string}
  *   A string representation of the RailGuide.
  */
@@ -97,6 +99,7 @@ function rg_to_string(rg) =
  *   The global "up" direction.  Default `[0, 0, 1]`.
  * @param {number} tolerance
  *   Adaptive sampling tolerance.  Default `0.01`.
+ *
  * @returns {RailGuide}
  *   A matched R&G pair.
  */
@@ -145,6 +148,7 @@ function skin_follow_rg_fixed(rail, up = [0, 0, 1], tolerance = 0.01) =
  *   `[0, 0, 1]`.
  * @param {number} tolerance
  *   Adaptive sampling tolerance.  Default `0.01`.
+ *
  * @returns {RailGuide}
  *   A matched R&G pair.
  */
@@ -196,6 +200,7 @@ function skin_follow_rg_rmf(rail, up0 = [0, 0, 1], tolerance = 0.01) =
  *   Initial normal at the first station.
  * @param {number} n
  *   Number of stations.
+ *
  * @returns {list[Vector3D,...]}
  *   One propagated normal per station.
  */
@@ -213,6 +218,7 @@ function _sf_rmf_propagate(pts, tangents, r0, n) =
  *   Current station index.
  * @param {number} n
  *   Number of stations.
+ *
  * @returns {list[Vector3D,...]}
  *   Final list of propagated normals.
  */
@@ -253,6 +259,7 @@ function _sf_rmf_acc(pts, tangents, acc, i, n) =
  *   The guide spline (orientation path).
  * @param {number} tolerance
  *   Adaptive sampling tolerance.  Default `0.01`.
+ *
  * @returns {RailGuide}
  *   A matched R&G pair.
  */
@@ -281,6 +288,7 @@ function skin_follow_rg_explicit(rail, guide, tolerance = 0.01) =
  *
  * @param {spoly} sp_a
  * @param {spoly} sp_b
+ *
  * @returns {list[spoly,spoly]}
  *   Synchronized copies of `sp_a` and `sp_b`.
  */
@@ -309,6 +317,7 @@ function _sf_sync_spolys(sp_a, sp_b) =
  * @param {spoly} sp_a
  * @param {spoly} sp_b
  * @param {number} seg_count
+ *
  * @returns {list}
  *   `[all_a_pts, all_b_pts, seg_counts]` with matched per-segment counts.
  */
@@ -364,6 +373,7 @@ function _sf_sync_segments(sp_a, sp_b, seg_count) =
  * @param {number} i_start
  * @param {number} i_end
  * @param {number} n
+ *
  * @returns {list[Point3D,...]}
  *   Resampled points for the requested segment.
  */
@@ -388,6 +398,7 @@ function _sf_resample_segment(pts, arc_lens, i_start, i_end, n) =
  * Build CTRL_IS from per-segment sample counts.
  *
  * @param {list[number,...]} seg_counts
+ *
  * @returns {list[number,...]}
  *   Control-point indices compatible with the flattened synchronized points.
  */
@@ -412,6 +423,7 @@ function _sf_build_ctrl_is(seg_counts) =
  * @param {list[number,...]} acc
  * @param {number} i
  * @param {number} n
+ *
  * @returns {list[number,...]}
  *   Accumulated control-point indices.
  */
@@ -425,6 +437,7 @@ function _sf_build_ctrl_is_acc(seg_counts, acc, i, n) =
  *
  * @param {list[Point3D,...]} pts
  * @param {spoly} ref_sp
+ *
  * @returns {spoly}
  *   A spoly that reuses `ref_sp` control indices and closedness.
  */
@@ -441,6 +454,7 @@ function _sf_spoly_from_pts(pts, ref_sp) =
  * @param {list[Point3D,...]} pts
  * @param {list[number,...]} ctrl_is
  * @param {bool} closed
+ *
  * @returns {spoly}
  *   A spoly with computed arc lengths and tangents.
  */
@@ -472,6 +486,7 @@ function _sf_spoly_from_pts_and_ctrl(pts, ctrl_is, closed) =
  *   Optional wall diagonal control.
  * @param {list} debug_axes
  *   Optional debug axes.
+ *
  * @returns {skin}
  *   A skin object ready for `skin_to_polyhedron`.
  */
@@ -517,6 +532,7 @@ function skin_follow(rg, profile_fn, comment, operation, wall_diagonal, debug_ax
  * @param {list[Point3D,...]} src_ref
  * @param {function(number):list[Point2D,...]} profile_fn
  * @param {number} n
+ *
  * @returns {list[list[Point3D,...],...]}
  *   One transformed profile layer per station.
  */
@@ -574,6 +590,7 @@ function _sf_build_layers(rail_pts, guide_pts, tangents, arc_lens,
  * @param {list[Point3D,...]} rail_pts
  * @param {list[Vector3D,...]} tangents
  * @param {number} n
+ *
  * @returns {list[list[Point3D,...],...]}
  *   Layers after midpoint backtracking correction.
  */
@@ -597,6 +614,7 @@ function _sf_fix_backtracking(layers, rail_pts, tangents, n) =
  * @param {list[Point3D,...]} rail_pts
  * @param {list[Vector3D,...]} tangents
  * @param {number} n
+ *
  * @returns {list[list[bool,...],...]}
  *   Per-layer, per-point backtracking flags.
  */
@@ -635,6 +653,7 @@ function _sf_detect_backtracking(layers, rail_pts, tangents, n) =
  * @param {list[list[Point3D,...],...]} layers
  * @param {list[list[bool,...],...]} flags
  * @param {number} n
+ *
  * @returns {list[list[Point3D,...],...]}
  *   Corrected layers with midpoint adjustments at flagged points.
  */
@@ -764,6 +783,7 @@ use <range>
  * @param {bool} reverse_winding
  *   If true, reverse the final point order.  Defaults to true to preserve
  *   the winding used in the previous example code.
+ *
  * @returns {list[Point2D,...]}
  *   The full mirrored polygon.
  */
@@ -802,7 +822,7 @@ module skin_follow_example3() {
   /*
              .
          ..'.^.'..
-          \     / 
+          \     /
       ..'-_\   /_-'..
       .'           '.
        '-___   ___-'
