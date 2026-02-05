@@ -201,34 +201,38 @@ does:
       called over the `birlei` set.
  5. [any_all](#file-any_all)
     - `any` and `all` algorithms.
- 6. [indexable](#file-indexable)
+ 6. [object](#file-object)
+    - Defines types used for object definition.
+ 7. [indexable](#file-indexable)
     - Functions to manipulate a list or string as a stack / queue, use negative
       indices to get the indices / elements from the end, insert /
       remove / replace elements, and additional search algorithms.
     - Adds a new `slice` type that works similarly to python's slice, but still
       uses the closed range paradigm.  This is not indexable, but can be used
       with indexable functions that have a `birls` parameter (`s` for slice).
- 7. [function](#file-function)
+ 8. [function](#file-function)
     - Allow counting of function parameters and applying an array to a function
       as parameters.
- 8. [test](#file-test)
+ 9. [test](#file-test)
     - Testing modules for TDD.
- 9. [param_check](#file-param_check)
+ 10. [param_check](#file-param_check)
     - Functions to check the validity of parameters.  Usage allows to switch
       them off by commenting them out.
- 10. [transform](#file-transform)
+ 11. [transform](#file-transform)
     - Functions that allow transforming single points or a series of points
       quickly, usually by creating transformation matrices that can be
       multiplied against the point or points.
- 11. [string](#file-string)
+ 12. [string](#file-string)
     - String formatting functions.
- 12. [helpers](#file-helpers)
+ 13. [helpers](#file-helpers)
     - Miscellaneous functions that don't fit elsewhere.
- 13. [skin](#file-skin)
+ 14. [color](#file-color)
+    - Defines colour types and a function to multiply alpha in a colour object.
+ 15. [skin](#file-skin)
     - Generates a polyhedron using slices.
- 14. [spline](#file-spline)
+ 16. [spline](#file-spline)
     - Generate smooth curves to be used with skin follow extrusions.
- 15. [skin_follow](#file-skin_follow)
+ 17. [skin_follow](#file-skin_follow)
     - Follow-me extrusion: sweeps a 2D profile along a 3D spline path.
 
 ## API Table of Contents
@@ -243,20 +247,8 @@ documentation, all top level headings are shown and the headings below them have
 been minimised.  To Navigate:
 
 - Click on the link to go to the heading.
-- Click to the right of the heading to open it up and see the headings below it.
-<details><summary><a href="#file-object">📘 <b>object</b></a></summary>
-<blockquote>
-• <a href="#ch-object-_how_to__import">📑 <i>How to Import</i></a><br>
-• <a href="#ch-object-_purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#ch-object-object_types">📑 <i>object types</i></a></summary>
-<blockquote>
-• <a href="#t-_member_index">🧩MemberIndex</a><br>
-• <a href="#t-_obj_type_id">🧩ObjTypeId</a><br>
-</blockquote>
-</details>
-</blockquote>
-</details>
-
+- Click to the right of the heading link to open it up and see the headings
+  links below it.
 <details><summary><a href="#file-range">📘 <b>range</b></a></summary>
 <blockquote>
 • <a href="#ch-range-_how_to__import">📑 <i>How to Import</i></a><br>
@@ -344,6 +336,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#f-birlei_to_begin_i_end_i">⚙️birlei_to_begin_i_end_i</a><br>
 • <a href="#f-birlei_to_indices">⚙️birlei_to_indices</a><br>
+• <a href="#f-birlei_reverse">⚙️birlei_reverse</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#ch-birlei-birlei_types">📑 <i>birlei types</i></a></summary>
@@ -435,6 +428,19 @@ been minimised.  To Navigate:
 </blockquote>
 </details>
 
+<details><summary><a href="#file-object">📘 <b>object</b></a></summary>
+<blockquote>
+• <a href="#ch-object-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-object-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-object-object_types">📑 <i>object types</i></a></summary>
+<blockquote>
+• <a href="#t-_member_index">🧩MemberIndex</a><br>
+• <a href="#t-_obj_type_id">🧩ObjTypeId</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
 <details><summary><a href="#file-indexable_consts">📘 <b>indexable_consts</b></a></summary>
 <blockquote>
 • <a href="#ch-indexable_consts-_how_to__import">📑 <i>How to Import</i></a><br>
@@ -488,6 +494,7 @@ been minimised.  To Navigate:
 <blockquote>
 • <a href="#f-slr_len">⚙️slr_len</a><br>
 • <a href="#f-idx">⚙️idx</a><br>
+• <a href="#f-reverse">⚙️reverse</a><br>
 • <a href="#f-el">⚙️el</a><br>
 • <a href="#f-el_pos_idx">⚙️el_pos_idx</a><br>
 • <a href="#f-els">⚙️els</a><br>
@@ -714,6 +721,10 @@ been minimised.  To Navigate:
 • <a href="#f-align_left">⚙️align_left</a><br>
 • <a href="#f-align_right">⚙️align_right</a><br>
 • <a href="#f-repeat">⚙️repeat</a><br>
+• <a href="#f-hex_digit">⚙️hex_digit</a><br>
+• <a href="#f-to_hex">⚙️to_hex</a><br>
+• <a href="#f-to_dec">⚙️to_dec</a><br>
+• <a href="#f-_to_dec">⚙️_to_dec</a><br>
 • <a href="#f-_sign_str">⚙️_sign_str</a><br>
 • <a href="#f-float_to_string">⚙️float_to_string</a><br>
 • <a href="#f-obj_to_string">⚙️obj_to_string</a><br>
@@ -796,6 +807,25 @@ been minimised.  To Navigate:
 </blockquote>
 </details>
 
+<details><summary><a href="#file-color">📘 <b>color</b></a></summary>
+<blockquote>
+• <a href="#ch-color-_how_to__import">📑 <i>How to Import</i></a><br>
+<details><summary><a href="#ch-color-_purpose">📑 <i>Purpose</i></a></summary>
+<blockquote>
+• <a href="#f-color_alpha">⚙️color_alpha</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-color-color_types">📑 <i>color types</i></a></summary>
+<blockquote>
+• <a href="#t-_color_lst">🧩ColorLst</a><br>
+• <a href="#t-_color_str">🧩ColorStr</a><br>
+• <a href="#t-_color_name">🧩ColorName</a><br>
+• <a href="#t-_color">🧩Color</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
 <details><summary><a href="#file-skin">📘 <b>skin</b></a></summary>
 <blockquote>
 • <a href="#ch-skin-_how_to__import">📑 <i>How to Import</i></a><br>
@@ -811,6 +841,7 @@ been minimised.  To Navigate:
 • <a href="#v-__s_k_i_n__c_o_m_m_e_n_t">💠_SKIN_COMMENT</a><br>
 • <a href="#v-__s_k_i_n__o_p_e_r_a_t_i_o_n">💠_SKIN_OPERATION</a><br>
 • <a href="#v-__s_k_i_n__w_a_l_l__d_i_a_g">💠_SKIN_WALL_DIAG</a><br>
+• <a href="#v-__s_k_i_n__c_l_o_s_e_d">💠_SKIN_CLOSED</a><br>
 • <a href="#f-skin_to_string">⚙️skin_to_string</a><br>
 • <a href="#f-layer_pt">⚙️layer_pt</a><br>
 • <a href="#f-layer_pts">⚙️layer_pts</a><br>
@@ -846,10 +877,6 @@ been minimised.  To Navigate:
 • <a href="#t-skin">🧩skin</a><br>
 • <a href="#t-_face">🧩Face</a><br>
 • <a href="#t-_skin_extrude">🧩SkinExtrude</a><br>
-• <a href="#t-_colour_lst">🧩ColourLst</a><br>
-• <a href="#t-_colour_str">🧩ColourStr</a><br>
-• <a href="#t-_colour_name">🧩ColourName</a><br>
-• <a href="#t-_colour">🧩Colour</a><br>
 • <a href="#t-_debug_style">🧩DebugStyle</a><br>
 </blockquote>
 </details>
@@ -896,7 +923,7 @@ been minimised.  To Navigate:
 • <a href="#v-_s_p__c_t_r_l__p_o_l_y">💠SP_CTRL_POLY</a><br>
 • <a href="#v-_s_p__h_a_n_d_l_e">💠SP_HANDLE</a><br>
 • <a href="#v-_s_p__s_p_e_c_t_r_u_m">💠SP_SPECTRUM</a><br>
-• <a href="#v-_s_p__s_t_r_e_e_t__l_i_g_h_t_s">💠SP_STREET_LIGHTS</a><br>
+• <a href="#v-_s_p__t_r_a_f_f_i_c__l_i_g_h_t_s">💠SP_TRAFFIC_LIGHTS</a><br>
 • <a href="#v-_s_p__o_k_a_b_e__i_t_o__s_t_o_p_g_o">💠SP_OKABE_ITO_STOPGO</a><br>
 • <a href="#v-_s_p__t_o_l__b_r_i_g_h_t__s_t_o_p_g_o">💠SP_TOL_BRIGHT_STOPGO</a><br>
 </blockquote>
@@ -924,6 +951,14 @@ been minimised.  To Navigate:
 • <a href="#f-verify_spline">⚙️verify_spline</a><br>
 • <a href="#f-spline_new">⚙️spline_new</a><br>
 • <a href="#f-spline_segment_count">⚙️spline_segment_count</a><br>
+• <a href="#f-spline_cr_to_bezier">⚙️spline_cr_to_bezier</a><br>
+• <a href="#f-spline_bezier_to_cr">⚙️spline_bezier_to_cr</a><br>
+• <a href="#f-_bcr_iter">⚙️_bcr_iter</a><br>
+• <a href="#f-_bcr_max_dev">⚙️_bcr_max_dev</a><br>
+• <a href="#f-_bcr_max_dev_acc">⚙️_bcr_max_dev_acc</a><br>
+• <a href="#f-_bcr_pt_seg_dist">⚙️_bcr_pt_seg_dist</a><br>
+• <a href="#f-_bcr_insert_i">⚙️_bcr_insert_i</a><br>
+• <a href="#f-_bcr_insert_i_acc">⚙️_bcr_insert_i_acc</a><br>
 • <a href="#f-spline_point_at">⚙️spline_point_at</a><br>
 • <a href="#f-_spline_catmull_rom_point">⚙️_spline_catmull_rom_point</a><br>
 • <a href="#f-_spline_bezier_point">⚙️_spline_bezier_point</a><br>
@@ -1005,6 +1040,7 @@ been minimised.  To Navigate:
 • <a href="#f-_sf_apply_backtrack_fix">⚙️_sf_apply_backtrack_fix</a><br>
 • <a href="#m-skin_follow_example1">🧊skin_follow_example1</a><br>
 • <a href="#m-skin_follow_example2">🧊skin_follow_example2</a><br>
+• <a href="#f-mirror_continue">⚙️mirror_continue</a><br>
 </blockquote>
 </details>
 <details><summary><a href="#ch-skin_follow-skin_follow_types">📑 <i>skin_follow types</i></a></summary>
@@ -1015,37 +1051,6 @@ been minimised.  To Navigate:
 </details>
 </blockquote>
 </details>
-
-<hr/>
-
-## 📘object<a id='file-object'></a>
-
-### <i>📑How to Import</i><a id='ch-object-_how_to__import'></a>
-
-Does *NOT* need to be imported.
-
-### <i>📑Purpose</i><a id='ch-object-_purpose'></a>
-
-This specifies some types used for specifying objects and doesn't need to be
-imported.
-
-### <i>📑object types</i><a id='ch-object-object_types'></a>
-
-#### 🧩MemberIndex<a id='t-_member_index'></a>
-
-<code>*type* MemberIndex = number</code>
-
-Integer used to dereference an object's member.
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 🧩ObjTypeId<a id='t-_obj_type_id'></a>
-
-<code>*type* ObjTypeId = string</code>
-
-String used to define a object's header.
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -1948,6 +1953,40 @@ Helper to convert birlei parameters to an lr to traverse.
 **Returns**: <code>list|<a href="#t-range">range</a></code>
 
 Returns a list or range describing the indices to traverse.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️birlei\_reverse<a id='f-birlei_reverse'></a>
+
+<code>*function* birlei_reverse(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-range">range</a>|list</code>
+
+Reverses the birlei's iteration.
+
+<details><summary>parameters</summary>
+
+**<code>birl</code>**: <code><a href="#t-_birl">Birl</a></code>
+
+- If `number`, start index to iterate over
+- If `range`, indices to iterate over
+- If `list`, indices to iterate over
+
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code>
+
+- If related `birl` is a number, then this is the end index to iterate
+  over.
+  - If this value is less than the related birl's value, then nothing is
+    iterated over.
+- Else must be `undef`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-range">range</a>|list</code>
+
+Result is a single object as `(NUM, NUM)` pair is converted to a `range`.
 
 </details>
 
@@ -3464,6 +3503,37 @@ First index where `pred_fn(i)` is `false` will result in `false`, else
 
 <hr/>
 
+## 📘object<a id='file-object'></a>
+
+### <i>📑How to Import</i><a id='ch-object-_how_to__import'></a>
+
+Does *NOT* need to be imported.
+
+### <i>📑Purpose</i><a id='ch-object-_purpose'></a>
+
+This specifies some types used for specifying objects and doesn't need to be
+imported.
+
+### <i>📑object types</i><a id='ch-object-object_types'></a>
+
+#### 🧩MemberIndex<a id='t-_member_index'></a>
+
+<code>*type* MemberIndex = number</code>
+
+Integer used to dereference an object's member.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩ObjTypeId<a id='t-_obj_type_id'></a>
+
+<code>*type* ObjTypeId = string</code>
+
+String used to define a object's header.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
 ## 📘indexable_consts<a id='file-indexable_consts'></a>
 
 ### <i>📑How to Import</i><a id='ch-indexable_consts-_how_to__import'></a>
@@ -3682,10 +3752,11 @@ Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
 ### <i>📑Purpose</i><a id='ch-indexable-_purpose'></a>
 
 Treats all indexable objects similarly.  As a group, they are referred to as
-`slr`s (`s`tring, `l`ist or `r`ange).  Any function that can take an indexable
-reference and a `birlsei` can have the `birlsei` partially or completely
-omitted (defaults to the start and end indices of the indexable).  To iterate
-backwards, use a reverse `range`, `rev_i`, or a reverse `slice` (step < 0).
+`slr`s (`s`tring, `l`ist or `r`ange).  Any function that can take an
+indexable reference and a `birlsei` can have the `birlsei` partially or
+completely omitted (defaults to the start and end indices of the indexable).
+To iterate backwards, use a reverse `range`, `rev_i`, or a reverse `slice`
+(step < 0).
 
 #### Example
 
@@ -4300,6 +4371,45 @@ If passed, then use that cached value instead of calculating `len(slr)`.
 **Returns**: <code>number</code>
 
 The positive index.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️reverse<a id='f-reverse'></a>
+
+<code>*function* reverse(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : string|list|<a href="#t-range">range</a></code>
+
+Reverses `slr` entirely or in part.
+
+<details><summary>parameters</summary>
+
+**<code>slr</code>**: <code>string|list|<a href="#t-range">range</a></code>
+
+The `slr` to reverse.
+
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
+
+- If `number`, start index to iterate over.
+- If `range`, indices to iterate over.
+- If `list`, indices to iterate over.
+- If `slice`, to convert to range providing indices to iterate over.
+
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(slr, -1)`)*
+
+- If related `birl` is a number, then this is the end index to iterate
+  over.
+  - If this value is less than the related birl's value, then nothing is
+    iterated over.
+- Else must be `undef`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>string|list|<a href="#t-range">range</a></code>
+
+The reversed slr (partly or entirely).
 
 </details>
 
@@ -8243,6 +8353,124 @@ The final repeated string.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
+#### ⚙️hex\_digit<a id='f-hex_digit'></a>
+
+<code>*function* hex_digit(v: number) : string</code>
+
+Convert a hex nibble value to a lower-case digit.
+
+<details><summary>parameters</summary>
+
+**<code>v</code>**: <code>number</code>
+
+Integer value in range [0, 15].
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>string</code>
+
+One character in [0-9a-f].
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️to\_hex<a id='f-to_hex'></a>
+
+<code>*function* to_hex(v: number, l: number, out: string) : string</code>
+
+Convert a non-negative integer to a lower-case hex string.
+
+<details><summary>parameters</summary>
+
+**<code>v</code>**: <code>number</code>
+
+Value to convert.
+
+**<code>l</code>**: <code>number</code> *(Default: `0`)*
+
+Minimum output length. Left-pads with "0" when needed.
+
+**<code>out</code>**: <code>string</code> *(Default: `""`)*
+
+Recursive accumulator.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>string</code>
+
+Hex representation of `v`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️to\_dec<a id='f-to_dec'></a>
+
+<code>*function* to_dec(v: string) : number</code>
+
+Convert a hex string to decimal.
+
+Accepts lower or upper case hex digits.
+
+<details><summary>parameters</summary>
+
+**<code>v</code>**: <code>string</code>
+
+Hex string, e.g. "ff" or "FF".
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Decimal value.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_to\_dec<a id='f-_to_dec'></a>
+
+<code>*function* _to_dec(v: string, l: number, col: number, out: number) : number</code>
+
+Recursive implementation for `to_dec`.
+
+<details><summary>parameters</summary>
+
+**<code>v</code>**: <code>string</code>
+
+Hex string.
+
+**<code>l</code>**: <code>number</code>
+
+Length of `v`.
+
+**<code>col</code>**: <code>number</code> *(Default: `0`)*
+
+Current digit column from the right.
+
+**<code>out</code>**: <code>number</code> *(Default: `0`)*
+
+Accumulated decimal value.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Decimal value.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
 #### ⚙️\_sign\_str<a id='f-_sign_str'></a>
 
 <code>*function* _sign_str(v: number, show\_sign: <a href="#t-_show_sign_enum">ShowSignEnum</a>) : string</code>
@@ -9512,6 +9740,206 @@ Returns `return_value`.
 
 <hr/>
 
+## 📘color<a id='file-color'></a>
+
+### <i>📑How to Import</i><a id='ch-color-_how_to__import'></a>
+
+    use <color>
+
+### <i>📑Purpose</i><a id='ch-color-_purpose'></a>
+
+Colour type aliases and helpers for working with OpenSCAD colour values.
+
+#### ⚙️color\_alpha<a id='f-color_alpha'></a>
+
+<code>*function* color_alpha(c: string|list\[number,...], alpha: number) : string|list\[number,...]</code>
+
+Apply an opacity factor to a colour.
+
+Supports hex strings (`#RGB`, `#RRGGBB`, `#RGBA`, `#RRGGBBAA`) and list
+colours (`[r,g,b]` or `[r,g,b,a]`).
+
+- If `c` already has an alpha channel, output alpha is `existing_alpha *
+  alpha`.
+- If `c` has no alpha channel, `alpha` is added as the new alpha.
+
+Named colour strings (See [`ColorName`](#t-_color_name)) are returned
+unchanged.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+Alpha parameter in `color` module has no effect if `Color` object has alpha
+in it.  Specify clamped alpha as backup in case `Color` object doesn't
+contain alpha, i.e. it's a named colour (See [`ColorName`](#t-_color_name)).
+
+```openscad
+new_color = color_alpha(valid_color, new_alpha);
+color(new_color, clamp(new_alpha, 0, 1))
+  cube([1,1,1]);
+```
+
+</details>
+
+<details><summary>parameters</summary>
+
+**<code>c</code>**: <code>string|list\[number,...]</code>
+
+Input colour.  If it doesn't specify alpha, then it's taken as fully
+opaque.
+
+**<code>alpha</code>**: <code>number</code>
+
+Opacity factor.  If `c` has an alpha, then it's multiplied by this as if it
+were a percentage.  So:
+
+- `alpha < 1` makes it more transparent.
+- `alpha > 1` makes it more opaque.
+
+@example New alpha generated for the following alphas in the `Color` object:
+
+- "7"  => `clamp(alpha * 0x7 / 0xf, 0, 1)`
+- "4f" => `clamp(alpha * 0x4f / 0xff, 0, 1)`
+- 0.4  => `clamp(alpha * 0.4, 0, 1)`
+
+The value would replace/be added to the `Color` object.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>string|list\[number,...]</code>
+
+`Color` object with adjusted alpha.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑color types</i><a id='ch-color-color_types'></a>
+
+#### 🧩ColorLst<a id='t-_color_lst'></a>
+
+<code>*type* ColorLst = list</code>
+
+<details><summary>slots</summary>
+<code><b>0</b></code>: <code>number</code>
+
+Red value between `[0,1]`.
+
+<code><b>1</b></code>: <code>number</code>
+
+Green value between `[0,1]`.
+
+<code><b>2</b></code>: <code>number</code>
+
+Blue value between `[0,1]`.
+
+<code><b>3</b></code>: <code>number</code> *(Default: `1.0`)*
+
+Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩ColorStr<a id='t-_color_str'></a>
+
+<code>*type* ColorStr = string</code>
+
+Can be specified in 4 different formats:
+
+- `"#rgb"`
+- `"#rgba"`
+- `"#rrggbb"`
+- `"#rrggbbaa"`
+
+Alpha value between `["0","f"]` or `["00","ff"]`, where `"f"` or `"ff"` means
+solid and `"0"` or `"00"` is transparent.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩ColorName<a id='t-_color_name'></a>
+
+<code>*type* ColorName = string</code>
+
+The available color names are taken from the World Wide Web consortium's SVG
+color list. A chart of the color names is as follows, (note that both
+spellings of grey/gray including slategrey/slategray etc are valid):
+
+|                        |                        |                        |
+|------------------------|------------------------|------------------------|
+| **Purples**            | **Reds**               | **Browns**             |
+| - Lavender             | - IndianRed            | - Cornsilk             |
+| - Thistle              | - LightCoral           | - BlanchedAlmond       |
+| - Plum                 | - Salmon               | - Bisque               |
+| - Violet               | - DarkSalmon           | - NavajoWhite          |
+| - Orchid               | - LightSalmon          | - Wheat                |
+| - Fuchsia              | - Red                  | - BurlyWood            |
+| - Magenta              | - Crimson              | - Tan                  |
+| - MediumOrchid         | - FireBrick            | - RosyBrown            |
+| - MediumPurple         | - DarkRed              | - SandyBrown           |
+| - BlueViolet           |                        | - Goldenrod            |
+| - DarkViolet           | **Greens**             | - DarkGoldenrod        |
+| - DarkOrchid           | - GreenYellow          | - Peru                 |
+| - DarkMagenta          | - Chartreuse           | - Chocolate            |
+| - Purple               | - LawnGreen            | - SaddleBrown          |
+| - Indigo               | - Lime                 | - Sienna               |
+| - DarkSlateBlue        | - LimeGreen            | - Brown                |
+| - SlateBlue            | - PaleGreen            | - Maroon               |
+| - MediumSlateBlue      | - LightGreen           |                        |
+|                        | - MediumSpringGreen    | **Whites**             |
+| **Pinks**              | - SpringGreen          | - White                |
+| - Pink                 | - MediumSeaGreen       | - Snow                 |
+| - LightPink            | - SeaGreen             | - Honeydew             |
+| - HotPink              | - ForestGreen          | - MintCream            |
+| - DeepPink             | - Green                | - Azure                |
+| - MediumVioletRed      | - DarkGreen            | - AliceBlue            |
+| - PaleVioletRed        | - YellowGreen          | - GhostWhite           |
+|                        | - OliveDrab            | - WhiteSmoke           |
+| **Blues**              | - Olive                | - Seashell             |
+| - Aqua                 | - DarkOliveGreen       | - Beige                |
+| - Cyan                 | - MediumAquamarine     | - OldLace              |
+| - LightCyan            | - DarkSeaGreen         | - FloralWhite          |
+| - PaleTurquoise        | - LightSeaGreen        | - Ivory                |
+| - Aquamarine           | - DarkCyan             | - AntiqueWhite         |
+| - Turquoise            | - Teal                 | - Linen                |
+| - MediumTurquoise      |                        | - LavenderBlush        |
+| - DarkTurquoise        | **Oranges**            | - MistyRose            |
+| - CadetBlue            | - LightSalmon          |                        |
+| - SteelBlue            | - Coral                | **Grays**              |
+| - LightSteelBlue       | - Tomato               | - Gainsboro            |
+| - PowderBlue           | - OrangeRed            | - LightGrey            |
+| - LightBlue            | - DarkOrange           | - Silver               |
+| - SkyBlue              | - Orange               | - DarkGray             |
+| - LightSkyBlue         |                        | - Gray                 |
+| - DeepSkyBlue          | **Yellows**            | - DimGray              |
+| - DodgerBlue           | - Gold                 | - LightSlateGray       |
+| - CornflowerBlue       | - Yellow               | - SlateGray            |
+| - RoyalBlue            | - LightYellow          | - DarkSlateGray        |
+| - Blue                 | - LemonChiffon         | - Black                |
+| - MediumBlue           | - LightGoldenrodYellow |                        |
+| - DarkBlue             | - PapayaWhip           |                        |
+| - Navy                 | - Moccasin             |                        |
+| - MidnightBlue         | - PeachPuff            |                        |
+|                        | - PaleGoldenrod        |                        |
+|                        | - Khaki                |                        |
+|                        | - DarkKhaki            |                        |
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩Color<a id='t-_color'></a>
+
+<code>*type* Color = <a href="#t-_color_lst">ColorLst</a>|<a href="#t-_color_str">ColorStr</a>|<a href="#t-_color_name">ColorName</a></code>
+
+Any colour value accepted by OpenSCAD's `color()` module: an RGB/RGBA
+vector (`ColorLst`), a CSS hex string (`ColorStr`), or an SVG colour
+name (`ColorName`).
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
 ## 📘skin<a id='file-skin'></a>
 
 ### <i>📑How to Import</i><a id='ch-skin-_how_to__import'></a>
@@ -9592,6 +10020,14 @@ Slot index for the operation (`[op, apply_to_next_count]`).
 <code>*value* _SKIN_WALL_DIAG : <a href="#t-_skin_enum">SkinEnum</a></code>
 
 Slot index for the wall diagonal info.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SKIN\_CLOSED<a id='v-__s_k_i_n__c_l_o_s_e_d'></a>
+
+<code>*value* _SKIN_CLOSED : <a href="#t-_skin_enum">SkinEnum</a></code>
+
+Slot index for the closed status
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -9705,7 +10141,7 @@ A list of linear layer_i corresponding to the given points.
 
 #### ⚙️layer\_side\_faces<a id='f-layer_side_faces'></a>
 
-<code>*function* layer_side_faces(pts\_in\_layer: number, layers: number, wall\_diagonal: list\[bool,...]) : list\[<a href="#t-_face">Face</a>]</code>
+<code>*function* layer_side_faces(pts\_in\_layer: number, layers: number, wall\_diagonal: list\[bool,...], close: bool) : list\[<a href="#t-_face">Face</a>]</code>
 
 Helper to generate side wall faces between consecutive layers.
 
@@ -9739,6 +10175,10 @@ E.g.
 - `[0,1]` will alternate the opposite way to `[1,0]`.
 - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
   then the other way, and then repeat.
+
+**<code>close</code>**: <code>bool</code>
+
+If true, then the last layer connects to the first layer.
 
 </details>
 
@@ -10544,6 +10984,11 @@ The first polygon is rendered by what slot 0 states.  The second, by what
 slot 1 states.  This continues till the list slots are exhausted, at which
 point, it starts at slot 0 again.
 
+<code><b>_SKIN_CLOSED</b></code>: <code>bool</code>
+
+If a skin is closed, it means that the last layer will join to the first
+layer and no end caps are generated.
+
 </details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
@@ -10600,126 +11045,6 @@ The skin object.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 🧩ColourLst<a id='t-_colour_lst'></a>
-
-<code>*type* ColourLst = list</code>
-
-<details><summary>slots</summary>
-<code><b>0</b></code>: <code>number</code>
-
-Red value between `[0,1]`.
-
-<code><b>1</b></code>: <code>number</code>
-
-Green value between `[0,1]`.
-
-<code><b>2</b></code>: <code>number</code>
-
-Blue value between `[0,1]`.
-
-<code><b>3</b></code>: <code>number</code> *(Default: `1.0`)*
-
-Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 🧩ColourStr<a id='t-_colour_str'></a>
-
-<code>*type* ColourStr = string</code>
-
-Can be specified in 4 different formats:
-
-- `"#rgb"`
-- `"#rgba"`
-- `"#rrggbb"`
-- `"#rrggbbaa"`
-
-Alpha value between `["0","f"]` or `["00","ff"]`, where `"f"` or `"ff"` means
-solid and `"0"` or `"00"` is transparent.
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 🧩ColourName<a id='t-_colour_name'></a>
-
-<code>*type* ColourName = string</code>
-
-The available color names are taken from the World Wide Web consortium's SVG
-color list. A chart of the color names is as follows, (note that both
-spellings of grey/gray including slategrey/slategray etc are valid):
-
-|                        |                        |                        |
-|------------------------|------------------------|------------------------|
-| **Purples**            | **Reds**               | **Browns**             |
-| - Lavender             | - IndianRed            | - Cornsilk             |
-| - Thistle              | - LightCoral           | - BlanchedAlmond       |
-| - Plum                 | - Salmon               | - Bisque               |
-| - Violet               | - DarkSalmon           | - NavajoWhite          |
-| - Orchid               | - LightSalmon          | - Wheat                |
-| - Fuchsia              | - Red                  | - BurlyWood            |
-| - Magenta              | - Crimson              | - Tan                  |
-| - MediumOrchid         | - FireBrick            | - RosyBrown            |
-| - MediumPurple         | - DarkRed              | - SandyBrown           |
-| - BlueViolet           |                        | - Goldenrod            |
-| - DarkViolet           | **Greens**             | - DarkGoldenrod        |
-| - DarkOrchid           | - GreenYellow          | - Peru                 |
-| - DarkMagenta          | - Chartreuse           | - Chocolate            |
-| - Purple               | - LawnGreen            | - SaddleBrown          |
-| - Indigo               | - Lime                 | - Sienna               |
-| - DarkSlateBlue        | - LimeGreen            | - Brown                |
-| - SlateBlue            | - PaleGreen            | - Maroon               |
-| - MediumSlateBlue      | - LightGreen           |                        |
-|                        | - MediumSpringGreen    | **Whites**             |
-| **Pinks**              | - SpringGreen          | - White                |
-| - Pink                 | - MediumSeaGreen       | - Snow                 |
-| - LightPink            | - SeaGreen             | - Honeydew             |
-| - HotPink              | - ForestGreen          | - MintCream            |
-| - DeepPink             | - Green                | - Azure                |
-| - MediumVioletRed      | - DarkGreen            | - AliceBlue            |
-| - PaleVioletRed        | - YellowGreen          | - GhostWhite           |
-|                        | - OliveDrab            | - WhiteSmoke           |
-| **Blues**              | - Olive                | - Seashell             |
-| - Aqua                 | - DarkOliveGreen       | - Beige                |
-| - Cyan                 | - MediumAquamarine     | - OldLace              |
-| - LightCyan            | - DarkSeaGreen         | - FloralWhite          |
-| - PaleTurquoise        | - LightSeaGreen        | - Ivory                |
-| - Aquamarine           | - DarkCyan             | - AntiqueWhite         |
-| - Turquoise            | - Teal                 | - Linen                |
-| - MediumTurquoise      |                        | - LavenderBlush        |
-| - DarkTurquoise        | **Oranges**            | - MistyRose            |
-| - CadetBlue            | - LightSalmon          |                        |
-| - SteelBlue            | - Coral                | **Grays**              |
-| - LightSteelBlue       | - Tomato               | - Gainsboro            |
-| - PowderBlue           | - OrangeRed            | - LightGrey            |
-| - LightBlue            | - DarkOrange           | - Silver               |
-| - SkyBlue              | - Orange               | - DarkGray             |
-| - LightSkyBlue         |                        | - Gray                 |
-| - DeepSkyBlue          | **Yellows**            | - DimGray              |
-| - DodgerBlue           | - Gold                 | - LightSlateGray       |
-| - CornflowerBlue       | - Yellow               | - SlateGray            |
-| - RoyalBlue            | - LightYellow          | - DarkSlateGray        |
-| - Blue                 | - LemonChiffon         | - Black                |
-| - MediumBlue           | - LightGoldenrodYellow |                        |
-| - DarkBlue             | - PapayaWhip           |                        |
-| - Navy                 | - Moccasin             |                        |
-| - MidnightBlue         | - PeachPuff            |                        |
-|                        | - PaleGoldenrod        |                        |
-|                        | - Khaki                |                        |
-|                        | - DarkKhaki            |                        |
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 🧩Colour<a id='t-_colour'></a>
-
-<code>*type* Colour = <a href="#t-_colour_lst">ColourLst</a>|<a href="#t-_colour_str">ColourStr</a>|<a href="#t-_colour_name">ColourName</a></code>
-
-Any colour value accepted by OpenSCAD's `color()` module: an RGB/RGBA
-vector (`ColourLst`), a CSS hex string (`ColourStr`), or an SVG colour
-name (`ColourName`).
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
 #### 🧩DebugStyle<a id='t-_debug_style'></a>
 
 <code>*type* DebugStyle = list</code>
@@ -10727,11 +11052,11 @@ name (`ColourName`).
 Style for a debug vector.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>0</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Any colour value accepted by OpenSCAD's `color()` module: an RGB/RGBA
-vector (`ColourLst`), a CSS hex string (`ColourStr`), or an SVG colour
-name (`ColourName`).
+vector (`ColorLst`), a CSS hex string (`ColorStr`), or an SVG colour
+name (`ColorName`).
 
 <code><b>1</b></code>: <code>number</code>
 
@@ -10740,7 +11065,7 @@ Alpha value between `[0, 1]`.
 > 📌 TO DO:
 >
 > Need to verify if undef is allowed, otherwise this will always take
-> precedence, even if alpha is specified in the ColourLst or ColourStr
+> precedence, even if alpha is specified in the ColorLst or ColorStr
 > style specifications.
 
 <code><b>2</b></code>: <code>number</code>
@@ -10969,9 +11294,9 @@ RGB spectrum palette: red/purple/blue/green.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SP\_STREET\_LIGHTS<a id='v-_s_p__s_t_r_e_e_t__l_i_g_h_t_s'></a>
+#### 💠SP\_TRAFFIC\_LIGHTS<a id='v-_s_p__t_r_a_f_f_i_c__l_i_g_h_t_s'></a>
 
-<code>*value* SP_STREET_LIGHTS : <a href="#t-_sp_palette">SpPalette</a></code>
+<code>*value* SP_TRAFFIC_LIGHTS : <a href="#t-_sp_palette">SpPalette</a></code>
 
 Traffic-light palette: green/yellow/red/white.
 
@@ -11053,31 +11378,31 @@ indicate segment position within a control-point section, or to identify
 spline structural elements.
 
 <details><summary>slots</summary>
-<code><b>SP_START</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>SP_START</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for the first segment in a control-point section.
 
-<code><b>SP_START_STOP</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>SP_START_STOP</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour when a section has only one segment.
 
-<code><b>SP_STOP</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>SP_STOP</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for the last segment in a control-point section.
 
-<code><b>SP_CONT</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>SP_CONT</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for middle segments.
 
-<code><b>SP_CTRL_PT</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>SP_CTRL_PT</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for control-point arrows.
 
-<code><b>SP_CTRL_POLY</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>SP_CTRL_POLY</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for control polygon segments.
 
-<code><b>SP_HANDLE</b></code>: <code><a href="#t-_colour">Colour</a></code>
+<code><b>SP_HANDLE</b></code>: <code><a href="#t-_color">Color</a></code>
 
 Colour for Bezier handle lines.
 
@@ -11162,11 +11487,17 @@ Create a new spline object.
 
 **<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
-Control points (3D).
+Control points (3D).  Layout depends on the spline type:
+- **Catmull-Rom** - Each point is an interpolation point that the
+  curve passes through.
+- **Cubic Bezier** - Points alternate between anchors and handles:
+  `[P0, H0out, H1in, P1, H1out, H2in, P2, ...]`.  Anchors are at
+  indices `0, 3, 6, ...` and handles sit between them.  Requires
+  `3n + 1` points for `n` segments.
 
 **<code>closed</code>**: <code>bool</code> *(Default: `false`)*
 
-Whether the spline is a closed loop.  Default `false`.
+Whether the spline is a closed loop.
 
 **<code>type</code>**: <code><a href="#t-_spline_type_enum">SplineTypeEnum</a></code> *(Default: `SPLINE_T_CATMULL_ROM`)*
 
@@ -11174,7 +11505,7 @@ Spline type enum.  Default `SPLINE_T_CATMULL_ROM`.
 
 **<code>tension</code>**: <code>number</code> *(Default: `0.5`)*
 
-Tension for Catmull-Rom.  Default `0.5`.
+Tension for Catmull-Rom.
 
 </details>
 
@@ -11207,6 +11538,353 @@ A spline object.
 **Returns**: <code>number</code>
 
 The number of curve segments.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spline\_cr\_to\_bezier<a id='f-spline_cr_to_bezier'></a>
+
+<code>*function* spline_cr_to_bezier(s: <a href="#t-spline">spline</a>) : <a href="#t-spline">spline</a></code>
+
+Convert a Catmull-Rom spline to an equivalent cubic Bezier spline.
+
+Each Catmull-Rom segment between P1 and P2 (with neighbours P0, P3)
+maps to a cubic Bezier with control points:
+- B0 = P1
+- B1 = P1 + τ·(P2 − P0) / 3
+- B2 = P2 − τ·(P3 − P1) / 3
+- B3 = P2
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A Catmull-Rom spline object.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-spline">spline</a></code>
+
+An equivalent cubic Bezier spline.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spline\_bezier\_to\_cr<a id='f-spline_bezier_to_cr'></a>
+
+<code>*function* spline_bezier_to_cr(s: <a href="#t-spline">spline</a>, tolerance: number, max\_pts: number) : list</code>
+
+Convert a cubic Bezier spline to an approximate Catmull-Rom spline.
+
+The conversion is inherently lossy because Catmull-Rom splines have fewer
+degrees of freedom.  This function iteratively inserts control points
+sampled from the Bezier curve until the maximum deviation falls below
+`tolerance` or the point count reaches `max_pts`.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A cubic Bezier spline object.
+
+**<code>tolerance</code>**: <code>number</code> *(Default: `0.01`)*
+
+Maximum allowed deviation from the Bezier curve.
+
+**<code>max_pts</code>**: <code>number</code> *(Default: `undef`)*
+
+Maximum number of control points in the result.  `undef` means
+unlimited.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[cr_spline, achieved_tolerance]` - the Catmull-Rom approximation and
+the maximum deviation measured.  If `achieved_tolerance <= tolerance`,
+the fit met the target; otherwise the point budget was exhausted.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_bcr\_iter<a id='f-_bcr_iter'></a>
+
+<code>*function* _bcr_iter(b\_sp: <a href="#t-spoly">spoly</a>, cr\_pts: list\[<a href="#t-_point3_d">Point3D</a>,...], closed: bool, tol: number, max\_pts: number|undef, n\_samp: number, depth: number) : list</code>
+
+Iterative refinement loop for Bezier-to-CR conversion.
+
+Builds a CR spline from `cr_pts`, converts both it and the reference
+Bezier spoly to arc-length parameterised polylines, measures the
+maximum deviation, and - if above `tol` - inserts the worst Bezier
+point into `cr_pts` and recurses.
+
+<details><summary>parameters</summary>
+
+**<code>b_sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+Pre-computed Bezier reference spoly.
+
+**<code>cr_pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Current Catmull-Rom control points.
+
+**<code>closed</code>**: <code>bool</code>
+
+Whether the spline is a closed loop.
+
+**<code>tol</code>**: <code>number</code>
+
+Target tolerance.
+
+**<code>max_pts</code>**: <code>number|undef</code>
+
+Maximum number of control points, or `undef` for unlimited.
+
+**<code>n_samp</code>**: <code>number</code>
+
+Number of arc-length samples for deviation measurement.
+
+**<code>depth</code>**: <code>number</code>
+
+Remaining recursion depth.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[cr_spline, max_deviation]`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_bcr\_max\_dev<a id='f-_bcr_max_dev'></a>
+
+<code>*function* _bcr_max_dev(b\_sp: <a href="#t-spoly">spoly</a>, c\_sp: <a href="#t-spoly">spoly</a>, n\_samp: number) : list</code>
+
+Find the maximum deviation between two spolys, compared at matching
+arc-length fractions.
+
+Samples both spolys at `n_samp` evenly-spaced arc-length fractions and
+returns the largest point-to-point distance found.
+
+<details><summary>parameters</summary>
+
+**<code>b_sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+Bezier reference spoly.
+
+**<code>c_sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+Catmull-Rom candidate spoly.
+
+**<code>n_samp</code>**: <code>number</code>
+
+Number of sample fractions (excludes endpoints).
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[max_deviation, worst_bezier_point]`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_bcr\_max\_dev\_acc<a id='f-_bcr_max_dev_acc'></a>
+
+<code>*function* _bcr_max_dev_acc(b\_pts: list\[<a href="#t-_point3_d">Point3D</a>,...], b\_arcs: list\[number,...], b\_n: number, b\_total: number, c\_pts: list\[<a href="#t-_point3_d">Point3D</a>,...], c\_arcs: list\[number,...], c\_n: number, c\_total: number, n\_samp: number, i: number, best\_d: number, best\_pt: <a href="#t-_point3_d">Point3D</a>) : list</code>
+
+Recursive accumulator for `_bcr_max_dev`.
+
+<details><summary>parameters</summary>
+
+**<code>b_pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Bezier spoly points.
+
+**<code>b_arcs</code>**: <code>list\[number,...]</code>
+
+Bezier cumulative arc lengths.
+
+**<code>b_n</code>**: <code>number</code>
+
+Length of `b_pts`.
+
+**<code>b_total</code>**: <code>number</code>
+
+Total Bezier arc length.
+
+**<code>c_pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+CR spoly points.
+
+**<code>c_arcs</code>**: <code>list\[number,...]</code>
+
+CR cumulative arc lengths.
+
+**<code>c_n</code>**: <code>number</code>
+
+Length of `c_pts`.
+
+**<code>c_total</code>**: <code>number</code>
+
+Total CR arc length.
+
+**<code>n_samp</code>**: <code>number</code>
+
+Total number of samples.
+
+**<code>i</code>**: <code>number</code>
+
+Current sample index.
+
+**<code>best_d</code>**: <code>number</code>
+
+Largest deviation found so far.
+
+**<code>best_pt</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Bezier point at the largest deviation.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[max_deviation, worst_bezier_point]`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_bcr\_pt\_seg\_dist<a id='f-_bcr_pt_seg_dist'></a>
+
+<code>*function* _bcr_pt_seg_dist(p: <a href="#t-_point3_d">Point3D</a>, a: <a href="#t-_point3_d">Point3D</a>, b: <a href="#t-_point3_d">Point3D</a>) : number</code>
+
+Shortest distance from a point to a line segment.
+
+Projects `p` onto the line through `a`–`b`, clamps the parameter to
+[0, 1], and returns the Euclidean distance to the projection.
+
+<details><summary>parameters</summary>
+
+**<code>p</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Query point.
+
+**<code>a</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Segment start.
+
+**<code>b</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Segment end.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Distance from `p` to the nearest point on segment `a`–`b`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_bcr\_insert\_i<a id='f-_bcr_insert_i'></a>
+
+<code>*function* _bcr_insert_i(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], p: <a href="#t-_point3_d">Point3D</a>, closed: bool) : number</code>
+
+Find the insertion index for a new point in the control polygon.
+
+Finds the control-polygon segment nearest to `p` and returns the
+list index at which `p` should be inserted (i.e. after the segment
+start vertex).
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Control polygon vertices.
+
+**<code>p</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Point to insert.
+
+**<code>closed</code>**: <code>bool</code>
+
+Whether the polygon wraps around.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Insertion index into `pts`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_bcr\_insert\_i\_acc<a id='f-_bcr_insert_i_acc'></a>
+
+<code>*function* _bcr_insert_i_acc(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], p: <a href="#t-_point3_d">Point3D</a>, n: number, n\_segs: number, i: number, best\_i: number, best\_d: number) : number</code>
+
+Recursive accumulator for `_bcr_insert_i`.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Control polygon vertices.
+
+**<code>p</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Point to insert.
+
+**<code>n</code>**: <code>number</code>
+
+Length of `pts`.
+
+**<code>n_segs</code>**: <code>number</code>
+
+Number of polygon segments.
+
+**<code>i</code>**: <code>number</code>
+
+Current segment index.
+
+**<code>best_i</code>**: <code>number</code>
+
+Index of the nearest segment found so far.
+
+**<code>best_d</code>**: <code>number</code>
+
+Distance of the nearest segment found so far.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Index of the nearest segment.
 
 </details>
 
@@ -11251,22 +11929,69 @@ The point on the curve.
 
 #### ⚙️\_spline\_catmull\_rom\_point<a id='f-_spline_catmull_rom_point'></a>
 
-<code>*function* _spline_catmull_rom_point()</code>
+<code>*function* _spline_catmull_rom_point(s: <a href="#t-spline">spline</a>, seg: number, t: number) : <a href="#t-_point3_d">Point3D</a></code>
 
-Catmull-Rom point evaluation.
-@private
+Evaluate a point on a Catmull-Rom spline segment.
+
+Uses the standard cubic polynomial with tension parameter `τ`.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A Catmull-Rom spline object.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index (0-based).
+
+**<code>t</code>**: <code>number</code>
+
+Parameter in [0, 1].
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+The point on the curve.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_spline\_bezier\_point<a id='f-_spline_bezier_point'></a>
 
-<code>*function* _spline_bezier_point()</code>
+<code>*function* _spline_bezier_point(s: <a href="#t-spline">spline</a>, seg: number, t: number) : <a href="#t-_point3_d">Point3D</a></code>
 
-Cubic Bezier point evaluation.
+Evaluate a point on a cubic Bezier spline segment.
 
 B(t) = (1-t)³·P0 + 3·(1-t)²·t·P1 + 3·(1-t)·t²·P2 + t³·P3
 
-@private
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A cubic Bezier spline object.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index (0-based).
+
+**<code>t</code>**: <code>number</code>
+
+Parameter in [0, 1].
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+The point on the curve.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -11304,22 +12029,69 @@ The (unnormalized) tangent vector.
 
 #### ⚙️\_spline\_catmull\_rom\_tangent<a id='f-_spline_catmull_rom_tangent'></a>
 
-<code>*function* _spline_catmull_rom_tangent()</code>
+<code>*function* _spline_catmull_rom_tangent(s: <a href="#t-spline">spline</a>, seg: number, t: number) : <a href="#t-_vector3_d">Vector3D</a></code>
 
-Catmull-Rom tangent evaluation.
-@private
+Evaluate the tangent of a Catmull-Rom spline segment.
+
+Returns the first derivative of the cubic polynomial at parameter `t`.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A Catmull-Rom spline object.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index (0-based).
+
+**<code>t</code>**: <code>number</code>
+
+Parameter in [0, 1].
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_vector3_d">Vector3D</a></code>
+
+The (unnormalised) tangent vector.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_spline\_bezier\_tangent<a id='f-_spline_bezier_tangent'></a>
 
-<code>*function* _spline_bezier_tangent()</code>
+<code>*function* _spline_bezier_tangent(s: <a href="#t-spline">spline</a>, seg: number, t: number) : <a href="#t-_vector3_d">Vector3D</a></code>
 
-Cubic Bezier tangent evaluation.
+Evaluate the tangent of a cubic Bezier spline segment.
 
 B'(t) = 3·(1-t)²·(P1-P0) + 6·(1-t)·t·(P2-P1) + 3·t²·(P3-P2)
 
-@private
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A cubic Bezier spline object.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index (0-based).
+
+**<code>t</code>**: <code>number</code>
+
+Parameter in [0, 1].
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_vector3_d">Vector3D</a></code>
+
+The (unnormalised) tangent vector.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -11855,7 +12627,7 @@ A human-readable representation.
 
 #### 🧊\_sp\_debug\_poly<a id='m-_sp_debug_poly'></a>
 
-<code>*module* _sp_debug_poly(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], d: number, c: <a href="#t-_sp_palette">SpPalette</a>|<a href="#t-_colour">Colour</a>, begin\_i: number, end\_i: number)</code>
+<code>*module* _sp_debug_poly(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], d: number, c: <a href="#t-_sp_palette">SpPalette</a>|<a href="#t-_color">Color</a>, begin\_i: number, end\_i: number)</code>
 
 Render a section of a polyline as coloured chevron cones.
 
@@ -11873,7 +12645,7 @@ Point list to index into.
 
 Diameter of the cone base.
 
-**<code>c</code>**: <code><a href="#t-_sp_palette">SpPalette</a>|<a href="#t-_colour">Colour</a></code>
+**<code>c</code>**: <code><a href="#t-_sp_palette">SpPalette</a>|<a href="#t-_color">Color</a></code>
 
 Colour palette or plain colour.
 
@@ -12066,15 +12838,15 @@ a rail-and-guide (R&G) system.  The **rail** is the center path; the
 
 Three guide-generation algorithms are provided:
 
-- **Fixed** (`skin_follow_rg_fixed`) — like gravity: a fixed global
+- **Fixed** (`skin_follow_rg_fixed`) - like gravity: a fixed global
   "down" direction keeps the profile oriented the same way everywhere.
   Simple but fails when the path tangent aligns with the up vector.
 
-- **RMF** (`skin_follow_rg_rmf`) — like a gyroscope: the initial
+- **Rotation-Minimizing Frame (RMF)** (`skin_follow_rg_rmf`) - like a gyroscope: the initial
   orientation propagates along the path with minimal twist.  Works on any
   path shape and is the best general-purpose default.
 
-- **Explicit** (`skin_follow_rg_explicit`) — full user control via a
+- **Explicit** (`skin_follow_rg_explicit`) - full user control via a
   second spline that runs alongside the rail.
 
 All three produce an R&G object (a pair of matched spolys).  `skin_follow`
@@ -12199,18 +12971,69 @@ A matched R&G pair.
 
 #### ⚙️\_sf\_rmf\_propagate<a id='f-_sf_rmf_propagate'></a>
 
-<code>*function* _sf_rmf_propagate()</code>
+<code>*function* _sf_rmf_propagate(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], tangents: list\[<a href="#t-_vector3_d">Vector3D</a>,...], r0: <a href="#t-_vector3_d">Vector3D</a>, n: number) : list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
 
 RMF double-reflection propagation.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>tangents</code>**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+**<code>r0</code>**: <code><a href="#t-_vector3_d">Vector3D</a></code>
+
+Initial normal at the first station.
+
+**<code>n</code>**: <code>number</code>
+
+Number of stations.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+One propagated normal per station.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_rmf\_acc<a id='f-_sf_rmf_acc'></a>
 
-<code>*function* _sf_rmf_acc()</code>
+<code>*function* _sf_rmf_acc(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], tangents: list\[<a href="#t-_vector3_d">Vector3D</a>,...], acc: list\[<a href="#t-_vector3_d">Vector3D</a>,...], i: number, n: number) : list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
 
-@private
+Recursive RMF accumulation helper.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>tangents</code>**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+**<code>acc</code>**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+Accumulated normals up to index `i`.
+
+**<code>i</code>**: <code>number</code>
+
+Current station index.
+
+**<code>n</code>**: <code>number</code>
+
+Number of stations.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+Final list of propagated normals.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -12252,64 +13075,208 @@ A matched R&G pair.
 
 #### ⚙️\_sf\_sync\_spolys<a id='f-_sf_sync_spolys'></a>
 
-<code>*function* _sf_sync_spolys()</code>
+<code>*function* _sf_sync_spolys(sp\_a: <a href="#t-spoly">spoly</a>, sp\_b: <a href="#t-spoly">spoly</a>) : list\[<a href="#t-spoly">spoly</a>,<a href="#t-spoly">spoly</a>]</code>
 
 Synchronize two spolys so they have matching sample counts per segment.
 For each control-point segment, the sparser spoly is resampled to match
 the denser one.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>sp_a</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+@deref {SpolyEnum}
+
+Represents an adaptively-sampled polyline derived from a spline, with
+control point correspondence preserved.
+
+**<code>sp_b</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+@deref {SpolyEnum}
+
+Represents an adaptively-sampled polyline derived from a spline, with
+control point correspondence preserved.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-spoly">spoly</a>,<a href="#t-spoly">spoly</a>]</code>
+
+Synchronized copies of `sp_a` and `sp_b`.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_sync\_segments<a id='f-_sf_sync_segments'></a>
 
-<code>*function* _sf_sync_segments()</code>
+<code>*function* _sf_sync_segments(sp\_a: <a href="#t-spoly">spoly</a>, sp\_b: <a href="#t-spoly">spoly</a>, seg\_count: number) : list</code>
 
-@private
+Synchronize corresponding segments between two spolys.
+
+<details><summary>parameters</summary>
+
+**<code>sp_a</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+@deref {SpolyEnum}
+
+Represents an adaptively-sampled polyline derived from a spline, with
+control point correspondence preserved.
+
+**<code>sp_b</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+@deref {SpolyEnum}
+
+Represents an adaptively-sampled polyline derived from a spline, with
+control point correspondence preserved.
+
+**<code>seg_count</code>**: <code>number</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[all_a_pts, all_b_pts, seg_counts]` with matched per-segment counts.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_resample\_segment<a id='f-_sf_resample_segment'></a>
 
-<code>*function* _sf_resample_segment()</code>
+<code>*function* _sf_resample_segment(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], arc\_lens: list\[number,...], i\_start: number, i\_end: number, n: number) : list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 Resample a segment of a spoly to n evenly-spaced (by arc length) points.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>arc_lens</code>**: <code>list\[number,...]</code>
+
+**<code>i_start</code>**: <code>number</code>
+
+**<code>i_end</code>**: <code>number</code>
+
+**<code>n</code>**: <code>number</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Resampled points for the requested segment.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_build\_ctrl\_is<a id='f-_sf_build_ctrl_is'></a>
 
-<code>*function* _sf_build_ctrl_is()</code>
+<code>*function* _sf_build_ctrl_is(seg\_counts: list\[number,...]) : list\[number,...]</code>
 
 Build CTRL_IS from per-segment sample counts.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>seg_counts</code>**: <code>list\[number,...]</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[number,...]</code>
+
+Control-point indices compatible with the flattened synchronized points.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_build\_ctrl\_is\_acc<a id='f-_sf_build_ctrl_is_acc'></a>
 
-<code>*function* _sf_build_ctrl_is_acc()</code>
+<code>*function* _sf_build_ctrl_is_acc(seg\_counts: list\[number,...], acc: list\[number,...], i: number, n: number) : list\[number,...]</code>
 
-@private
+Recursive helper for building CTRL_IS.
+
+<details><summary>parameters</summary>
+
+**<code>seg_counts</code>**: <code>list\[number,...]</code>
+
+**<code>acc</code>**: <code>list\[number,...]</code>
+
+**<code>i</code>**: <code>number</code>
+
+**<code>n</code>**: <code>number</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[number,...]</code>
+
+Accumulated control-point indices.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_spoly\_from\_pts<a id='f-_sf_spoly_from_pts'></a>
 
-<code>*function* _sf_spoly_from_pts()</code>
+<code>*function* _sf_spoly_from_pts(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], ref\_sp: <a href="#t-spoly">spoly</a>) : <a href="#t-spoly">spoly</a></code>
 
 Build a spoly from raw points, copying structure from a reference spoly.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>ref_sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+@deref {SpolyEnum}
+
+Represents an adaptively-sampled polyline derived from a spline, with
+control point correspondence preserved.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-spoly">spoly</a></code>
+
+A spoly that reuses `ref_sp` control indices and closedness.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_spoly\_from\_pts\_and\_ctrl<a id='f-_sf_spoly_from_pts_and_ctrl'></a>
 
-<code>*function* _sf_spoly_from_pts_and_ctrl()</code>
+<code>*function* _sf_spoly_from_pts_and_ctrl(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], ctrl\_is: list\[number,...], closed: bool) : <a href="#t-spoly">spoly</a></code>
 
 Build a spoly from points and explicit CTRL_IS.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>ctrl_is</code>**: <code>list\[number,...]</code>
+
+**<code>closed</code>**: <code>bool</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-spoly">spoly</a></code>
+
+A spoly with computed arc lengths and tangents.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -12365,16 +13332,43 @@ A skin object ready for `skin_to_polyhedron`.
 
 #### ⚙️\_sf\_build\_layers<a id='f-_sf_build_layers'></a>
 
-<code>*function* _sf_build_layers()</code>
+<code>*function* _sf_build_layers(rail\_pts: list\[<a href="#t-_point3_d">Point3D</a>,...], guide\_pts: list\[<a href="#t-_point3_d">Point3D</a>,...], tangents: list\[<a href="#t-_vector3_d">Vector3D</a>,...], arc\_lens: list\[number,...], total\_arc: number, src\_ref: list\[<a href="#t-_point3_d">Point3D</a>,...], profile\_fn: function, n: number) : list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
 
 Build all transformed profile layers.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>rail_pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>guide_pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>tangents</code>**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+**<code>arc_lens</code>**: <code>list\[number,...]</code>
+
+**<code>total_arc</code>**: <code>number</code>
+
+**<code>src_ref</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>profile_fn</code>**: <code>function</code>
+
+**<code>n</code>**: <code>number</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
+
+One transformed profile layer per station.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_fix\_backtracking<a id='f-_sf_fix_backtracking'></a>
 
-<code>*function* _sf_fix_backtracking()</code>
+<code>*function* _sf_fix_backtracking(layers: list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...], rail\_pts: list\[<a href="#t-_point3_d">Point3D</a>,...], tangents: list\[<a href="#t-_vector3_d">Vector3D</a>,...], n: number) : list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
 
 Detect and fix backtracking in transformed layers.
 
@@ -12383,28 +13377,82 @@ center (its offset dot the forward direction is negative relative to
 the previous layer).  Flagged points are adjusted: both the current
 and previous layer move halfway toward the corrected position.
 
-@private
+<details><summary>parameters</summary>
+
+**<code>layers</code>**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
+
+**<code>rail_pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>tangents</code>**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+**<code>n</code>**: <code>number</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
+
+Layers after midpoint backtracking correction.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_detect\_backtracking<a id='f-_sf_detect_backtracking'></a>
 
-<code>*function* _sf_detect_backtracking()</code>
+<code>*function* _sf_detect_backtracking(layers: list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...], rail\_pts: list\[<a href="#t-_point3_d">Point3D</a>,...], tangents: list\[<a href="#t-_vector3_d">Vector3D</a>,...], n: number) : list\[list\[bool,...],...]</code>
 
 Detect backtracking: for each layer i > 0, for each point j, check if
 the point has moved backward along the tangent relative to the previous
 layer's corresponding point.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>layers</code>**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
+
+**<code>rail_pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+**<code>tangents</code>**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+**<code>n</code>**: <code>number</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[list\[bool,...],...]</code>
+
+Per-layer, per-point backtracking flags.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### ⚙️\_sf\_apply\_backtrack\_fix<a id='f-_sf_apply_backtrack_fix'></a>
 
-<code>*function* _sf_apply_backtrack_fix()</code>
+<code>*function* _sf_apply_backtrack_fix(layers: list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...], flags: list\[list\[bool,...],...], n: number) : list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
 
 Apply backtracking fix: for each flagged point, average the current and
 previous layer positions.
-@private
+
+<details><summary>parameters</summary>
+
+**<code>layers</code>**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
+
+**<code>flags</code>**: <code>list\[list\[bool,...],...]</code>
+
+**<code>n</code>**: <code>number</code>
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
+
+Corrected layers with midpoint adjustments at flagged points.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -12427,6 +13475,49 @@ spline using RMF orientation.  The profile is constant along the path.
 
 Follow-me extrusion with a morphing profile: the cross-section
 transitions from a square at the start to a circle at the end.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️mirror\_continue<a id='f-mirror_continue'></a>
+
+<code>*function* mirror_continue(half\_pts: list\[<a href="#t-_point2_d">Point2D</a>,...], mirror\_x: bool, skip\_axis\_ends: bool, reverse\_winding: bool) : list\[<a href="#t-_point2_d">Point2D</a>,...]</code>
+
+Build a closed profile by mirroring a half-profile and appending the mirrored
+continuation.
+
+Input points are assumed to be ordered along one side of the profile.  The
+mirrored side is generated in reverse order so the final polygon winds
+continuously around the shape.
+
+<details><summary>parameters</summary>
+
+**<code>half_pts</code>**: <code>list\[<a href="#t-_point2_d">Point2D</a>,...]</code>
+
+**<code>mirror_x</code>**: <code>bool</code> *(Default: `true`)*
+
+If true, mirror across the Y axis (`x -> -x`).  If false, mirror across
+the X axis (`y -> -y`).
+
+**<code>skip_axis_ends</code>**: <code>bool</code> *(Default: `true`)*
+
+If true, skip the first and last mirrored points to avoid duplicating
+shared axis points.
+
+**<code>reverse_winding</code>**: <code>bool</code> *(Default: `true
+`)*
+
+If true, reverse the final point order.  Defaults to true to preserve
+the winding used in the previous example code.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-_point2_d">Point2D</a>,...]</code>
+
+The full mirrored polygon.
+
+</details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 

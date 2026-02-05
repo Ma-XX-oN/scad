@@ -129,18 +129,18 @@ RES_LIB = r'''
     =
     (?<body>
       \s*+
-      (?<is_lambda> function \s*+ \( (?&param_mtws)*+ \) )?+
+      (?<is_lambda> function \s*+ \( \s*+ (?&param_mtws)*+ \) )?+
       (?&cmd_chars_mtws)
     );
   )
 
   (?# function signature)
-  (?<function_sig>(?<sig>function \s++ (?<id>(?&symbol)) \s*+ \((?&param_mtws)*+\)))
+  (?<function_sig>(?<sig>function \s++ (?<id>(?&symbol)) \s*+ \( \s*+ (?&param_mtws)*+\)))
   (?# function signature and body)
   (?<function>(?&function_sig) \s*+ = (?<body>(?&cmd_chars_mtws));)
 
   (?# module signature)
-  (?<module_sig>(?<sig>module \s++ (?<id>(?&symbol)) \s*+ \((?&param_mtws)*+\)))
+  (?<module_sig>(?<sig>module \s++ (?<id>(?&symbol)) \s*+ \( \s*+ (?&param_mtws)*+\)))
   (?# module signature and body)
   (?<module>(?&module_sig) \s*+ \{ (?<body>(?&chars_mtws)) \})
 '''
@@ -1022,8 +1022,8 @@ class Doc:
 
     else:
       for tag, info in self.items.items():
-        assert tag == "desc" or len(info) == 0, self.e(
-          f"Logic error. Tag {tag} found where it shouldn't exist.")
+        assert tag == "desc" or len(info) == 0, \
+          self.e(f"Logic error. Tag {tag} found where it shouldn't exist.")
       self.doc_type = "file"
 
   RE_CALLCHAIN_RET = regex.compile(

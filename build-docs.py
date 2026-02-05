@@ -168,7 +168,7 @@ re_files = regex.compile(
   ''', regex.VERBOSE
 )
 files = re_files.sub(r"\1 ", file_items)
-files_list = [ "object" ] + files.rstrip().split(" ")
+files_list = files.rstrip().split(" ")
 
 # Insert _consts files before their corresponding file if they exist.
 import os

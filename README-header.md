@@ -201,34 +201,38 @@ does:
       called over the `birlei` set.
  5. [any_all](#file-any_all)
     - `any` and `all` algorithms.
- 6. [indexable](#file-indexable)
+ 6. [object](#file-object)
+    - Defines types used for object definition.
+ 7. [indexable](#file-indexable)
     - Functions to manipulate a list or string as a stack / queue, use negative
       indices to get the indices / elements from the end, insert /
       remove / replace elements, and additional search algorithms.
     - Adds a new `slice` type that works similarly to python's slice, but still
       uses the closed range paradigm.  This is not indexable, but can be used
       with indexable functions that have a `birls` parameter (`s` for slice).
- 7. [function](#file-function)
+ 8. [function](#file-function)
     - Allow counting of function parameters and applying an array to a function
       as parameters.
- 8. [test](#file-test)
+ 9. [test](#file-test)
     - Testing modules for TDD.
- 9. [param_check](#file-param_check)
+ 10. [param_check](#file-param_check)
     - Functions to check the validity of parameters.  Usage allows to switch
       them off by commenting them out.
- 10. [transform](#file-transform)
+ 11. [transform](#file-transform)
     - Functions that allow transforming single points or a series of points
       quickly, usually by creating transformation matrices that can be
       multiplied against the point or points.
- 11. [string](#file-string)
+ 12. [string](#file-string)
     - String formatting functions.
- 12. [helpers](#file-helpers)
+ 13. [helpers](#file-helpers)
     - Miscellaneous functions that don't fit elsewhere.
- 13. [skin](#file-skin)
+ 14. [color](#file-color)
+    - Defines colour types and a function to multiply alpha in a colour object.
+ 15. [skin](#file-skin)
     - Generates a polyhedron using slices.
- 14. [spline](#file-spline)
+ 16. [spline](#file-spline)
     - Generate smooth curves to be used with skin follow extrusions.
- 15. [skin_follow](#file-skin_follow)
+ 17. [skin_follow](#file-skin_follow)
     - Follow-me extrusion: sweeps a 2D profile along a 3D spline path.
 
 ## API Table of Contents
@@ -243,4 +247,5 @@ documentation, all top level headings are shown and the headings below them have
 been minimised.  To Navigate:
 
 - Click on the link to go to the heading.
-- Click to the right of the heading to open it up and see the headings below it.
+- Click to the right of the heading link to open it up and see the headings
+  links below it.
