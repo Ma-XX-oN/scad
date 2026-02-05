@@ -22,6 +22,8 @@
  * Keeping this in the user facing API was done because just counting from N to
  * M is very common, and without dereferencing a list or range it's marginally
  * faster.
+ *
+ * ### Functions
  */
 use <range>
 use <function>

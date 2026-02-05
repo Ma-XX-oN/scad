@@ -8,6 +8,8 @@
  * ### Purpose
  *
  * Implements any and all algorithms.
+ *
+ * ### Functions
  */
 use <base_algos>
 

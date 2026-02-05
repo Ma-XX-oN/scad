@@ -221,19 +221,19 @@ SP_HANDLE = 7;
  * indicate segment position within a control-point section, or to identify
  * spline structural elements.
  *
- * @slot {Colour} SP_START
+ * @slot {Color} SP_START
  *   Colour for the first segment in a control-point section.
- * @slot {Colour} SP_START_STOP
+ * @slot {Color} SP_START_STOP
  *   Colour when a section has only one segment.
- * @slot {Colour} SP_STOP
+ * @slot {Color} SP_STOP
  *   Colour for the last segment in a control-point section.
- * @slot {Colour} SP_CONT
+ * @slot {Color} SP_CONT
  *   Colour for middle segments.
- * @slot {Colour} SP_CTRL_PT
+ * @slot {Color} SP_CTRL_PT
  *   Colour for control-point arrows.
- * @slot {Colour} SP_CTRL_POLY
+ * @slot {Color} SP_CTRL_POLY
  *   Colour for control polygon segments.
- * @slot {Colour} SP_HANDLE
+ * @slot {Color} SP_HANDLE
  *   Colour for Bezier handle lines.
  */
 

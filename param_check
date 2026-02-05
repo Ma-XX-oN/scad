@@ -41,6 +41,8 @@
  *
  * Can make two libraries, one debug with parameter checking turned on and one
  * release with it turned off.
+ *
+ * ### Functions
  */
 use <range>
 use <base_algos>

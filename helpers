@@ -9,6 +9,8 @@
  * ### Purpose
  *
  * Miscellaneous helper functions.
+ *
+ * ### Functions and Modules
  */
 use <base_algos>
 use <range>

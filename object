@@ -9,6 +9,8 @@
  *
  * This specifies some types used for specifying objects and doesn't need to be
  * imported.
+ *
+ * ### Functions
  */
 
 /**

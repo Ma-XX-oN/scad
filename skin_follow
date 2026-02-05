@@ -27,6 +27,8 @@
  * All three produce an R&G object (a pair of matched spolys).  `skin_follow`
  * then walks the R&G stations, builds a `frame_transform` at each, applies
  * the user's profile function, and assembles the result into a skin.
+ *
+ * ### Functions and Modules
  */
 use <skin>
 use <spline>
@@ -438,7 +440,7 @@ function _sf_spoly_from_pts(pts, ref_sp) =
  *
  * @param {list[Point3D,...]} pts
  * @param {list[number,...]} ctrl_is
- * @param {boolean} closed
+ * @param {bool} closed
  * @returns {spoly}
  *   A spoly with computed arc lengths and tangents.
  */
@@ -595,7 +597,7 @@ function _sf_fix_backtracking(layers, rail_pts, tangents, n) =
  * @param {list[Point3D,...]} rail_pts
  * @param {list[Vector3D,...]} tangents
  * @param {number} n
- * @returns {list[list[boolean,...],...]}
+ * @returns {list[list[bool,...],...]}
  *   Per-layer, per-point backtracking flags.
  */
 function _sf_detect_backtracking(layers, rail_pts, tangents, n) =
@@ -631,7 +633,7 @@ function _sf_detect_backtracking(layers, rail_pts, tangents, n) =
  * previous layer positions.
  *
  * @param {list[list[Point3D,...],...]} layers
- * @param {list[list[boolean,...],...]} flags
+ * @param {list[list[bool,...],...]} flags
  * @param {number} n
  * @returns {list[list[Point3D,...],...]}
  *   Corrected layers with midpoint adjustments at flagged points.
@@ -753,13 +755,13 @@ use <range>
  * continuously around the shape.
  *
  * @param {list[Point2D,...]} half_pts
- * @param {boolean} mirror_x
+ * @param {bool} mirror_x
  *   If true, mirror across the Y axis (`x -> -x`).  If false, mirror across
  *   the X axis (`y -> -y`).
- * @param {boolean} skip_axis_ends
+ * @param {bool} skip_axis_ends
  *   If true, skip the first and last mirrored points to avoid duplicating
  *   shared axis points.
- * @param {boolean} reverse_winding
+ * @param {bool} reverse_winding
  *   If true, reverse the final point order.  Defaults to true to preserve
  *   the winding used in the previous example code.
  * @returns {list[Point2D,...]}
@@ -870,7 +872,7 @@ module skin_follow_example3() {
   s = skin_follow(rg, morph_fn);
 
   // // echo("follow example 2: ", skin_to_string(s, false, 2));
-  // color("yellow", 0.3)
+  color("yellow", 0.3)
     skin_to_polyhedron(s);
 }
 

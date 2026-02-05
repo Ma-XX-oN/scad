@@ -10,6 +10,8 @@
  *
  * OpenSCAD doesn't have any string formatting, which can make reading debug
  * output challenging.  This library is to help with that.
+ *
+ * ### Functions
  */
 use <base_algos>
 use <test>

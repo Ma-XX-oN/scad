@@ -10,6 +10,8 @@
  *
  * This library allows representing types as enumerated values, strings or
  * minimal strings for complex types.
+ *
+ * ### Functions
  */
 use <base_algos>
 use <indexable>

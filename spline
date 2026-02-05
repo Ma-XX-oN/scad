@@ -12,6 +12,8 @@
  * control points.  An [spoly](#t-spoly) is the adaptively-sampled polyline
  * representation, with control point indices preserved for synchronizing
  * rail and guide paths.
+ *
+ * ### Functions and Modules
  */
 use <helpers>
 use <transform>
@@ -224,7 +226,7 @@ function spline_bezier_to_cr(s, tolerance = 0.01, max_pts = undef) =
  *   Whether the spline is a closed loop.
  * @param {number} tol
  *   Target tolerance.
- * @param {number|undef} max_pts
+ * @param {(number|undef)} max_pts
  *   Maximum number of control points, or `undef` for unlimited.
  * @param {number} n_samp
  *   Number of arc-length samples for deviation measurement.

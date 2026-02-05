@@ -10,6 +10,8 @@
  * The built in extrude module isn't powerful or flexible enough so this library
  * was made.  It creates a skin by making layers of polygons with the same
  * number of vertices and then skins them by putting faces between layers.
+ *
+ * ### Functions and Modules
  */
 use <base_algos>
 use <indexable>

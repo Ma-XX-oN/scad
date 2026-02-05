@@ -8,6 +8,8 @@
  * ### Purpose
  *
  * Colour type aliases and helpers for working with OpenSCAD colour values.
+ *
+ * ### Functions
  */
 use <helpers>
 use <string>
@@ -118,39 +120,73 @@ use <indexable>
 /**
  * Apply an opacity factor to a colour.
  *
- * Supports hex strings (`RGB`, `RRGGBB`, `RGBA`, `RRGGBBAA`) and list
- * colours (`[r,g,b]` or `[r,g,b,a]`). String alpha values are rewritten,
- * and list alpha values are inserted or multiplied.
+ * Supports hex strings (`#RGB`, `#RRGGBB`, `#RGBA`, `#RRGGBBAA`) and list
+ * colours (`[r,g,b]` or `[r,g,b,a]`).
+ *
+ * - If `c` already has an alpha channel, output alpha is `existing_alpha *
+ *   alpha`.
+ * - If `c` has no alpha channel, `alpha` is added as the new alpha.
+ *
+ * Named colour strings (See [`ColorName`](#t-ColorName)) are returned
+ * unchanged.
+ *
+ * @example Usage
+ *
+ * Alpha parameter in `color` module has no effect if `Color` object has alpha
+ * in it.  Specify clamped alpha as backup in case `Color` object doesn't
+ * contain alpha, i.e. it's a named colour (See [`ColorName`](#t-ColorName)).
+ *
+ * ```openscad
+ * new_color = color_alpha(valid_color, new_alpha);
+ * color(new_color, clamp(new_alpha, 0, 1))
+ *   cube([1,1,1]);
+ * ```
  *
  * @param {(string|list[number,...])} c
- *   Input colour.
+ *   Input colour.  If it doesn't specify alpha, then it's taken as fully
+ *   opaque.
  * @param {number} alpha
- *   Opacity factor in range [0, 1]. Values are clamped.
+ *   Opacity factor.  If `c` has an alpha, then it's multiplied by this as if it
+ *   were a percentage.  So:
+ *
+ *   - `alpha < 1` makes it more transparent.
+ *   - `alpha > 1` makes it more opaque.
+ *
+ *   @example New alpha generated for the following alphas in the `Color` object:
+ *
+ *   - "7"  => `clamp(alpha * 0x7 / 0xf, 0, 1)`
+ *   - "4f" => `clamp(alpha * 0x4f / 0xff, 0, 1)`
+ *   - 0.4  => `clamp(alpha * 0.4, 0, 1)`
+ *
+ *   The value would replace/be added to the `Color` object.
  *
  * @returns {(string|list[number,...])}
- *   Colour with adjusted alpha.
+ *   `Color` object with adjusted alpha.
  */
 function color_alpha(c, alpha) =
   is_undef(alpha)
   ? c
-  : let(a = clamp(alpha, 0, 1))
-    is_string(c)
-    ? len(c) == 3
-      ? str(c, to_hex(floor(a*15), 1))
-      : len(c) == 6
-        ? str(c, to_hex(floor(a*255), 2))
-        : len(c) == 4
-          ? str(els(c, 0, -2), to_hex(floor(a*to_dec(els(c, -1))/15), 1))
-          : len(c) == 8
-            ? str(els(c, 0, -3), to_hex(floor(a*to_dec(els(c, -2))/255), 2))
-            : // colour name... what to do?  No change for now.
-              c
+  : is_string(c)
+    ? c[0] == "#"
+      ? len(c) == 4 // "#rgb"
+        ? str(c, to_hex(floor(clamp(alpha, 0, 1)*15), 1))
+        : len(c) == 7 // "#rrggbb"
+          ? str(c, to_hex(floor(clamp(alpha, 0, 1)*255), 2))
+          : len(c) == 5 // "#rgba"
+            ? str(els(c, 0, -2),
+                to_hex(floor(clamp(alpha*to_dec(els(c, -1))/15, 0, 1) * 15), 1))
+            : len(c) == 9 // "#rrggbbaa"
+              ? str(els(c, 0, -3),
+                  to_hex(floor(clamp(alpha*to_dec(els(c, -2))/255, 0, 1) * 255), 2))
+              : assert(false, str("Invalid length for web hex string ", c, "."))
+      : // colour name... what to do?  No change for now.
+        c
     : assert(is_list(c), "Colour must be string or list")
       len(c) == 3
-      ? push(c, [a])
+      ? push(c, [ clamp(alpha, 0, 1) ])
       : let (
           alpha_base = c[3],
-          alpha_out = max(0, min(1, alpha_base * a))
+          alpha_out = clamp(alpha_base * alpha, 0, 1)
         )
         replace(c, 3, 3, [alpha_out])
 ;
