@@ -439,10 +439,11 @@ function _any_point_in_ear(pts, pt_is, pt_i0, pt_i1, pt_i2, eps = 1e-6) =
  * @returns {list[Face,...]}
  *   Faces
  */
-function _cap_ears(pts, pt_is, create_ear_fn, _i = 0, _faces = [], _removed_at_least_one_ear = false) =
+function _cap_ears(pts, pt_is, create_ear_fn, _i = 0, _faces = [], _removed_at_least_one_ear = false, _debug_pt_is) =
   assert(                   len(pt_is) >= 3,          "Invalid number of vertices.")
   // echo("pt_is: ", pt_is)
   let (
+    _debug_pt_is = is_undef(_debug_pt_is) ? pt_is : _debug_pt_is,
     pt_i0 =                _i    ,
     pt_i1 = next_in(pt_is, _i, 1),
     pt_i2 = next_in(pt_is, _i, 2),
@@ -454,22 +455,47 @@ function _cap_ears(pts, pt_is, create_ear_fn, _i = 0, _faces = [], _removed_at_l
     push(_faces, [ear])
   : is_list(ear) && !_any_point_in_ear(pts, pt_is, pt_i0, pt_i1, pt_i2)
     ? pt_i1
-      ? _cap_ears(pts, remove(pt_is, pt_i1, pt_i1), create_ear_fn,      _i , push(_faces, [ear]), true)
-      : _cap_ears(pts, remove(pt_is, pt_i1, pt_i1), create_ear_fn, -1 + _i , push(_faces, [ear]), false)
+      ? _cap_ears(pts, remove(pt_is, pt_i1, pt_i1), create_ear_fn,      _i , push(_faces, [ear]), true , _debug_pt_is)
+      : _cap_ears(pts, remove(pt_is, pt_i1, pt_i1), create_ear_fn, -1 + _i , push(_faces, [ear]), false, _debug_pt_is)
     : // didn't find ear, go to next index
       let (
         _ = Assert(
           pt_i1 || _removed_at_least_one_ear,
           function()
-            str("Didn't remove ear after complete cycle of cap points.  ",
-              let (
-                mapped_pts = it_each(pts, map(), pt_is)(function(pt) pt)
-              )
-              mapped_pts
+            let (
+              ear_scan = [
+                for (k = fwd_i(pt_is))
+                  let (
+                    k0 = k,
+                    k1 = next_in(pt_is, k, 1),
+                    k2 = next_in(pt_is, k, 2),
+                    ear_try = create_ear_fn(pts, pt_is[k0], pt_is[k1], pt_is[k2]),
+                    blocked = is_list(ear_try) && _any_point_in_ear(pts, pt_is, k0, k1, k2)
+                  )
+                  [k, is_list(ear_try), blocked]
+              ],
+              candidate_is = [for (e = ear_scan) if (e[1]) e[0]],
+              blocked_is   = [for (e = ear_scan) if (e[2]) e[0]],
+              valid_is     = [for (e = ear_scan) if (e[1] && !e[2]) e[0]]
+            )
+            str(
+              "Didn't remove ear after complete cycle of cap points.  ",
+              "\n",
+              "ear_summary={",
+                "candidates=", candidate_is,
+                ", blocked=", blocked_is,
+                ", valid=", valid_is,
+              "}\n",
+              "use <indexable>\n",
+              "use <base_algos>\n\n",
+              "pt_is=", els(pts, _debug_pt_is), ";\n",
+              "bad_is=", els(pts, pt_is), ";\n",
+              "color([1,1,1,.5]) polygon(pt_is, [idxs(pt_is)]);\n",
+              "color([1,0,0,.5]) polygon(bad_is, [idxs(bad_is)]);\n"
             )
         )
       )
-      _cap_ears  (pts,        pt_is               , create_ear_fn,   pt_i1,       _faces        , pt_i1 && _removed_at_least_one_ear)
+      _cap_ears  (pts,        pt_is               , create_ear_fn,   pt_i1,       _faces        , pt_i1 && _removed_at_least_one_ear, _debug_pt_is)
 ;
 
 /**
@@ -576,6 +602,7 @@ function _cap_layer(pts, pt_is) =
     )
     // echo(str("pt_is: ", pt_is))
     // echo(str("Removed axis ", proj_info[0]))
+    // echo(str("_cap_ears(", proj_pts, ", ", pt_is, ", ", cw ? _ear_cw : _ear_ccw, ");"))
     _cap_ears(proj_pts, pt_is, cw ? _ear_cw : _ear_ccw)
 ;
 
