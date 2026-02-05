@@ -1,0 +1,876 @@
+/**
+ * ## skin_follow
+ *
+ * ### How to Import
+ *
+ *     use <skin_follow>
+ *
+ * ### Purpose
+ *
+ * Follow-me extrusion: extrudes a 2D profile along a 3D spline path using
+ * a rail-and-guide (R&G) system.  The **rail** is the center path; the
+ * **guide** controls the orientation (roll) of the profile at each station.
+ *
+ * Three guide-generation algorithms are provided:
+ *
+ * - **Fixed** (`skin_follow_rg_fixed`) - like gravity: a fixed global
+ *   "down" direction keeps the profile oriented the same way everywhere.
+ *   Simple but fails when the path tangent aligns with the up vector.
+ *
+ * - **Rotation-Minimizing Frame (RMF)** (`skin_follow_rg_rmf`) - like a gyroscope: the initial
+ *   orientation propagates along the path with minimal twist.  Works on any
+ *   path shape and is the best general-purpose default.
+ *
+ * - **Explicit** (`skin_follow_rg_explicit`) - full user control via a
+ *   second spline that runs alongside the rail.
+ *
+ * All three produce an R&G object (a pair of matched spolys).  `skin_follow`
+ * then walks the R&G stations, builds a `frame_transform` at each, applies
+ * the user's profile function, and assembles the result into a skin.
+ */
+use <skin>
+use <spline>
+include <spline_consts>
+
+/**
+ * @typedef {MemberIndex} RailGuideEnum
+ *
+ * Enum used to dereference a [`RailGuide`](#t-RailGuide) type.
+ */
+
+/**
+ * @type {RailGuideEnum}
+ *
+ * Slot index for the rail spoly (center path) in a RailGuide object.
+ */
+_SF_RG_RAIL  = 0;
+
+/**
+ * @type {RailGuideEnum}
+ *
+ * Slot index for the guide spoly (orientation reference) in a RailGuide
+ * object.
+ */
+_SF_RG_GUIDE = 1;
+
+/**
+ * @typedef {list} RailGuide
+ * @deref {RailGuideEnum}
+ *
+ * A synchronized rail-and-guide pair for follow-me extrusion.
+ *
+ * @slot {spoly} _SF_RG_RAIL
+ *   The rail spoly (center path).
+ * @slot {spoly} _SF_RG_GUIDE
+ *   The guide spoly (orientation reference).
+ */
+
+/**
+ * Convert a RailGuide object to a human-readable string.
+ *
+ * @param {RailGuide} rg
+ *   The RailGuide object to convert.
+ * @returns {string}
+ *   A string representation of the RailGuide.
+ */
+function rg_to_string(rg) =
+  str(
+    "RailGuide {\n",
+    "  rail:  ", spoly_to_string(rg[_SF_RG_RAIL]), "\n",
+    "  guide: ", spoly_to_string(rg[_SF_RG_GUIDE]), "\n",
+    "}"
+  );
+
+/**
+ * Generate an R&G pair using a fixed reference vector.
+ *
+ * Like gravity pulling one side of the profile in a constant direction.
+ * The guide is constructed by offsetting each rail point perpendicular to
+ * the tangent, in the direction of the `up` vector projected onto the
+ * plane normal to the tangent.
+ *
+ * @param {spline} rail
+ *   The rail spline (center path).
+ * @param {Vector3D} up
+ *   The global "up" direction.  Default `[0, 0, 1]`.
+ * @param {number} tolerance
+ *   Adaptive sampling tolerance.  Default `0.01`.
+ * @returns {RailGuide}
+ *   A matched R&G pair.
+ */
+function skin_follow_rg_fixed(rail, up = [0, 0, 1], tolerance = 0.01) =
+  let(
+    _ = verify_spline(rail),
+    rail_sp = spline_to_spoly(rail, tolerance),
+    rail_pts = rail_sp[SPOLY_PTS],
+    rail_tangents = rail_sp[_SPOLY_TANGENTS],
+    n = len(rail_pts),
+    up_n = up / norm(up),
+
+    // At each rail point, project the up vector onto the plane
+    // perpendicular to the tangent, then offset by unit distance.
+    guide_pts = [
+      for (i = [0 : n - 1])
+        let(
+          t = rail_tangents[i],
+          // Remove component along tangent.
+          proj = up_n - (up_n * t) * t,
+          proj_len = norm(proj)
+        )
+        // Assert: up vector must not be parallel to tangent.
+        assert(proj_len > 1e-9,
+          str("skin_follow_rg_fixed: up vector is parallel to tangent at point ", i))
+        rail_pts[i] + proj / proj_len
+    ],
+
+    // Build guide spoly with the same structure as rail.
+    guide_sp = _sf_spoly_from_pts(guide_pts, rail_sp)
+  )
+  [rail_sp, guide_sp];
+
+/**
+ * Generate an R&G pair using rotation-minimizing frames (RMF).
+ *
+ * Like a gyroscope: the initial orientation is propagated along the path
+ * with minimal twist.  At each step, the normal is reflected through the
+ * plane bisecting the two consecutive tangent directions (the double
+ * reflection method).
+ *
+ * @param {spline} rail
+ *   The rail spline (center path).
+ * @param {Vector3D} up0
+ *   The initial "up" direction at the start of the path.  Default
+ *   `[0, 0, 1]`.
+ * @param {number} tolerance
+ *   Adaptive sampling tolerance.  Default `0.01`.
+ * @returns {RailGuide}
+ *   A matched R&G pair.
+ */
+function skin_follow_rg_rmf(rail, up0 = [0, 0, 1], tolerance = 0.01) =
+  let(
+    _ = verify_spline(rail),
+    rail_sp = spline_to_spoly(rail, tolerance),
+    rail_pts = rail_sp[SPOLY_PTS],
+    rail_tangents = rail_sp[_SPOLY_TANGENTS],
+    n = len(rail_pts),
+    up0_n = up0 / norm(up0),
+
+    // Initial normal: project up0 perpendicular to first tangent.
+    t0 = rail_tangents[0],
+    r0_raw = up0_n - (up0_n * t0) * t0,
+    r0_len = norm(r0_raw)
+  )
+  assert(r0_len > 1e-9,
+    "skin_follow_rg_rmf: up0 is parallel to the initial tangent.")
+  let(
+    r0 = r0_raw / r0_len,
+
+    // Double reflection RMF propagation.
+    // At each step i -> i+1:
+    //   v1 = p[i+1] - p[i]  (chord)
+    //   c1 = v1 . v1
+    //   rL = r[i] - (2/c1) * (v1 . r[i]) * v1   (reflect r through chord)
+    //   tL = t[i] - (2/c1) * (v1 . t[i]) * v1   (reflect t through chord)
+    //   v2 = t[i+1] - tL
+    //   c2 = v2 . v2
+    //   r[i+1] = rL - (2/c2) * (v2 . rL) * v2   (reflect through tangent bisector)
+    normals = _sf_rmf_propagate(rail_pts, rail_tangents, r0, n),
+
+    guide_pts = [
+      for (i = [0 : n - 1])
+        rail_pts[i] + normals[i]
+    ],
+
+    guide_sp = _sf_spoly_from_pts(guide_pts, rail_sp)
+  )
+  [rail_sp, guide_sp];
+
+/**
+ * RMF double-reflection propagation.
+ *
+ * @param {list[Point3D,...]} pts
+ * @param {list[Vector3D,...]} tangents
+ * @param {Vector3D} r0
+ *   Initial normal at the first station.
+ * @param {number} n
+ *   Number of stations.
+ * @returns {list[Vector3D,...]}
+ *   One propagated normal per station.
+ */
+function _sf_rmf_propagate(pts, tangents, r0, n) =
+  _sf_rmf_acc(pts, tangents, [r0], 0, n);
+
+/**
+ * Recursive RMF accumulation helper.
+ *
+ * @param {list[Point3D,...]} pts
+ * @param {list[Vector3D,...]} tangents
+ * @param {list[Vector3D,...]} acc
+ *   Accumulated normals up to index `i`.
+ * @param {number} i
+ *   Current station index.
+ * @param {number} n
+ *   Number of stations.
+ * @returns {list[Vector3D,...]}
+ *   Final list of propagated normals.
+ */
+function _sf_rmf_acc(pts, tangents, acc, i, n) =
+  i >= n - 1
+  ? acc
+  : let(
+      ri = acc[i],
+      ti = tangents[i],
+      ti1 = tangents[i + 1],
+
+      v1 = pts[i + 1] - pts[i],
+      c1 = v1 * v1,
+      // Reflect r and t through the plane perpendicular to the chord.
+      rL = c1 < 1e-30 ? ri : ri - (2 / c1) * (v1 * ri) * v1,
+      tL = c1 < 1e-30 ? ti : ti - (2 / c1) * (v1 * ti) * v1,
+
+      // Second reflection through the plane bisecting tL and t[i+1].
+      v2 = ti1 - tL,
+      c2 = v2 * v2,
+      ri1 = c2 < 1e-30 ? rL : rL - (2 / c2) * (v2 * rL) * v2,
+
+      // Re-normalize to combat drift.
+      ri1_n = ri1 / norm(ri1)
+    )
+    _sf_rmf_acc(pts, tangents, [each acc, ri1_n], i + 1, n);
+
+/**
+ * Generate an R&G pair from an explicit guide spline.
+ *
+ * The guide spline must have the same number of control points as the rail.
+ * Both are sampled and synchronized per segment: whichever spoly has more
+ * sample points in a given segment, the other is resampled to match.
+ *
+ * @param {spline} rail
+ *   The rail spline (center path).
+ * @param {spline} guide
+ *   The guide spline (orientation path).
+ * @param {number} tolerance
+ *   Adaptive sampling tolerance.  Default `0.01`.
+ * @returns {RailGuide}
+ *   A matched R&G pair.
+ */
+function skin_follow_rg_explicit(rail, guide, tolerance = 0.01) =
+  let(
+    _ = verify_spline(rail),
+    __ = verify_spline(guide),
+    rail_sp  = spline_to_spoly(rail, tolerance),
+    guide_sp = spline_to_spoly(guide, tolerance),
+    rail_ctrl  = rail_sp[SPOLY_CTRL_IS],
+    guide_ctrl = guide_sp[SPOLY_CTRL_IS]
+  )
+  assert(len(rail_ctrl) == len(guide_ctrl),
+    str("skin_follow_rg_explicit: rail has ", len(rail_ctrl),
+        " control points but guide has ", len(guide_ctrl)))
+  let(
+    // Resample both spolys to a common set of stations per segment.
+    synced = _sf_sync_spolys(rail_sp, guide_sp)
+  )
+  [synced[0], synced[1]];
+
+/**
+ * Synchronize two spolys so they have matching sample counts per segment.
+ * For each control-point segment, the sparser spoly is resampled to match
+ * the denser one.
+ *
+ * @param {spoly} sp_a
+ * @param {spoly} sp_b
+ * @returns {list[spoly,spoly]}
+ *   Synchronized copies of `sp_a` and `sp_b`.
+ */
+function _sf_sync_spolys(sp_a, sp_b) =
+  let(
+    ctrl_a = sp_a[SPOLY_CTRL_IS],
+    ctrl_b = sp_b[SPOLY_CTRL_IS],
+    seg_count = len(ctrl_a) - 1,
+
+    // For each segment, determine the denser sample count and resample.
+    synced = _sf_sync_segments(sp_a, sp_b, seg_count),
+    new_a_pts = synced[0],
+    new_b_pts = synced[1],
+
+    // Rebuild CTRL_IS from the new point counts.
+    new_ctrl_is = _sf_build_ctrl_is(synced[2]),
+
+    new_a = _sf_spoly_from_pts_and_ctrl(new_a_pts, new_ctrl_is, sp_a[SPOLY_CLOSED]),
+    new_b = _sf_spoly_from_pts_and_ctrl(new_b_pts, new_ctrl_is, sp_b[SPOLY_CLOSED])
+  )
+  [new_a, new_b];
+
+/**
+ * Synchronize corresponding segments between two spolys.
+ *
+ * @param {spoly} sp_a
+ * @param {spoly} sp_b
+ * @param {number} seg_count
+ * @returns {list}
+ *   `[all_a_pts, all_b_pts, seg_counts]` with matched per-segment counts.
+ */
+function _sf_sync_segments(sp_a, sp_b, seg_count) =
+  let(
+    ctrl_a = sp_a[SPOLY_CTRL_IS],
+    ctrl_b = sp_b[SPOLY_CTRL_IS],
+    pts_a  = sp_a[SPOLY_PTS],
+    pts_b  = sp_b[SPOLY_PTS],
+    arc_a  = sp_a[_SPOLY_ARC_LENS],
+    arc_b  = sp_b[_SPOLY_ARC_LENS],
+
+    result = [
+      for (seg = [0 : seg_count - 1])
+        let(
+          a_start = ctrl_a[seg],
+          a_end   = ctrl_a[seg + 1],
+          b_start = ctrl_b[seg],
+          b_end   = ctrl_b[seg + 1],
+          a_count = a_end - a_start + 1,
+          b_count = b_end - b_start + 1,
+          n = max(a_count, b_count),
+
+          // Resample both segments to n points using arc-length interpolation.
+          seg_a = _sf_resample_segment(pts_a, arc_a, a_start, a_end, n),
+          seg_b = _sf_resample_segment(pts_b, arc_b, b_start, b_end, n)
+        )
+        [seg_a, seg_b, n]
+    ],
+
+    // Flatten: collect all segment points (excluding duplicate endpoints).
+    all_a = [
+      for (seg = [0 : seg_count - 1])
+        let(seg_pts = result[seg][0])
+        for (i = [0 : len(seg_pts) - 1 - (seg < seg_count - 1 ? 1 : 0)])
+          seg_pts[i]
+    ],
+    all_b = [
+      for (seg = [0 : seg_count - 1])
+        let(seg_pts = result[seg][1])
+        for (i = [0 : len(seg_pts) - 1 - (seg < seg_count - 1 ? 1 : 0)])
+          seg_pts[i]
+    ],
+    seg_counts = [for (seg = [0 : seg_count - 1]) result[seg][2]]
+  )
+  [all_a, all_b, seg_counts];
+
+/**
+ * Resample a segment of a spoly to n evenly-spaced (by arc length) points.
+ *
+ * @param {list[Point3D,...]} pts
+ * @param {list[number,...]} arc_lens
+ * @param {number} i_start
+ * @param {number} i_end
+ * @param {number} n
+ * @returns {list[Point3D,...]}
+ *   Resampled points for the requested segment.
+ */
+function _sf_resample_segment(pts, arc_lens, i_start, i_end, n) =
+  let(
+    al_start = arc_lens[i_start],
+    al_end   = arc_lens[i_end],
+    total    = al_end - al_start
+  )
+  n <= 1
+  ? [pts[i_start]]
+  : [
+      for (j = [0 : n - 1])
+        let(
+          frac = j / (n - 1),
+          target = al_start + frac * total
+        )
+        _spoly_lerp_at_arc_len(pts, arc_lens, i_start, i_end, target)
+    ];
+
+/**
+ * Build CTRL_IS from per-segment sample counts.
+ *
+ * @param {list[number,...]} seg_counts
+ * @returns {list[number,...]}
+ *   Control-point indices compatible with the flattened synchronized points.
+ */
+function _sf_build_ctrl_is(seg_counts) =
+  let(
+    n = len(seg_counts),
+    // Each segment contributes count-1 new points (first is shared).
+    accum = [
+      for (i = [0 : n], running = 0)
+        i == 0
+        ? running
+        : running + seg_counts[i - 1] - 1
+    ]
+  )
+  // OpenSCAD list comprehension with running total.
+  _sf_build_ctrl_is_acc(seg_counts, [0], 0, n);
+
+/**
+ * Recursive helper for building CTRL_IS.
+ *
+ * @param {list[number,...]} seg_counts
+ * @param {list[number,...]} acc
+ * @param {number} i
+ * @param {number} n
+ * @returns {list[number,...]}
+ *   Accumulated control-point indices.
+ */
+function _sf_build_ctrl_is_acc(seg_counts, acc, i, n) =
+  i >= n
+  ? acc
+  : _sf_build_ctrl_is_acc(seg_counts, [each acc, acc[i] + seg_counts[i] - 1], i + 1, n);
+
+/**
+ * Build a spoly from raw points, copying structure from a reference spoly.
+ *
+ * @param {list[Point3D,...]} pts
+ * @param {spoly} ref_sp
+ * @returns {spoly}
+ *   A spoly that reuses `ref_sp` control indices and closedness.
+ */
+function _sf_spoly_from_pts(pts, ref_sp) =
+  let(
+    arc_lens = _spoly_compute_arc_lens(pts),
+    tangents = _spoly_compute_tangents(pts)
+  )
+  [_SPOLY_ID, pts, ref_sp[SPOLY_CTRL_IS], arc_lens, tangents, ref_sp[SPOLY_CLOSED]];
+
+/**
+ * Build a spoly from points and explicit CTRL_IS.
+ *
+ * @param {list[Point3D,...]} pts
+ * @param {list[number,...]} ctrl_is
+ * @param {boolean} closed
+ * @returns {spoly}
+ *   A spoly with computed arc lengths and tangents.
+ */
+function _sf_spoly_from_pts_and_ctrl(pts, ctrl_is, closed) =
+  let(
+    arc_lens = _spoly_compute_arc_lens(pts),
+    tangents = _spoly_compute_tangents(pts)
+  )
+  [_SPOLY_ID, pts, ctrl_is, arc_lens, tangents, closed];
+
+/**
+ * Extrude a 2D profile along a rail-and-guide path.
+ *
+ * Walks each sample point of the R&G, constructs a coordinate frame from
+ * the rail tangent and guide direction, transforms the profile through
+ * `frame_transform`, and assembles the result into a skin.
+ *
+ * @param {RailGuide} rg
+ *   A rail-and-guide pair from one of the `skin_follow_rg_*` functions.
+ * @param {function(number):list[Point2D,...]} profile_fn
+ *   A function that takes a parameter `t` in [0, 1] (fraction of total
+ *   rail arc length) and returns a 2D polygon (list of `[x, y]` points).
+ *   For a constant profile, ignore `t` and return the same polygon.
+ * @param {string} comment
+ *   Optional skin comment.
+ * @param {list} operation
+ *   Optional skin operation.
+ * @param {list} wall_diagonal
+ *   Optional wall diagonal control.
+ * @param {list} debug_axes
+ *   Optional debug axes.
+ * @returns {skin}
+ *   A skin object ready for `skin_to_polyhedron`.
+ */
+function skin_follow(rg, profile_fn, comment, operation, wall_diagonal, debug_axes) =
+  let(
+    rail_sp  = rg[_SF_RG_RAIL],
+    guide_sp = rg[_SF_RG_GUIDE],
+    rail_pts = rail_sp[SPOLY_PTS],
+    guide_pts = guide_sp[SPOLY_PTS],
+    rail_tangents = rail_sp[_SPOLY_TANGENTS],
+    rail_arc = rail_sp[_SPOLY_ARC_LENS],
+    n = len(rail_pts),
+    total_arc = rail_arc[n - 1],
+
+    // Source frame: profile in XY plane at origin.
+    // X-axis = [1,0,0], Y-axis = [0,1,0].
+    src_ref = [[0, 0, 0], [1, 0, 0], [0, 1, 0]],
+
+    // Build all layers.
+    layers = _sf_build_layers(
+      rail_pts, guide_pts, rail_tangents, rail_arc,
+      total_arc, src_ref, profile_fn, n),
+
+    // Backtracking fix pass.
+    fixed_layers = _sf_fix_backtracking(layers, rail_pts, rail_tangents, n),
+
+    // Determine points per layer from first layer.
+    pts_in_layer = len(fixed_layers[0]),
+
+    // Flatten into skin.
+    all_pts = [for (layer = fixed_layers) each layer]
+  )
+  skin_new(pts_in_layer, n - 1, all_pts, comment, operation, wall_diagonal, debug_axes);
+
+/**
+ * Build all transformed profile layers.
+ *
+ * @param {list[Point3D,...]} rail_pts
+ * @param {list[Point3D,...]} guide_pts
+ * @param {list[Vector3D,...]} tangents
+ * @param {list[number,...]} arc_lens
+ * @param {number} total_arc
+ * @param {list[Point3D,...]} src_ref
+ * @param {function(number):list[Point2D,...]} profile_fn
+ * @param {number} n
+ * @returns {list[list[Point3D,...],...]}
+ *   One transformed profile layer per station.
+ */
+function _sf_build_layers(rail_pts, guide_pts, tangents, arc_lens,
+                           total_arc, src_ref, profile_fn, n) =
+  [
+    for (i = [0 : n - 1])
+      let(
+        t_frac = total_arc > 0 ? arc_lens[i] / total_arc : i / max(1, n - 1),
+        profile_2d = profile_fn(t_frac),
+
+        // Build destination frame at this station.
+        rp = rail_pts[i],
+        gp = guide_pts[i],
+        tang = tangents[i],
+
+        // Lateral: direction from rail to guide, projected perpendicular
+        // to tangent.
+        rail_to_guide = gp - rp,
+        lateral_raw = rail_to_guide - (rail_to_guide * tang) * tang,
+        lat_len = norm(lateral_raw),
+        lateral = lat_len > 1e-12 ? lateral_raw / lat_len : [0, 0, 1],
+
+        // Destination frame: origin at rail point, axis 0 = lateral (maps to X),
+        // axis 1 = tangent cross lateral (maps to Y, the "up" of the profile).
+        // We use tangent as forward and lateral as the X-direction.
+        binormal = cross(tang, lateral),
+        dst_ref = [rp, rp + lateral, rp + binormal],
+
+        // Get the 4x4 transform matrix.
+        mat = frame_transform(src_ref, dst_ref),
+
+        // Transform each 2D profile point to 3D.
+        layer = [
+          for (pt = profile_2d)
+            let(
+              p3 = [pt[0], pt[1], 0, 1],
+              tp = mat * p3
+            )
+            [tp[0], tp[1], tp[2]]
+        ]
+      )
+      layer
+  ];
+
+/**
+ * Detect and fix backtracking in transformed layers.
+ *
+ * For each layer, checks if any profile point has "crossed" the path
+ * center (its offset dot the forward direction is negative relative to
+ * the previous layer).  Flagged points are adjusted: both the current
+ * and previous layer move halfway toward the corrected position.
+ *
+ * @param {list[list[Point3D,...],...]} layers
+ * @param {list[Point3D,...]} rail_pts
+ * @param {list[Vector3D,...]} tangents
+ * @param {number} n
+ * @returns {list[list[Point3D,...],...]}
+ *   Layers after midpoint backtracking correction.
+ */
+function _sf_fix_backtracking(layers, rail_pts, tangents, n) =
+  n <= 1 ? layers :
+  let(
+    // First pass: detect which points backtrack.
+    flags = _sf_detect_backtracking(layers, rail_pts, tangents, n),
+
+    // Second pass: fix flagged points by splitting the correction.
+    fixed = _sf_apply_backtrack_fix(layers, flags, n)
+  )
+  fixed;
+
+/**
+ * Detect backtracking: for each layer i > 0, for each point j, check if
+ * the point has moved backward along the tangent relative to the previous
+ * layer's corresponding point.
+ *
+ * @param {list[list[Point3D,...],...]} layers
+ * @param {list[Point3D,...]} rail_pts
+ * @param {list[Vector3D,...]} tangents
+ * @param {number} n
+ * @returns {list[list[boolean,...],...]}
+ *   Per-layer, per-point backtracking flags.
+ */
+function _sf_detect_backtracking(layers, rail_pts, tangents, n) =
+  let(
+    pts_per_layer = len(layers[0])
+  )
+  [
+    // Layer 0 never backtracks.
+    [for (j = [0 : pts_per_layer - 1]) false],
+    for (i = [1 : n - 1])
+      let(
+        tang = tangents[i],
+        prev_rail = rail_pts[i - 1],
+        curr_rail = rail_pts[i],
+        forward = curr_rail - prev_rail,
+        fwd_len = norm(forward)
+      )
+      [
+        for (j = [0 : pts_per_layer - 1])
+          let(
+            prev_pt = layers[i - 1][j],
+            curr_pt = layers[i][j],
+            movement = curr_pt - prev_pt,
+            // Does this point move backward along the path direction?
+            fwd_component = fwd_len > 1e-12 ? (movement * forward) / fwd_len : 0
+          )
+          fwd_component < 0
+      ]
+  ];
+
+/**
+ * Apply backtracking fix: for each flagged point, average the current and
+ * previous layer positions.
+ *
+ * @param {list[list[Point3D,...],...]} layers
+ * @param {list[list[boolean,...],...]} flags
+ * @param {number} n
+ * @returns {list[list[Point3D,...],...]}
+ *   Corrected layers with midpoint adjustments at flagged points.
+ */
+function _sf_apply_backtrack_fix(layers, flags, n) =
+  let(
+    pts_per_layer = len(layers[0])
+  )
+  [
+    for (i = [0 : n - 1])
+      [
+        for (j = [0 : pts_per_layer - 1])
+          // If this point backtracks, or the next layer's corresponding
+          // point backtracks, adjust toward midpoint.
+          let(
+            curr = layers[i][j],
+            // Check if the next layer's point backtracks (we need to fix
+            // this layer too).
+            next_backtracks = i < n - 1 && flags[i + 1][j],
+            // Check if this layer's point backtracks.
+            this_backtracks = i > 0 && flags[i][j]
+          )
+          this_backtracks && i > 0
+            ? let(
+                prev = layers[i - 1][j],
+                mid = (prev + curr) / 2
+              )
+              mid
+            : next_backtracks && i < n - 1
+              ? let(
+                  next = layers[i + 1][j],
+                  mid = (curr + next) / 2
+                )
+                mid
+              : curr
+      ]
+  ];
+
+/**
+ * @example
+ *
+ * Follow-me extrusion: a circular profile swept along a 3D Catmull-Rom
+ * spline using RMF orientation.  The profile is constant along the path.
+ */
+module skin_follow_example1() {
+  // A 3D helical-ish path.
+  rail = spline_new([
+    [0, 0, 0],
+    [10, 5, 3],
+    [20, 0, 8],
+    [30, -5, 5],
+    [40, 0, 0]
+  ]);
+
+  // Circular profile (constant).
+  circle_fn = function(t)
+    let(n = 12)
+    [for (i = [0 : n - 1]) let(a = 360 * i / n) [cos(a), sin(a)]];
+
+  rg = skin_follow_rg_rmf(rail, tolerance = 0.1);
+  s = skin_follow(rg, circle_fn);
+
+  // echo("follow example 1: ", skin_to_string(s));
+  skin_to_polyhedron(s);
+}
+
+/**
+ * @example
+ *
+ * Follow-me extrusion with a morphing profile: the cross-section
+ * transitions from a square at the start to a circle at the end.
+ */
+module skin_follow_example2() {
+  rail = spline_new([
+    [0, 0, 0],
+    [10, 10, 0],
+    [20, 10, 10],
+    [30, 0, 10]
+  ]);
+
+  // Morphing profile: square at t=0, circle at t=1.
+
+  n = 16;
+  square = [for (i = [0 : n - 1])
+    let(a = 360 * i / n)
+    let(
+      // Square: max of abs(cos), abs(sin) = 1.
+      r_sq = 1 / max(abs(cos(a)), abs(sin(a)))
+    )
+    [r_sq * cos(a), r_sq * sin(a)]
+  ];
+
+  circle = [for (i = [0 : n - 1])
+    let(a = 360 * i / n)
+    [cos(a), sin(a)]
+  ];
+
+  morph_fn = function(t)
+    [for (i = [0 : n - 1]) square[i] * (1 - t) + circle[i] * t];
+
+  rg = skin_follow_rg_rmf(rail, tolerance = 0.1);
+  s = skin_follow(rg, morph_fn);
+
+  // echo("follow example 2: ", skin_to_string(s, false, 2));
+  skin_to_polyhedron(s);
+}
+
+use <indexable>
+use <base_algos>
+use <transform>
+use <range>
+
+/**
+ * Build a closed profile by mirroring a half-profile and appending the mirrored
+ * continuation.
+ *
+ * Input points are assumed to be ordered along one side of the profile.  The
+ * mirrored side is generated in reverse order so the final polygon winds
+ * continuously around the shape.
+ *
+ * @param {list[Point2D,...]} half_pts
+ * @param {boolean} mirror_x
+ *   If true, mirror across the Y axis (`x -> -x`).  If false, mirror across
+ *   the X axis (`y -> -y`).
+ * @param {boolean} skip_axis_ends
+ *   If true, skip the first and last mirrored points to avoid duplicating
+ *   shared axis points.
+ * @param {boolean} reverse_winding
+ *   If true, reverse the final point order.  Defaults to true to preserve
+ *   the winding used in the previous example code.
+ * @returns {list[Point2D,...]}
+ *   The full mirrored polygon.
+ */
+function mirror_continue(
+  half_pts, mirror_x = true, skip_axis_ends = true, reverse_winding = true
+) =
+  let(
+    birls = skip_axis_ends ? rev_i(half_pts, 0, 1) : rev_i(half_pts),
+    mirrored = [
+      for (i = birls)
+        let(p = half_pts[i])
+        mirror_x ? [-p[0], p[1]] : [p[0], -p[1]]
+    ],
+    full = [each half_pts, each mirrored]
+  )
+  reverse_winding ? els(full, rev_i(full)) : full;
+
+module skin_follow_example3() {
+  rail = spline_new([
+    [0, 0, 0],
+    [10, 10, 0],
+    [20, 10, 10],
+    [30, 0, 10]
+  ], type=SPLINE_T_BEZIER);
+  // rail = spline_new([for (i=range(0,3)) [0, 10 * i/3, 0]]);
+  // rail = spline_new([[0,0,0], [0,10,0]]);
+  echo("spline(rail) = ", spline_to_string(rail));
+  rail_out = spline_bezier_to_cr(rail, tolerance=0.1);
+  echo(achieved_tolerance=rail_out[1], seg_count=spline_segment_count(rail_out[0]));
+  // spline_debug(rail_out[0]);
+  // rail1 = spline_cr_to_bezier(rail_out[0]);
+  spline_debug(rail);
+  rail_sp = spline_to_spoly(rail);
+  echo("spoly(rail) = ", spoly_to_string(rail_sp));
+  // spoly_debug(rail_sp, .1);
+  /*
+             .
+         ..'.^.'..
+          \     / 
+      ..'-_\   /_-'..
+      .'           '.
+       '-___   ___-'
+            |_|
+
+  */
+  /*
+          /\
+         /  \
+        '-++-'
+          ||
+          ||
+   */
+
+  // Morphing profiles (keep both for experimentation).
+  arrow_rhs = [
+    [  0,  0],  // point
+    [.25, -.5],
+    [.1, -.5],
+    [.1, -1]    // stem base
+  ];
+  arrow = mirror_continue(arrow_rhs, mirror_x = true, skip_axis_ends = true);
+
+  // Maple profile from the official Canadian flag SVG path:
+  // https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Canada.svg
+  // Centered at (2400,2400), scaled by 1/2000, and Y-inverted.
+  maple_src = [
+    [2490,4430],[2445,3567],[2556,3469],[3415,3620],[3299,3300],[3319,3227],
+    [4260,2465],[4048,2366],[4014,2287],[4200,1715],[3658,1830],[3585,1792],
+    [3480,1545],[3057,1999],[2946,1942],[3150, 890],[2823,1079],[2732,1052],
+    [2400, 400],[2068,1052],[1977,1079],[1650, 890],[1854,1942],[1743,1999],
+    [1320,1545],[1215,1792],[1142,1830],[ 600,1715],[ 786,2287],[ 752,2366],
+    [ 540,2465],[1481,3227],[1501,3300],[1385,3620],[2244,3469],[2355,3567],
+    [2310,4430]
+  ];
+  maple = [
+    for (p = maple_src)
+      [(p[0] - 2400) / 2000, (2400 - p[1]) / 2000]
+  ];
+
+  polygon(points = maple, paths = [idxs(maple)], convexity = 1);
+
+  echo(pt_count=len(maple));
+
+  // Choose starting profile for morph.
+  start_profile = maple;
+
+  n = len(start_profile);
+  echo(len(maple), maple=maple);
+
+  circle = [for (i = [0 : n - 1])
+    // let(a = 360 * i / n)
+    let(a = 360 * i / n + 90) // << NOTE: Need rotation
+    [cos(a), sin(a)]
+  ];
+
+  assert(len(start_profile) == len(circle));
+
+  morph_fn = function(t)
+    [
+      for (i = [0 : n - 1]) start_profile[i] * (1 - t) + circle[i] * t
+    ];
+
+  rg = skin_follow_rg_rmf(rail, tolerance = 0.1);
+  echo("rg=", rg_to_string(rg));
+
+  s = skin_follow(rg, morph_fn);
+
+  // // echo("follow example 2: ", skin_to_string(s, false, 2));
+  // color("yellow", 0.3)
+    skin_to_polyhedron(s);
+}
+
