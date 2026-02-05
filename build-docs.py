@@ -168,7 +168,17 @@ re_files = regex.compile(
   ''', regex.VERBOSE
 )
 files = re_files.sub(r"\1 ", file_items)
-files_list = files.rstrip().split(" ")
+files_list = [ "object" ] + files.rstrip().split(" ")
+
+# Insert _consts files before their corresponding file if they exist.
+import os
+expanded_files_list = []
+for f in files_list:
+  consts_file = f"{f}_consts"
+  if os.path.isfile(consts_file):
+    expanded_files_list.append(consts_file)
+  expanded_files_list.append(f)
+files_list = expanded_files_list
 
 import subprocess
 import sys
@@ -178,7 +188,6 @@ args = [
   "-Xfrozen_modules=off",
   "scad-analysis.py",
   "--show", "md-with-private",
-  # "--write-to-file", "README.md",
   *files_list
 ]
 

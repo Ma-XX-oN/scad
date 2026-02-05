@@ -166,7 +166,8 @@ Many parameter names imply the types that they accept.
 
 #### Synopses of Files
 
-There are several files in this library set.
+There are several files in this library set.  Here's a summary of what each file
+does:
 
  1. [range](#file-range)
     - Wraps OpenSCAD ranges `[start:stop]`/`[start:step:stop]`, adds extra
@@ -175,7 +176,7 @@ There are several files in this library set.
     - `range()` function does **not** generate a warning when a given `start`
       and `step`, makes it impossible to get to `stop`.  Instead, it returns an
       empty `range`.
- 2. [types](#file-types), [types_consts](#file-types_consts)
+ 2. [types](#file-types)
     - Allows for classifying object types that are beyond the standard
       `is_num`, `is_string`, `is_list`, `is_undef`, `is_function`, `is_bool` by
       adding `is_int`, `is_float` and `is_nan`.  `is_range` is defined in range
@@ -200,7 +201,7 @@ There are several files in this library set.
       called over the `birlei` set.
  5. [any_all](#file-any_all)
     - `any` and `all` algorithms.
- 6. [indexable](#file-indexable), [indexable_consts](#file-indexable_consts)
+ 6. [indexable](#file-indexable)
     - Functions to manipulate a list or string as a stack / queue, use negative
       indices to get the indices / elements from the end, insert /
       remove / replace elements, and additional search algorithms.
@@ -210,21 +211,25 @@ There are several files in this library set.
  7. [function](#file-function)
     - Allow counting of function parameters and applying an array to a function
       as parameters.
- 8.  [test](#file-test)
+ 8. [test](#file-test)
     - Testing modules for TDD.
- 9.  [param_check](#file-param_check)
+ 9. [param_check](#file-param_check)
     - Functions to check the validity of parameters.  Usage allows to switch
       them off by commenting them out.
  10. [transform](#file-transform)
     - Functions that allow transforming single points or a series of points
       quickly, usually by creating transformation matrices that can be
       multiplied against the point or points.
- 11. [string](#file-string), [string_consts](#file-string_consts)
+ 11. [string](#file-string)
     - String formatting functions.
- 12. [helpers](#file-helpers), [helpers_consts](#file-helpers_consts)
+ 12. [helpers](#file-helpers)
     - Miscellaneous functions that don't fit elsewhere.
  13. [skin](#file-skin)
     - Generates a polyhedron using slices.
+ 14. [spline](#file-spline)
+    - Generate smooth curves to be used with skin follow extrusions.
+ 15. [skin_follow](#file-skin_follow)
+    - Follow-me extrusion: sweeps a 2D profile along a 3D spline path.
 
 ## API Table of Contents
 
@@ -239,6 +244,19 @@ been minimised.  To Navigate:
 
 - Click on the link to go to the heading.
 - Click to the right of the heading to open it up and see the headings below it.
+<details><summary><a href="#file-object">📘 <b>object</b></a></summary>
+<blockquote>
+• <a href="#ch-object-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-object-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-object-object_types">📑 <i>object types</i></a></summary>
+<blockquote>
+• <a href="#t-_member_index">🧩MemberIndex</a><br>
+• <a href="#t-_obj_type_id">🧩ObjTypeId</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
 <details><summary><a href="#file-range">📘 <b>range</b></a></summary>
 <blockquote>
 • <a href="#ch-range-_how_to__import">📑 <i>How to Import</i></a><br>
@@ -265,6 +283,34 @@ been minimised.  To Navigate:
 </blockquote>
 </details>
 
+<details><summary><a href="#file-types_consts">📘 <b>types_consts</b></a></summary>
+<blockquote>
+• <a href="#ch-types_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-types_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-types_consts-_values__used_to__represent__types">📑 <i>Values Used to Represent Types</i></a></summary>
+<blockquote>
+• <a href="#v-_r_a_n_g_e">💠RANGE</a><br>
+• <a href="#v-_l_i_s_t">💠LIST</a><br>
+• <a href="#v-_s_t_r">💠STR</a><br>
+• <a href="#v-_u_n_k_n_o_w_n">💠UNKNOWN</a><br>
+• <a href="#v-_s_l_i_c_e">💠SLICE</a><br>
+• <a href="#v-_u_n_d_e_f">💠UNDEF</a><br>
+• <a href="#v-_b_o_o_l">💠BOOL</a><br>
+• <a href="#v-_f_u_n_c">💠FUNC</a><br>
+• <a href="#v-_n_u_m">💠NUM</a><br>
+• <a href="#v-_i_n_t">💠INT</a><br>
+• <a href="#v-_f_l_o_a_t">💠FLOAT</a><br>
+• <a href="#v-_n_a_n">💠NAN</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-types_consts-types_consts_types">📑 <i>types_consts types</i></a></summary>
+<blockquote>
+• <a href="#t-_type_enum">🧩TypeEnum</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
 <details><summary><a href="#file-types">📘 <b>types</b></a></summary>
 <blockquote>
 • <a href="#ch-types-_how_to__import">📑 <i>How to Import</i></a><br>
@@ -285,34 +331,6 @@ been minimised.  To Navigate:
 • <a href="#f-type">⚙️type</a><br>
 • <a href="#f-type_structure">⚙️type_structure</a><br>
 • <a href="#f-type_value">⚙️type_value</a><br>
-</blockquote>
-</details>
-<details><summary><a href="#ch-types-types_types">📑 <i>types types</i></a></summary>
-<blockquote>
-• <a href="#t-_type_enum">🧩TypeEnum</a><br>
-</blockquote>
-</details>
-</blockquote>
-</details>
-
-<details><summary><a href="#file-types_consts">📘 <b>types_consts</b></a></summary>
-<blockquote>
-• <a href="#ch-types_consts-_how_to__import">📑 <i>How to Import</i></a><br>
-• <a href="#ch-types_consts-_purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#ch-types_consts-_values">📑 <i>Values</i></a></summary>
-<blockquote>
-• <a href="#v-_r_a_n_g_e">💠RANGE</a><br>
-• <a href="#v-_l_i_s_t">💠LIST</a><br>
-• <a href="#v-_s_t_r">💠STR</a><br>
-• <a href="#v-_u_n_k_n_o_w_n">💠UNKNOWN</a><br>
-• <a href="#v-_s_l_i_c_e">💠SLICE</a><br>
-• <a href="#v-_u_n_d_e_f">💠UNDEF</a><br>
-• <a href="#v-_b_o_o_l">💠BOOL</a><br>
-• <a href="#v-_f_u_n_c">💠FUNC</a><br>
-• <a href="#v-_n_u_m">💠NUM</a><br>
-• <a href="#v-_i_n_t">💠INT</a><br>
-• <a href="#v-_f_l_o_a_t">💠FLOAT</a><br>
-• <a href="#v-_n_a_n">💠NAN</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -417,6 +435,32 @@ been minimised.  To Navigate:
 </blockquote>
 </details>
 
+<details><summary><a href="#file-indexable_consts">📘 <b>indexable_consts</b></a></summary>
+<blockquote>
+• <a href="#ch-indexable_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-indexable_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-indexable_consts-_slr_cache___slot__related__constants">📑 <i>`slr_cache` Slot Related Constants</i></a></summary>
+<blockquote>
+• <a href="#v-__s_l_r__c_a_c_h_e__h_e_a_d_e_r">💠_SLR_CACHE_HEADER</a><br>
+• <a href="#v-__s_l_r__l_e_n">💠_SLR_LEN</a><br>
+• <a href="#v-__s_l_r__t_e">💠_SLR_TE</a><br>
+• <a href="#v-__s_l_r__e_l_d">💠_SLR_ELD</a><br>
+• <a href="#v-__s_l_r__b_l_e_n">💠_SLR_BLEN</a><br>
+• <a href="#v-__s_l_r__e_l_i">💠_SLR_ELI</a><br>
+• <a href="#v-__s_l_r__i_d_x">💠_SLR_IDX</a><br>
+• <a href="#v-__s_l_r__s_t_r">💠_SLR_STR</a><br>
+• <a href="#v-__s_l_r__b_i_r_l">💠_SLR_BIRL</a><br>
+• <a href="#v-__s_l_r__e_n_d__i">💠_SLR_END_I</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-indexable_consts-indexable_consts_types">📑 <i>indexable_consts types</i></a></summary>
+<blockquote>
+• <a href="#t-_slr_cache_enum">🧩SlrCacheEnum</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
 <details><summary><a href="#file-indexable">📘 <b>indexable</b></a></summary>
 <blockquote>
 • <a href="#ch-indexable-_how_to__import">📑 <i>How to Import</i></a><br>
@@ -497,32 +541,6 @@ been minimised.  To Navigate:
 • <a href="#t-_replace_each_fn">🧩ReplaceEachFn</a><br>
 • <a href="#t-_search_fn">🧩SearchFn</a><br>
 • <a href="#t-_search_needle_fn">🧩SearchNeedleFn</a><br>
-</blockquote>
-</details>
-</blockquote>
-</details>
-
-<details><summary><a href="#file-indexable_consts">📘 <b>indexable_consts</b></a></summary>
-<blockquote>
-• <a href="#ch-indexable_consts-_how_to__import">📑 <i>How to Import</i></a><br>
-• <a href="#ch-indexable_consts-_purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#ch-indexable_consts-_values">📑 <i>Values</i></a></summary>
-<blockquote>
-• <a href="#v-__s_l_r__c_a_c_h_e__h_e_a_d_e_r">💠_SLR_CACHE_HEADER</a><br>
-• <a href="#v-__s_l_r__l_e_n">💠_SLR_LEN</a><br>
-• <a href="#v-__s_l_r__t_e">💠_SLR_TE</a><br>
-• <a href="#v-__s_l_r__e_l_d">💠_SLR_ELD</a><br>
-• <a href="#v-__s_l_r__b_l_e_n">💠_SLR_BLEN</a><br>
-• <a href="#v-__s_l_r__e_l_i">💠_SLR_ELI</a><br>
-• <a href="#v-__s_l_r__i_d_x">💠_SLR_IDX</a><br>
-• <a href="#v-__s_l_r__s_t_r">💠_SLR_STR</a><br>
-• <a href="#v-__s_l_r__b_i_r_l">💠_SLR_BIRL</a><br>
-• <a href="#v-__s_l_r__e_n_d__i">💠_SLR_END_I</a><br>
-</blockquote>
-</details>
-<details><summary><a href="#ch-indexable_consts-indexable_consts_types">📑 <i>indexable_consts types</i></a></summary>
-<blockquote>
-• <a href="#t-_slr_cache_enum">🧩SlrCacheEnum</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -669,6 +687,25 @@ been minimised.  To Navigate:
 </blockquote>
 </details>
 
+<details><summary><a href="#file-string_consts">📘 <b>string_consts</b></a></summary>
+<blockquote>
+• <a href="#ch-string_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-string_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-string_consts-_values_for__show_sign___parameters">📑 <i>Values for `show_sign` Parameters</i></a></summary>
+<blockquote>
+• <a href="#v-_s_h_o_w__s_i_g_n__n_e_g">💠SHOW_SIGN_NEG</a><br>
+• <a href="#v-_s_h_o_w__s_i_g_n__p_o_s__n_e_g">💠SHOW_SIGN_POS_NEG</a><br>
+• <a href="#v-_s_h_o_w__s_i_g_n__s_p_c__n_e_g">💠SHOW_SIGN_SPC_NEG</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-string_consts-string_consts_types">📑 <i>string_consts types</i></a></summary>
+<blockquote>
+• <a href="#t-_show_sign_enum">🧩ShowSignEnum</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
 <details><summary><a href="#file-string">📘 <b>string</b></a></summary>
 <blockquote>
 • <a href="#ch-string-_how_to__import">📑 <i>How to Import</i></a><br>
@@ -688,23 +725,24 @@ been minimised.  To Navigate:
 • <a href="#f-pt_list_to_string">⚙️pt_list_to_string</a><br>
 </blockquote>
 </details>
-<details><summary><a href="#ch-string-string_types">📑 <i>string types</i></a></summary>
-<blockquote>
-• <a href="#t-_show_sign_enum">🧩ShowSignEnum</a><br>
-</blockquote>
-</details>
 </blockquote>
 </details>
 
-<details><summary><a href="#file-string_consts">📘 <b>string_consts</b></a></summary>
+<details><summary><a href="#file-helpers_consts">📘 <b>helpers_consts</b></a></summary>
 <blockquote>
-• <a href="#ch-string_consts-_how_to__import">📑 <i>How to Import</i></a><br>
-• <a href="#ch-string_consts-_purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#ch-string_consts-_values_for__show_sign___parameters">📑 <i>Values for `show_sign` Parameters</i></a></summary>
+• <a href="#ch-helpers_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-helpers_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-helpers_consts-__vector_info___slot__related__constants">📑 <i>`VectorInfo` Slot Related Constants</i></a></summary>
 <blockquote>
-• <a href="#v-_s_h_o_w__s_i_g_n__n_e_g">💠SHOW_SIGN_NEG</a><br>
-• <a href="#v-_s_h_o_w__s_i_g_n__p_o_s__n_e_g">💠SHOW_SIGN_POS_NEG</a><br>
-• <a href="#v-_s_h_o_w__s_i_g_n__s_p_c__n_e_g">💠SHOW_SIGN_SPC_NEG</a><br>
+• <a href="#v-_v_i__v_e_c_t_o_r">💠VI_VECTOR</a><br>
+• <a href="#v-_v_i__l_e_n_g_t_h">💠VI_LENGTH</a><br>
+• <a href="#v-_v_i__d_i_r">💠VI_DIR</a><br>
+• <a href="#v-_v_i__n_o_r_m_a_l">💠VI_NORMAL</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-helpers_consts-helpers_consts_types">📑 <i>helpers_consts types</i></a></summary>
+<blockquote>
+• <a href="#t-_vector_info_enum">🧩VectorInfoEnum</a><br>
 </blockquote>
 </details>
 </blockquote>
@@ -758,32 +796,12 @@ been minimised.  To Navigate:
 </blockquote>
 </details>
 
-<details><summary><a href="#file-helpers_consts">📘 <b>helpers_consts</b></a></summary>
-<blockquote>
-• <a href="#ch-helpers_consts-_how_to__import">📑 <i>How to Import</i></a><br>
-• <a href="#ch-helpers_consts-_purpose">📑 <i>Purpose</i></a><br>
-<details><summary><a href="#ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__">📑 <i>For indexing type [VectorInfo](#t-_vector_info).</i></a></summary>
-<blockquote>
-• <a href="#v-_v_i__v_e_c_t_o_r">💠VI_VECTOR</a><br>
-• <a href="#v-_v_i__l_e_n_g_t_h">💠VI_LENGTH</a><br>
-• <a href="#v-_v_i__d_i_r">💠VI_DIR</a><br>
-• <a href="#v-_v_i__n_o_r_m_a_l">💠VI_NORMAL</a><br>
-</blockquote>
-</details>
-<details><summary><a href="#ch-helpers_consts-helpers_consts_types">📑 <i>helpers_consts types</i></a></summary>
-<blockquote>
-• <a href="#t-_vector_info_enum">🧩VectorInfoEnum</a><br>
-</blockquote>
-</details>
-</blockquote>
-</details>
-
 <details><summary><a href="#file-skin">📘 <b>skin</b></a></summary>
 <blockquote>
 • <a href="#ch-skin-_how_to__import">📑 <i>How to Import</i></a><br>
 • <a href="#ch-skin-_purpose">📑 <i>Purpose</i></a><br>
 • <a href="#ch-skin-_design">📑 <i>Design</i></a><br>
-<details><summary><a href="#ch-skin-_values">📑 <i>Values</i></a></summary>
+<details><summary><a href="#ch-skin-_skin___slot__related__constants">📑 <i>`skin` Slot Related Constants</i></a></summary>
 <blockquote>
 • <a href="#v-__s_k_i_n__i_d">💠_SKIN_ID</a><br>
 • <a href="#v-__s_k_i_n__p_t_s__i_n__l_a_y_e_r">💠_SKIN_PTS_IN_LAYER</a><br>
@@ -824,17 +842,210 @@ been minimised.  To Navigate:
 </details>
 <details><summary><a href="#ch-skin-skin_types">📑 <i>skin types</i></a></summary>
 <blockquote>
+• <a href="#t-_skin_enum">🧩SkinEnum</a><br>
 • <a href="#t-skin">🧩skin</a><br>
 • <a href="#t-_face">🧩Face</a><br>
 • <a href="#t-_skin_extrude">🧩SkinExtrude</a><br>
 • <a href="#t-_colour_lst">🧩ColourLst</a><br>
 • <a href="#t-_colour_str">🧩ColourStr</a><br>
 • <a href="#t-_colour_name">🧩ColourName</a><br>
+• <a href="#t-_colour">🧩Colour</a><br>
 • <a href="#t-_debug_style">🧩DebugStyle</a><br>
 </blockquote>
 </details>
 </blockquote>
 </details>
+
+<details><summary><a href="#file-spline_consts">📘 <b>spline_consts</b></a></summary>
+<blockquote>
+• <a href="#ch-spline_consts-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-spline_consts-_purpose">📑 <i>Purpose</i></a><br>
+<details><summary><a href="#ch-spline_consts-_values_for___spline_type_enum_">📑 <i>Values for `SplineTypeEnum`</i></a></summary>
+<blockquote>
+• <a href="#v-_s_p_l_i_n_e__t__c_a_t_m_u_l_l__r_o_m">💠SPLINE_T_CATMULL_ROM</a><br>
+• <a href="#v-_s_p_l_i_n_e__t__b_e_z_i_e_r">💠SPLINE_T_BEZIER</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline_consts-_spline___slot__related__constants">📑 <i>`spline` Slot Related Constants</i></a></summary>
+<blockquote>
+• <a href="#v-__s_p_l_i_n_e__i_d">💠_SPLINE_ID</a><br>
+• <a href="#v-_s_p_l_i_n_e__p_t_s">💠SPLINE_PTS</a><br>
+• <a href="#v-_s_p_l_i_n_e__c_l_o_s_e_d">💠SPLINE_CLOSED</a><br>
+• <a href="#v-__s_p_l_i_n_e__t_y_p_e">💠_SPLINE_TYPE</a><br>
+• <a href="#v-__s_p_l_i_n_e__t_e_n_s_i_o_n">💠_SPLINE_TENSION</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline_consts-_spoly___slot__related__constants">📑 <i>`spoly` Slot Related Constants</i></a></summary>
+<blockquote>
+• <a href="#v-__s_p_o_l_y__i_d">💠_SPOLY_ID</a><br>
+• <a href="#v-_s_p_o_l_y__p_t_s">💠SPOLY_PTS</a><br>
+• <a href="#v-_s_p_o_l_y__c_t_r_l__i_s">💠SPOLY_CTRL_IS</a><br>
+• <a href="#v-__s_p_o_l_y__a_r_c__l_e_n_s">💠_SPOLY_ARC_LENS</a><br>
+• <a href="#v-__s_p_o_l_y__t_a_n_g_e_n_t_s">💠_SPOLY_TANGENTS</a><br>
+• <a href="#v-_s_p_o_l_y__c_l_o_s_e_d">💠SPOLY_CLOSED</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline_consts-__sp_palette___slot__related__constants">📑 <i>`SpPalette` Slot Related Constants</i></a></summary>
+<blockquote>
+• <a href="#v-__s_p__i_d">💠_SP_ID</a><br>
+• <a href="#v-_s_p__s_t_a_r_t">💠SP_START</a><br>
+• <a href="#v-_s_p__s_t_a_r_t__s_t_o_p">💠SP_START_STOP</a><br>
+• <a href="#v-_s_p__s_t_o_p">💠SP_STOP</a><br>
+• <a href="#v-_s_p__c_o_n_t">💠SP_CONT</a><br>
+• <a href="#v-_s_p__c_t_r_l__p_t">💠SP_CTRL_PT</a><br>
+• <a href="#v-_s_p__c_t_r_l__p_o_l_y">💠SP_CTRL_POLY</a><br>
+• <a href="#v-_s_p__h_a_n_d_l_e">💠SP_HANDLE</a><br>
+• <a href="#v-_s_p__s_p_e_c_t_r_u_m">💠SP_SPECTRUM</a><br>
+• <a href="#v-_s_p__s_t_r_e_e_t__l_i_g_h_t_s">💠SP_STREET_LIGHTS</a><br>
+• <a href="#v-_s_p__o_k_a_b_e__i_t_o__s_t_o_p_g_o">💠SP_OKABE_ITO_STOPGO</a><br>
+• <a href="#v-_s_p__t_o_l__b_r_i_g_h_t__s_t_o_p_g_o">💠SP_TOL_BRIGHT_STOPGO</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline_consts-spline_consts_types">📑 <i>spline_consts types</i></a></summary>
+<blockquote>
+• <a href="#t-_spline_type_enum">🧩SplineTypeEnum</a><br>
+• <a href="#t-_spline_enum">🧩SplineEnum</a><br>
+• <a href="#t-_spoly_enum">🧩SpolyEnum</a><br>
+• <a href="#t-_sp_palette_enum">🧩SpPaletteEnum</a><br>
+• <a href="#t-_sp_palette">🧩SpPalette</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
+<details><summary><a href="#file-spline">📘 <b>spline</b></a></summary>
+<blockquote>
+• <a href="#ch-spline-_how_to__import">📑 <i>How to Import</i></a><br>
+• <a href="#ch-spline-_purpose">📑 <i>Purpose</i></a><br>
+• <a href="#ch-spline-_design">📑 <i>Design</i></a><br>
+<details><summary><a href="#ch-spline-_s_p_l_i_n_e__functions">📑 <i>SPLINE Functions</i></a></summary>
+<blockquote>
+• <a href="#f-is_spline">⚙️is_spline</a><br>
+• <a href="#f-verify_spline">⚙️verify_spline</a><br>
+• <a href="#f-spline_new">⚙️spline_new</a><br>
+• <a href="#f-spline_segment_count">⚙️spline_segment_count</a><br>
+• <a href="#f-spline_point_at">⚙️spline_point_at</a><br>
+• <a href="#f-_spline_catmull_rom_point">⚙️_spline_catmull_rom_point</a><br>
+• <a href="#f-_spline_bezier_point">⚙️_spline_bezier_point</a><br>
+• <a href="#f-spline_tangent_at">⚙️spline_tangent_at</a><br>
+• <a href="#f-_spline_catmull_rom_tangent">⚙️_spline_catmull_rom_tangent</a><br>
+• <a href="#f-_spline_bezier_tangent">⚙️_spline_bezier_tangent</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline-_adaptive__sampling">📑 <i>Adaptive Sampling</i></a></summary>
+<blockquote>
+• <a href="#f-_spline_subdivide">⚙️_spline_subdivide</a><br>
+• <a href="#f-_spline_sample_segment">⚙️_spline_sample_segment</a><br>
+• <a href="#f-spline_to_spoly">⚙️spline_to_spoly</a><br>
+• <a href="#f-_spoly_build_pts">⚙️_spoly_build_pts</a><br>
+• <a href="#f-_spoly_flatten_segs">⚙️_spoly_flatten_segs</a><br>
+• <a href="#f-_spoly_compute_arc_lens">⚙️_spoly_compute_arc_lens</a><br>
+• <a href="#f-_spoly_compute_tangents">⚙️_spoly_compute_tangents</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline-_s_p_o_l_y__functions">📑 <i>SPOLY Functions</i></a></summary>
+<blockquote>
+• <a href="#f-is_spoly">⚙️is_spoly</a><br>
+• <a href="#f-spoly_new">⚙️spoly_new</a><br>
+• <a href="#f-spoly_point_at">⚙️spoly_point_at</a><br>
+• <a href="#f-spoly_tangent_at">⚙️spoly_tangent_at</a><br>
+• <a href="#f-_spoly_find_segment">⚙️_spoly_find_segment</a><br>
+• <a href="#f-_spoly_lerp_at_arc_len">⚙️_spoly_lerp_at_arc_len</a><br>
+• <a href="#f-spoly_split">⚙️spoly_split</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline-_string__conversion">📑 <i>String Conversion</i></a></summary>
+<blockquote>
+• <a href="#f-spline_to_string">⚙️spline_to_string</a><br>
+• <a href="#f-spoly_to_string">⚙️spoly_to_string</a><br>
+• <a href="#m-_sp_debug_poly">🧊_sp_debug_poly</a><br>
+• <a href="#m-spoly_debug">🧊spoly_debug</a><br>
+• <a href="#m-spline_debug">🧊spline_debug</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline-_examples">📑 <i>Examples</i></a></summary>
+<blockquote>
+• <a href="#m-spline_example1">🧊spline_example1</a><br>
+• <a href="#m-spline_example2">🧊spline_example2</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-spline-spline_types">📑 <i>spline types</i></a></summary>
+<blockquote>
+• <a href="#t-spline">🧩spline</a><br>
+• <a href="#t-spoly">🧩spoly</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
+<details><summary><a href="#file-skin_follow">📘 <b>skin_follow</b></a></summary>
+<blockquote>
+• <a href="#ch-skin_follow-_how_to__import">📑 <i>How to Import</i></a><br>
+<details><summary><a href="#ch-skin_follow-_purpose">📑 <i>Purpose</i></a></summary>
+<blockquote>
+• <a href="#v-__s_f__r_g__r_a_i_l">💠_SF_RG_RAIL</a><br>
+• <a href="#v-__s_f__r_g__g_u_i_d_e">💠_SF_RG_GUIDE</a><br>
+• <a href="#f-rg_to_string">⚙️rg_to_string</a><br>
+• <a href="#f-skin_follow_rg_fixed">⚙️skin_follow_rg_fixed</a><br>
+• <a href="#f-skin_follow_rg_rmf">⚙️skin_follow_rg_rmf</a><br>
+• <a href="#f-_sf_rmf_propagate">⚙️_sf_rmf_propagate</a><br>
+• <a href="#f-_sf_rmf_acc">⚙️_sf_rmf_acc</a><br>
+• <a href="#f-skin_follow_rg_explicit">⚙️skin_follow_rg_explicit</a><br>
+• <a href="#f-_sf_sync_spolys">⚙️_sf_sync_spolys</a><br>
+• <a href="#f-_sf_sync_segments">⚙️_sf_sync_segments</a><br>
+• <a href="#f-_sf_resample_segment">⚙️_sf_resample_segment</a><br>
+• <a href="#f-_sf_build_ctrl_is">⚙️_sf_build_ctrl_is</a><br>
+• <a href="#f-_sf_build_ctrl_is_acc">⚙️_sf_build_ctrl_is_acc</a><br>
+• <a href="#f-_sf_spoly_from_pts">⚙️_sf_spoly_from_pts</a><br>
+• <a href="#f-_sf_spoly_from_pts_and_ctrl">⚙️_sf_spoly_from_pts_and_ctrl</a><br>
+• <a href="#f-skin_follow">⚙️skin_follow</a><br>
+• <a href="#f-_sf_build_layers">⚙️_sf_build_layers</a><br>
+• <a href="#f-_sf_fix_backtracking">⚙️_sf_fix_backtracking</a><br>
+• <a href="#f-_sf_detect_backtracking">⚙️_sf_detect_backtracking</a><br>
+• <a href="#f-_sf_apply_backtrack_fix">⚙️_sf_apply_backtrack_fix</a><br>
+• <a href="#m-skin_follow_example1">🧊skin_follow_example1</a><br>
+• <a href="#m-skin_follow_example2">🧊skin_follow_example2</a><br>
+</blockquote>
+</details>
+<details><summary><a href="#ch-skin_follow-skin_follow_types">📑 <i>skin_follow types</i></a></summary>
+<blockquote>
+• <a href="#t-_rail_guide_enum">🧩RailGuideEnum</a><br>
+• <a href="#t-_rail_guide">🧩RailGuide</a><br>
+</blockquote>
+</details>
+</blockquote>
+</details>
+
+<hr/>
+
+## 📘object<a id='file-object'></a>
+
+### <i>📑How to Import</i><a id='ch-object-_how_to__import'></a>
+
+Does *NOT* need to be imported.
+
+### <i>📑Purpose</i><a id='ch-object-_purpose'></a>
+
+This specifies some types used for specifying objects and doesn't need to be
+imported.
+
+### <i>📑object types</i><a id='ch-object-object_types'></a>
+
+#### 🧩MemberIndex<a id='t-_member_index'></a>
+
+<code>*type* MemberIndex = number</code>
+
+Integer used to dereference an object's member.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩ObjTypeId<a id='t-_obj_type_id'></a>
+
+<code>*type* ObjTypeId = string</code>
+
+String used to define a object's header.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 <hr/>
 
@@ -1131,6 +1342,241 @@ Stop value.
 
 <hr/>
 
+## 📘types_consts<a id='file-types_consts'></a>
+
+### <i>📑How to Import</i><a id='ch-types_consts-_how_to__import'></a>
+
+    include <types_consts>
+
+### <i>📑Purpose</i><a id='ch-types_consts-_purpose'></a>
+
+Constants representing the types as enumerated values.
+
+### <i>📑Values Used to Represent Types</i><a id='ch-types_consts-_values__used_to__represent__types'></a>
+
+#### 💠RANGE<a id='v-_r_a_n_g_e'></a>
+
+<code>*value* RANGE : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for range type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum([0:1]) == RANGE);
+assert(type_enum(range(0,1)) == RANGE)
+```
+
+```openscad
+// Beware, an empty range is a LIST!!
+assert(type_enum(range(1,0)) == LIST)
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠LIST<a id='v-_l_i_s_t'></a>
+
+<code>*value* LIST : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for list type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum([]) == LIST);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠STR<a id='v-_s_t_r'></a>
+
+<code>*value* STR : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for string type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum("") == STR);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠UNKNOWN<a id='v-_u_n_k_n_o_w_n'></a>
+
+<code>*value* UNKNOWN : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for unknown type.  Shouldn't be possible to get this value.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(???) == UNKNOWN);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SLICE<a id='v-_s_l_i_c_e'></a>
+
+<code>*value* SLICE : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for slice type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(slice(0, -1)) == SLICE);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠UNDEF<a id='v-_u_n_d_e_f'></a>
+
+<code>*value* UNDEF : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for undef type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(undef) == UNDEF);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠BOOL<a id='v-_b_o_o_l'></a>
+
+<code>*value* BOOL : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for boolean type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(true) == BOOL);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠FUNC<a id='v-_f_u_n_c'></a>
+
+<code>*value* FUNC : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for function type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(function() 0) == FUNC);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠NUM<a id='v-_n_u_m'></a>
+
+<code>*value* NUM : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for number type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(1) == NUM);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠INT<a id='v-_i_n_t'></a>
+
+<code>*value* INT : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for integer type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(1, true) == INT);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠FLOAT<a id='v-_f_l_o_a_t'></a>
+
+<code>*value* FLOAT : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for floating point type
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(1.1, true) == FLOAT);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠NAN<a id='v-_n_a_n'></a>
+
+<code>*value* NAN : <a href="#t-_type_enum">TypeEnum</a></code>
+
+Enum for NaN
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(type_enum(1/0) == NAN);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑types_consts types</i><a id='ch-types_consts-types_consts_types'></a>
+
+#### 🧩TypeEnum<a id='t-_type_enum'></a>
+
+<code>*type* TypeEnum = number</code>
+
+Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
+to get name of type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
 ## 📘types<a id='file-types'></a>
 
 ### <i>📑How to Import</i><a id='ch-types-_how_to__import'></a>
@@ -1147,14 +1593,14 @@ minimal strings for complex types.
 
 #### ⚙️is\_indexable\_te<a id='f-is_indexable_te'></a>
 
-<code>*function* is_indexable_te(type\_enum: <a href="#t-TypeEnum">TypeEnum</a>) : bool</code>
+<code>*function* is_indexable_te(type\_enum: <a href="#t-_type_enum">TypeEnum</a>) : bool</code>
 
 States if a te (type_enum) represents an indexable type, either directly with
 `sl[index]` or indirectly with `range_el(r, index)`.
 
 <details><summary>parameters</summary>
 
-**<code>type_enum</code>**: <code><a href="#t-TypeEnum">TypeEnum</a></code>
+**<code>type_enum</code>**: <code><a href="#t-_type_enum">TypeEnum</a></code>
 
 Enum for type (See [type_enum](#t-_type_enum))
 
@@ -1389,241 +1835,6 @@ Give info for `o` as string.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑types types</i><a id='ch-types-types_types'></a>
-
-#### 🧩TypeEnum<a id='t-_type_enum'></a>
-
-<code>*type* TypeEnum = number</code>
-
-Number representing a type.  Use [`type_enum_to_str()`](#f-type_enum_to_str)
-to get name of type.
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-<hr/>
-
-## 📘types_consts<a id='file-types_consts'></a>
-
-### <i>📑How to Import</i><a id='ch-types_consts-_how_to__import'></a>
-
-    include <types_consts>
-
-### <i>📑Purpose</i><a id='ch-types_consts-_purpose'></a>
-
-Constants representing the types as enumerated values.
-
-### <i>📑Values</i><a id='ch-types_consts-_values'></a>
-
-#### 💠RANGE<a id='v-_r_a_n_g_e'></a>
-
-<code>*value* RANGE : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for range type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum([0:1]) == RANGE);
-assert(type_enum(range(0,1)) == RANGE)
-```
-
-```openscad
-// Beware, an empty range is a LIST!!
-assert(type_enum(range(1,0)) == LIST)
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠LIST<a id='v-_l_i_s_t'></a>
-
-<code>*value* LIST : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for list type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum([]) == LIST);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠STR<a id='v-_s_t_r'></a>
-
-<code>*value* STR : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for string type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum("") == STR);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠UNKNOWN<a id='v-_u_n_k_n_o_w_n'></a>
-
-<code>*value* UNKNOWN : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for unknown type.  Shouldn't be possible to get this value.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(???) == UNKNOWN);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠SLICE<a id='v-_s_l_i_c_e'></a>
-
-<code>*value* SLICE : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for slice type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(slice(0, -1)) == SLICE);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠UNDEF<a id='v-_u_n_d_e_f'></a>
-
-<code>*value* UNDEF : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for undef type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(undef) == UNDEF);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠BOOL<a id='v-_b_o_o_l'></a>
-
-<code>*value* BOOL : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for boolean type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(true) == BOOL);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠FUNC<a id='v-_f_u_n_c'></a>
-
-<code>*value* FUNC : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for function type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(function() 0) == FUNC);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠NUM<a id='v-_n_u_m'></a>
-
-<code>*value* NUM : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for number type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(1) == NUM);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠INT<a id='v-_i_n_t'></a>
-
-<code>*value* INT : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for integer type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(1, true) == INT);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠FLOAT<a id='v-_f_l_o_a_t'></a>
-
-<code>*value* FLOAT : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for floating point type
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(1.1, true) == FLOAT);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠NAN<a id='v-_n_a_n'></a>
-
-<code>*value* NAN : <a href="#t-TypeEnum">TypeEnum</a></code>
-
-Enum for NaN
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(type_enum(1/0) == NAN);
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
 <hr/>
 
 ## 📘birlei<a id='file-birlei'></a>
@@ -1654,7 +1865,7 @@ faster.
 
 #### ⚙️birlei\_to\_begin\_i\_end\_i<a id='f-birlei_to_begin_i_end_i'></a>
 
-<code>*function* birlei_to_begin_i_end_i(algo\_fn: function, ppmrrair\_fn: <a href="#t-PpmrrairFn">PpmrrairFn</a>, birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*function* birlei_to_begin_i_end_i(algo\_fn: function, ppmrrair\_fn: <a href="#t-_ppmrrair_fn">PpmrrairFn</a>, birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 Helper which calls `algo_fn` but remaps signature `function(fn, birl, end_i)`
 to signature `function(fn, begin_i, end_i, map_back_fn)`.
@@ -1678,17 +1889,17 @@ Function with `(fn, begin_i, end_i, map_back_fn)` signature to call, where:
   - If this function is passed `undef`, it returns `undef` for
     convenience.
 
-**<code>ppmrrair_fn</code>**: <code><a href="#t-PpmrrairFn">PpmrrairFn</a></code>
+**<code>ppmrrair_fn</code>**: <code><a href="#t-_ppmrrair_fn">PpmrrairFn</a></code>
 
 - Takes index or element and possibly a second param and returns a value.
 
-**<code>birl</code>**: <code><a href="#t-Birl">Birl</a></code>
+**<code>birl</code>**: <code><a href="#t-_birl">Birl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -1710,19 +1921,19 @@ Result of `algo_fn()`.
 
 #### ⚙️birlei\_to\_indices<a id='f-birlei_to_indices'></a>
 
-<code>*function* birlei_to_indices(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : list|<a href="#t-range">range</a></code>
+<code>*function* birlei_to_indices(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : list|<a href="#t-range">range</a></code>
 
 Helper to convert birlei parameters to an lr to traverse.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-Birl">Birl</a></code>
+**<code>birl</code>**: <code><a href="#t-_birl">Birl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code>
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code>
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2057,7 +2268,7 @@ Value that was mapped given the probe.
 
 #### 🧩PpmrrairFn<a id='t-_ppmrrair_fn'></a>
 
-<code>*type* PpmrrairFn = <a href="#t-SpaceshipFn">SpaceshipFn</a>|<a href="#t-PredFn">PredFn</a>|<a href="#t-ReductionFn">ReductionFn</a>|<a href="#t-ReductionAirFn">ReductionAirFn</a>|<a href="#t-PredMapFn">PredMapFn</a>|<a href="#t-MapperFn">MapperFn</a></code>
+<code>*type* PpmrrairFn = <a href="#t-_spaceship_fn">SpaceshipFn</a>|<a href="#t-_pred_fn">PredFn</a>|<a href="#t-_reduction_fn">ReductionFn</a>|<a href="#t-_reduction_air_fn">ReductionAirFn</a>|<a href="#t-_pred_map_fn">PredMapFn</a>|<a href="#t-_mapper_fn">MapperFn</a></code>
 
 The exact meaning depends on the type expected.  For more info, go to the
 type you are interested in.
@@ -2259,7 +2470,7 @@ over each `birlei` element:
 
 #### ⚙️find\_lower<a id='f-find_lower'></a>
 
-<code>*function* find_lower(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FindLowerFn">FindLowerFn</a>|<a href="#t-FindLowerBirleiFn">FindLowerBirleiFn</a></code>
+<code>*function* find_lower(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_find_lower_fn">FindLowerFn</a>|<a href="#t-_find_lower_birlei_fn">FindLowerBirleiFn</a></code>
 
 Possible callchains:
 
@@ -2313,7 +2524,7 @@ assert(idx == undef);
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2321,7 +2532,7 @@ assert(idx == undef);
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2333,7 +2544,7 @@ assert(idx == undef);
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-FindLowerFn">FindLowerFn</a>|<a href="#t-FindLowerBirleiFn">FindLowerBirleiFn</a></code>
+**Returns**: <code><a href="#t-_find_lower_fn">FindLowerFn</a>|<a href="#t-_find_lower_birlei_fn">FindLowerBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FindLowerBirleiFn`.
 - Else returns type `FindLowerFn`.
@@ -2349,7 +2560,7 @@ Possible callchains:
 
 #### ⚙️find\_upper<a id='f-find_upper'></a>
 
-<code>*function* find_upper(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FindUpperFn">FindUpperFn</a>|<a href="#t-FindUpperBirleiFn">FindUpperBirleiFn</a></code>
+<code>*function* find_upper(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_find_upper_fn">FindUpperFn</a>|<a href="#t-_find_upper_birlei_fn">FindUpperBirleiFn</a></code>
 
 Possible callchains:
 
@@ -2367,7 +2578,7 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2375,7 +2586,7 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2387,7 +2598,7 @@ Like C++'s `upper_bound`: returns the first index `i` for which
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-FindUpperFn">FindUpperFn</a>|<a href="#t-FindUpperBirleiFn">FindUpperBirleiFn</a></code>
+**Returns**: <code><a href="#t-_find_upper_fn">FindUpperFn</a>|<a href="#t-_find_upper_birlei_fn">FindUpperBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FindUpperBirleiFn`.
 - Else returns type `FindUpperFn`.
@@ -2403,7 +2614,7 @@ Possible callchains:
 
 #### ⚙️find<a id='f-find'></a>
 
-<code>*function* find(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FindFn">FindFn</a>|<a href="#t-FindBirleiFn">FindBirleiFn</a></code>
+<code>*function* find(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_find_fn">FindFn</a>|<a href="#t-_find_birlei_fn">FindBirleiFn</a></code>
 
 Possible callchains:
 
@@ -2415,7 +2626,7 @@ result.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2423,7 +2634,7 @@ result.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2435,7 +2646,7 @@ result.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-FindFn">FindFn</a>|<a href="#t-FindBirleiFn">FindBirleiFn</a></code>
+**Returns**: <code><a href="#t-_find_fn">FindFn</a>|<a href="#t-_find_birlei_fn">FindBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FindBirleiFn`.
 - Else returns type `FindFn`.
@@ -2451,7 +2662,7 @@ Possible callchains:
 
 #### ⚙️reduce<a id='f-reduce'></a>
 
-<code>*function* reduce(init: any, birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReduceFn">ReduceFn</a>|<a href="#t-ReduceBirleiFn">ReduceBirleiFn</a></code>
+<code>*function* reduce(init: any, birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_reduce_fn">ReduceFn</a>|<a href="#t-_reduce_birlei_fn">ReduceBirleiFn</a></code>
 
 Possible callchains:
 
@@ -2468,7 +2679,7 @@ the indices.
 This is the initial value that is passed to the first iteration of `op_fn`
 as the accumulator.
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2476,7 +2687,7 @@ as the accumulator.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2488,7 +2699,7 @@ as the accumulator.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-ReduceFn">ReduceFn</a>|<a href="#t-ReduceBirleiFn">ReduceBirleiFn</a></code>
+**Returns**: <code><a href="#t-_reduce_fn">ReduceFn</a>|<a href="#t-_reduce_birlei_fn">ReduceBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `ReduceBirleiFn`.
 - Else returns type `ReduceFn`.
@@ -2504,7 +2715,7 @@ Possible callchains:
 
 #### ⚙️reduce\_air<a id='f-reduce_air'></a>
 
-<code>*function* reduce_air(init: any, birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReduceAirBirleiFn">ReduceAirBirleiFn</a></code>
+<code>*function* reduce_air(init: any, birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_reduce_air_fn">ReduceAirFn</a>|<a href="#t-_reduce_air_birlei_fn">ReduceAirBirleiFn</a></code>
 
 Possible callchains:
 
@@ -2521,7 +2732,7 @@ the indices.  This Reduction Allows for Incomplete Reduction.
 This is the initial value that is passed to the first iteration of `op_fn`
 as the accumulator.
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2529,7 +2740,7 @@ as the accumulator.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2541,7 +2752,7 @@ as the accumulator.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-ReduceAirFn">ReduceAirFn</a>|<a href="#t-ReduceAirBirleiFn">ReduceAirBirleiFn</a></code>
+**Returns**: <code><a href="#t-_reduce_air_fn">ReduceAirFn</a>|<a href="#t-_reduce_air_birlei_fn">ReduceAirBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `ReduceAirBirleiFn`.
 - Else returns type `ReduceAirFn`.
@@ -2557,7 +2768,7 @@ Possible callchains:
 
 #### ⚙️filter<a id='f-filter'></a>
 
-<code>*function* filter(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-FilterFn">FilterFn</a>|<a href="#t-FilterBirleiFn">FilterBirleiFn</a></code>
+<code>*function* filter(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_filter_fn">FilterFn</a>|<a href="#t-_filter_birlei_fn">FilterBirleiFn</a></code>
 
 Possible callchains:
 
@@ -2568,7 +2779,7 @@ Filter function.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2576,7 +2787,7 @@ Filter function.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2588,7 +2799,7 @@ Filter function.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-FilterFn">FilterFn</a>|<a href="#t-FilterBirleiFn">FilterBirleiFn</a></code>
+**Returns**: <code><a href="#t-_filter_fn">FilterFn</a>|<a href="#t-_filter_birlei_fn">FilterBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `FilterBirleiFn`.
 - Else returns type `FilterFn`.
@@ -2604,7 +2815,7 @@ Possible callchains:
 
 #### ⚙️map<a id='f-map'></a>
 
-<code>*function* map(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-MapFn">MapFn</a>|<a href="#t-MapBirleiFn">MapBirleiFn</a></code>
+<code>*function* map(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_map_fn">MapFn</a>|<a href="#t-_map_birlei_fn">MapBirleiFn</a></code>
 
 Possible callchains:
 
@@ -2616,7 +2827,7 @@ elements as indices provided.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -2624,7 +2835,7 @@ elements as indices provided.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2636,7 +2847,7 @@ elements as indices provided.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-MapFn">MapFn</a>|<a href="#t-MapBirleiFn">MapBirleiFn</a></code>
+**Returns**: <code><a href="#t-_map_fn">MapFn</a>|<a href="#t-_map_birlei_fn">MapBirleiFn</a></code>
 
 - If `birl` is omitted, then will return type `MapBirleiFn`.
 - Else returns type `MapFn`.
@@ -2654,11 +2865,11 @@ Possible callchains:
 
 #### 🧩BoundIndexFn<a id='t-_bound_index_fn'></a>
 
-<code>*callback* BoundIndexFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
+<code>*callback* BoundIndexFn(spaceship\_fn: <a href="#t-_spaceship_fn">SpaceshipFn</a>) : number|undef</code>
 
 <details><summary>parameters</summary>
 
-**<code>spaceship_fn</code>**: <code><a href="#t-SpaceshipFn">SpaceshipFn</a></code>
+**<code>spaceship_fn</code>**: <code><a href="#t-_spaceship_fn">SpaceshipFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -2712,19 +2923,19 @@ Index of the selected bound, or `undef` if no such index exists.
 
 #### 🧩AlgoFn<a id='t-_algo_fn'></a>
 
-<code>*callback* AlgoFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* AlgoFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 Executes the algorithm.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-Birl">Birl</a></code>
+**<code>birl</code>**: <code><a href="#t-_birl">Birl</a></code>
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
 - If `list`, indices to iterate over
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -2746,19 +2957,19 @@ Returned value is based on the result of the function doing the iterating.
 
 #### 🧩FindLowerFn<a id='t-_find_lower_fn'></a>
 
-<code>*callback* FindLowerFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
+<code>*callback* FindLowerFn(spaceship\_fn: <a href="#t-_spaceship_fn">SpaceshipFn</a>) : number|undef</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindLowerBirleiFn<a id='t-_find_lower_birlei_fn'></a>
 
-<code>*callback* FindLowerBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* FindLowerBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindUpperFn<a id='t-_find_upper_fn'></a>
 
-<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
+<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-_spaceship_fn">SpaceshipFn</a>) : number|undef</code>
 
 Returns the first index `i` where `spaceship_fn(i) > 0`.
 
@@ -2766,7 +2977,7 @@ Returns the first index `i` where `spaceship_fn(i) > 0`.
 
 #### 🧩FindUpperFn<a id='t-_find_upper_fn'></a>
 
-<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-SpaceshipFn">SpaceshipFn</a>) : number|undef</code>
+<code>*callback* FindUpperFn(spaceship\_fn: <a href="#t-_spaceship_fn">SpaceshipFn</a>) : number|undef</code>
 
 Possible callchains:
 
@@ -2774,7 +2985,7 @@ Possible callchains:
 
 <details><summary>parameters</summary>
 
-**<code>spaceship_fn</code>**: <code><a href="#t-SpaceshipFn">SpaceshipFn</a></code>
+**<code>spaceship_fn</code>**: <code><a href="#t-_spaceship_fn">SpaceshipFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -2816,17 +3027,17 @@ The first index `i` where `spaceship_fn(i) > 0` or `undef` if none found.
 
 #### 🧩FindUpperBirleiFn<a id='t-_find_upper_birlei_fn'></a>
 
-<code>*callback* FindUpperBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* FindUpperBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FindFn<a id='t-_find_fn'></a>
 
-<code>*callback* FindFn(pred\_fn: <a href="#t-PredFn">PredFn</a>) : number|undef</code>
+<code>*callback* FindFn(pred\_fn: <a href="#t-_pred_fn">PredFn</a>) : number|undef</code>
 
 <details><summary>parameters</summary>
 
-**<code>pred_fn</code>**: <code><a href="#t-PredFn">PredFn</a></code>
+**<code>pred_fn</code>**: <code><a href="#t-_pred_fn">PredFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -2869,17 +3080,17 @@ First index where `pred_fn(i)` is `true`.  If none are found, returns
 
 #### 🧩FindBirleiFn<a id='t-_find_birlei_fn'></a>
 
-<code>*callback* FindBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* FindBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReduceFn<a id='t-_reduce_fn'></a>
 
-<code>*callback* ReduceFn(reduction\_fn: <a href="#t-ReductionFn">ReductionFn</a>) : any</code>
+<code>*callback* ReduceFn(reduction\_fn: <a href="#t-_reduction_fn">ReductionFn</a>) : any</code>
 
 <details><summary>parameters</summary>
 
-**<code>reduction_fn</code>**: <code><a href="#t-ReductionFn">ReductionFn</a></code>
+**<code>reduction_fn</code>**: <code><a href="#t-_reduction_fn">ReductionFn</a></code>
 
 Mutates the accumulator given a derived comparison value.
 
@@ -2922,17 +3133,17 @@ Final value of accumulator.
 
 #### 🧩ReduceBirleiFn<a id='t-_reduce_birlei_fn'></a>
 
-<code>*callback* ReduceBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* ReduceBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩ReduceAirFn<a id='t-_reduce_air_fn'></a>
 
-<code>*callback* ReduceAirFn(reduction\_fn: <a href="#t-ReductionAirFn">ReductionAirFn</a>) : list\[bool,any]</code>
+<code>*callback* ReduceAirFn(reduction\_fn: <a href="#t-_reduction_air_fn">ReductionAirFn</a>) : list\[bool,any]</code>
 
 <details><summary>parameters</summary>
 
-**<code>reduction_fn</code>**: <code><a href="#t-ReductionAirFn">ReductionAirFn</a></code>
+**<code>reduction_fn</code>**: <code><a href="#t-_reduction_air_fn">ReductionAirFn</a></code>
 
 Mutates the accumulator given a derived comparison value.
 
@@ -2976,17 +3187,17 @@ Last continue value and the final value of accumulator.  If the original
 
 #### 🧩ReduceAirBirleiFn<a id='t-_reduce_air_birlei_fn'></a>
 
-<code>*callback* ReduceAirBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* ReduceAirBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩FilterFn<a id='t-_filter_fn'></a>
 
-<code>*callback* FilterFn(ppm\_fn: <a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a>) : list\[any,...]</code>
+<code>*callback* FilterFn(ppm\_fn: <a href="#t-_pred_fn">PredFn</a>|<a href="#t-_pred_map_fn">PredMapFn</a>) : list\[any,...]</code>
 
 <details><summary>parameters</summary>
 
-**<code>ppm_fn</code>**: <code><a href="#t-PredFn">PredFn</a>|<a href="#t-PredMapFn">PredMapFn</a></code>
+**<code>ppm_fn</code>**: <code><a href="#t-_pred_fn">PredFn</a>|<a href="#t-_pred_map_fn">PredMapFn</a></code>
 
 </details>
 
@@ -3002,17 +3213,17 @@ A list of elements where the predicate returned true.
 
 #### 🧩FilterBirleiFn<a id='t-_filter_birlei_fn'></a>
 
-<code>*callback* FilterBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* FilterBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩MapFn<a id='t-_map_fn'></a>
 
-<code>*callback* MapFn(map\_fn: <a href="#t-MapperFn">MapperFn</a>) : list\[any,...]</code>
+<code>*callback* MapFn(map\_fn: <a href="#t-_mapper_fn">MapperFn</a>) : list\[any,...]</code>
 
 <details><summary>parameters</summary>
 
-**<code>map_fn</code>**: <code><a href="#t-MapperFn">MapperFn</a></code>
+**<code>map_fn</code>**: <code><a href="#t-_mapper_fn">MapperFn</a></code>
 
 Maps a probed value to a list.
 
@@ -3047,7 +3258,7 @@ A list of elements that were mapped.
 
 #### 🧩MapBirleiFn<a id='t-_map_birlei_fn'></a>
 
-<code>*callback* MapBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* MapBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -3065,7 +3276,7 @@ Implements any and all algorithms.
 
 #### ⚙️any<a id='f-any'></a>
 
-<code>*function* any(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-AnyFn">AnyFn</a>|bool</code>
+<code>*function* any(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_any_fn">AnyFn</a>|bool</code>
 
 Possible callchains:
 
@@ -3077,7 +3288,7 @@ result.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -3085,7 +3296,7 @@ result.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3097,7 +3308,7 @@ result.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-AnyFn">AnyFn</a>|bool</code>
+**Returns**: <code><a href="#t-_any_fn">AnyFn</a>|bool</code>
 
 - If `birl` is omitted, then will return type `AnyBirleiFn`.
 - Else returns type `AnyFn`.
@@ -3112,7 +3323,7 @@ Possible callchains:
 
 #### ⚙️all<a id='f-all'></a>
 
-<code>*function* all(birl: <a href="#t-OptionalBirl">OptionalBirl</a>, end\_i: <a href="#t-EndI">EndI</a>) : function(pred_fn: <a href="#t-PredFn">PredFn</a>): bool</code>
+<code>*function* all(birl: <a href="#t-_optional_birl">OptionalBirl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : function(pred_fn: <a href="#t-_pred_fn">PredFn</a>): bool</code>
 
 Possible callchains:
 
@@ -3124,7 +3335,7 @@ result.
 
 <details><summary>parameters</summary>
 
-**<code>birl</code>**: <code><a href="#t-OptionalBirl">OptionalBirl</a></code> *(Optional)*
+**<code>birl</code>**: <code><a href="#t-_optional_birl">OptionalBirl</a></code> *(Optional)*
 
 - If `number`, start index to iterate over
 - If `range`, indices to iterate over
@@ -3132,7 +3343,7 @@ result.
 - If `undef`, then tells function to return a curried version of itself,
   that only takes parameters of types `Birl` and `EndI`.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Optional)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Optional)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3144,7 +3355,7 @@ result.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>function(pred_fn: <a href="#t-PredFn">PredFn</a>): bool</code>
+**Returns**: <code>function(pred_fn: <a href="#t-_pred_fn">PredFn</a>): bool</code>
 
 If all pred_fn(i) calls returns truthy, then returns true, otherwise
 false.
@@ -3157,11 +3368,11 @@ false.
 
 #### 🧩AnyFn<a id='t-_any_fn'></a>
 
-<code>*callback* AnyFn(pred\_fn: <a href="#t-PredFn">PredFn</a>) : bool</code>
+<code>*callback* AnyFn(pred\_fn: <a href="#t-_pred_fn">PredFn</a>) : bool</code>
 
 <details><summary>parameters</summary>
 
-**<code>pred_fn</code>**: <code><a href="#t-PredFn">PredFn</a></code>
+**<code>pred_fn</code>**: <code><a href="#t-_pred_fn">PredFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -3199,17 +3410,17 @@ First index where `pred_fn(i)` is `true` will result in `true`, else
 
 #### 🧩AnyBirleiFn<a id='t-_any_birlei_fn'></a>
 
-<code>*callback* AnyBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* AnyBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 🧩AllFn<a id='t-_all_fn'></a>
 
-<code>*callback* AllFn(pred\_fn: <a href="#t-PredFn">PredFn</a>) : number|undef</code>
+<code>*callback* AllFn(pred\_fn: <a href="#t-_pred_fn">PredFn</a>) : number|undef</code>
 
 <details><summary>parameters</summary>
 
-**<code>pred_fn</code>**: <code><a href="#t-PredFn">PredFn</a></code>
+**<code>pred_fn</code>**: <code><a href="#t-_pred_fn">PredFn</a></code>
 
 Compares a derived comparison value against an internally stored value.
 
@@ -3247,7 +3458,213 @@ First index where `pred_fn(i)` is `false` will result in `false`, else
 
 #### 🧩AllBirleiFn<a id='t-_all_birlei_fn'></a>
 
-<code>*callback* AllBirleiFn(birl: <a href="#t-Birl">Birl</a>, end\_i: <a href="#t-EndI">EndI</a>) : any</code>
+<code>*callback* AllBirleiFn(birl: <a href="#t-_birl">Birl</a>, end\_i: <a href="#t-_end_i">EndI</a>) : any</code>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
+## 📘indexable_consts<a id='file-indexable_consts'></a>
+
+### <i>📑How to Import</i><a id='ch-indexable_consts-_how_to__import'></a>
+
+    include <indexable_consts>
+
+### <i>📑Purpose</i><a id='ch-indexable_consts-_purpose'></a>
+
+Constants used by [`slr_cache`](#f-_slr_cache) for indexing the
+[slr_cache](#t-slr_cache) object.
+
+### <i>📑`slr_cache` Slot Related Constants</i><a id='ch-indexable_consts-_slr_cache___slot__related__constants'></a>
+
+#### 💠\_SLR\_CACHE\_HEADER<a id='v-__s_l_r__c_a_c_h_e__h_e_a_d_e_r'></a>
+
+<code>*value* _SLR_CACHE_HEADER : <a href="#t-_obj_type_id">ObjTypeId</a></code>
+
+Used to indicate if a list object is identified as an `_SLR_CACHE` object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_LEN<a id='v-__s_l_r__l_e_n'></a>
+
+<code>*value* _SLR_LEN : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Value representing the length of `slr`.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_LEN]
+```
+
+Return type is number.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_TE<a id='v-__s_l_r__t_e'></a>
+
+<code>*value* _SLR_TE : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Value representing the type of `slr`.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_TE]
+```
+
+Return type is `TypeEnum`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_ELD<a id='v-__s_l_r__e_l_d'></a>
+
+<code>*value* _SLR_ELD : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Function dereferences the `slr` DIRECTLY.  E.g. index directly to `slr`
+without going through the BIRLEI.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_ELD]
+```
+
+Return type is `function(i): any`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_BLEN<a id='v-__s_l_r__b_l_e_n'></a>
+
+<code>*value* _SLR_BLEN : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Length of BIRLEI.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_BLEN]
+```
+
+Return type is `number`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_ELI<a id='v-__s_l_r__e_l_i'></a>
+
+<code>*value* _SLR_ELI : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Function dereferences the `slr` INDIRECTLY by getting index through the
+BIRLEI, and using that index to index the `slr`.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_ELI]
+```
+
+Return type is `function(i): any`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_IDX<a id='v-__s_l_r__i_d_x'></a>
+
+<code>*value* _SLR_IDX : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Function that dereferences the BIRLEI value.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_IDX]
+```
+
+Return type is `function(i): number`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_STR<a id='v-__s_l_r__s_t_r'></a>
+
+<code>*value* _SLR_STR : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Function converting normalised BIRLEI to string.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_STR]
+```
+
+Return type is `function() : string`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_BIRL<a id='v-__s_l_r__b_i_r_l'></a>
+
+<code>*value* _SLR_BIRL : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Normalised BIRL component of BIRLEI.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_BIRL]
+```
+
+Return type is `number | list | range`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SLR\_END\_I<a id='v-__s_l_r__e_n_d__i'></a>
+
+<code>*value* _SLR_END_I : <a href="#t-_slr_cache_enum">SlrCacheEnum</a></code>
+
+Normalised END_I component of BIRLEI.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+_slr_cache(slr, birls, end_i)[_SLR_END_I]
+```
+
+Return type is `number | undef`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑indexable_consts types</i><a id='ch-indexable_consts-indexable_consts_types'></a>
+
+#### 🧩SlrCacheEnum<a id='t-_slr_cache_enum'></a>
+
+<code>*type* SlrCacheEnum = <a href="#t-_member_index">MemberIndex</a></code>
+
+Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -3488,7 +3905,7 @@ If the slice is completely before or after the slr, returns [].
 
 #### ⚙️\_slr\_cache<a id='f-_slr_cache'></a>
 
-<code>*function* _slr_cache(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-slr_cache">slr_cache</a></code>
+<code>*function* _slr_cache(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-slr_cache">slr_cache</a></code>
 
 A `birlsei` may be incomplete or may be a slice. This function normalise it
 to a `birlei` such that:
@@ -3538,14 +3955,14 @@ be included using the command `include<indexable_consts>` (DO NOT USE
 
 The `slr` used as reference.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3588,7 +4005,7 @@ the `birlsei` is partially or fully omitted.
 
 #### ⚙️it\_each<a id='f-it_each'></a>
 
-<code>*function* it_each(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-AlgoFn">AlgoFn</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+<code>*function* it_each(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-_algo_fn">AlgoFn</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_get_ppmrrair_fn">GetPpmrrairFn</a></code>
 
 Possible callchains:
 
@@ -3628,18 +4045,18 @@ even_values  = it_each(a, filter())(function(e, v) v ? e : e % 2);
 
 This is the list to take element data from.
 
-**<code>algo_fn</code>**: <code><a href="#t-AlgoFn">AlgoFn</a></code>
+**<code>algo_fn</code>**: <code><a href="#t-_algo_fn">AlgoFn</a></code>
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3651,7 +4068,7 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+**Returns**: <code><a href="#t-_get_ppmrrair_fn">GetPpmrrairFn</a></code>
 
 The ppmrrair function that the specified `algo_fn()` will call.
 
@@ -3665,7 +4082,7 @@ Possible callchains:
 
 #### ⚙️it\_idxs<a id='f-it_idxs'></a>
 
-<code>*function* it_idxs(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-AlgoFn">AlgoFn</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+<code>*function* it_idxs(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-_algo_fn">AlgoFn</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_get_ppmrrair_fn">GetPpmrrairFn</a></code>
 
 Possible callchains:
 
@@ -3704,18 +4121,18 @@ even_values  = it_idxs(a, filter())(function(i, v) v ? a[i] : a[i] % 2);
 
 This is the list to take element data from.
 
-**<code>algo_fn</code>**: <code><a href="#t-AlgoFn">AlgoFn</a></code>
+**<code>algo_fn</code>**: <code><a href="#t-_algo_fn">AlgoFn</a></code>
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3727,7 +4144,7 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+**Returns**: <code><a href="#t-_get_ppmrrair_fn">GetPpmrrairFn</a></code>
 
 The ppmrrair function that the specified `algo_fn()` will call.
 
@@ -3741,7 +4158,7 @@ Possible callchains:
 
 #### ⚙️it\_enum<a id='f-it_enum'></a>
 
-<code>*function* it_enum(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-AlgoFn">AlgoFn</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+<code>*function* it_enum(slr: string|list|<a href="#t-range">range</a>, algo\_fn: <a href="#t-_algo_fn">AlgoFn</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_get_ppmrrair_fn">GetPpmrrairFn</a></code>
 
 Possible callchains:
 
@@ -3783,18 +4200,18 @@ even_values  = it_enum(a, filter())(function(p, v) v ? p[1] : p[0] % 2);
 
 This is the list to take element data from.
 
-**<code>algo_fn</code>**: <code><a href="#t-AlgoFn">AlgoFn</a></code>
+**<code>algo_fn</code>**: <code><a href="#t-_algo_fn">AlgoFn</a></code>
 
 This is the operation function that is called. E.g. find(), filter(), etc.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -3806,7 +4223,7 @@ This is the operation function that is called. E.g. find(), filter(), etc.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-GetPpmrrairFn">GetPpmrrairFn</a></code>
+**Returns**: <code><a href="#t-_get_ppmrrair_fn">GetPpmrrairFn</a></code>
 
 The ppmrrair function that the specified `algo_fn()` will call.
 
@@ -3957,7 +4374,7 @@ The element at the index specified.
 
 #### ⚙️els<a id='f-els'></a>
 
-<code>*function* els(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : string|list|<a href="#t-range">range</a></code>
+<code>*function* els(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : string|list|<a href="#t-range">range</a></code>
 
 Gets a substring, sub-range or sub-elements of a string, list or range.   If
 `slr` is a `range` and the `birlei` is a `range`, the result is a `range`.
@@ -3972,14 +4389,14 @@ Gets a substring, sub-range or sub-elements of a string, list or range.   If
 
 The `slr` to get the elements from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4001,7 +4418,7 @@ The elements at the indices specified or the substring.
 
 #### ⚙️range\_els<a id='f-range_els'></a>
 
-<code>*function* range_els(r: <a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-range">range</a>|list</code>
+<code>*function* range_els(r: <a href="#t-range">range</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-range">range</a>|list</code>
 
 Optimised version of `els` for ranges.  Gets elements from a range as a range
 or list.
@@ -4038,14 +4455,14 @@ range_els([1 : 2 : 15], [2 : 3 : 5])
 
 The r to get the elements from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(r, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(r, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4069,7 +4486,7 @@ The elements at the indices specified or the substring.
 
 #### ⚙️idxs<a id='f-idxs'></a>
 
-<code>*function* idxs(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : list\[number,...]</code>
+<code>*function* idxs(slr: string|list|<a href="#t-range">range</a>, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : list\[number,...]</code>
 
 Gets the indices from a `birlsei` as a list.
 
@@ -4079,14 +4496,14 @@ Gets the indices from a `birlsei` as a list.
 
 The `slr` to get the indices from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(slr, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(slr, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4452,7 +4869,7 @@ The updated sl.
 
 #### ⚙️insert<a id='f-insert'></a>
 
-<code>*function* insert(sl: string|list, i: number, es: string|list|<a href="#t-range">range</a>, es\_birls: <a href="#t-Birls">Birls</a>, es\_end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
+<code>*function* insert(sl: string|list, i: number, es: string|list|<a href="#t-range">range</a>, es\_birls: <a href="#t-_birls">Birls</a>, es\_end\_i: <a href="#t-_end_i">EndI</a>) : string|list</code>
 
 Possible callchains:
 
@@ -4481,14 +4898,14 @@ Index to insert into.
 
 Elements to insert.
 
-**<code>es_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>es_birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>es_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(es, -1)`)*
+**<code>es_end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(es, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4561,7 +4978,7 @@ The updated sl.
 
 #### ⚙️remove\_adjacent\_dups<a id='f-remove_adjacent_dups'></a>
 
-<code>*function* remove_adjacent_dups(sl: string|list, wrap: bool, \_sl\_len: number) : <a href="#t-RemoveAdjacentDupsFn">RemoveAdjacentDupsFn</a></code>
+<code>*function* remove_adjacent_dups(sl: string|list, wrap: bool, \_sl\_len: number) : <a href="#t-_remove_adjacent_dups_fn">RemoveAdjacentDupsFn</a></code>
 
 Possible callchains:
 
@@ -4592,7 +5009,7 @@ If passed, then use that cached value instead of calculating `len(sl)`.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-RemoveAdjacentDupsFn">RemoveAdjacentDupsFn</a></code>
+**Returns**: <code><a href="#t-_remove_adjacent_dups_fn">RemoveAdjacentDupsFn</a></code>
 
 Callback that removes the adjacent duplicates.
 
@@ -4606,7 +5023,7 @@ Possible callchains:
 
 #### ⚙️remove\_each<a id='f-remove_each'></a>
 
-<code>*function* remove_each(sl: string|list, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
+<code>*function* remove_each(sl: string|list, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : string|list</code>
 
 Removes each element indexed in the `birlsei`.
 
@@ -4620,14 +5037,14 @@ Removes each element indexed in the `birlsei`.
 
 List to remove elements from.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(sl, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(sl, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4649,7 +5066,7 @@ The updated sl.
 
 #### ⚙️replace<a id='f-replace'></a>
 
-<code>*function* replace(a: string|list, a\_begin\_i: number, a\_end\_i: number, b: string|list|<a href="#t-range">range</a>, b\_birls: <a href="#t-Birls">Birls</a>, b\_end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
+<code>*function* replace(a: string|list, a\_begin\_i: number, a\_end\_i: number, b: string|list|<a href="#t-range">range</a>, b\_birls: <a href="#t-_birls">Birls</a>, b\_end\_i: <a href="#t-_end_i">EndI</a>) : string|list</code>
 
 Replaces contiguous index set \[`a_begin_i`, `a_end_i`] from list `a` with
 `birlsei` index set of list `b`.
@@ -4672,14 +5089,14 @@ The ending index of a to replace.
 
 List to draw elements from to replace the a element range with.
 
-**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>b_birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(b, -1)`)*
+**<code>b_end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(b, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4701,7 +5118,7 @@ This is the updated list of elements.
 
 #### ⚙️replace\_each<a id='f-replace_each'></a>
 
-<code>*function* replace_each(a: string|list, a\_birls: <a href="#t-Birls">Birls</a>, a\_end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-ReplaceEachFn">ReplaceEachFn</a></code>
+<code>*function* replace_each(a: string|list, a\_birls: <a href="#t-_birls">Birls</a>, a\_end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_replace_each_fn">ReplaceEachFn</a></code>
 
 Possible callchains:
 
@@ -4724,14 +5141,14 @@ specified by `b_birls, b_end_i`.
 
 sl to have elements replaced.
 
-**<code>a_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>a_birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>a_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(a, -1)`)*
+**<code>a_end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(a, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -4743,7 +5160,7 @@ sl to have elements replaced.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-ReplaceEachFn">ReplaceEachFn</a></code>
+**Returns**: <code><a href="#t-_replace_each_fn">ReplaceEachFn</a></code>
 
 Get the replacement set and execute replacement.
 
@@ -5001,7 +5418,7 @@ Objects at the tail of the list.
 
 #### ⚙️osearch<a id='f-osearch'></a>
 
-<code>*function* osearch(haystack: string|list, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
+<code>*function* osearch(haystack: string|list, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_search_needle_fn">SearchNeedleFn</a></code>
 
 Possible callchains:
 
@@ -5018,14 +5435,14 @@ operator to allow for non-exact matches.
 
 String or list of consecutive items to search through.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(haystack, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(haystack, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -5037,7 +5454,7 @@ String or list of consecutive items to search through.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
+**Returns**: <code><a href="#t-_search_needle_fn">SearchNeedleFn</a></code>
 
 Curry function to get needle data.
 
@@ -5051,7 +5468,7 @@ Possible callchains:
 
 #### ⚙️csearch<a id='f-csearch'></a>
 
-<code>*function* csearch(haystack: string|list, birls: <a href="#t-Birls">Birls</a>, end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
+<code>*function* csearch(haystack: string|list, birls: <a href="#t-_birls">Birls</a>, end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_search_needle_fn">SearchNeedleFn</a></code>
 
 Possible callchains:
 
@@ -5068,14 +5485,14 @@ to search and exposes the equal() operator to allow for non-exact matches.
 
 String or list of consecutive items to search through.
 
-**<code>birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(haystack, -1)`)*
+**<code>end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(haystack, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -5087,7 +5504,7 @@ String or list of consecutive items to search through.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-SearchNeedleFn">SearchNeedleFn</a></code>
+**Returns**: <code><a href="#t-_search_needle_fn">SearchNeedleFn</a></code>
 
 Curry function to get needle data.
 
@@ -5103,8 +5520,8 @@ Possible callchains:
 
 <code>*function* quicksort_list_comp_ex()</code>
 
-Example quick sort algorithm from:
-  (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+Example quick sort algorithm from [OpenSCAD User Manual](
+https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions#Sorting_a_vector)
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -5114,8 +5531,8 @@ Example quick sort algorithm from:
 
 Example of quick sort algorithm using library.
 
-Modified quicksort example from:
-  (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+Modified quicksort example from [OpenSCAD User Manual](
+https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions#Sorting_a_vector)
 
 > ℹ️ NOTE:
 >
@@ -5131,8 +5548,8 @@ Modified quicksort example from:
 
 Example of quick sort algorithm using library.
 
-Modified quicksort example from:
-  (https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions)
+Modified quicksort example from [OpenSCAD User Manual](
+https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/List_Comprehensions#Sorting_a_vector)
 
 > ℹ️ NOTE:
 >
@@ -5176,6 +5593,8 @@ indexable range.
 
 <code>*type* slr_cache = list</code>
 
+@deref {SlrCacheEnum}
+
 Cache returned by `_slr_cache(slr, birls, end_i)`.
 
 <details><summary><b>Example:</b><i> Usage</i></summary>
@@ -5192,7 +5611,7 @@ len_of_slr = cache_obj[_SLR_LEN]
 
 Length of `slr`.
 
-<code><b>_SLR_TE</b></code>: <code><a href="#t-TypeEnum">TypeEnum</a></code>
+<code><b>_SLR_TE</b></code>: <code><a href="#t-_type_enum">TypeEnum</a></code>
 
 Type enum of `slr`.
 
@@ -5247,13 +5666,13 @@ Normalised end_i.
 
 #### 🧩GetPpmrrairFn<a id='t-_get_ppmrrair_fn'></a>
 
-<code>*callback* GetPpmrrairFn(ppmrrair\_fn: <a href="#t-PpmrrairFn">PpmrrairFn</a>) : any</code>
+<code>*callback* GetPpmrrairFn(ppmrrair\_fn: <a href="#t-_ppmrrair_fn">PpmrrairFn</a>) : any</code>
 
 Gets the PPMRRAIR function to apply the [AlgoFn](#t-_algo_fn) to.
 
 <details><summary>parameters</summary>
 
-**<code>ppmrrair_fn</code>**: <code><a href="#t-PpmrrairFn">PpmrrairFn</a></code>
+**<code>ppmrrair_fn</code>**: <code><a href="#t-_ppmrrair_fn">PpmrrairFn</a></code>
 
 The PPMRRAIR function to iterate with.
 
@@ -5301,13 +5720,13 @@ The result of the equality test.
 
 #### 🧩GetEqualFn<a id='t-_get_equal_fn'></a>
 
-<code>*callback* GetEqualFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
+<code>*callback* GetEqualFn(equal\_fn: <a href="#t-_equal_fn">EqualFn</a>) : any</code>
 
 Gets the equality function and perform a function with it.
 
 <details><summary>parameters</summary>
 
-**<code>equal_fn</code>**: <code><a href="#t-EqualFn">EqualFn</a></code> *(Default: `function(a, b) a == b`)*
+**<code>equal_fn</code>**: <code><a href="#t-_equal_fn">EqualFn</a></code> *(Default: `function(a, b) a == b`)*
 
 The equality function.
 
@@ -5325,7 +5744,7 @@ The resulting value when done.
 
 #### 🧩RemoveAdjacentDupsFn<a id='t-_remove_adjacent_dups_fn'></a>
 
-<code>*callback* RemoveAdjacentDupsFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
+<code>*callback* RemoveAdjacentDupsFn(equal\_fn: <a href="#t-_equal_fn">EqualFn</a>) : any</code>
 
 Callback that removes the adjacent duplicates.
 
@@ -5333,7 +5752,7 @@ Callback that removes the adjacent duplicates.
 
 #### 🧩ReplaceEachFn<a id='t-_replace_each_fn'></a>
 
-<code>*callback* ReplaceEachFn(b: string|list|<a href="#t-range">range</a>, b\_birls: <a href="#t-Birls">Birls</a>, b\_end\_i: <a href="#t-EndI">EndI</a>) : string|list</code>
+<code>*callback* ReplaceEachFn(b: string|list|<a href="#t-range">range</a>, b\_birls: <a href="#t-_birls">Birls</a>, b\_end\_i: <a href="#t-_end_i">EndI</a>) : string|list</code>
 
 <details><summary>parameters</summary>
 
@@ -5341,14 +5760,14 @@ Callback that removes the adjacent duplicates.
 
 sl to have elements replaced.
 
-**<code>b_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>b_birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>b_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(b, -1)`)*
+**<code>b_end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(b, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -5370,7 +5789,7 @@ This is the updated list of elements.
 
 #### 🧩SearchFn<a id='t-_search_fn'></a>
 
-<code>*callback* SearchFn(equal\_fn: <a href="#t-EqualFn">EqualFn</a>) : any</code>
+<code>*callback* SearchFn(equal\_fn: <a href="#t-_equal_fn">EqualFn</a>) : any</code>
 
 Perform search.
 
@@ -5378,7 +5797,7 @@ Perform search.
 
 #### 🧩SearchNeedleFn<a id='t-_search_needle_fn'></a>
 
-<code>*callback* SearchNeedleFn(needle: string|list, n\_birls: <a href="#t-Birls">Birls</a>, n\_end\_i: <a href="#t-EndI">EndI</a>) : <a href="#t-SearchFn">SearchFn</a></code>
+<code>*callback* SearchNeedleFn(needle: string|list, n\_birls: <a href="#t-_birls">Birls</a>, n\_end\_i: <a href="#t-_end_i">EndI</a>) : <a href="#t-_search_fn">SearchFn</a></code>
 
 Gets the needle data.
 
@@ -5388,14 +5807,14 @@ Gets the needle data.
 
 String or list of items being searched for.
 
-**<code>n_birls</code>**: <code><a href="#t-Birls">Birls</a></code> *(Default: `0`)*
+**<code>n_birls</code>**: <code><a href="#t-_birls">Birls</a></code> *(Default: `0`)*
 
 - If `number`, start index to iterate over.
 - If `range`, indices to iterate over.
 - If `list`, indices to iterate over.
 - If `slice`, to convert to range providing indices to iterate over.
 
-**<code>n_end_i</code>**: <code><a href="#t-EndI">EndI</a></code> *(Default: `idx(needle, -1)`)*
+**<code>n_end_i</code>**: <code><a href="#t-_end_i">EndI</a></code> *(Default: `idx(needle, -1)`)*
 
 - If related `birl` is a number, then this is the end index to iterate
   over.
@@ -5407,7 +5826,7 @@ String or list of items being searched for.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-SearchFn">SearchFn</a></code>
+**Returns**: <code><a href="#t-_search_fn">SearchFn</a></code>
 
 Callback to get the equality function.
 
@@ -5416,212 +5835,6 @@ Possible callchains:
     SearchFn(equal_fn) : (number|undef)
 
 </details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-<hr/>
-
-## 📘indexable_consts<a id='file-indexable_consts'></a>
-
-### <i>📑How to Import</i><a id='ch-indexable_consts-_how_to__import'></a>
-
-    include <indexable_consts>
-
-### <i>📑Purpose</i><a id='ch-indexable_consts-_purpose'></a>
-
-Constants used by [`slr_cache`](#f-_slr_cache) for indexing the
-[slr_cache](#t-slr_cache) object.
-
-### <i>📑Values</i><a id='ch-indexable_consts-_values'></a>
-
-#### 💠\_SLR\_CACHE\_HEADER<a id='v-__s_l_r__c_a_c_h_e__h_e_a_d_e_r'></a>
-
-<code>*value* _SLR_CACHE_HEADER : string</code>
-
-Used to indicate if a list object is identified as an `_SLR_CACHE` object.
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_LEN<a id='v-__s_l_r__l_e_n'></a>
-
-<code>*value* _SLR_LEN : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Value representing the length of `slr`.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_LEN]
-```
-
-Return type is number.
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_TE<a id='v-__s_l_r__t_e'></a>
-
-<code>*value* _SLR_TE : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Value representing the type of `slr`.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_TE]
-```
-
-Return type is `TypeEnum`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_ELD<a id='v-__s_l_r__e_l_d'></a>
-
-<code>*value* _SLR_ELD : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Function dereferences the `slr` DIRECTLY.  E.g. index directly to `slr`
-without going through the BIRLEI.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_ELD]
-```
-
-Return type is `function(i): any`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_BLEN<a id='v-__s_l_r__b_l_e_n'></a>
-
-<code>*value* _SLR_BLEN : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Length of BIRLEI.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_BLEN]
-```
-
-Return type is `number`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_ELI<a id='v-__s_l_r__e_l_i'></a>
-
-<code>*value* _SLR_ELI : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Function dereferences the `slr` INDIRECTLY by getting index through the
-BIRLEI, and using that index to index the `slr`.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_ELI]
-```
-
-Return type is `function(i): any`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_IDX<a id='v-__s_l_r__i_d_x'></a>
-
-<code>*value* _SLR_IDX : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Function that dereferences the BIRLEI value.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_IDX]
-```
-
-Return type is `function(i): number`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_STR<a id='v-__s_l_r__s_t_r'></a>
-
-<code>*value* _SLR_STR : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Function converting normalised BIRLEI to string.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_STR]
-```
-
-Return type is `function() : string`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_BIRL<a id='v-__s_l_r__b_i_r_l'></a>
-
-<code>*value* _SLR_BIRL : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Normalised BIRL component of BIRLEI.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_BIRL]
-```
-
-Return type is `number | list | range`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠\_SLR\_END\_I<a id='v-__s_l_r__e_n_d__i'></a>
-
-<code>*value* _SLR_END_I : <a href="#t-SlrCacheEnum">SlrCacheEnum</a></code>
-
-Normalised END_I component of BIRLEI.
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-_slr_cache(slr, birls, end_i)[_SLR_END_I]
-```
-
-Return type is `number | undef`
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-### <i>📑indexable_consts types</i><a id='ch-indexable_consts-indexable_consts_types'></a>
-
-#### 🧩SlrCacheEnum<a id='t-_slr_cache_enum'></a>
-
-<code>*type* SlrCacheEnum = number</code>
-
-Enum used to dereference a [`slr_cache`](#t-slr_cache) type.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -6631,7 +6844,7 @@ This library is for matrix math for a variety of things.
 
 #### ⚙️transpose<a id='f-transpose'></a>
 
-<code>*function* transpose(A: <a href="#t-Matrix">Matrix</a>) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* transpose(A: <a href="#t-_matrix">Matrix</a>) : <a href="#t-_matrix">Matrix</a></code>
 
 Transpose of a matrix.
 
@@ -6646,7 +6859,7 @@ Transpose of a matrix.
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>A</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 The matrix to transpose.
 
@@ -6654,7 +6867,7 @@ The matrix to transpose.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 The transpose of matrix A.
 
@@ -6664,7 +6877,7 @@ The transpose of matrix A.
 
 #### ⚙️homogenise<a id='f-homogenise'></a>
 
-<code>*function* homogenise(pts: list\[<a href="#t-Point">Point</a>,...], n: number) : list\[<a href="#t-Point">Point</a>,...]</code>
+<code>*function* homogenise(pts: list\[<a href="#t-_point">Point</a>,...], n: number) : list\[<a href="#t-_point">Point</a>,...]</code>
 
 Convert points to homogeneous coordinates.
 
@@ -6673,7 +6886,7 @@ appended.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point">Point</a>,...]</code>
 
 List of points.  Each point must have dimension < n.
 
@@ -6686,7 +6899,7 @@ point in pts.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
+**Returns**: <code>list\[<a href="#t-_point">Point</a>,...]</code>
 
 List of n-dimensional points with homogeneous coordinate 1 at index n-1.
 
@@ -6696,7 +6909,7 @@ List of n-dimensional points with homogeneous coordinate 1 at index n-1.
 
 #### ⚙️dehomogenise<a id='f-dehomogenise'></a>
 
-<code>*function* dehomogenise(pts: list\[<a href="#t-Point">Point</a>,...], n: number) : list\[<a href="#t-Point">Point</a>,...]</code>
+<code>*function* dehomogenise(pts: list\[<a href="#t-_point">Point</a>,...], n: number) : list\[<a href="#t-_point">Point</a>,...]</code>
 
 Dehomogenises a list of homogeneous points to Euclidean points.
 
@@ -6715,7 +6928,7 @@ Preconditions (enforced by asserts):
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point">Point</a>,...]</code>
 
 List of homogeneous points.
 
@@ -6727,7 +6940,7 @@ Number of Euclidean coordinates to return per point.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
+**Returns**: <code>list\[<a href="#t-_point">Point</a>,...]</code>
 
 List of n-dimensional Euclidean points.
 
@@ -6737,7 +6950,7 @@ List of n-dimensional Euclidean points.
 
 #### ⚙️homogenise\_transform<a id='f-homogenise_transform'></a>
 
-<code>*function* homogenise_transform(A: <a href="#t-Matrix">Matrix</a>, n: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* homogenise_transform(A: <a href="#t-_matrix">Matrix</a>, n: number) : <a href="#t-_matrix">Matrix</a></code>
 
 Embed a non-homogeneous square transform into a larger homogeneous matrix.
 
@@ -6753,7 +6966,7 @@ Use:
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>A</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Square M×M transform matrix.
 
@@ -6765,7 +6978,7 @@ Target homogeneous dimension.  Must satisfy M < n.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Homogeneous matrix H (n×n) with A in the top-left block and identity
 elsewhere.
@@ -6776,7 +6989,7 @@ elsewhere.
 
 #### ⚙️rot\_x<a id='f-rot_x'></a>
 
-<code>*function* rot_x(a: number) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
+<code>*function* rot_x(a: number) : <a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about the X axis.
 
@@ -6797,7 +7010,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
+**Returns**: <code><a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6807,7 +7020,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rot\_y<a id='f-rot_y'></a>
 
-<code>*function* rot_y(a: number) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
+<code>*function* rot_y(a: number) : <a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about the Y axis.
 
@@ -6828,7 +7041,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
+**Returns**: <code><a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6838,7 +7051,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rot\_z<a id='f-rot_z'></a>
 
-<code>*function* rot_z(a: number) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
+<code>*function* rot_z(a: number) : <a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about the Z axis.
 
@@ -6859,7 +7072,7 @@ Rotation angle in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
+**Returns**: <code><a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6954,7 +7167,7 @@ True if has the shape of 2 bound points of `dim` `number`s.
 
 #### ⚙️rot\_axis<a id='f-rot_axis'></a>
 
-<code>*function* rot_axis(angle: number, axis: <a href="#t-Vector3D">Vector3D</a>) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
+<code>*function* rot_axis(angle: number, axis: <a href="#t-_vector3_d">Vector3D</a>) : <a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Rotation matrix about an arbitrary axis.
 
@@ -6973,7 +7186,7 @@ Use:
 
 Rotation angle in degrees.
 
-**<code>axis</code>**: <code><a href="#t-Vector3D">Vector3D</a></code>
+**<code>axis</code>**: <code><a href="#t-_vector3_d">Vector3D</a></code>
 
 Rotation axis vector (must be non-zero).
 
@@ -6981,7 +7194,7 @@ Rotation axis vector (must be non-zero).
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
+**Returns**: <code><a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Column-vector rotation matrix M.
 
@@ -6991,7 +7204,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️rotate<a id='f-rotate'></a>
 
-<code>*function* rotate(a: number|list\[number,number,number], v: <a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a>) : <a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a></code>
+<code>*function* rotate(a: number|list\[number,number,number], v: <a href="#t-_vector3_d">Vector3D</a>|<a href="#t-_b_vector3_d">BVector3D</a>) : <a href="#t-_matrix3x3">Matrix3x3</a>|<a href="#t-_matrix4x4">Matrix4x4</a></code>
 
 Rotation matrix that parallels OpenSCAD's rotate() module, with the
 additional feature that it can also take a `BVector3D` for `v`, meaning that
@@ -7029,7 +7242,7 @@ or if don't want to worry about having to use
 - If `list` `[rx,ry,rz]`: apply rotations about X then Y then Z (degrees).
   (v is ignored.)
 
-**<code>v</code>**: <code><a href="#t-Vector3D">Vector3D</a>|<a href="#t-BVector3D">BVector3D</a></code> *(Optional)*
+**<code>v</code>**: <code><a href="#t-_vector3_d">Vector3D</a>|<a href="#t-_b_vector3_d">BVector3D</a></code> *(Optional)*
 
 - If `a` is a number
   - If `v` is a specified Vector3D, then this is the axis vector.
@@ -7041,7 +7254,7 @@ or if don't want to worry about having to use
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a></code>
+**Returns**: <code><a href="#t-_matrix3x3">Matrix3x3</a>|<a href="#t-_matrix4x4">Matrix4x4</a></code>
 
 Column-vector rotation matrix M.
 
@@ -7056,7 +7269,7 @@ Column-vector rotation matrix M.
 
 #### ⚙️translate<a id='f-translate'></a>
 
-<code>*function* translate(v: list\[number]) : <a href="#t-Matrix4x4">Matrix4x4</a></code>
+<code>*function* translate(v: list\[number]) : <a href="#t-_matrix4x4">Matrix4x4</a></code>
 
 Translation matrix that parallels OpenSCAD's translate() module.
 
@@ -7077,7 +7290,7 @@ Translation vector.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix4x4">Matrix4x4</a></code>
+**Returns**: <code><a href="#t-_matrix4x4">Matrix4x4</a></code>
 
 Homogeneous column-vector translation matrix T.
 
@@ -7087,7 +7300,7 @@ Homogeneous column-vector translation matrix T.
 
 #### ⚙️scale<a id='f-scale'></a>
 
-<code>*function* scale(v: list\[number]) : <a href="#t-Matrix3x3">Matrix3x3</a></code>
+<code>*function* scale(v: list\[number]) : <a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Scale matrix that parallels OpenSCAD's scale() module.
 
@@ -7108,7 +7321,7 @@ Per-axis scale factors.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix3x3">Matrix3x3</a></code>
+**Returns**: <code><a href="#t-_matrix3x3">Matrix3x3</a></code>
 
 Column-vector scaling matrix S.
 
@@ -7118,7 +7331,7 @@ Column-vector scaling matrix S.
 
 #### ⚙️transform<a id='f-transform'></a>
 
-<code>*function* transform(pts: list\[<a href="#t-Point">Point</a>], matrix\_or\_fn: <a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function) : list\[<a href="#t-Point">Point</a>]</code>
+<code>*function* transform(pts: list\[<a href="#t-_point">Point</a>], matrix\_or\_fn: <a href="#t-_matrix3x3">Matrix3x3</a>|<a href="#t-_matrix4x4">Matrix4x4</a>|function) : list\[<a href="#t-_point">Point</a>]</code>
 
 Transform a list of points using either a matrix or a point-mapping function.
 
@@ -7133,11 +7346,11 @@ Points in pts are treated as **row vectors** (each point is a 1×d row).
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point">Point</a>]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point">Point</a>]</code>
 
 List of points (rows).  All points must have the same dimension.
 
-**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function</code>
+**<code>matrix_or_fn</code>**: <code><a href="#t-_matrix3x3">Matrix3x3</a>|<a href="#t-_matrix4x4">Matrix4x4</a>|function</code>
 
 Either:
 
@@ -7148,7 +7361,7 @@ Either:
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Point">Point</a>]</code>
+**Returns**: <code>list\[<a href="#t-_point">Point</a>]</code>
 
 Transformed points.
 
@@ -7158,7 +7371,7 @@ Transformed points.
 
 #### ⚙️frame\_transform<a id='f-frame_transform'></a>
 
-<code>*function* frame_transform(src\_ref: <a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a>, dst\_ref: <a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a>, axis\_scales: bool|number|list\[bool|number,...]) : <a href="#t-Matrix4x4">Matrix4x4</a></code>
+<code>*function* frame_transform(src\_ref: <a href="#t-_axis_frame_ref">AxisFrameRef</a>|<a href="#t-_planar_frame_ref">PlanarFrameRef</a>|<a href="#t-_spatial_frame_ref">SpatialFrameRef</a>, dst\_ref: <a href="#t-_axis_frame_ref">AxisFrameRef</a>|<a href="#t-_planar_frame_ref">PlanarFrameRef</a>|<a href="#t-_spatial_frame_ref">SpatialFrameRef</a>, axis\_scales: bool|number|list\[bool|number,...]) : <a href="#t-_matrix4x4">Matrix4x4</a></code>
 
 Possible callchains:
 
@@ -7221,9 +7434,9 @@ axis_scales controls scaling along the defined axes:
 
 <details><summary>parameters</summary>
 
-**<code>src_ref</code>**: <code><a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a></code>
+**<code>src_ref</code>**: <code><a href="#t-_axis_frame_ref">AxisFrameRef</a>|<a href="#t-_planar_frame_ref">PlanarFrameRef</a>|<a href="#t-_spatial_frame_ref">SpatialFrameRef</a></code>
 
-**<code>dst_ref</code>**: <code><a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a></code>
+**<code>dst_ref</code>**: <code><a href="#t-_axis_frame_ref">AxisFrameRef</a>|<a href="#t-_planar_frame_ref">PlanarFrameRef</a>|<a href="#t-_spatial_frame_ref">SpatialFrameRef</a></code>
 
 **<code>axis_scales</code>**: <code>bool|number|list\[bool|number,...]</code> *(Default: `false`)*
 
@@ -7231,7 +7444,7 @@ axis_scales controls scaling along the defined axes:
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix4x4">Matrix4x4</a></code>
+**Returns**: <code><a href="#t-_matrix4x4">Matrix4x4</a></code>
 
 Homogeneous 4×4 transform matrix, mapping `src_ref` -> `dst_ref`.
 
@@ -7243,13 +7456,13 @@ Homogeneous 4×4 transform matrix, mapping `src_ref` -> `dst_ref`.
 
 #### ⚙️invert<a id='f-invert'></a>
 
-<code>*function* invert(A: <a href="#t-Matrix">Matrix</a>, eps: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* invert(A: <a href="#t-_matrix">Matrix</a>, eps: number) : <a href="#t-_matrix">Matrix</a></code>
 
 Invert a square matrix using Gauss-Jordan elimination with partial pivoting.
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>A</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Non-empty square numeric matrix (list of equal-length lists).
 
@@ -7261,7 +7474,7 @@ Pivot tolerance.  Must be > 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 The inverse matrix `A⁻¹`.
 
@@ -7278,14 +7491,14 @@ Example
 
 #### ⚙️row\_reduction<a id='f-row_reduction'></a>
 
-<code>*function* row_reduction(aug: <a href="#t-Matrix">Matrix</a>, k: number, n: number, eps: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* row_reduction(aug: <a href="#t-_matrix">Matrix</a>, k: number, n: number, eps: number) : <a href="#t-_matrix">Matrix</a></code>
 
 Performs Gauss-Jordan row reduction with partial pivoting on an augmented
 matrix.
 
 <details><summary>parameters</summary>
 
-**<code>aug</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>aug</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Augmented matrix of shape `n×(2n)`, typically `[A | I]`.
 
@@ -7305,7 +7518,7 @@ Pivot tolerance.  Must be > 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 The reduced augmented matrix.  For a non-singular A this is `[I | A⁻¹]`.
 
@@ -7317,7 +7530,7 @@ Assertion failure if `|pivot| < eps` at any step.
 
 #### ⚙️identity<a id='f-identity'></a>
 
-<code>*function* identity(n: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* identity(n: number) : <a href="#t-_matrix">Matrix</a></code>
 
 Creates an n×n identity matrix.
 
@@ -7331,7 +7544,7 @@ Matrix order.  Must be > 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 The identity matrix of order n.
 
@@ -7341,17 +7554,17 @@ The identity matrix of order n.
 
 #### ⚙️augment<a id='f-augment'></a>
 
-<code>*function* augment(A: <a href="#t-Matrix">Matrix</a>, B: <a href="#t-Matrix">Matrix</a>) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* augment(A: <a href="#t-_matrix">Matrix</a>, B: <a href="#t-_matrix">Matrix</a>) : <a href="#t-_matrix">Matrix</a></code>
 
 Horizontally concatenates two matrices with the same row count.
 
 <details><summary>parameters</summary>
 
-**<code>A</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>A</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Left matrix with r rows.
 
-**<code>B</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>B</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Right matrix with r rows.
 
@@ -7359,7 +7572,7 @@ Right matrix with r rows.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 The augmented matrix `[A | B]`.
 
@@ -7371,13 +7584,13 @@ Assertion failure if A and B do not have the same non-zero row count.
 
 #### ⚙️\_right\_half<a id='f-_right_half'></a>
 
-<code>*function* _right_half(aug: <a href="#t-Matrix">Matrix</a>, n: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* _right_half(aug: <a href="#t-_matrix">Matrix</a>, n: number) : <a href="#t-_matrix">Matrix</a></code>
 
 Extracts the right half (columns `n..2n-1`) of an `n × (2n)` augmented matrix.
 
 <details><summary>parameters</summary>
 
-**<code>aug</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>aug</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Augmented matrix of shape n×(2n).
 
@@ -7389,7 +7602,7 @@ Left block width and row count.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 The right n×n block.
 
@@ -7399,13 +7612,13 @@ The right n×n block.
 
 #### ⚙️\_swap\_rows<a id='f-_swap_rows'></a>
 
-<code>*function* _swap_rows(M: <a href="#t-Matrix">Matrix</a>, i: number, j: number) : <a href="#t-Matrix">Matrix</a></code>
+<code>*function* _swap_rows(M: <a href="#t-_matrix">Matrix</a>, i: number, j: number) : <a href="#t-_matrix">Matrix</a></code>
 
 Returns a copy of matrix M with rows i and j swapped.
 
 <details><summary>parameters</summary>
 
-**<code>M</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>M</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Input matrix.
 
@@ -7421,7 +7634,7 @@ Second row index (0-based).
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Matrix">Matrix</a></code>
+**Returns**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Matrix with rows i and j exchanged.
 
@@ -7431,14 +7644,14 @@ Matrix with rows i and j exchanged.
 
 #### ⚙️\_argmax\_abs\_col<a id='f-_argmax_abs_col'></a>
 
-<code>*function* _argmax_abs_col(aug: <a href="#t-Matrix">Matrix</a>, col: number, start: number) : number</code>
+<code>*function* _argmax_abs_col(aug: <a href="#t-_matrix">Matrix</a>, col: number, start: number) : number</code>
 
 Finds the row index `r ∈ [start..n-1]` that maximises `|aug[r][col]|`.
 Ties resolve to the first occurrence.
 
 <details><summary>parameters</summary>
 
-**<code>aug</code>**: <code><a href="#t-Matrix">Matrix</a></code>
+**<code>aug</code>**: <code><a href="#t-_matrix">Matrix</a></code>
 
 Matrix to scan.
 
@@ -7562,7 +7775,7 @@ A row of 4 numbers used in a Matrix4x4 type.
 
 #### 🧩Matrix3x3<a id='t-_matrix3x3'></a>
 
-<code>*type* Matrix3x3 = list\[<a href="#t-Row3">Row3</a>,<a href="#t-Row3">Row3</a>,<a href="#t-Row3">Row3</a>]</code>
+<code>*type* Matrix3x3 = list\[<a href="#t-_row3">Row3</a>,<a href="#t-_row3">Row3</a>,<a href="#t-_row3">Row3</a>]</code>
 
 A 3×3 non-homogeneous transformation matrix used for rotations and scaling
 in 3D space.  Operates on 3-element vectors/points directly.
@@ -7571,7 +7784,7 @@ in 3D space.  Operates on 3-element vectors/points directly.
 
 #### 🧩Matrix4x4<a id='t-_matrix4x4'></a>
 
-<code>*type* Matrix4x4 = list\[<a href="#t-Row4">Row4</a>,<a href="#t-Row4">Row4</a>,<a href="#t-Row4">Row4</a>,<a href="#t-Row4">Row4</a>]</code>
+<code>*type* Matrix4x4 = list\[<a href="#t-_row4">Row4</a>,<a href="#t-_row4">Row4</a>,<a href="#t-_row4">Row4</a>,<a href="#t-_row4">Row4</a>]</code>
 
 A 4×4 homogeneous transformation matrix used for translations, rotations
 about arbitrary points, and combined transformations in 3D space.  Operates
@@ -7735,17 +7948,17 @@ This is the dimension `n` dimension of the vector.
 
 #### 🧩BVector2D<a id='t-_b_vector2_d'></a>
 
-<code>*type* BVector2D = list\[<a href="#t-Point2D">Point2D</a>,<a href="#t-Point2D">Point2D</a>]</code>
+<code>*type* BVector2D = list\[<a href="#t-_point2_d">Point2D</a>,<a href="#t-_point2_d">Point2D</a>]</code>
 
 A bound 2D vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-Point2D">Point2D</a></code>
+<code><b>0</b></code>: <code><a href="#t-_point2_d">Point2D</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a href="#t-Point2D">Point2D</a></code>
+<code><b>1</b></code>: <code><a href="#t-_point2_d">Point2D</a></code>
 
 This is the ending point for this bound vector.
 
@@ -7755,17 +7968,17 @@ This is the ending point for this bound vector.
 
 #### 🧩BVector3D<a id='t-_b_vector3_d'></a>
 
-<code>*type* BVector3D = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+<code>*type* BVector3D = list\[<a href="#t-_point3_d">Point3D</a>,<a href="#t-_point3_d">Point3D</a>]</code>
 
 A bound 3D vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-Point3D">Point3D</a></code>
+<code><b>0</b></code>: <code><a href="#t-_point3_d">Point3D</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a href="#t-Point3D">Point3D</a></code>
+<code><b>1</b></code>: <code><a href="#t-_point3_d">Point3D</a></code>
 
 This is the ending point for this bound vector.
 
@@ -7775,17 +7988,17 @@ This is the ending point for this bound vector.
 
 #### 🧩BVector<a id='t-_b_vector'></a>
 
-<code>*type* BVector = list\[<a href="#t-Point">Point</a>,<a href="#t-Point">Point</a>]</code>
+<code>*type* BVector = list\[<a href="#t-_point">Point</a>,<a href="#t-_point">Point</a>]</code>
 
 A bound ND vector, which starts from point in slot 0 and goes to point in
 slot 1.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-Point">Point</a></code>
+<code><b>0</b></code>: <code><a href="#t-_point">Point</a></code>
 
 This is the starting point for this bound vector.
 
-<code><b>1</b></code>: <code><a href="#t-Point">Point</a></code>
+<code><b>1</b></code>: <code><a href="#t-_point">Point</a></code>
 
 This is the ending point for this bound vector.
 
@@ -7795,7 +8008,7 @@ This is the ending point for this bound vector.
 
 #### 🧩AxisFrameRef<a id='t-_axis_frame_ref'></a>
 
-<code>*type* AxisFrameRef = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+<code>*type* AxisFrameRef = list\[<a href="#t-_point3_d">Point3D</a>,<a href="#t-_point3_d">Point3D</a>]</code>
 
 Frame reference defined by an origin and a single axis endpoint:
 
@@ -7807,7 +8020,7 @@ Note: roll about the axis is under-determined by this reference alone.
 
 #### 🧩PlanarFrameRef<a id='t-_planar_frame_ref'></a>
 
-<code>*type* PlanarFrameRef = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+<code>*type* PlanarFrameRef = list\[<a href="#t-_point3_d">Point3D</a>,<a href="#t-_point3_d">Point3D</a>,<a href="#t-_point3_d">Point3D</a>]</code>
 
 Frame reference defined by an origin and two axis endpoints:
 
@@ -7820,7 +8033,7 @@ end1-origin)`.
 
 #### 🧩SpatialFrameRef<a id='t-_spatial_frame_ref'></a>
 
-<code>*type* SpatialFrameRef = list\[<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>,<a href="#t-Point3D">Point3D</a>]</code>
+<code>*type* SpatialFrameRef = list\[<a href="#t-_point3_d">Point3D</a>,<a href="#t-_point3_d">Point3D</a>,<a href="#t-_point3_d">Point3D</a>,<a href="#t-_point3_d">Point3D</a>]</code>
 
 Frame reference defined by an origin and three axis endpoints:
 
@@ -7832,9 +8045,87 @@ This defines a full 3D frame (must be non-singular).
 
 #### 🧩FrameRef<a id='t-_frame_ref'></a>
 
-<code>*type* FrameRef = <a href="#t-AxisFrameRef">AxisFrameRef</a>|<a href="#t-PlanarFrameRef">PlanarFrameRef</a>|<a href="#t-SpatialFrameRef">SpatialFrameRef</a></code>
+<code>*type* FrameRef = <a href="#t-_axis_frame_ref">AxisFrameRef</a>|<a href="#t-_planar_frame_ref">PlanarFrameRef</a>|<a href="#t-_spatial_frame_ref">SpatialFrameRef</a></code>
 
   Any supported frame reference shape.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
+## 📘string_consts<a id='file-string_consts'></a>
+
+### <i>📑How to Import</i><a id='ch-string_consts-_how_to__import'></a>
+
+    include <string_consts>
+
+### <i>📑Purpose</i><a id='ch-string_consts-_purpose'></a>
+
+Constants representing how to show the sign of a number in string library.
+
+### <i>📑Values for `show_sign` Parameters</i><a id='ch-string_consts-_values_for__show_sign___parameters'></a>
+
+#### 💠SHOW\_SIGN\_NEG<a id='v-_s_h_o_w__s_i_g_n__n_e_g'></a>
+
+<code>*value* SHOW_SIGN_NEG : <a href="#t-_show_sign_enum">ShowSignEnum</a></code>
+
+The enum that represents showing only -ve and never +ve sign
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
+assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SHOW\_SIGN\_POS\_NEG<a id='v-_s_h_o_w__s_i_g_n__p_o_s__n_e_g'></a>
+
+<code>*value* SHOW_SIGN_POS_NEG : <a href="#t-_show_sign_enum">ShowSignEnum</a></code>
+
+The enum that represents showing only -ve and +ve signs
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
+assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SHOW\_SIGN\_SPC\_NEG<a id='v-_s_h_o_w__s_i_g_n__s_p_c__n_e_g'></a>
+
+<code>*value* SHOW_SIGN_SPC_NEG : <a href="#t-_show_sign_enum">ShowSignEnum</a></code>
+
+The enum that represents showing only -ve and a space for +ve sign
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
+assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑string_consts types</i><a id='ch-string_consts-string_consts_types'></a>
+
+#### 🧩ShowSignEnum<a id='t-_show_sign_enum'></a>
+
+<code>*type* ShowSignEnum = number</code>
+
+Used to specify how to show the sign of a number.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -7954,7 +8245,7 @@ The final repeated string.
 
 #### ⚙️\_sign\_str<a id='f-_sign_str'></a>
 
-<code>*function* _sign_str(v: number, show\_sign: <a href="#t-ShowSignEnum">ShowSignEnum</a>) : string</code>
+<code>*function* _sign_str(v: number, show\_sign: <a href="#t-_show_sign_enum">ShowSignEnum</a>) : string</code>
 
 Outputs the sign character for value `v` based on `show_sign` parameter.
 
@@ -7964,7 +8255,7 @@ Outputs the sign character for value `v` based on `show_sign` parameter.
 
 Value to get +ve/-ve sign value from.
 
-**<code>show_sign</code>**: <code><a href="#t-ShowSignEnum">ShowSignEnum</a></code>
+**<code>show_sign</code>**: <code><a href="#t-_show_sign_enum">ShowSignEnum</a></code>
 
  A value that is taken from SHOW_SIGN_*() consts.
 
@@ -7982,7 +8273,7 @@ Value to get +ve/-ve sign value from.
 
 #### ⚙️float\_to\_string<a id='f-float_to_string'></a>
 
-<code>*function* float_to_string(v: number, left\_justified: bool, show\_sign: <a href="#t-ShowSignEnum">ShowSignEnum</a>, pad\_char: string, min\_width: number, precision: number) : string</code>
+<code>*function* float_to_string(v: number, left\_justified: bool, show\_sign: <a href="#t-_show_sign_enum">ShowSignEnum</a>, pad\_char: string, min\_width: number, precision: number) : string</code>
 
 Converts a floating point number to a string with formatting.
 
@@ -7998,7 +8289,7 @@ Number to convert to string.
 
 States if number is left or right justified.
 
-**<code>show_sign</code>**: <code><a href="#t-ShowSignEnum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_NEG`)*
+**<code>show_sign</code>**: <code><a href="#t-_show_sign_enum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_NEG`)*
 
 SHOW_SIGN_NEG - States if to only show a negative sign.
 SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
@@ -8185,7 +8476,7 @@ Prettified list.
 
 #### ⚙️fmt\_list\_fn<a id='f-fmt_list_fn'></a>
 
-<code>*function* fmt_list_fn(precision: number, show\_sign: <a href="#t-ShowSignEnum">ShowSignEnum</a>) : function(i: number, e: any, indent: string): string</code>
+<code>*function* fmt_list_fn(precision: number, show\_sign: <a href="#t-_show_sign_enum">ShowSignEnum</a>) : function(i: number, e: any, indent: string): string</code>
 
 Used to pass resulting lambda to list_to_string to format any numbers that
 are found with a precision and sign formatting.  Everything else is rendered
@@ -8197,7 +8488,7 @@ by str().
 
 Number of decimal places to show.
 
-**<code>show_sign</code>**: <code><a href="#t-ShowSignEnum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_SPC_NEG`)*
+**<code>show_sign</code>**: <code><a href="#t-_show_sign_enum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_SPC_NEG`)*
 
 SHOW_SIGN_NEG - States if to only show a negative sign.
 SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
@@ -8217,7 +8508,7 @@ Returns the lambda to render an element.
 
 #### ⚙️fmt\_pt\_list\_fn<a id='f-fmt_pt_list_fn'></a>
 
-<code>*function* fmt_pt_list_fn(precision: number, show\_sign: <a href="#t-ShowSignEnum">ShowSignEnum</a>, min\_widths\_for\_pts: list\[number,...]) : function(i: number, e: any, indent: string): string</code>
+<code>*function* fmt_pt_list_fn(precision: number, show\_sign: <a href="#t-_show_sign_enum">ShowSignEnum</a>, min\_widths\_for\_pts: list\[number,...]) : function(i: number, e: any, indent: string): string</code>
 
 Passed to `list_to_string`, this will format elements as if they are a list
 of coordinates, placing coordinates of one row over another aligning over the
@@ -8229,7 +8520,7 @@ decimal point.
 
 The number of decimal places to output.
 
-**<code>show_sign</code>**: <code><a href="#t-ShowSignEnum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_SPC_NEG`)*
+**<code>show_sign</code>**: <code><a href="#t-_show_sign_enum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_SPC_NEG`)*
 
 `SHOW_SIGN_NEG` - States if to only show a negative sign.
 `SHOW_SIGN_POS_NEG` - states if to show positive/negative signs.
@@ -8257,7 +8548,7 @@ the element was.
 
 #### ⚙️fmt\_pt\_fn<a id='f-fmt_pt_fn'></a>
 
-<code>*function* fmt_pt_fn(precision: number, show\_sign: <a href="#t-ShowSignEnum">ShowSignEnum</a>, min\_widths\_for\_dims: list\[number,...]) : function(i: number, e: any, indent: string): string</code>
+<code>*function* fmt_pt_fn(precision: number, show\_sign: <a href="#t-_show_sign_enum">ShowSignEnum</a>, min\_widths\_for\_dims: list\[number,...]) : function(i: number, e: any, indent: string): string</code>
 
 Passed to `list_to_string`, this will format element as if it's a coordinate.
 
@@ -8267,7 +8558,7 @@ Passed to `list_to_string`, this will format element as if it's a coordinate.
 
 The number of decimal places to output.
 
-**<code>show_sign</code>**: <code><a href="#t-ShowSignEnum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_SPC_NEG`)*
+**<code>show_sign</code>**: <code><a href="#t-_show_sign_enum">ShowSignEnum</a></code> *(Default: `SHOW_SIGN_SPC_NEG`)*
 
 SHOW_SIGN_NEG - States if to only show a negative sign.
 SHOW_SIGN_POS_NEG - states if to show positive/negative signs.
@@ -8295,13 +8586,13 @@ the element was.
 
 #### ⚙️pt\_list\_to\_string<a id='f-pt_list_to_string'></a>
 
-<code>*function* pt_list_to_string(pts: list\[<a href="#t-Point">Point</a>,...], cols: number, rows: ..., indent: string, only\_first\_and\_last: bool, precision: number) : string</code>
+<code>*function* pt_list_to_string(pts: list\[<a href="#t-_point">Point</a>,...], cols: number, rows: ..., indent: string, only\_first\_and\_last: bool, precision: number) : string</code>
 
 Formats a list of points aligning cols over rows.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point">Point</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point">Point</a>,...]</code>
 
 A list of coordinates.
 
@@ -8337,81 +8628,94 @@ String with the aligned points.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-### <i>📑string types</i><a id='ch-string-string_types'></a>
-
-#### 🧩ShowSignEnum<a id='t-_show_sign_enum'></a>
-
-<code>*type* ShowSignEnum = number</code>
-
-Used to specify how to show the sign of a number.
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
 <hr/>
 
-## 📘string_consts<a id='file-string_consts'></a>
+## 📘helpers_consts<a id='file-helpers_consts'></a>
 
-### <i>📑How to Import</i><a id='ch-string_consts-_how_to__import'></a>
+### <i>📑How to Import</i><a id='ch-helpers_consts-_how_to__import'></a>
 
-    include <string_consts>
+    include <helpers_consts>
 
-### <i>📑Purpose</i><a id='ch-string_consts-_purpose'></a>
+### <i>📑Purpose</i><a id='ch-helpers_consts-_purpose'></a>
 
-Constants representing how to show the sign of a number in string library.
+Helper constants.
 
-### <i>📑Values for `show_sign` Parameters</i><a id='ch-string_consts-_values_for__show_sign___parameters'></a>
+### <i>📑`VectorInfo` Slot Related Constants</i><a id='ch-helpers_consts-__vector_info___slot__related__constants'></a>
 
-#### 💠SHOW\_SIGN\_NEG<a id='v-_s_h_o_w__s_i_g_n__n_e_g'></a>
+#### 💠VI\_VECTOR<a id='v-_v_i__v_e_c_t_o_r'></a>
 
-<code>*value* SHOW_SIGN_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
+<code>*value* VI_VECTOR : <a href="#t-_vector_info_enum">VectorInfoEnum</a></code>
 
-The enum that represents showing only -ve and never +ve sign
+ab vector
 
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
 ```openscad
-assert(float_to_string( 1, show_sign = SHOW_SIGN_NEG, precision = 1) ==  "1.0")
-assert(float_to_string(-1, show_sign = SHOW_SIGN_NEG, precision = 1) == " 1.0")
+assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
 ```
 
 </details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SHOW\_SIGN\_POS\_NEG<a id='v-_s_h_o_w__s_i_g_n__p_o_s__n_e_g'></a>
+#### 💠VI\_LENGTH<a id='v-_v_i__l_e_n_g_t_h'></a>
 
-<code>*value* SHOW_SIGN_POS_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
+<code>*value* VI_LENGTH : <a href="#t-_vector_info_enum">VectorInfoEnum</a></code>
 
-The enum that represents showing only -ve and +ve signs
+length of ab
 
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
 ```openscad
-assert(float_to_string( 1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "+1.0")
-assert(float_to_string(-1, show_sign = SHOW_SIGN_POS_NEG, precision = 1) == "-1.0")
+assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
 ```
 
 </details>
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
-#### 💠SHOW\_SIGN\_SPC\_NEG<a id='v-_s_h_o_w__s_i_g_n__s_p_c__n_e_g'></a>
+#### 💠VI\_DIR<a id='v-_v_i__d_i_r'></a>
 
-<code>*value* SHOW_SIGN_SPC_NEG : <a href="#t-ShowSignEnum">ShowSignEnum</a></code>
+<code>*value* VI_DIR : <a href="#t-_vector_info_enum">VectorInfoEnum</a></code>
 
-The enum that represents showing only -ve and a space for +ve sign
+unit ab vector
 
 <details><summary><b>Example:</b><i> Usage</i></summary>
 
 
 ```openscad
-assert(float_to_string( 1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == " 1.0")
-assert(float_to_string(-1, show_sign = SHOW_SIGN_SPC_NEG, precision = 1) == "-1.0")
+assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
 ```
 
 </details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠VI\_NORMAL<a id='v-_v_i__n_o_r_m_a_l'></a>
+
+<code>*value* VI_NORMAL : <a href="#t-_vector_info_enum">VectorInfoEnum</a></code>
+
+vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+```openscad
+assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑helpers_consts types</i><a id='ch-helpers_consts-helpers_consts_types'></a>
+
+#### 🧩VectorInfoEnum<a id='t-_vector_info_enum'></a>
+
+<code>*type* VectorInfoEnum = <a href="#t-_member_index">MemberIndex</a></code>
+
+Enums to dereference [`VectorInfo`](#t-_vector_info) type.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -8755,7 +9059,7 @@ They would be undef if there is no solution for that direction.
 
 #### ⚙️not<a id='f-not'></a>
 
-<code>*function* not(not\_fn: function) : function(p: <a href="#t-PredFn">PredFn</a>): bool</code>
+<code>*function* not(not\_fn: function) : function(p: <a href="#t-_pred_fn">PredFn</a>): bool</code>
 
 Wrap a lambda so that it negates its return value.
 
@@ -8769,7 +9073,7 @@ The function to invert the boolean's (or equivalent truthy/falsy) value.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>function(p: <a href="#t-PredFn">PredFn</a>): bool</code>
+**Returns**: <code>function(p: <a href="#t-_pred_fn">PredFn</a>): bool</code>
 
 Return the lambda that will invert a lambda's truth value.
 
@@ -8811,7 +9115,7 @@ Value v that is clamped between `[lo, hi]`.
 
 #### ⚙️vector\_info<a id='f-vector_info'></a>
 
-<code>*function* vector_info(a: <a href="#t-Point">Point</a>, b: <a href="#t-Point">Point</a>) : <a href="#t-VectorInfo">VectorInfo</a></code>
+<code>*function* vector_info(a: <a href="#t-_point">Point</a>, b: <a href="#t-_point">Point</a>) : <a href="#t-_vector_info">VectorInfo</a></code>
 
 Computes direction, length, unit vector and normal to unit vector, and puts
 them into a list.
@@ -8820,11 +9124,11 @@ Add `include <helpers_consts>` to use the appropriate constants.
 
 <details><summary>parameters</summary>
 
-**<code>a</code>**: <code><a href="#t-Point">Point</a></code>
+**<code>a</code>**: <code><a href="#t-_point">Point</a></code>
 
 Starting point of vector
 
-**<code>b</code>**: <code><a href="#t-Point">Point</a></code>
+**<code>b</code>**: <code><a href="#t-_point">Point</a></code>
 
 Ending point of vector
 
@@ -8832,7 +9136,7 @@ Ending point of vector
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-VectorInfo">VectorInfo</a></code>
+**Returns**: <code><a href="#t-_vector_info">VectorInfo</a></code>
 
 Object containing the info of all the operations.  See `VectorInfo` type
 for details.
@@ -8922,7 +9226,7 @@ Used to mark code as incomplete.
 
 #### ⚙️offset\_angle<a id='f-offset_angle'></a>
 
-<code>*function* offset_angle(ref\_vec: <a href="#t-Point">Point</a>, vec: <a href="#t-Point">Point</a>, delta\_angle\_deg: number) : <a href="#t-Point">Point</a></code>
+<code>*function* offset_angle(ref\_vec: <a href="#t-_point">Point</a>, vec: <a href="#t-_point">Point</a>, delta\_angle\_deg: number) : <a href="#t-_point">Point</a></code>
 
 Rotate vec so that the angle between ref_vec and vec increases by
 delta_angle_deg.
@@ -8931,11 +9235,11 @@ Uses rotate(delta_angle_deg, cross(ref_vec, vec)) and applies it to vec.
 
 <details><summary>parameters</summary>
 
-**<code>ref_vec</code>**: <code><a href="#t-Point">Point</a></code>
+**<code>ref_vec</code>**: <code><a href="#t-_point">Point</a></code>
 
 Reference vector.  Must have norm(ref_vec) > 0.
 
-**<code>vec</code>**: <code><a href="#t-Point">Point</a></code>
+**<code>vec</code>**: <code><a href="#t-_point">Point</a></code>
 
 Vector to rotate.  Must have norm(vec) > 0 and must not be (anti)parallel to
 ref_vec.
@@ -8948,7 +9252,7 @@ Angle increase in degrees.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Point">Point</a></code>
+**Returns**: <code><a href="#t-_point">Point</a></code>
 
 The rotated vector.
 
@@ -8958,7 +9262,7 @@ The rotated vector.
 
 #### 🧊arrow<a id='m-arrow'></a>
 
-<code>*module* arrow(l: number, t: number, c: list|string|undef, a: number)</code>
+<code>*module* arrow(l: number, t: number, origin\_tip: bool, c: list|string|undef, a: number)</code>
 
 Create an arrow pointing up in the positive z direction.  Primarily used for
 debugging.
@@ -8973,10 +9277,15 @@ Length of arrow.
 
 Thickness of arrowhead shaft.
 
+**<code>origin_tip</code>**: <code>bool</code> *(Optional)*
+
+If truthy, puts the origin at the tip of the arrow, otherwise origin is at
+the base of the shaft.
+
 **<code>c</code>**: <code>list|string|undef</code>
 
 Same as color() module's first parameter. `[r, g, b]`, `[r, g, b, a]`,
-`"color_name"`, `"#hex_value"`.  If not defined, no colour is applied.
+`"color_name"`, `"#hex_value"`.  If not specified, no colour is applied.
 
 **<code>a</code>**: <code>number</code>
 
@@ -9048,7 +9357,7 @@ the terminal window.
 
 #### ⚙️Assert<a id='f-_assert'></a>
 
-<code>*function* Assert(truth: bool, msg: string|function) : <a href="#t-IdentityFn">IdentityFn</a></code>
+<code>*function* Assert(truth: bool, msg: string|function) : <a href="#t-_identity_fn">IdentityFn</a></code>
 
 Possible callchains:
 
@@ -9087,7 +9396,7 @@ an expression with minimal effort.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-IdentityFn">IdentityFn</a></code>
+**Returns**: <code><a href="#t-_identity_fn">IdentityFn</a></code>
 
 Returns a function that returns the `return_value` unmolested.  This allows
 to put the `Assert()` function in the middle of an expression if desired.
@@ -9153,10 +9462,12 @@ and `p1`.
 
 <code>*type* VectorInfo = list</code>
 
+@deref {VectorInfoEnum}
+
 Results of the [vector_info()](#f-vector_info) call.
 
 <details><summary>slots</summary>
-<code><b>VI_VECTOR</b></code>: <code><a href="#t-Point">Point</a></code>
+<code><b>VI_VECTOR</b></code>: <code><a href="#t-_point">Point</a></code>
 
 Direction of the ab vector.
 
@@ -9164,11 +9475,11 @@ Direction of the ab vector.
 
 Length of ab vector.
 
-<code><b>VI_DIR</b></code>: <code><a href="#t-Point">Point</a></code>
+<code><b>VI_DIR</b></code>: <code><a href="#t-_point">Point</a></code>
 
 Unit ab vector.
 
-<code><b>VI_NORMAL</b></code>: <code><a href="#t-Point">Point</a></code>
+<code><b>VI_NORMAL</b></code>: <code><a href="#t-_point">Point</a></code>
 
 A normal unit vector by swapping first two dimensions and then making the
 resulting first dimension negative.
@@ -9201,97 +9512,6 @@ Returns `return_value`.
 
 <hr/>
 
-## 📘helpers_consts<a id='file-helpers_consts'></a>
-
-### <i>📑How to Import</i><a id='ch-helpers_consts-_how_to__import'></a>
-
-    include <helpers_consts>
-
-### <i>📑Purpose</i><a id='ch-helpers_consts-_purpose'></a>
-
-Helper constants.
-
-### <i>📑For indexing type [VectorInfo](#t-_vector_info).</i><a id='ch-helpers_consts-_for_indexing_type___vector_info___t-_vector_info__'></a>
-
-#### 💠VI\_VECTOR<a id='v-_v_i__v_e_c_t_o_r'></a>
-
-<code>*value* VI_VECTOR : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
-
-ab vector
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(vector_info([1,0,0], [0,1,0])[VI_VECTOR] == [-1,1,0])
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠VI\_LENGTH<a id='v-_v_i__l_e_n_g_t_h'></a>
-
-<code>*value* VI_LENGTH : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
-
-length of ab
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(equal(vector_info([1,0,0], [0,1,0])[VI_LENGTH], sqrt(2)))
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠VI\_DIR<a id='v-_v_i__d_i_r'></a>
-
-<code>*value* VI_DIR : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
-
-unit ab vector
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-
-```openscad
-assert(equal(vector_info([1,0,0], [0,1,0])[VI_DIR], [-1,1,0]/sqrt(2)))
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-#### 💠VI\_NORMAL<a id='v-_v_i__n_o_r_m_a_l'></a>
-
-<code>*value* VI_NORMAL : <a href="#t-VectorInfoEnum">VectorInfoEnum</a></code>
-
-vector_info(a, b)[VI_NORMAL] = normal unit vector of ab
-
-<details><summary><b>Example:</b><i> Usage</i></summary>
-
-```openscad
-assert(vector_info([1,0,0], [0,2,0])[VI_NORMAL] == [2,1,0])
-```
-
-</details>
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-### <i>📑helpers_consts types</i><a id='ch-helpers_consts-helpers_consts_types'></a>
-
-#### 🧩VectorInfoEnum<a id='t-_vector_info_enum'></a>
-
-<code>*type* VectorInfoEnum = number</code>
-
-Enums to dereference [`VectorInfo`](#t-_vector_info) type.
-
-<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
-
-<hr/>
-
 ## 📘skin<a id='file-skin'></a>
 
 ### <i>📑How to Import</i><a id='ch-skin-_how_to__import'></a>
@@ -9309,69 +9529,69 @@ number of vertices and then skins them by putting faces between layers.
 This requires keeping track of a bunch of data, which was put into a list.
 These constants are used for indexing the [skin](#t-skin) object.
 
-### <i>📑Values</i><a id='ch-skin-_values'></a>
+### <i>📑`skin` Slot Related Constants</i><a id='ch-skin-_skin___slot__related__constants'></a>
 
 #### 💠\_SKIN\_ID<a id='v-__s_k_i_n__i_d'></a>
 
-<code>*value* _SKIN_ID : ???</code>
+<code>*value* _SKIN_ID : <a href="#t-_obj_type_id">ObjTypeId</a></code>
 
-Header for skin
+Type identifier header for skin objects.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_PTS\_IN\_LAYER<a id='v-__s_k_i_n__p_t_s__i_n__l_a_y_e_r'></a>
 
-<code>*value* _SKIN_PTS_IN_LAYER : ???</code>
+<code>*value* _SKIN_PTS_IN_LAYER : <a href="#t-_skin_enum">SkinEnum</a></code>
 
-points in layer
+Slot index for the number of points in a layer.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_LAYERS<a id='v-__s_k_i_n__l_a_y_e_r_s'></a>
 
-<code>*value* _SKIN_LAYERS : ???</code>
+<code>*value* _SKIN_LAYERS : <a href="#t-_skin_enum">SkinEnum</a></code>
 
-# of point layers - 1
+Slot index for the number of point layers minus 1.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_PTS<a id='v-__s_k_i_n__p_t_s'></a>
 
-<code>*value* _SKIN_PTS : ???</code>
+<code>*value* _SKIN_PTS : <a href="#t-_skin_enum">SkinEnum</a></code>
 
-the list of points
+Slot index for the list of points.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_DEBUG\_AXES<a id='v-__s_k_i_n__d_e_b_u_g__a_x_e_s'></a>
 
-<code>*value* _SKIN_DEBUG_AXES : ???</code>
+<code>*value* _SKIN_DEBUG_AXES : <a href="#t-_skin_enum">SkinEnum</a></code>
 
-debug axes
+Slot index for the debug axes.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_COMMENT<a id='v-__s_k_i_n__c_o_m_m_e_n_t'></a>
 
-<code>*value* _SKIN_COMMENT : ???</code>
+<code>*value* _SKIN_COMMENT : <a href="#t-_skin_enum">SkinEnum</a></code>
 
-the comment if any
+Slot index for the comment string.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_OPERATION<a id='v-__s_k_i_n__o_p_e_r_a_t_i_o_n'></a>
 
-<code>*value* _SKIN_OPERATION : ???</code>
+<code>*value* _SKIN_OPERATION : <a href="#t-_skin_enum">SkinEnum</a></code>
 
-the operation (`[op, apply_to_next_count]`)
+Slot index for the operation (`[op, apply_to_next_count]`).
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
 #### 💠\_SKIN\_WALL\_DIAG<a id='v-__s_k_i_n__w_a_l_l__d_i_a_g'></a>
 
-<code>*value* _SKIN_WALL_DIAG : ???</code>
+<code>*value* _SKIN_WALL_DIAG : <a href="#t-_skin_enum">SkinEnum</a></code>
 
-wall diagonal info
+Slot index for the wall diagonal info.
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
@@ -9485,7 +9705,7 @@ A list of linear layer_i corresponding to the given points.
 
 #### ⚙️layer\_side\_faces<a id='f-layer_side_faces'></a>
 
-<code>*function* layer_side_faces(pts\_in\_layer: number, layers: number, wall\_diagonal: list\[bool,...]) : list\[<a href="#t-Face">Face</a>]</code>
+<code>*function* layer_side_faces(pts\_in\_layer: number, layers: number, wall\_diagonal: list\[bool,...]) : list\[<a href="#t-_face">Face</a>]</code>
 
 Helper to generate side wall faces between consecutive layers.
 
@@ -9524,7 +9744,7 @@ E.g.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Face">Face</a>]</code>
+**Returns**: <code>list\[<a href="#t-_face">Face</a>]</code>
 
 A list of triangle layer_i forming the side walls.
 
@@ -9543,7 +9763,7 @@ This is for clockwise polygons when looking towards -z.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point2_d">Point2D</a>,...]</code>
 
 A list of 2D points
 
@@ -9567,7 +9787,7 @@ Biggest abs value to consider as 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Face">Face</a>|undef</code>
+**Returns**: <code><a href="#t-_face">Face</a>|undef</code>
 
 Face if convex, or undef if concave or colinear.
 
@@ -9586,7 +9806,7 @@ This is for counter-clockwise polygons when looking towards -z.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point2_d">Point2D</a>,...]</code>
 
 A list of 2D points
 
@@ -9610,7 +9830,7 @@ Biggest abs value to consider as 0.
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-Face">Face</a>|undef</code>
+**Returns**: <code><a href="#t-_face">Face</a>|undef</code>
 
 Face if convex, or undef if concave or colinear.
 
@@ -9638,7 +9858,7 @@ bounded by the triangle `pts[pt_is[pt_i{0, 1, 2}]]`.
 
 #### ⚙️\_cap\_ears<a id='f-_cap_ears'></a>
 
-<code>*function* _cap_ears(pts: list\[<a href="#t-Point3D">Point3D</a>,...], pt\_is: list\[number,...], create\_ear\_fn: function, \_i: number, \_faces: list\[<a href="#t-Face">Face</a>,...], \_removed\_at\_least\_one\_ear: bool) : list\[<a href="#t-Face">Face</a>,...]</code>
+<code>*function* _cap_ears(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], pt\_is: list\[number,...], create\_ear\_fn: function, \_i: number, \_faces: list\[<a href="#t-_face">Face</a>,...], \_removed\_at\_least\_one\_ear: bool) : list\[<a href="#t-_face">Face</a>,...]</code>
 
 Caps the end of a face by making all ears into faces until none left.
 
@@ -9646,7 +9866,7 @@ Parameters starting with _ will not be set by the external caller.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 Points that `pt_is` references.
 
@@ -9663,7 +9883,7 @@ undef if not an ear.
 
 Where to start traversing polygon for ear clipping.
 
-**<code>_faces</code>**: <code>list\[<a href="#t-Face">Face</a>,...]</code> *(Default: `\[]`)*
+**<code>_faces</code>**: <code>list\[<a href="#t-_face">Face</a>,...]</code> *(Default: `\[]`)*
 
 Faces.
 
@@ -9676,7 +9896,7 @@ points.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Face">Face</a>,...]</code>
+**Returns**: <code>list\[<a href="#t-_face">Face</a>,...]</code>
 
 Faces
 
@@ -9686,14 +9906,14 @@ Faces
 
 #### ⚙️\_proj\_pts<a id='f-_proj_pts'></a>
 
-<code>*function* _proj_pts(pts: list\[<a href="#t-Point3D">Point3D</a>,...], dim\_i: number) : list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+<code>*function* _proj_pts(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], dim\_i: number) : list\[<a href="#t-_point2_d">Point2D</a>,...]</code>
 
 Project all points to an axis by removing `dim_i` and possibly swapping
 coordinates.  This is done to simplify calculations.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 Points to have projected.
 
@@ -9705,7 +9925,7 @@ Axis to have project along (have set to 0).  0 = x, 1 = y, 2 = z.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Point2D">Point2D</a>,...]</code>
+**Returns**: <code>list\[<a href="#t-_point2_d">Point2D</a>,...]</code>
 
 Returns points with the specified dimension removed.
 
@@ -9715,13 +9935,13 @@ Returns points with the specified dimension removed.
 
 #### ⚙️\_proj\_to\_what\_norm<a id='f-_proj_to_what_norm'></a>
 
-<code>*function* _proj_to_what_norm(pts: list\[<a href="#t-Point3D">Point3D</a>,...], dim\_i: number, \_n: number, \_n\_len: number, \_dim\_i: number) : list\[number,<a href="#t-Point3D">Point3D</a>]</code>
+<code>*function* _proj_to_what_norm(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], dim\_i: number, \_n: number, \_n\_len: number, \_dim\_i: number) : list\[number,<a href="#t-_point3_d">Point3D</a>]</code>
 
 Determine which projection give the largest normal vector.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 A list of points.  Must have at least 3 points.
 
@@ -9745,7 +9965,7 @@ Current best projection axis so far.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[number,<a href="#t-Point3D">Point3D</a>]</code>
+**Returns**: <code>list\[number,<a href="#t-_point3_d">Point3D</a>]</code>
 
 The best projection axis with it's corresponding best normal.
 
@@ -9755,13 +9975,13 @@ The best projection axis with it's corresponding best normal.
 
 #### ⚙️\_cap\_layer<a id='f-_cap_layer'></a>
 
-<code>*function* _cap_layer(pts: list\[<a href="#t-Point3D">Point3D</a>,...], pt\_is: list\[number,...]) : list\[<a href="#t-Face">Face</a>,...]</code>
+<code>*function* _cap_layer(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], pt\_is: list\[number,...]) : list\[<a href="#t-_face">Face</a>,...]</code>
 
 Caps a layer of points.
 
 <details><summary>parameters</summary>
 
-**<code>pts</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 List of points in layer.
 
@@ -9773,7 +9993,7 @@ List of indices used to dereference `pts`.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Face">Face</a>,...]</code>
+**Returns**: <code>list\[<a href="#t-_face">Face</a>,...]</code>
 
 List of faces.
 
@@ -9783,7 +10003,7 @@ List of faces.
 
 #### ⚙️\_cap\_layers<a id='f-_cap_layers'></a>
 
-<code>*function* _cap_layers(pts\_in\_layer: number, pts3d: list\[<a href="#t-Point3D">Point3D</a>,...], layers: number) : list\[<a href="#t-Face">Face</a>,...]</code>
+<code>*function* _cap_layers(pts\_in\_layer: number, pts3d: list\[<a href="#t-_point3_d">Point3D</a>,...], layers: number) : list\[<a href="#t-_face">Face</a>,...]</code>
 
 Generates triangulated faces to cap the first and last point layers.
 
@@ -9802,7 +10022,7 @@ capped.
 
 Number of points in a layer.
 
-**<code>pts3d</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+**<code>pts3d</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 Points for all layers.
 
@@ -9814,7 +10034,7 @@ Number of layers - 1.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Face">Face</a>,...]</code>
+**Returns**: <code>list\[<a href="#t-_face">Face</a>,...]</code>
 
 Generated faces.
 
@@ -9832,7 +10052,7 @@ Checks to see if object is a skin object
 
 #### ⚙️skin\_new<a id='f-skin_new'></a>
 
-<code>*function* skin_new(pt\_count\_per\_layer: number, layers: number, pts3d: list\[<a href="#t-Point3D">Point3D</a>,...], comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]) : <a href="#t-skin">skin</a></code>
+<code>*function* skin_new(pt\_count\_per\_layer: number, layers: number, pts3d: list\[<a href="#t-_point3_d">Point3D</a>,...], comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]) : <a href="#t-skin">skin</a></code>
 
 Create a new skin object.
 
@@ -9846,7 +10066,7 @@ number of points per layer (must be ≥ 3)
 
 Number of wall segments (requires `layers + 1` total point layers).
 
-**<code>pts3d</code>**: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+**<code>pts3d</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 The full list of points arranged in stacked layers.
 
@@ -9874,7 +10094,7 @@ E.g.
 - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
   then the other way, and then repeat.
 
-**<code>debug_axes</code>**: <code>list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]</code>
+**<code>debug_axes</code>**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
 
 This is a list of point groups.  When rendering, arrows will be drawn from
 the first point to each succeeding point in list.  When debugging, call
@@ -9896,7 +10116,7 @@ skin_show_debug_axis().
 
 #### ⚙️skin\_extrude<a id='f-skin_extrude'></a>
 
-<code>*function* skin_extrude(birl: number|<a href="#t-range">range</a>|list, end\_i: number|undef, comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]) : <a href="#t-SkinExtrude">SkinExtrude</a></code>
+<code>*function* skin_extrude(birl: number|<a href="#t-range">range</a>|list, end\_i: number|undef, comment: string, operation: string, wall\_diagonal: list\[bool,...], debug\_axes: list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]) : <a href="#t-_skin_extrude">SkinExtrude</a></code>
 
 Possible callchains:
 
@@ -9943,7 +10163,7 @@ E.g.
 - `[0,0,1]` will have it go one way for 2 consecutive 4 point face, and
   then the other way, and then repeat.
 
-**<code>debug_axes</code>**: <code>list\[list\[<a href="#t-Point3D">Point3D</a>,...],...]</code>
+**<code>debug_axes</code>**: <code>list\[list\[<a href="#t-_point3_d">Point3D</a>,...],...]</code>
 
 This is a list of point groups.  When rendering, arrows will be drawn from
 the first point to each succeeding point in list.  When debugging, call
@@ -9957,7 +10177,7 @@ skin_show_debug_axis().
 
 <details><summary>returns</summary>
 
-**Returns**: <code><a href="#t-SkinExtrude">SkinExtrude</a></code>
+**Returns**: <code><a href="#t-_skin_extrude">SkinExtrude</a></code>
 
 Lambda that takes a function that returns one layer of points.
 
@@ -9971,7 +10191,7 @@ Possible callchains:
 
 #### ⚙️skin\_create\_faces<a id='f-skin_create_faces'></a>
 
-<code>*function* skin_create_faces(skin: <a href="#t-skin">skin</a>) : list\[<a href="#t-Face">Face</a>]</code>
+<code>*function* skin_create_faces(skin: <a href="#t-skin">skin</a>) : list\[<a href="#t-_face">Face</a>]</code>
 
 Generates face layer_i to skin a layered structure, including:
 
@@ -9993,7 +10213,7 @@ The skin object generating the faces from.
 
 <details><summary>returns</summary>
 
-**Returns**: <code>list\[<a href="#t-Face">Face</a>]</code>
+**Returns**: <code>list\[<a href="#t-_face">Face</a>]</code>
 
 A list of triangle face definitions.
 
@@ -10003,7 +10223,7 @@ A list of triangle face definitions.
 
 #### ⚙️skin\_transform<a id='f-skin_transform'></a>
 
-<code>*function* skin_transform(obj\_or\_objs: <a href="#t-skin">skin</a>, matrix\_or\_fn: <a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function) : <a href="#t-skin">skin</a></code>
+<code>*function* skin_transform(obj\_or\_objs: <a href="#t-skin">skin</a>, matrix\_or\_fn: <a href="#t-_matrix3x3">Matrix3x3</a>|<a href="#t-_matrix4x4">Matrix4x4</a>|function) : <a href="#t-skin">skin</a></code>
 
 Performs a transformation on the points stored in the skin object.
 
@@ -10014,7 +10234,7 @@ Performs a transformation on the points stored in the skin object.
 The skin object where the points are coming from to transform.
 TODO: Update doc to state `list[skin]`
 
-**<code>matrix_or_fn</code>**: <code><a href="#t-Matrix3x3">Matrix3x3</a>|<a href="#t-Matrix4x4">Matrix4x4</a>|function</code>
+**<code>matrix_or_fn</code>**: <code><a href="#t-_matrix3x3">Matrix3x3</a>|<a href="#t-_matrix4x4">Matrix4x4</a>|function</code>
 
 The matrix or function to do the transformation with.  If the
 transformation is homogenous, then will convert the points to a homogeneous
@@ -10104,7 +10324,7 @@ TODO: Look into this. Not sure what I was attempting here.
 
 #### 🧊skin\_show\_debug\_axes<a id='m-skin_show_debug_axes'></a>
 
-<code>*module* skin_show_debug_axes(obj: <a href="#t-skin">skin</a>, styles: list\[<a href="#t-DebugStyle">DebugStyle</a>])</code>
+<code>*module* skin_show_debug_axes(obj: <a href="#t-skin">skin</a>, styles: list\[<a href="#t-_debug_style">DebugStyle</a>])</code>
 
 UNTESTED!
 Shows the debug axes to verify where you think things should be.
@@ -10115,7 +10335,7 @@ Shows the debug axes to verify where you think things should be.
 
 Object to show debug axes for.
 
-**<code>styles</code>**: <code>list\[<a href="#t-DebugStyle">DebugStyle</a>]</code> *(Default: `\[\["red", 1, .1], \["green"], \["blue"]]`)*
+**<code>styles</code>**: <code>list\[<a href="#t-_debug_style">DebugStyle</a>]</code> *(Default: `\[\["red", 1, .1], \["green"], \["blue"]]`)*
 
 Contains a list of styles that are reused when the number of points in a
 debug group exceeds the number of styles.
@@ -10227,6 +10447,8 @@ the distance between layers don't exceed some length.
 
 **<code>obj</code>**: <code><a href="#t-skin">skin</a></code>
 
+@deref {SkinEnum}
+
 Represents a skin object.
 
 **<code>max_diff</code>**: <code>number</code>
@@ -10263,9 +10485,19 @@ TODO: Look into this. Not sure what I was attempting here.
 
 ### <i>📑skin types</i><a id='ch-skin-skin_types'></a>
 
+#### 🧩SkinEnum<a id='t-_skin_enum'></a>
+
+<code>*type* SkinEnum = <a href="#t-_member_index">MemberIndex</a></code>
+
+Enum used to dereference a [`skin`](#t-skin) type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
 #### 🧩skin<a id='t-skin'></a>
 
 <code>*type* skin = list</code>
+
+@deref {SkinEnum}
 
 Represents a skin object.
 
@@ -10278,7 +10510,7 @@ Number of points in a layer.
 
 Number of layers-1.
 
-<code><b>_SKIN_PTS</b></code>: <code>list\[<a href="#t-Point3D">Point3D</a>,...]</code>
+<code><b>_SKIN_PTS</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
 
 A list of points representing the skin object.  This is a flattened list of
 points in layer order.  Points are in clockwise order when looking towards
@@ -10478,6 +10710,16 @@ spellings of grey/gray including slategrey/slategray etc are valid):
 
 <p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
 
+#### 🧩Colour<a id='t-_colour'></a>
+
+<code>*type* Colour = <a href="#t-_colour_lst">ColourLst</a>|<a href="#t-_colour_str">ColourStr</a>|<a href="#t-_colour_name">ColourName</a></code>
+
+Any colour value accepted by OpenSCAD's `color()` module: an RGB/RGBA
+vector (`ColourLst`), a CSS hex string (`ColourStr`), or an SVG colour
+name (`ColourName`).
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
 #### 🧩DebugStyle<a id='t-_debug_style'></a>
 
 <code>*type* DebugStyle = list</code>
@@ -10485,10 +10727,11 @@ spellings of grey/gray including slategrey/slategray etc are valid):
 Style for a debug vector.
 
 <details><summary>slots</summary>
-<code><b>0</b></code>: <code><a href="#t-ColourStr">ColourStr</a>|<a href="#t-ColourLst">ColourLst</a>|<a href="#t-ColourName">ColourName</a></code>
+<code><b>0</b></code>: <code><a href="#t-_colour">Colour</a></code>
 
-- If a string, then the name of a colour, or the hex representation of one.
-- If a number, the value of the hex value.
+Any colour value accepted by OpenSCAD's `color()` module: an RGB/RGBA
+vector (`ColourLst`), a CSS hex string (`ColourStr`), or an SVG colour
+name (`ColourName`).
 
 <code><b>1</b></code>: <code>number</code>
 
@@ -10503,6 +10746,1716 @@ Alpha value between `[0, 1]`.
 <code><b>2</b></code>: <code>number</code>
 
 Thickness that is passed to [`arrow()`](#m-arrow) module.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
+## 📘spline_consts<a id='file-spline_consts'></a>
+
+### <i>📑How to Import</i><a id='ch-spline_consts-_how_to__import'></a>
+
+    include <spline_consts>
+
+### <i>📑Purpose</i><a id='ch-spline_consts-_purpose'></a>
+
+Constants for spline and spoly objects: type enums and slot indices.
+
+### <i>📑Values for `SplineTypeEnum`</i><a id='ch-spline_consts-_values_for___spline_type_enum_'></a>
+
+#### 💠SPLINE\_T\_CATMULL\_ROM<a id='v-_s_p_l_i_n_e__t__c_a_t_m_u_l_l__r_o_m'></a>
+
+<code>*value* SPLINE_T_CATMULL_ROM : <a href="#t-_spline_type_enum">SplineTypeEnum</a></code>
+
+Catmull-Rom spline type.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+s = spline_new(pts, type = SPLINE_T_CATMULL_ROM);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SPLINE\_T\_BEZIER<a id='v-_s_p_l_i_n_e__t__b_e_z_i_e_r'></a>
+
+<code>*value* SPLINE_T_BEZIER : <a href="#t-_spline_type_enum">SplineTypeEnum</a></code>
+
+Cubic Bezier spline type.
+
+<details><summary><b>Example:</b><i> Usage</i></summary>
+
+
+```openscad
+s = spline_new(pts, type = SPLINE_T_BEZIER);
+```
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑`spline` Slot Related Constants</i><a id='ch-spline_consts-_spline___slot__related__constants'></a>
+
+#### 💠\_SPLINE\_ID<a id='v-__s_p_l_i_n_e__i_d'></a>
+
+<code>*value* _SPLINE_ID : <a href="#t-_obj_type_id">ObjTypeId</a></code>
+
+Type identifier header for spline objects.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SPLINE\_PTS<a id='v-_s_p_l_i_n_e__p_t_s'></a>
+
+<code>*value* SPLINE_PTS : <a href="#t-_spline_enum">SplineEnum</a></code>
+
+Slot index for the control points list in a spline object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SPLINE\_CLOSED<a id='v-_s_p_l_i_n_e__c_l_o_s_e_d'></a>
+
+<code>*value* SPLINE_CLOSED : <a href="#t-_spline_enum">SplineEnum</a></code>
+
+Slot index for the closed-loop flag in a spline object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SPLINE\_TYPE<a id='v-__s_p_l_i_n_e__t_y_p_e'></a>
+
+<code>*value* _SPLINE_TYPE : <a href="#t-_spline_enum">SplineEnum</a></code>
+
+Slot index for the spline type enum in a spline object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SPLINE\_TENSION<a id='v-__s_p_l_i_n_e__t_e_n_s_i_o_n'></a>
+
+<code>*value* _SPLINE_TENSION : <a href="#t-_spline_enum">SplineEnum</a></code>
+
+Slot index for the tension parameter (Catmull-Rom) in a spline object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑`spoly` Slot Related Constants</i><a id='ch-spline_consts-_spoly___slot__related__constants'></a>
+
+#### 💠\_SPOLY\_ID<a id='v-__s_p_o_l_y__i_d'></a>
+
+<code>*value* _SPOLY_ID : <a href="#t-_obj_type_id">ObjTypeId</a></code>
+
+Type identifier header for spoly objects.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SPOLY\_PTS<a id='v-_s_p_o_l_y__p_t_s'></a>
+
+<code>*value* SPOLY_PTS : <a href="#t-_spoly_enum">SpolyEnum</a></code>
+
+Slot index for the sampled polyline points in a spoly object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SPOLY\_CTRL\_IS<a id='v-_s_p_o_l_y__c_t_r_l__i_s'></a>
+
+<code>*value* SPOLY_CTRL_IS : <a href="#t-_spoly_enum">SpolyEnum</a></code>
+
+Slot index for the control point indices in a spoly object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SPOLY\_ARC\_LENS<a id='v-__s_p_o_l_y__a_r_c__l_e_n_s'></a>
+
+<code>*value* _SPOLY_ARC_LENS : <a href="#t-_spoly_enum">SpolyEnum</a></code>
+
+Slot index for the cumulative arc lengths in a spoly object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SPOLY\_TANGENTS<a id='v-__s_p_o_l_y__t_a_n_g_e_n_t_s'></a>
+
+<code>*value* _SPOLY_TANGENTS : <a href="#t-_spoly_enum">SpolyEnum</a></code>
+
+Slot index for the unit tangent vectors in a spoly object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SPOLY\_CLOSED<a id='v-_s_p_o_l_y__c_l_o_s_e_d'></a>
+
+<code>*value* SPOLY_CLOSED : <a href="#t-_spoly_enum">SpolyEnum</a></code>
+
+Slot index for the closed-loop flag in a spoly object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑`SpPalette` Slot Related Constants</i><a id='ch-spline_consts-__sp_palette___slot__related__constants'></a>
+
+#### 💠\_SP\_ID<a id='v-__s_p__i_d'></a>
+
+<code>*value* _SP_ID : <a href="#t-_obj_type_id">ObjTypeId</a></code>
+
+Type identifier header for SpPalette objects.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_START<a id='v-_s_p__s_t_a_r_t'></a>
+
+<code>*value* SP_START : <a href="#t-_sp_palette_enum">SpPaletteEnum</a></code>
+
+Slot index for the colour of the first segment in a control-point section.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_START\_STOP<a id='v-_s_p__s_t_a_r_t__s_t_o_p'></a>
+
+<code>*value* SP_START_STOP : <a href="#t-_sp_palette_enum">SpPaletteEnum</a></code>
+
+Slot index for the colour when a control-point section has only one
+segment (start and stop are the same).
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_STOP<a id='v-_s_p__s_t_o_p'></a>
+
+<code>*value* SP_STOP : <a href="#t-_sp_palette_enum">SpPaletteEnum</a></code>
+
+Slot index for the colour of the last segment in a control-point section.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_CONT<a id='v-_s_p__c_o_n_t'></a>
+
+<code>*value* SP_CONT : <a href="#t-_sp_palette_enum">SpPaletteEnum</a></code>
+
+Slot index for the colour of middle segments in a control-point section.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_CTRL\_PT<a id='v-_s_p__c_t_r_l__p_t'></a>
+
+<code>*value* SP_CTRL_PT : <a href="#t-_sp_palette_enum">SpPaletteEnum</a></code>
+
+Slot index for the colour of control-point arrows in spline debug
+visualisation.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_CTRL\_POLY<a id='v-_s_p__c_t_r_l__p_o_l_y'></a>
+
+<code>*value* SP_CTRL_POLY : <a href="#t-_sp_palette_enum">SpPaletteEnum</a></code>
+
+Slot index for the colour of the control polygon segments in spline
+debug visualisation.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_HANDLE<a id='v-_s_p__h_a_n_d_l_e'></a>
+
+<code>*value* SP_HANDLE : <a href="#t-_sp_palette_enum">SpPaletteEnum</a></code>
+
+Slot index for the colour of Bezier handle lines in spline debug
+visualisation.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_SPECTRUM<a id='v-_s_p__s_p_e_c_t_r_u_m'></a>
+
+<code>*value* SP_SPECTRUM : <a href="#t-_sp_palette">SpPalette</a></code>
+
+RGB spectrum palette: red/purple/blue/green.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_STREET\_LIGHTS<a id='v-_s_p__s_t_r_e_e_t__l_i_g_h_t_s'></a>
+
+<code>*value* SP_STREET_LIGHTS : <a href="#t-_sp_palette">SpPalette</a></code>
+
+Traffic-light palette: green/yellow/red/white.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_OKABE\_ITO\_STOPGO<a id='v-_s_p__o_k_a_b_e__i_t_o__s_t_o_p_g_o'></a>
+
+<code>*value* SP_OKABE_ITO_STOPGO : <a href="#t-_sp_palette">SpPalette</a></code>
+
+Colour-blind friendly palette based on Okabe & Ito's Colour Universal
+Design (CUD).
+
+Sources:
+- [Colour Universal Design (CUD) / Colorblind Barrier Free](
+  https://jfly.uni-koeln.de/color/)
+- [Siegal Lab color palette reference](
+  https://siegal.bio.nyu.edu/color-palette/)
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠SP\_TOL\_BRIGHT\_STOPGO<a id='v-_s_p__t_o_l__b_r_i_g_h_t__s_t_o_p_g_o'></a>
+
+<code>*value* SP_TOL_BRIGHT_STOPGO : <a href="#t-_sp_palette">SpPalette</a></code>
+
+Colour-blind friendly palette derived from Paul Tol's "Bright"
+qualitative scheme.
+
+Sources:
+- [Paul Tol's Notes (qualitative schemes)](
+  https://sronpersonalpages.nl/~pault/)
+- [Colour Schemes (PDF), SRON/EPS/TN/09-002 issue 3.2 (18 August 2021)](
+  https://sronpersonalpages.nl/~pault/data/colourschemes.pdf)
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑spline_consts types</i><a id='ch-spline_consts-spline_consts_types'></a>
+
+#### 🧩SplineTypeEnum<a id='t-_spline_type_enum'></a>
+
+<code>*type* SplineTypeEnum = number</code>
+
+Number representing a spline type.  Use with `spline_new()`.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩SplineEnum<a id='t-_spline_enum'></a>
+
+<code>*type* SplineEnum = <a href="#t-_member_index">MemberIndex</a></code>
+
+Enum used to dereference a [`spline`](#t-spline) type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩SpolyEnum<a id='t-_spoly_enum'></a>
+
+<code>*type* SpolyEnum = <a href="#t-_member_index">MemberIndex</a></code>
+
+Enum used to dereference a [`spline`](#t-spline) type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩SpPaletteEnum<a id='t-_sp_palette_enum'></a>
+
+<code>*type* SpPaletteEnum = <a href="#t-_member_index">MemberIndex</a></code>
+
+Enum used to dereference a [`SpPalette`](#t-_sp_palette) type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩SpPalette<a id='t-_sp_palette'></a>
+
+<code>*type* SpPalette = list</code>
+
+@deref {SpPaletteEnum}
+
+Colour palette for spline and sampled-polyline debug visualisation.
+Each slot holds a colour value (RGB vector or CSS hex string) used to
+indicate segment position within a control-point section, or to identify
+spline structural elements.
+
+<details><summary>slots</summary>
+<code><b>SP_START</b></code>: <code><a href="#t-_colour">Colour</a></code>
+
+Colour for the first segment in a control-point section.
+
+<code><b>SP_START_STOP</b></code>: <code><a href="#t-_colour">Colour</a></code>
+
+Colour when a section has only one segment.
+
+<code><b>SP_STOP</b></code>: <code><a href="#t-_colour">Colour</a></code>
+
+Colour for the last segment in a control-point section.
+
+<code><b>SP_CONT</b></code>: <code><a href="#t-_colour">Colour</a></code>
+
+Colour for middle segments.
+
+<code><b>SP_CTRL_PT</b></code>: <code><a href="#t-_colour">Colour</a></code>
+
+Colour for control-point arrows.
+
+<code><b>SP_CTRL_POLY</b></code>: <code><a href="#t-_colour">Colour</a></code>
+
+Colour for control polygon segments.
+
+<code><b>SP_HANDLE</b></code>: <code><a href="#t-_colour">Colour</a></code>
+
+Colour for Bezier handle lines.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
+## 📘spline<a id='file-spline'></a>
+
+### <i>📑How to Import</i><a id='ch-spline-_how_to__import'></a>
+
+    use <spline>
+
+### <i>📑Purpose</i><a id='ch-spline-_purpose'></a>
+
+Provides spline curves and sampled polyline representations for use with
+path-based extrusions.  A [spline](#t-spline) defines a smooth curve through
+control points.  An [spoly](#t-spoly) is the adaptively-sampled polyline
+representation, with control point indices preserved for synchronizing
+rail and guide paths.
+
+### <i>📑Design</i><a id='ch-spline-_design'></a>
+
+Two object types are defined:
+
+- **spline** - the mathematical curve definition (control points, type,
+  tension, open/closed).
+- **spoly** - the sampled polyline with cached arc lengths, tangents,
+  and an index map back to the original control points.
+
+### <i>📑SPLINE Functions</i><a id='ch-spline-_s_p_l_i_n_e__functions'></a>
+
+#### ⚙️is\_spline<a id='f-is_spline'></a>
+
+<code>*function* is_spline(obj: any) : bool</code>
+
+Type check for spline objects.
+
+<details><summary>parameters</summary>
+
+**<code>obj</code>**: <code>any</code>
+
+The value to test.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>bool</code>
+
+`true` if `obj` is a spline.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️verify\_spline<a id='f-verify_spline'></a>
+
+<code>*function* verify_spline(s: <a href="#t-spline">spline</a>)</code>
+
+Verify that a value is a spline object.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+Value to check.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spline\_new<a id='f-spline_new'></a>
+
+<code>*function* spline_new(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], closed: bool, type: <a href="#t-_spline_type_enum">SplineTypeEnum</a>, tension: number) : <a href="#t-spline">spline</a></code>
+
+Create a new spline object.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Control points (3D).
+
+**<code>closed</code>**: <code>bool</code> *(Default: `false`)*
+
+Whether the spline is a closed loop.  Default `false`.
+
+**<code>type</code>**: <code><a href="#t-_spline_type_enum">SplineTypeEnum</a></code> *(Default: `SPLINE_T_CATMULL_ROM`)*
+
+Spline type enum.  Default `SPLINE_T_CATMULL_ROM`.
+
+**<code>tension</code>**: <code>number</code> *(Default: `0.5`)*
+
+Tension for Catmull-Rom.  Default `0.5`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-spline">spline</a></code>
+
+A new spline object.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spline\_segment\_count<a id='f-spline_segment_count'></a>
+
+<code>*function* spline_segment_count(s: <a href="#t-spline">spline</a>) : number</code>
+
+Number of segments in a spline.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A spline object.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+The number of curve segments.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spline\_point\_at<a id='f-spline_point_at'></a>
+
+<code>*function* spline_point_at(s: <a href="#t-spline">spline</a>, seg: number, t: number) : <a href="#t-_point3_d">Point3D</a></code>
+
+Evaluate a spline at parameter `t` in the given segment.
+
+For Catmull-Rom splines, each segment spans between consecutive control
+points.  For cubic Bezier splines, control points are laid out as
+`[P0, H0, H1, P1, H2, H3, P2, ...]` where each segment uses 4 points:
+segment `i` uses indices `[3*i, 3*i+1, 3*i+2, 3*i+3]`.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A spline object.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index (0-based).
+
+**<code>t</code>**: <code>number</code>
+
+Parameter in [0, 1].
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+The point on the curve.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spline\_catmull\_rom\_point<a id='f-_spline_catmull_rom_point'></a>
+
+<code>*function* _spline_catmull_rom_point()</code>
+
+Catmull-Rom point evaluation.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spline\_bezier\_point<a id='f-_spline_bezier_point'></a>
+
+<code>*function* _spline_bezier_point()</code>
+
+Cubic Bezier point evaluation.
+
+B(t) = (1-t)³·P0 + 3·(1-t)²·t·P1 + 3·(1-t)·t²·P2 + t³·P3
+
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spline\_tangent\_at<a id='f-spline_tangent_at'></a>
+
+<code>*function* spline_tangent_at(s: <a href="#t-spline">spline</a>, seg: number, t: number) : <a href="#t-_vector3_d">Vector3D</a></code>
+
+Evaluate the tangent (derivative) of a spline at parameter `t`.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A spline object.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index (0-based).
+
+**<code>t</code>**: <code>number</code>
+
+Parameter in [0, 1].
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_vector3_d">Vector3D</a></code>
+
+The (unnormalized) tangent vector.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spline\_catmull\_rom\_tangent<a id='f-_spline_catmull_rom_tangent'></a>
+
+<code>*function* _spline_catmull_rom_tangent()</code>
+
+Catmull-Rom tangent evaluation.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spline\_bezier\_tangent<a id='f-_spline_bezier_tangent'></a>
+
+<code>*function* _spline_bezier_tangent()</code>
+
+Cubic Bezier tangent evaluation.
+
+B'(t) = 3·(1-t)²·(P1-P0) + 6·(1-t)·t·(P2-P1) + 3·t²·(P3-P2)
+
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑Adaptive Sampling</i><a id='ch-spline-_adaptive__sampling'></a>
+
+#### ⚙️\_spline\_subdivide<a id='f-_spline_subdivide'></a>
+
+<code>*function* _spline_subdivide(s: <a href="#t-spline">spline</a>, seg: number, t0: number, p0: <a href="#t-_point3_d">Point3D</a>, t1: number, p1: <a href="#t-_point3_d">Point3D</a>, tol: number, depth: number) : list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Recursively subdivide a spline segment until the midpoint deviation from
+the chord is within tolerance.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+The spline.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index.
+
+**<code>t0</code>**: <code>number</code>
+
+Start parameter.
+
+**<code>p0</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Point at t0.
+
+**<code>t1</code>**: <code>number</code>
+
+End parameter.
+
+**<code>p1</code>**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Point at t1.
+
+**<code>tol</code>**: <code>number</code>
+
+Maximum allowed deviation.
+
+**<code>depth</code>**: <code>number</code>
+
+Recursion depth limit.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Interior points (not including p0 or p1).
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spline\_sample\_segment<a id='f-_spline_sample_segment'></a>
+
+<code>*function* _spline_sample_segment(s: <a href="#t-spline">spline</a>, seg: number, tol: number) : list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Sample a single segment adaptively.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+The spline.
+
+**<code>seg</code>**: <code>number</code>
+
+Segment index.
+
+**<code>tol</code>**: <code>number</code>
+
+Tolerance.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Points for this segment, starting with the segment start point.
+The segment end point is NOT included (it will be the start of the next
+segment, or appended for the last segment).
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spline\_to\_spoly<a id='f-spline_to_spoly'></a>
+
+<code>*function* spline_to_spoly(s: <a href="#t-spline">spline</a>, tolerance: number) : <a href="#t-spoly">spoly</a></code>
+
+Convert a spline to a sampled polyline (spoly).
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+The spline to sample.
+
+**<code>tolerance</code>**: <code>number</code> *(Default: `0.01`)*
+
+Maximum deviation from the true curve.  Default `0.01`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-spoly">spoly</a></code>
+
+The sampled polyline with control point indices, arc lengths, and tangents.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spoly\_build\_pts<a id='f-_spoly_build_pts'></a>
+
+<code>*function* _spoly_build_pts(seg\_results: list, seg\_count: number, closed: bool, s: <a href="#t-spline">spline</a>) : list</code>
+
+Build the flat point list and control point index list from per-segment
+sample results.
+
+<details><summary>parameters</summary>
+
+**<code>seg_results</code>**: <code>list</code>
+
+Per-segment sample point lists.
+
+**<code>seg_count</code>**: <code>number</code>
+
+Number of segments.
+
+**<code>closed</code>**: <code>bool</code>
+
+Whether the spline is closed.
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+The spline (for evaluating the final endpoint).
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[pts, ctrl_is]`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spoly\_flatten\_segs<a id='f-_spoly_flatten_segs'></a>
+
+<code>*function* _spoly_flatten_segs(seg\_results: list, offset: number, seg\_count: number) : list</code>
+
+Flatten per-segment results into a single point list, tracking control
+point indices.
+
+<details><summary>parameters</summary>
+
+**<code>seg_results</code>**: <code>list</code>
+
+Per-segment sample point lists.
+
+**<code>offset</code>**: <code>number</code>
+
+Current index offset into the flat list.
+
+**<code>seg_count</code>**: <code>number</code>
+
+Total number of segments.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list</code>
+
+`[flat_pts, ctrl_is]`
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spoly\_compute\_arc\_lens<a id='f-_spoly_compute_arc_lens'></a>
+
+<code>*function* _spoly_compute_arc_lens(pts: list\[<a href="#t-_point3_d">Point3D</a>,...]) : list\[number,...]</code>
+
+Compute cumulative arc lengths for a polyline.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+The polyline points.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[number,...]</code>
+
+Cumulative arc length at each point (first is 0).
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spoly\_compute\_tangents<a id='f-_spoly_compute_tangents'></a>
+
+<code>*function* _spoly_compute_tangents(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], closed: bool) : list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+Compute unit tangent vectors for a polyline.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+The polyline points.
+
+**<code>closed</code>**: <code>bool</code>
+
+Whether the polyline is closed.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+Unit tangent at each point.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑SPOLY Functions</i><a id='ch-spline-_s_p_o_l_y__functions'></a>
+
+#### ⚙️is\_spoly<a id='f-is_spoly'></a>
+
+<code>*function* is_spoly(obj: any) : bool</code>
+
+Type check for spoly objects.
+
+<details><summary>parameters</summary>
+
+**<code>obj</code>**: <code>any</code>
+
+The value to test.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>bool</code>
+
+`true` if `obj` is a spoly.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spoly\_new<a id='f-spoly_new'></a>
+
+<code>*function* spoly_new(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], ctrl\_is: list\[number,...], arc\_lens: list\[number,...], tangents: list\[<a href="#t-_vector3_d">Vector3D</a>,...], closed: bool) : <a href="#t-spoly">spoly</a></code>
+
+Create a new spoly object directly.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Polyline points.
+
+**<code>ctrl_is</code>**: <code>list\[number,...]</code>
+
+Indices into `pts` for original control points.
+
+**<code>arc_lens</code>**: <code>list\[number,...]</code>
+
+Cumulative arc length at each point.
+
+**<code>tangents</code>**: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+Unit tangent at each point.
+
+**<code>closed</code>**: <code>bool</code> *(Default: `false`)*
+
+Whether this is a closed loop.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-spoly">spoly</a></code>
+
+A new spoly object.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spoly\_point\_at<a id='f-spoly_point_at'></a>
+
+<code>*function* spoly_point_at(sp: <a href="#t-spoly">spoly</a>, ctrl\_idx: number, pct: number) : <a href="#t-_point3_d">Point3D</a></code>
+
+Query a point on an spoly at a given control point index plus a percentage
+toward the next control point.
+
+<details><summary>parameters</summary>
+
+**<code>sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+An spoly object.
+
+**<code>ctrl_idx</code>**: <code>number</code>
+
+Index into the control point list (0-based).
+
+**<code>pct</code>**: <code>number</code>
+
+Percentage [0, 1] along the segment from `ctrl_idx` to `ctrl_idx + 1`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+The interpolated point.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spoly\_tangent\_at<a id='f-spoly_tangent_at'></a>
+
+<code>*function* spoly_tangent_at(sp: <a href="#t-spoly">spoly</a>, ctrl\_idx: number, pct: number) : <a href="#t-_vector3_d">Vector3D</a></code>
+
+Query a tangent on an spoly at a given control point index plus a percentage
+toward the next control point.
+
+<details><summary>parameters</summary>
+
+**<code>sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+An spoly object.
+
+**<code>ctrl_idx</code>**: <code>number</code>
+
+Index into the control point list (0-based).
+
+**<code>pct</code>**: <code>number</code>
+
+Percentage [0, 1] along the segment.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_vector3_d">Vector3D</a></code>
+
+The interpolated unit tangent.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spoly\_find\_segment<a id='f-_spoly_find_segment'></a>
+
+<code>*function* _spoly_find_segment(arc\_lens: list\[number,...], i\_start: number, i\_end: number, target: number) : number</code>
+
+Find the polyline segment index containing a target arc length, searching
+within the range [i_start, i_end].
+
+<details><summary>parameters</summary>
+
+**<code>arc_lens</code>**: <code>list\[number,...]</code>
+
+Cumulative arc lengths.
+
+**<code>i_start</code>**: <code>number</code>
+
+Start index of search range.
+
+**<code>i_end</code>**: <code>number</code>
+
+End index of search range.
+
+**<code>target</code>**: <code>number</code>
+
+Target arc length.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>number</code>
+
+Index `i` such that `arc_lens[i] <= target < arc_lens[i+1]`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_spoly\_lerp\_at\_arc\_len<a id='f-_spoly_lerp_at_arc_len'></a>
+
+<code>*function* _spoly_lerp_at_arc_len(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], arc\_lens: list\[number,...], i\_start: number, i\_end: number, target\_al: number) : <a href="#t-_point3_d">Point3D</a></code>
+
+Linearly interpolate a point along the polyline at a target arc length.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Polyline points.
+
+**<code>arc_lens</code>**: <code>list\[number,...]</code>
+
+Cumulative arc lengths.
+
+**<code>i_start</code>**: <code>number</code>
+
+Start index for search.
+
+**<code>i_end</code>**: <code>number</code>
+
+End index for search.
+
+**<code>target_al</code>**: <code>number</code>
+
+Target arc length.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_point3_d">Point3D</a></code>
+
+Interpolated point.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spoly\_split<a id='f-spoly_split'></a>
+
+<code>*function* spoly_split(sp: <a href="#t-spoly">spoly</a>, ctrl\_idx: number, pct: number) : list\[<a href="#t-spoly">spoly</a>,<a href="#t-spoly">spoly</a>]</code>
+
+Split an spoly into two at a given control point index and percentage.
+
+<details><summary>parameters</summary>
+
+**<code>sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+An spoly object.
+
+**<code>ctrl_idx</code>**: <code>number</code>
+
+Index into the control point list.
+
+**<code>pct</code>**: <code>number</code>
+
+Percentage [0, 1] along the segment from `ctrl_idx` to `ctrl_idx + 1`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>list\[<a href="#t-spoly">spoly</a>,<a href="#t-spoly">spoly</a>]</code>
+
+A list of two spoly objects: `[before, after]`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑String Conversion</i><a id='ch-spline-_string__conversion'></a>
+
+#### ⚙️spline\_to\_string<a id='f-spline_to_string'></a>
+
+<code>*function* spline_to_string(s: <a href="#t-spline">spline</a>) : string</code>
+
+Convert a spline to a debug string.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+A spline object.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>string</code>
+
+A human-readable representation.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️spoly\_to\_string<a id='f-spoly_to_string'></a>
+
+<code>*function* spoly_to_string(sp: <a href="#t-spoly">spoly</a>) : string</code>
+
+Convert an spoly to a debug string.
+
+<details><summary>parameters</summary>
+
+**<code>sp</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+An spoly object.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>string</code>
+
+A human-readable representation.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧊\_sp\_debug\_poly<a id='m-_sp_debug_poly'></a>
+
+<code>*module* _sp_debug_poly(pts: list\[<a href="#t-_point3_d">Point3D</a>,...], d: number, c: <a href="#t-_sp_palette">SpPalette</a>|<a href="#t-_colour">Colour</a>, begin\_i: number, end\_i: number)</code>
+
+Render a section of a polyline as coloured chevron cones.
+
+If `c` is a `SpPalette` object, section colouring is applied
+(start/stop/start_stop/cont).  Otherwise `c` is treated as a plain
+colour passed directly to `color()`.
+
+<details><summary>parameters</summary>
+
+**<code>pts</code>**: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+Point list to index into.
+
+**<code>d</code>**: <code>number</code>
+
+Diameter of the cone base.
+
+**<code>c</code>**: <code><a href="#t-_sp_palette">SpPalette</a>|<a href="#t-_colour">Colour</a></code>
+
+Colour palette or plain colour.
+
+**<code>begin_i</code>**: <code>number</code>
+
+Start index into `pts` (first point of first segment).
+
+**<code>end_i</code>**: <code>number</code>
+
+End index into `pts` (last point, inclusive).
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧊spoly\_debug<a id='m-spoly_debug'></a>
+
+<code>*module* spoly_debug(spoly: <a href="#t-spoly">spoly</a>, d: number, c: <a href="#t-_sp_palette">SpPalette</a>)</code>
+
+Debug visualisation of a spoly as a chain of coloured chevron cones.
+
+Each segment between consecutive points is rendered as a triangular cone
+pointing in the path direction.  Colours indicate position within each
+control-point section: start, stop, both, or continuation.
+
+<details><summary>parameters</summary>
+
+**<code>spoly</code>**: <code><a href="#t-spoly">spoly</a></code>
+
+The spoly to visualise.
+
+**<code>d</code>**: <code>number</code> *(Default: `0.1`)*
+
+Diameter of the cone base.
+
+**<code>c</code>**: <code><a href="#t-_sp_palette">SpPalette</a></code> *(Default: `SP_SPECTRUM`)*
+
+Colour palette.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧊spline\_debug<a id='m-spline_debug'></a>
+
+<code>*module* spline_debug(s: <a href="#t-spline">spline</a>, tolerance: number, d: number, c: <a href="#t-_sp_palette">SpPalette</a>, show\_spline: bool, show\_spoly: bool)</code>
+
+Debug visualisation of a spline showing control points, control polygon,
+handles (Bezier only), and optionally the sampled spoly.
+
+Control points are rendered as arrows oriented along the tangent.
+The control polygon connects adjacent control points (anchors for Bezier).
+For Bezier splines, handle lines connect anchors to their handles.
+
+<details><summary>parameters</summary>
+
+**<code>s</code>**: <code><a href="#t-spline">spline</a></code>
+
+The spline to visualise.
+
+**<code>tolerance</code>**: <code>number</code> *(Default: `0.01`)*
+
+Sampling tolerance for the spoly conversion.
+
+**<code>d</code>**: <code>number</code> *(Default: `0.1`)*
+
+Base diameter for chevron cones and arrow thickness.
+
+**<code>c</code>**: <code><a href="#t-_sp_palette">SpPalette</a></code> *(Default: `SP_SPECTRUM`)*
+
+Colour palette.
+
+**<code>show_spline</code>**: <code>bool</code> *(Default: `true`)*
+
+Show control points, polygon, and handles.
+
+**<code>show_spoly</code>**: <code>bool</code> *(Default: `true`)*
+
+Show the sampled spoly.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑Examples</i><a id='ch-spline-_examples'></a>
+
+#### 🧊spline\_example1<a id='m-spline_example1'></a>
+
+<code>*module* spline_example1()</code>
+
+@example
+
+Basic Catmull-Rom spline through 5 points, converted to a polyline and
+rendered as a series of spheres.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧊spline\_example2<a id='m-spline_example2'></a>
+
+<code>*module* spline_example2()</code>
+
+@example
+
+Cubic Bezier spline with 2 segments (7 points: 3 anchors + 4 handles),
+converted to a polyline.  Anchor control points are highlighted in red.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑spline types</i><a id='ch-spline-spline_types'></a>
+
+#### 🧩spline<a id='t-spline'></a>
+
+<code>*type* spline = list</code>
+
+@deref {SplineEnum}
+
+Represents a spline curve through control points.
+
+<details><summary>slots</summary>
+<code><b>SPLINE_PTS</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+The control points defining the curve.  For Catmull-Rom, these are the
+interpolation points.  For cubic Bezier, the layout is
+`[P0, H0out, H1in, P1, H1out, H2in, P2, ...]` where anchor points are
+at indices `0, 3, 6, ...` and handles are between them.
+
+<code><b>SPLINE_CLOSED</b></code>: <code>bool</code>
+
+Whether the spline forms a closed loop.
+
+<code><b>_SPLINE_TYPE</b></code>: <code>number</code>
+
+Spline type enum: `SPLINE_T_CATMULL_ROM` or `SPLINE_T_BEZIER`.
+
+<code><b>_SPLINE_TENSION</b></code>: <code>number</code>
+
+Tension parameter for Catmull-Rom (default 0.5).  Ignored for Bezier.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩spoly<a id='t-spoly'></a>
+
+<code>*type* spoly = list</code>
+
+@deref {SpolyEnum}
+
+Represents an adaptively-sampled polyline derived from a spline, with
+control point correspondence preserved.
+
+<details><summary>slots</summary>
+<code><b>SPOLY_PTS</b></code>: <code>list\[<a href="#t-_point3_d">Point3D</a>,...]</code>
+
+The sampled polyline points.
+
+<code><b>SPOLY_CTRL_IS</b></code>: <code>list\[number,...]</code>
+
+Indices into `SPOLY_PTS` for the original spline control points.
+
+<code><b>_SPOLY_ARC_LENS</b></code>: <code>list\[number,...]</code>
+
+Cumulative arc length at each polyline point.
+
+<code><b>_SPOLY_TANGENTS</b></code>: <code>list\[<a href="#t-_vector3_d">Vector3D</a>,...]</code>
+
+Unit tangent vector at each polyline point.
+
+<code><b>SPOLY_CLOSED</b></code>: <code>bool</code>
+
+Whether this polyline represents a closed loop.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+<hr/>
+
+## 📘skin_follow<a id='file-skin_follow'></a>
+
+### <i>📑How to Import</i><a id='ch-skin_follow-_how_to__import'></a>
+
+    use <skin_follow>
+
+### <i>📑Purpose</i><a id='ch-skin_follow-_purpose'></a>
+
+Follow-me extrusion: extrudes a 2D profile along a 3D spline path using
+a rail-and-guide (R&G) system.  The **rail** is the center path; the
+**guide** controls the orientation (roll) of the profile at each station.
+
+Three guide-generation algorithms are provided:
+
+- **Fixed** (`skin_follow_rg_fixed`) — like gravity: a fixed global
+  "down" direction keeps the profile oriented the same way everywhere.
+  Simple but fails when the path tangent aligns with the up vector.
+
+- **RMF** (`skin_follow_rg_rmf`) — like a gyroscope: the initial
+  orientation propagates along the path with minimal twist.  Works on any
+  path shape and is the best general-purpose default.
+
+- **Explicit** (`skin_follow_rg_explicit`) — full user control via a
+  second spline that runs alongside the rail.
+
+All three produce an R&G object (a pair of matched spolys).  `skin_follow`
+then walks the R&G stations, builds a `frame_transform` at each, applies
+the user's profile function, and assembles the result into a skin.
+
+#### 💠\_SF\_RG\_RAIL<a id='v-__s_f__r_g__r_a_i_l'></a>
+
+<code>*value* _SF_RG_RAIL : <a href="#t-_rail_guide_enum">RailGuideEnum</a></code>
+
+Slot index for the rail spoly (center path) in a RailGuide object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 💠\_SF\_RG\_GUIDE<a id='v-__s_f__r_g__g_u_i_d_e'></a>
+
+<code>*value* _SF_RG_GUIDE : <a href="#t-_rail_guide_enum">RailGuideEnum</a></code>
+
+Slot index for the guide spoly (orientation reference) in a RailGuide
+object.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️rg\_to\_string<a id='f-rg_to_string'></a>
+
+<code>*function* rg_to_string(rg: <a href="#t-_rail_guide">RailGuide</a>) : string</code>
+
+Convert a RailGuide object to a human-readable string.
+
+<details><summary>parameters</summary>
+
+**<code>rg</code>**: <code><a href="#t-_rail_guide">RailGuide</a></code>
+
+The RailGuide object to convert.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code>string</code>
+
+A string representation of the RailGuide.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️skin\_follow\_rg\_fixed<a id='f-skin_follow_rg_fixed'></a>
+
+<code>*function* skin_follow_rg_fixed(rail: <a href="#t-spline">spline</a>, up: <a href="#t-_vector3_d">Vector3D</a>, tolerance: number) : <a href="#t-_rail_guide">RailGuide</a></code>
+
+Generate an R&G pair using a fixed reference vector.
+
+Like gravity pulling one side of the profile in a constant direction.
+The guide is constructed by offsetting each rail point perpendicular to
+the tangent, in the direction of the `up` vector projected onto the
+plane normal to the tangent.
+
+<details><summary>parameters</summary>
+
+**<code>rail</code>**: <code><a href="#t-spline">spline</a></code>
+
+The rail spline (center path).
+
+**<code>up</code>**: <code><a href="#t-_vector3_d">Vector3D</a></code> *(Default: `\[0, 0, 1]`)*
+
+The global "up" direction.  Default `[0, 0, 1]`.
+
+**<code>tolerance</code>**: <code>number</code> *(Default: `0.01`)*
+
+Adaptive sampling tolerance.  Default `0.01`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_rail_guide">RailGuide</a></code>
+
+A matched R&G pair.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️skin\_follow\_rg\_rmf<a id='f-skin_follow_rg_rmf'></a>
+
+<code>*function* skin_follow_rg_rmf(rail: <a href="#t-spline">spline</a>, up0: <a href="#t-_vector3_d">Vector3D</a>, tolerance: number) : <a href="#t-_rail_guide">RailGuide</a></code>
+
+Generate an R&G pair using rotation-minimizing frames (RMF).
+
+Like a gyroscope: the initial orientation is propagated along the path
+with minimal twist.  At each step, the normal is reflected through the
+plane bisecting the two consecutive tangent directions (the double
+reflection method).
+
+<details><summary>parameters</summary>
+
+**<code>rail</code>**: <code><a href="#t-spline">spline</a></code>
+
+The rail spline (center path).
+
+**<code>up0</code>**: <code><a href="#t-_vector3_d">Vector3D</a></code> *(Default: `\[0, 0, 1]`)*
+
+The initial "up" direction at the start of the path.  Default
+`[0, 0, 1]`.
+
+**<code>tolerance</code>**: <code>number</code> *(Default: `0.01`)*
+
+Adaptive sampling tolerance.  Default `0.01`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_rail_guide">RailGuide</a></code>
+
+A matched R&G pair.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_rmf\_propagate<a id='f-_sf_rmf_propagate'></a>
+
+<code>*function* _sf_rmf_propagate()</code>
+
+RMF double-reflection propagation.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_rmf\_acc<a id='f-_sf_rmf_acc'></a>
+
+<code>*function* _sf_rmf_acc()</code>
+
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️skin\_follow\_rg\_explicit<a id='f-skin_follow_rg_explicit'></a>
+
+<code>*function* skin_follow_rg_explicit(rail: <a href="#t-spline">spline</a>, guide: <a href="#t-spline">spline</a>, tolerance: number) : <a href="#t-_rail_guide">RailGuide</a></code>
+
+Generate an R&G pair from an explicit guide spline.
+
+The guide spline must have the same number of control points as the rail.
+Both are sampled and synchronized per segment: whichever spoly has more
+sample points in a given segment, the other is resampled to match.
+
+<details><summary>parameters</summary>
+
+**<code>rail</code>**: <code><a href="#t-spline">spline</a></code>
+
+The rail spline (center path).
+
+**<code>guide</code>**: <code><a href="#t-spline">spline</a></code>
+
+The guide spline (orientation path).
+
+**<code>tolerance</code>**: <code>number</code> *(Default: `0.01`)*
+
+Adaptive sampling tolerance.  Default `0.01`.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-_rail_guide">RailGuide</a></code>
+
+A matched R&G pair.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_sync\_spolys<a id='f-_sf_sync_spolys'></a>
+
+<code>*function* _sf_sync_spolys()</code>
+
+Synchronize two spolys so they have matching sample counts per segment.
+For each control-point segment, the sparser spoly is resampled to match
+the denser one.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_sync\_segments<a id='f-_sf_sync_segments'></a>
+
+<code>*function* _sf_sync_segments()</code>
+
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_resample\_segment<a id='f-_sf_resample_segment'></a>
+
+<code>*function* _sf_resample_segment()</code>
+
+Resample a segment of a spoly to n evenly-spaced (by arc length) points.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_build\_ctrl\_is<a id='f-_sf_build_ctrl_is'></a>
+
+<code>*function* _sf_build_ctrl_is()</code>
+
+Build CTRL_IS from per-segment sample counts.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_build\_ctrl\_is\_acc<a id='f-_sf_build_ctrl_is_acc'></a>
+
+<code>*function* _sf_build_ctrl_is_acc()</code>
+
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_spoly\_from\_pts<a id='f-_sf_spoly_from_pts'></a>
+
+<code>*function* _sf_spoly_from_pts()</code>
+
+Build a spoly from raw points, copying structure from a reference spoly.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_spoly\_from\_pts\_and\_ctrl<a id='f-_sf_spoly_from_pts_and_ctrl'></a>
+
+<code>*function* _sf_spoly_from_pts_and_ctrl()</code>
+
+Build a spoly from points and explicit CTRL_IS.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️skin\_follow<a id='f-skin_follow'></a>
+
+<code>*function* skin_follow(rg: <a href="#t-_rail_guide">RailGuide</a>, profile\_fn: function, comment: string, operation: list, wall\_diagonal: list, debug\_axes: list) : <a href="#t-skin">skin</a></code>
+
+Extrude a 2D profile along a rail-and-guide path.
+
+Walks each sample point of the R&G, constructs a coordinate frame from
+the rail tangent and guide direction, transforms the profile through
+`frame_transform`, and assembles the result into a skin.
+
+<details><summary>parameters</summary>
+
+**<code>rg</code>**: <code><a href="#t-_rail_guide">RailGuide</a></code>
+
+A rail-and-guide pair from one of the `skin_follow_rg_*` functions.
+
+**<code>profile_fn</code>**: <code>function</code>
+
+A function that takes a parameter `t` in [0, 1] (fraction of total
+rail arc length) and returns a 2D polygon (list of `[x, y]` points).
+For a constant profile, ignore `t` and return the same polygon.
+
+**<code>comment</code>**: <code>string</code>
+
+Optional skin comment.
+
+**<code>operation</code>**: <code>list</code>
+
+Optional skin operation.
+
+**<code>wall_diagonal</code>**: <code>list</code>
+
+Optional wall diagonal control.
+
+**<code>debug_axes</code>**: <code>list</code>
+
+Optional debug axes.
+
+</details>
+
+<details><summary>returns</summary>
+
+**Returns**: <code><a href="#t-skin">skin</a></code>
+
+A skin object ready for `skin_to_polyhedron`.
+
+</details>
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_build\_layers<a id='f-_sf_build_layers'></a>
+
+<code>*function* _sf_build_layers()</code>
+
+Build all transformed profile layers.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_fix\_backtracking<a id='f-_sf_fix_backtracking'></a>
+
+<code>*function* _sf_fix_backtracking()</code>
+
+Detect and fix backtracking in transformed layers.
+
+For each layer, checks if any profile point has "crossed" the path
+center (its offset dot the forward direction is negative relative to
+the previous layer).  Flagged points are adjusted: both the current
+and previous layer move halfway toward the corrected position.
+
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_detect\_backtracking<a id='f-_sf_detect_backtracking'></a>
+
+<code>*function* _sf_detect_backtracking()</code>
+
+Detect backtracking: for each layer i > 0, for each point j, check if
+the point has moved backward along the tangent relative to the previous
+layer's corresponding point.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### ⚙️\_sf\_apply\_backtrack\_fix<a id='f-_sf_apply_backtrack_fix'></a>
+
+<code>*function* _sf_apply_backtrack_fix()</code>
+
+Apply backtracking fix: for each flagged point, average the current and
+previous layer positions.
+@private
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧊skin\_follow\_example1<a id='m-skin_follow_example1'></a>
+
+<code>*module* skin_follow_example1()</code>
+
+@example
+
+Follow-me extrusion: a circular profile swept along a 3D Catmull-Rom
+spline using RMF orientation.  The profile is constant along the path.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧊skin\_follow\_example2<a id='m-skin_follow_example2'></a>
+
+<code>*module* skin_follow_example2()</code>
+
+@example
+
+Follow-me extrusion with a morphing profile: the cross-section
+transitions from a square at the start to a circle at the end.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+### <i>📑skin_follow types</i><a id='ch-skin_follow-skin_follow_types'></a>
+
+#### 🧩RailGuideEnum<a id='t-_rail_guide_enum'></a>
+
+<code>*type* RailGuideEnum = <a href="#t-_member_index">MemberIndex</a></code>
+
+Enum used to dereference a [`RailGuide`](#t-_rail_guide) type.
+
+<p align="right">[<a href="#api-table-of-contents">TOC</a>]</p><hr/>
+
+#### 🧩RailGuide<a id='t-_rail_guide'></a>
+
+<code>*type* RailGuide = list</code>
+
+@deref {RailGuideEnum}
+
+A synchronized rail-and-guide pair for follow-me extrusion.
+
+<details><summary>slots</summary>
+<code><b>_SF_RG_RAIL</b></code>: <code><a href="#t-spoly">spoly</a></code>
+
+The rail spoly (center path).
+
+<code><b>_SF_RG_GUIDE</b></code>: <code><a href="#t-spoly">spoly</a></code>
+
+The guide spoly (orientation reference).
 
 </details>
 

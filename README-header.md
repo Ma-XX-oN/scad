@@ -166,7 +166,8 @@ Many parameter names imply the types that they accept.
 
 #### Synopses of Files
 
-There are several files in this library set.
+There are several files in this library set.  Here's a summary of what each file
+does:
 
  1. [range](#file-range)
     - Wraps OpenSCAD ranges `[start:stop]`/`[start:step:stop]`, adds extra
@@ -175,7 +176,7 @@ There are several files in this library set.
     - `range()` function does **not** generate a warning when a given `start`
       and `step`, makes it impossible to get to `stop`.  Instead, it returns an
       empty `range`.
- 2. [types](#file-types), [types_consts](#file-types_consts)
+ 2. [types](#file-types)
     - Allows for classifying object types that are beyond the standard
       `is_num`, `is_string`, `is_list`, `is_undef`, `is_function`, `is_bool` by
       adding `is_int`, `is_float` and `is_nan`.  `is_range` is defined in range
@@ -200,7 +201,7 @@ There are several files in this library set.
       called over the `birlei` set.
  5. [any_all](#file-any_all)
     - `any` and `all` algorithms.
- 6. [indexable](#file-indexable), [indexable_consts](#file-indexable_consts)
+ 6. [indexable](#file-indexable)
     - Functions to manipulate a list or string as a stack / queue, use negative
       indices to get the indices / elements from the end, insert /
       remove / replace elements, and additional search algorithms.
@@ -210,21 +211,25 @@ There are several files in this library set.
  7. [function](#file-function)
     - Allow counting of function parameters and applying an array to a function
       as parameters.
- 8.  [test](#file-test)
+ 8. [test](#file-test)
     - Testing modules for TDD.
- 9.  [param_check](#file-param_check)
+ 9. [param_check](#file-param_check)
     - Functions to check the validity of parameters.  Usage allows to switch
       them off by commenting them out.
  10. [transform](#file-transform)
     - Functions that allow transforming single points or a series of points
       quickly, usually by creating transformation matrices that can be
       multiplied against the point or points.
- 11. [string](#file-string), [string_consts](#file-string_consts)
+ 11. [string](#file-string)
     - String formatting functions.
- 12. [helpers](#file-helpers), [helpers_consts](#file-helpers_consts)
+ 12. [helpers](#file-helpers)
     - Miscellaneous functions that don't fit elsewhere.
  13. [skin](#file-skin)
     - Generates a polyhedron using slices.
+ 14. [spline](#file-spline)
+    - Generate smooth curves to be used with skin follow extrusions.
+ 15. [skin_follow](#file-skin_follow)
+    - Follow-me extrusion: sweeps a 2D profile along a 3D spline path.
 
 ## API Table of Contents
 
