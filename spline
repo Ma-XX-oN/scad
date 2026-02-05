@@ -14,6 +14,10 @@
  * rail and guide paths.
  */
 use <helpers>
+use <transform>
+use <indexable>
+use <string>
+use <color>
 include <spline_consts>
 
 /**
@@ -29,11 +33,10 @@ include <spline_consts>
 
 /**
  * @typedef {list} spline
+ * @deref {SplineEnum}
  *
  * Represents a spline curve through control points.
  *
- * @slot {string} _SPLINE_ID
- *   Type identifier, always `"SPLINE"`.
  * @slot {list[Point3D,...]} SPLINE_PTS
  *   The control points defining the curve.  For Catmull-Rom, these are the
  *   interpolation points.  For cubic Bezier, the layout is
@@ -49,6 +52,7 @@ include <spline_consts>
 
 /**
  * @typedef {list} spoly
+ * @deref {SpolyEnum}
  *
  * Represents an adaptively-sampled polyline derived from a spline, with
  * control point correspondence preserved.
@@ -80,16 +84,32 @@ include <spline_consts>
 function is_spline(obj) = is_list(obj) && obj[0] == _SPLINE_ID;
 
 /**
+ * Verify that a value is a spline object.
+ *
+ * @param {spline} s
+ *   Value to check.
+ */
+function verify_spline(s) =
+  assert(is_spline(s),
+         str("Expected spline object.  Got: ", s));
+
+/**
  * Create a new spline object.
  *
  * @param {list[Point3D,...]} pts
- *   Control points (3D).
- * @param {bool} closed
- *   Whether the spline is a closed loop.  Default `false`.
- * @param {number} type
+ *   Control points (3D).  Layout depends on the spline type:
+ *   - **Catmull-Rom** - Each point is an interpolation point that the
+ *     curve passes through.
+ *   - **Cubic Bezier** - Points alternate between anchors and handles:
+ *     `[P0, H0out, H1in, P1, H1out, H2in, P2, ...]`.  Anchors are at
+ *     indices `0, 3, 6, ...` and handles sit between them.  Requires
+ *     `3n + 1` points for `n` segments.
+ * @param {bool} [closed=false]
+ *   Whether the spline is a closed loop.
+ * @param {SplineTypeEnum} type
  *   Spline type enum.  Default `SPLINE_T_CATMULL_ROM`.
- * @param {number} tension
- *   Tension for Catmull-Rom.  Default `0.5`.
+ * @param {number} [tension=0.5]
+ *   Tension for Catmull-Rom.
  * @returns {spline}
  *   A new spline object.
  */
@@ -109,6 +129,285 @@ function spline_segment_count(s) =
   s[_SPLINE_TYPE] == SPLINE_T_BEZIER
     ? (s[SPLINE_CLOSED] ? n / 3 : (n - 1) / 3)
     : (s[SPLINE_CLOSED] ? n : n - 1);
+
+/**
+ * Convert a Catmull-Rom spline to an equivalent cubic Bezier spline.
+ *
+ * Each Catmull-Rom segment between P1 and P2 (with neighbours P0, P3)
+ * maps to a cubic Bezier with control points:
+ * - B0 = P1
+ * - B1 = P1 + τ·(P2 − P0) / 3
+ * - B2 = P2 − τ·(P3 − P1) / 3
+ * - B3 = P2
+ *
+ * @param {spline} s
+ *   A Catmull-Rom spline object.
+ * @returns {spline}
+ *   An equivalent cubic Bezier spline.
+ */
+function spline_cr_to_bezier(s) =
+  assert(s[_SPLINE_TYPE] == SPLINE_T_CATMULL_ROM,
+         "spline_cr_to_bezier: expected Catmull-Rom spline")
+  let(
+    pts       = s[SPLINE_PTS],
+    n         = len(pts),
+    closed    = s[SPLINE_CLOSED],
+    tau       = s[_SPLINE_TENSION],
+    seg_count = spline_segment_count(s),
+
+    bezier_pts = [
+      for (seg = [0 : seg_count - 1])
+        let(
+          i1 = closed ? (seg % n)           : seg,
+          i0 = closed ? ((seg - 1 + n) % n) : max(0, seg - 1),
+          i2 = closed ? ((seg + 1) % n)     : min(n - 1, seg + 1),
+          i3 = closed ? ((seg + 2) % n)     : min(n - 1, seg + 2),
+          p0 = pts[i0], p1 = pts[i1],
+          p2 = pts[i2], p3 = pts[i3],
+          t1 = tau * (p2 - p0),
+          t2 = tau * (p3 - p1)
+        )
+        each [p1, p1 + t1/3, p2 - t2/3],
+      if (!closed) pts[n - 1]
+    ]
+  )
+  spline_new(bezier_pts, closed = closed, type = SPLINE_T_BEZIER);
+
+/**
+ * Convert a cubic Bezier spline to an approximate Catmull-Rom spline.
+ *
+ * The conversion is inherently lossy because Catmull-Rom splines have fewer
+ * degrees of freedom.  This function iteratively inserts control points
+ * sampled from the Bezier curve until the maximum deviation falls below
+ * `tolerance` or the point count reaches `max_pts`.
+ *
+ * @param {spline} s
+ *   A cubic Bezier spline object.
+ * @param {number} [tolerance=0.01]
+ *   Maximum allowed deviation from the Bezier curve.
+ * @param {number} [max_pts=undef]
+ *   Maximum number of control points in the result.  `undef` means
+ *   unlimited.
+ * @returns {list}
+ *   `[cr_spline, achieved_tolerance]` - the Catmull-Rom approximation and
+ *   the maximum deviation measured.  If `achieved_tolerance <= tolerance`,
+ *   the fit met the target; otherwise the point budget was exhausted.
+ */
+function spline_bezier_to_cr(s, tolerance = 0.01, max_pts = undef) =
+  assert(s[_SPLINE_TYPE] == SPLINE_T_BEZIER,
+         "spline_bezier_to_cr: expected Bezier spline")
+  let(
+    pts     = s[SPLINE_PTS],
+    n       = len(pts),
+    closed  = s[SPLINE_CLOSED],
+    anchors = [for (i = [0 : 3 : n - 1]) pts[i]],
+    b_segs  = spline_segment_count(s),
+    n_samp  = max(b_segs * 20, 40),
+    // Pre-compute Bezier reference spoly at high accuracy.
+    b_sp    = spline_to_spoly(s, tolerance / 10)
+  )
+  _bcr_iter(b_sp, anchors, closed, tolerance, max_pts, n_samp, 50);
+
+/**
+ * Iterative refinement loop for Bezier-to-CR conversion.
+ *
+ * Builds a CR spline from `cr_pts`, converts both it and the reference
+ * Bezier spoly to arc-length parameterised polylines, measures the
+ * maximum deviation, and - if above `tol` - inserts the worst Bezier
+ * point into `cr_pts` and recurses.
+ *
+ * @param {spoly} b_sp
+ *   Pre-computed Bezier reference spoly.
+ * @param {list[Point3D,...]} cr_pts
+ *   Current Catmull-Rom control points.
+ * @param {bool} closed
+ *   Whether the spline is a closed loop.
+ * @param {number} tol
+ *   Target tolerance.
+ * @param {number|undef} max_pts
+ *   Maximum number of control points, or `undef` for unlimited.
+ * @param {number} n_samp
+ *   Number of arc-length samples for deviation measurement.
+ * @param {number} depth
+ *   Remaining recursion depth.
+ * @returns {list}
+ *   `[cr_spline, max_deviation]`.
+ */
+function _bcr_iter(b_sp, cr_pts, closed, tol, max_pts, n_samp, depth) =
+  let(
+    cr   = spline_new(cr_pts, closed = closed, type = SPLINE_T_CATMULL_ROM),
+    c_sp = spline_to_spoly(cr, tol / 10),
+    dev  = _bcr_max_dev(b_sp, c_sp, n_samp),
+    max_d    = dev[0],
+    worst_pt = dev[1]
+  )
+  (max_d <= tol || depth <= 0 ||
+   (max_pts != undef && len(cr_pts) >= max_pts))
+    ? [cr, max_d]
+    : let(
+        ins_i   = _bcr_insert_i(cr_pts, worst_pt, closed),
+        new_pts = insert(cr_pts, ins_i, [worst_pt])
+      )
+      _bcr_iter(b_sp, new_pts, closed, tol, max_pts, n_samp, depth - 1);
+
+/**
+ * Find the maximum deviation between two spolys, compared at matching
+ * arc-length fractions.
+ *
+ * Samples both spolys at `n_samp` evenly-spaced arc-length fractions and
+ * returns the largest point-to-point distance found.
+ *
+ * @param {spoly} b_sp
+ *   Bezier reference spoly.
+ * @param {spoly} c_sp
+ *   Catmull-Rom candidate spoly.
+ * @param {number} n_samp
+ *   Number of sample fractions (excludes endpoints).
+ * @returns {list}
+ *   `[max_deviation, worst_bezier_point]`.
+ */
+function _bcr_max_dev(b_sp, c_sp, n_samp) =
+  let(
+    b_pts  = b_sp[SPOLY_PTS],
+    b_arcs = b_sp[_SPOLY_ARC_LENS],
+    b_n    = len(b_pts),
+    b_total = b_arcs[b_n - 1],
+    c_pts  = c_sp[SPOLY_PTS],
+    c_arcs = c_sp[_SPOLY_ARC_LENS],
+    c_n    = len(c_pts),
+    c_total = c_arcs[c_n - 1]
+  )
+  _bcr_max_dev_acc(b_pts, b_arcs, b_n, b_total,
+                   c_pts, c_arcs, c_n, c_total,
+                   n_samp, 1, 0, [0, 0, 0]);
+
+/**
+ * Recursive accumulator for `_bcr_max_dev`.
+ *
+ * @param {list[Point3D,...]} b_pts
+ *   Bezier spoly points.
+ * @param {list[number,...]} b_arcs
+ *   Bezier cumulative arc lengths.
+ * @param {number} b_n
+ *   Length of `b_pts`.
+ * @param {number} b_total
+ *   Total Bezier arc length.
+ * @param {list[Point3D,...]} c_pts
+ *   CR spoly points.
+ * @param {list[number,...]} c_arcs
+ *   CR cumulative arc lengths.
+ * @param {number} c_n
+ *   Length of `c_pts`.
+ * @param {number} c_total
+ *   Total CR arc length.
+ * @param {number} n_samp
+ *   Total number of samples.
+ * @param {number} i
+ *   Current sample index.
+ * @param {number} best_d
+ *   Largest deviation found so far.
+ * @param {Point3D} best_pt
+ *   Bezier point at the largest deviation.
+ * @returns {list}
+ *   `[max_deviation, worst_bezier_point]`.
+ */
+function _bcr_max_dev_acc(b_pts, b_arcs, b_n, b_total,
+                          c_pts, c_arcs, c_n, c_total,
+                          n_samp, i, best_d, best_pt) =
+  i >= n_samp
+    ? [best_d, best_pt]
+    : let(
+        frac = i / n_samp,
+        b_pt = _spoly_lerp_at_arc_len(b_pts, b_arcs, 0, b_n - 1,
+                                       frac * b_total),
+        c_pt = _spoly_lerp_at_arc_len(c_pts, c_arcs, 0, c_n - 1,
+                                       frac * c_total),
+        d       = norm(b_pt - c_pt),
+        better  = d > best_d
+      )
+      _bcr_max_dev_acc(b_pts, b_arcs, b_n, b_total,
+                       c_pts, c_arcs, c_n, c_total,
+                       n_samp, i + 1,
+        better ? d    : best_d,
+        better ? b_pt : best_pt);
+
+/**
+ * Shortest distance from a point to a line segment.
+ *
+ * Projects `p` onto the line through `a`–`b`, clamps the parameter to
+ * [0, 1], and returns the Euclidean distance to the projection.
+ *
+ * @param {Point3D} p
+ *   Query point.
+ * @param {Point3D} a
+ *   Segment start.
+ * @param {Point3D} b
+ *   Segment end.
+ * @returns {number}
+ *   Distance from `p` to the nearest point on segment `a`–`b`.
+ */
+function _bcr_pt_seg_dist(p, a, b) =
+  let(
+    ab  = b - a,
+    ap  = p - a,
+    ab2 = ab * ab,
+    t   = ab2 > 0 ? max(0, min(1, (ap * ab) / ab2)) : 0
+  )
+  norm(p - (a + t * ab));
+
+/**
+ * Find the insertion index for a new point in the control polygon.
+ *
+ * Finds the control-polygon segment nearest to `p` and returns the
+ * list index at which `p` should be inserted (i.e. after the segment
+ * start vertex).
+ *
+ * @param {list[Point3D,...]} pts
+ *   Control polygon vertices.
+ * @param {Point3D} p
+ *   Point to insert.
+ * @param {bool} closed
+ *   Whether the polygon wraps around.
+ * @returns {number}
+ *   Insertion index into `pts`.
+ */
+function _bcr_insert_i(pts, p, closed) =
+  let(
+    n      = len(pts),
+    n_segs = closed ? n : n - 1
+  )
+  _bcr_insert_i_acc(pts, p, n, n_segs, 0, 0, 1e10) + 1;
+
+/**
+ * Recursive accumulator for `_bcr_insert_i`.
+ *
+ * @param {list[Point3D,...]} pts
+ *   Control polygon vertices.
+ * @param {Point3D} p
+ *   Point to insert.
+ * @param {number} n
+ *   Length of `pts`.
+ * @param {number} n_segs
+ *   Number of polygon segments.
+ * @param {number} i
+ *   Current segment index.
+ * @param {number} best_i
+ *   Index of the nearest segment found so far.
+ * @param {number} best_d
+ *   Distance of the nearest segment found so far.
+ * @returns {number}
+ *   Index of the nearest segment.
+ */
+function _bcr_insert_i_acc(pts, p, n, n_segs, i, best_i, best_d) =
+  i >= n_segs
+    ? best_i
+    : let(
+        d      = _bcr_pt_seg_dist(p, pts[i], pts[(i + 1) % n]),
+        better = d < best_d
+      )
+      _bcr_insert_i_acc(pts, p, n, n_segs, i + 1,
+        better ? i : best_i,
+        better ? d : best_d);
 
 /**
  * Evaluate a spline at parameter `t` in the given segment.
@@ -133,8 +432,18 @@ function spline_point_at(s, seg, t) =
     : _spline_catmull_rom_point(s, seg, t);
 
 /**
- * Catmull-Rom point evaluation.
- * @private
+ * Evaluate a point on a Catmull-Rom spline segment.
+ *
+ * Uses the standard cubic polynomial with tension parameter `τ`.
+ *
+ * @param {spline} s
+ *   A Catmull-Rom spline object.
+ * @param {number} seg
+ *   Segment index (0-based).
+ * @param {number} t
+ *   Parameter in [0, 1].
+ * @returns {Point3D}
+ *   The point on the curve.
  */
 function _spline_catmull_rom_point(s, seg, t) =
   let(
@@ -165,11 +474,18 @@ function _spline_catmull_rom_point(s, seg, t) =
   ];
 
 /**
- * Cubic Bezier point evaluation.
+ * Evaluate a point on a cubic Bezier spline segment.
  *
  * B(t) = (1-t)³·P0 + 3·(1-t)²·t·P1 + 3·(1-t)·t²·P2 + t³·P3
  *
- * @private
+ * @param {spline} s
+ *   A cubic Bezier spline object.
+ * @param {number} seg
+ *   Segment index (0-based).
+ * @param {number} t
+ *   Parameter in [0, 1].
+ * @returns {Point3D}
+ *   The point on the curve.
  */
 function _spline_bezier_point(s, seg, t) =
   let(
@@ -211,8 +527,18 @@ function spline_tangent_at(s, seg, t) =
     : _spline_catmull_rom_tangent(s, seg, t);
 
 /**
- * Catmull-Rom tangent evaluation.
- * @private
+ * Evaluate the tangent of a Catmull-Rom spline segment.
+ *
+ * Returns the first derivative of the cubic polynomial at parameter `t`.
+ *
+ * @param {spline} s
+ *   A Catmull-Rom spline object.
+ * @param {number} seg
+ *   Segment index (0-based).
+ * @param {number} t
+ *   Parameter in [0, 1].
+ * @returns {Vector3D}
+ *   The (unnormalised) tangent vector.
  */
 function _spline_catmull_rom_tangent(s, seg, t) =
   let(
@@ -240,11 +566,18 @@ function _spline_catmull_rom_tangent(s, seg, t) =
   ];
 
 /**
- * Cubic Bezier tangent evaluation.
+ * Evaluate the tangent of a cubic Bezier spline segment.
  *
  * B'(t) = 3·(1-t)²·(P1-P0) + 6·(1-t)·t·(P2-P1) + 3·t²·(P3-P2)
  *
- * @private
+ * @param {spline} s
+ *   A cubic Bezier spline object.
+ * @param {number} seg
+ *   Segment index (0-based).
+ * @param {number} t
+ *   Parameter in [0, 1].
+ * @returns {Vector3D}
+ *   The (unnormalised) tangent vector.
  */
 function _spline_bezier_tangent(s, seg, t) =
   let(
@@ -704,14 +1037,22 @@ function spoly_split(sp, ctrl_idx, pct) =
  *   A human-readable representation.
  */
 function spline_to_string(s) =
-  str(
-    "SPLINE[type=",
-    s[_SPLINE_TYPE] == SPLINE_T_CATMULL_ROM ? "catmull-rom" : "bezier",
-    ", tension=", s[_SPLINE_TENSION],
-    ", closed=", s[SPLINE_CLOSED],
-    ", pts(", len(s[SPLINE_PTS]), ")=", s[SPLINE_PTS],
-    "]"
-  );
+  assert(is_spline(s))
+  s[_SPLINE_TYPE] == SPLINE_T_CATMULL_ROM 
+  ? str(
+      "SPLINE[type=catmull-rom",
+      ", tension=", s[_SPLINE_TENSION],
+      ", closed=", s[SPLINE_CLOSED],
+      ", pts(", len(s[SPLINE_PTS]), ")=", s[SPLINE_PTS],
+      "]"
+    )
+  : str(
+      "SPLINE[type=bezier",
+      ", closed=", s[SPLINE_CLOSED],
+      ", pts(", len(s[SPLINE_PTS]), ")=", list_to_string(s[SPLINE_PTS],
+         row_length=3, indent=""),
+      "]"
+    );
 
 /**
  * Convert an spoly to a debug string.
@@ -722,6 +1063,7 @@ function spline_to_string(s) =
  *   A human-readable representation.
  */
 function spoly_to_string(sp) =
+  assert(is_spoly(sp))
   str(
     "SPOLY[closed=", sp[SPOLY_CLOSED],
     ", pts(", len(sp[SPOLY_PTS]), ")",
@@ -729,6 +1071,153 @@ function spoly_to_string(sp) =
     ", total_len=", sp[_SPOLY_ARC_LENS][len(sp[_SPOLY_ARC_LENS]) - 1],
     "]"
   );
+
+/**
+ * Render a section of a polyline as coloured chevron cones.
+ *
+ * If `c` is a `SpPalette` object, section colouring is applied
+ * (start/stop/start_stop/cont).  Otherwise `c` is treated as a plain
+ * colour passed directly to `color()`.
+ *
+ * @param {list[Point3D,...]} pts
+ *   Point list to index into.
+ * @param {number} d
+ *   Diameter of the cone base.
+ * @param {(SpPalette|Color)} c
+ *   Colour palette or plain colour.
+ * @param {number} begin_i
+ *   Start index into `pts` (first point of first segment).
+ * @param {number} end_i
+ *   End index into `pts` (last point, inclusive).
+ */
+module _sp_debug_poly(pts, d, c, begin_i, end_i, alpha) {
+  _is_sp = is_list(c) && c[0] == _SP_ID;
+  n_segs = end_i - begin_i;
+  for (i = [begin_i : end_i - 1]) {
+    pt0 = pts[i];
+    pt1 = pts[i + 1];
+    vlen = norm(pt1 - pt0);
+    ft = frame_transform([[0, 0, 0], [0, 0, 1]], [pt0, pt1]);
+    sc = _is_sp
+      ? (n_segs == 1        ? c[SP_START_STOP]
+        : i == begin_i      ? c[SP_START]
+        : i == end_i - 1    ? c[SP_STOP]
+        :                     c[SP_CONT])
+      : c;
+    color(color_alpha(sc, alpha), alpha)
+      multmatrix(ft)
+        rotate(180 * i)
+        cylinder(vlen, d/2, 0, $fn=3);
+  }
+}
+
+
+
+/**
+ * Debug visualisation of a spoly as a chain of coloured chevron cones.
+ *
+ * Each segment between consecutive points is rendered as a triangular cone
+ * pointing in the path direction.  Colours indicate position within each
+ * control-point section: start, stop, both, or continuation.
+ *
+ * @param {spoly} spoly
+ *   The spoly to visualise.
+ * @param {number} [d=0.1]
+ *   Diameter of the cone base.
+ * @param {SpPalette} [c=SP_SPECTRUM]
+ *   Colour palette.
+ */
+module spoly_debug(spoly, d=0.1, c=SP_SPECTRUM) {
+  ctrl = spoly[SPOLY_CTRL_IS];
+  for (seg = fwd_i(ctrl, 0, -1))
+    _sp_debug_poly(spoly[SPOLY_PTS], d, c, ctrl[seg], ctrl[seg + 1]);
+}
+
+/**
+ * Debug visualisation of a spline showing control points, control polygon,
+ * handles (Bezier only), and optionally the sampled spoly.
+ *
+ * Control points are rendered as arrows oriented along the tangent.
+ * The control polygon connects adjacent control points (anchors for Bezier).
+ * For Bezier splines, handle lines connect anchors to their handles.
+ *
+ * @param {spline} s
+ *   The spline to visualise.
+ * @param {number} [tolerance=0.01]
+ *   Sampling tolerance for the spoly conversion.
+ * @param {number} [d=0.1]
+ *   Base diameter for chevron cones and arrow thickness.
+ * @param {SpPalette} [c=SP_SPECTRUM]
+ *   Colour palette.
+ * @param {bool} [show_spline=true]
+ *   Show control points, polygon, and handles.
+ * @param {bool} [show_spoly=true]
+ *   Show the sampled spoly.
+ */
+module spline_debug(s, tolerance=0.01, d=0.1, c=SP_SPECTRUM,
+                    show_spline=true, show_spoly=true) {
+  if (show_spoly) {
+    sp = spline_to_spoly(s, tolerance);
+    spoly_debug(sp, d, c);
+  }
+
+  if (show_spline) {
+    pts = s[SPLINE_PTS];
+    n = len(pts);
+    is_bezier = s[_SPLINE_TYPE] == SPLINE_T_BEZIER;
+    seg_count = spline_segment_count(s);
+
+    // Control-point arrows
+    for (seg = [0 : seg_count - 1]) {
+      pt  = spline_point_at(s, seg, 0);
+      tan = spline_tangent_at(s, seg, 0);
+      ft  = frame_transform([[0, 0, 0], [0, 0, 1]], [pt, pt + tan]);
+      multmatrix(ft)
+        rotate([90,0,0])
+        arrow(d * 5, d, true, c[SP_CTRL_PT], $fn=3);
+    }
+
+    // Last control point (only for open splines; closed wraps to first).
+    if (!s[SPLINE_CLOSED]) {
+      last_pt  = spline_point_at(s, seg_count - 1, 1);
+      last_tan = spline_tangent_at(s, seg_count - 1, 1);
+      ft_last  = frame_transform(
+        [[0, 0, 0], [0, 0, 1]], [last_pt, last_pt + last_tan]);
+      multmatrix(ft_last)
+        rotate([90,0,0])
+        arrow(d * 5, d, true, c[SP_CTRL_PT], $fn=3);
+    }
+
+    // Bezier handle lines.
+    if (is_bezier) {
+      for (seg = [0 : seg_count - 1]) {
+        base = 3 * seg;
+        // Anchor -> out-handle.
+        _sp_debug_poly(pts, d/2, c[SP_HANDLE], base, base + 1);
+        // In-handle -> next anchor.
+        _sp_debug_poly(pts, d/2, c[SP_HANDLE], base + 2, base + 3);
+      }
+    }
+
+    // Control polyline.
+    if (is_bezier) {
+      // Connect anchor points (indices 0, 3, 6, ...).
+      anchors = [for (i = [0 : 3 : n - 1]) pts[i]];
+      closed_anchors = s[SPLINE_CLOSED]
+        ? concat(anchors, [anchors[0]])
+        : anchors;
+      _sp_debug_poly(closed_anchors, d/2, c[SP_CTRL_POLY],
+                     0, len(closed_anchors) - 1, .3);
+    } else {
+      // Catmull-Rom: connect all control points.
+      closed_pts = s[SPLINE_CLOSED]
+        ? concat(pts, [pts[0]])
+        : pts;
+      _sp_debug_poly(closed_pts, d/2, c[SP_CTRL_POLY],
+                     0, len(closed_pts) - 1, .3);
+    }
+  }
+}
 
 /**
  * ### Examples

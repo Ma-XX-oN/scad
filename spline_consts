@@ -9,7 +9,13 @@
  *
  * Constants for spline and spoly objects: type enums and slot indices.
  *
- * ### Spline Type Enums
+ * ### Values for `SplineTypeEnum`
+ */
+
+/**
+ * @typedef {number} SplineTypeEnum
+ *
+ * Number representing a spline type.  Use with `spline_new()`.
  */
 
 /**
@@ -39,33 +45,272 @@ SPLINE_T_CATMULL_ROM = 0;
 SPLINE_T_BEZIER = 1;
 
 /**
- * ### Spline Slot Indices
+ * ### `spline` Slot Related Constants
  */
 
-/** Header for spline */
+/**
+ * @type {ObjTypeId}
+ *
+ * Type identifier header for spline objects.
+ */
 _SPLINE_ID      = "SPLINE";
-/** control points (list of Point3D) */
+
+/**
+ * @typedef {MemberIndex} SplineEnum
+ *
+ * Enum used to dereference a [`spline`](#t-spline) type.
+ */
+
+/**
+ * @type {SplineEnum}
+ *
+ * Slot index for the control points list in a spline object.
+ */
 SPLINE_PTS      = 1;
-/** true if closed loop */
+
+/**
+ * @type {SplineEnum}
+ *
+ * Slot index for the closed-loop flag in a spline object.
+ */
 SPLINE_CLOSED   = 2;
-/** spline type enum */
+
+/**
+ * @type {SplineEnum}
+ *
+ * Slot index for the spline type enum in a spline object.
+ */
 _SPLINE_TYPE    = 3;
-/** tension parameter (Catmull-Rom) */
+
+/**
+ * @type {SplineEnum}
+ *
+ * Slot index for the tension parameter (Catmull-Rom) in a spline object.
+ */
 _SPLINE_TENSION = 4;
 
 /**
- * ### Spoly Slot Indices
+ * ### `spoly` Slot Related Constants
  */
 
-/** Header for spoly */
+/**
+ * @typedef {MemberIndex} SpolyEnum
+ *
+ * Enum used to dereference a [`spline`](#t-spline) type.
+ */
+
+/**
+ * @type {ObjTypeId}
+ *
+ * Type identifier header for spoly objects.
+ */
 _SPOLY_ID       = "SPOLY";
-/** sampled polyline points (list of Point3D) */
+
+/**
+ * @type {SpolyEnum}
+ *
+ * Slot index for the sampled polyline points in a spoly object.
+ */
 SPOLY_PTS       = 1;
-/** indices into PTS that correspond to original control points */
+
+/**
+ * @type {SpolyEnum}
+ *
+ * Slot index for the control point indices in a spoly object.
+ */
 SPOLY_CTRL_IS   = 2;
-/** cumulative arc length at each point */
+
+/**
+ * @type {SpolyEnum}
+ *
+ * Slot index for the cumulative arc lengths in a spoly object.
+ */
 _SPOLY_ARC_LENS = 3;
-/** unit tangent vector at each point */
+
+/**
+ * @type {SpolyEnum}
+ *
+ * Slot index for the unit tangent vectors in a spoly object.
+ */
 _SPOLY_TANGENTS = 4;
-/** true if closed loop */
+
+/**
+ * @type {SpolyEnum}
+ *
+ * Slot index for the closed-loop flag in a spoly object.
+ */
 SPOLY_CLOSED    = 5;
+
+
+/**
+ * ### `SpPalette` Slot Related Constants
+ */
+
+/**
+ * @type {ObjTypeId}
+ *
+ * Type identifier header for SpPalette objects.
+ */
+_SP_ID = "SP_COLOURS";
+
+/**
+ * @typedef {MemberIndex} SpPaletteEnum
+ *
+ * Enum used to dereference a [`SpPalette`](#t-SpPalette) type.
+ */
+
+/**
+ * @type {SpPaletteEnum}
+ *
+ * Slot index for the colour of the first segment in a control-point section.
+ */
+SP_START = 1;
+
+/**
+ * @type {SpPaletteEnum}
+ *
+ * Slot index for the colour when a control-point section has only one
+ * segment (start and stop are the same).
+ */
+SP_START_STOP = 2;
+
+/**
+ * @type {SpPaletteEnum}
+ *
+ * Slot index for the colour of the last segment in a control-point section.
+ */
+SP_STOP = 3;
+
+/**
+ * @type {SpPaletteEnum}
+ *
+ * Slot index for the colour of middle segments in a control-point section.
+ */
+SP_CONT = 4;
+
+/**
+ * @type {SpPaletteEnum}
+ *
+ * Slot index for the colour of control-point arrows in spline debug
+ * visualisation.
+ */
+SP_CTRL_PT = 5;
+
+/**
+ * @type {SpPaletteEnum}
+ *
+ * Slot index for the colour of the control polygon segments in spline
+ * debug visualisation.
+ */
+SP_CTRL_POLY = 6;
+
+/**
+ * @type {SpPaletteEnum}
+ *
+ * Slot index for the colour of Bezier handle lines in spline debug
+ * visualisation.
+ */
+SP_HANDLE = 7;
+
+/**
+ * @typedef {list} SpPalette
+ * @deref {SpPaletteEnum}
+ *
+ * Colour palette for spline and sampled-polyline debug visualisation.
+ * Each slot holds a colour value (RGB vector or CSS hex string) used to
+ * indicate segment position within a control-point section, or to identify
+ * spline structural elements.
+ *
+ * @slot {Colour} SP_START
+ *   Colour for the first segment in a control-point section.
+ * @slot {Colour} SP_START_STOP
+ *   Colour when a section has only one segment.
+ * @slot {Colour} SP_STOP
+ *   Colour for the last segment in a control-point section.
+ * @slot {Colour} SP_CONT
+ *   Colour for middle segments.
+ * @slot {Colour} SP_CTRL_PT
+ *   Colour for control-point arrows.
+ * @slot {Colour} SP_CTRL_POLY
+ *   Colour for control polygon segments.
+ * @slot {Colour} SP_HANDLE
+ *   Colour for Bezier handle lines.
+ */
+
+/**
+ * @type {SpPalette}
+ *
+ * RGB spectrum palette: red/purple/blue/green.
+ */
+SP_SPECTRUM = [
+  _SP_ID,
+  [1, 0, 0],      // START      red
+  [0.5, 0, 0.5],  // START_STOP purple
+  [0, 0, 1],      // STOP       blue
+  [0, 0.6, 0],    // CONT       green
+  [1, 0.5, 0],    // CTRL_PT    orange
+  [0.6, 0.6, 0],  // CTRL_POLY  olive
+  [0.4, 0, 0.6]   // HANDLE     violet
+];
+
+/**
+ * @type {SpPalette}
+ *
+ * Traffic-light palette: green/yellow/red/white.
+ */
+SP_TRAFFIC_LIGHTS = [
+  _SP_ID,
+  [0, 1, 0],      // START      green
+  [0.5, 0.5, 0],  // START_STOP yellow
+  [1, 0, 0],      // STOP       red
+  "white",        // CONT       white
+  [1, 0.5, 0],    // CTRL_PT    orange
+  [0.4, 0.4, 0],  // CTRL_POLY  dark yellow
+  [0.6, 0, 0.6]   // HANDLE     purple
+];
+
+/**
+ * @type {SpPalette}
+ *
+ * Colour-blind friendly palette based on Okabe & Ito's Colour Universal
+ * Design (CUD).
+ *
+ * Sources:
+ * - [Colour Universal Design (CUD) / Colorblind Barrier Free](
+ *   https://jfly.uni-koeln.de/color/)
+ * - [Siegal Lab color palette reference](
+ *   https://siegal.bio.nyu.edu/color-palette/)
+ */
+SP_OKABE_ITO_STOPGO = [
+  _SP_ID,
+  "#0072B2",  // START
+  "#CC79A7",  // START_STOP
+  "#D55E00",  // STOP
+  "#000000",  // CONT
+  "#E69F00",  // CTRL_PT
+  "#56B4E9",  // CTRL_POLY
+  "#009E73"   // HANDLE
+];
+
+/**
+ * @type {SpPalette}
+ *
+ * Colour-blind friendly palette derived from Paul Tol's "Bright"
+ * qualitative scheme.
+ *
+ * Sources:
+ * - [Paul Tol's Notes (qualitative schemes)](
+ *   https://sronpersonalpages.nl/~pault/)
+ * - [Colour Schemes (PDF), SRON/EPS/TN/09-002 issue 3.2 (18 August 2021)](
+ *   https://sronpersonalpages.nl/~pault/data/colourschemes.pdf)
+ */
+SP_TOL_BRIGHT_STOPGO = [
+  _SP_ID,
+  "#4477AA",  // START
+  "#AA3377",  // START_STOP
+  "#EE6677",  // STOP
+  "#BBBBBB",  // CONT
+  "#CCBB44",  // CTRL_PT
+  "#66CCEE",  // CTRL_POLY
+  "#228833"   // HANDLE
+];
