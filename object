@@ -1,0 +1,25 @@
+/**
+ * ## object
+ *
+ * ### How to Import
+ *
+ * Does *NOT* need to be imported.
+ *
+ * ### Purpose
+ *
+ * This specifies some types used for specifying objects and doesn't need to be
+ * imported.
+ */
+
+/**
+ * @typedef {number} MemberIndex
+ *
+ * Integer used to dereference an object's member.
+ */
+
+/**
+ * @typedef {string} ObjTypeId
+ *
+ * String used to define a object's header.
+ */
+ 

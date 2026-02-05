@@ -1,0 +1,156 @@
+/**
+ * ## color
+ *
+ * ### How to Import
+ *
+ *     use <color>
+ *
+ * ### Purpose
+ *
+ * Colour type aliases and helpers for working with OpenSCAD colour values.
+ */
+use <helpers>
+use <string>
+use <indexable>
+
+/**
+ * @typedef {list} ColorLst
+ *
+ * @slot {number} 0
+ *   Red value between `[0,1]`.
+ * @slot {number} 1
+ *   Green value between `[0,1]`.
+ * @slot {number} 2
+ *   Blue value between `[0,1]`.
+ * @slot {number} [3=1.0]
+ *   Alpha value between `[0,1]`, where 1 means solid and 0 is transparent.
+ */
+
+/**
+ * @typedef {string} ColorStr
+ *
+ * Can be specified in 4 different formats:
+ *
+ * - `"#rgb"`
+ * - `"#rgba"`
+ * - `"#rrggbb"`
+ * - `"#rrggbbaa"`
+ *
+ * Alpha value between `["0","f"]` or `["00","ff"]`, where `"f"` or `"ff"` means
+ * solid and `"0"` or `"00"` is transparent.
+ */
+
+/**
+ * @typedef {string} ColorName
+ *
+ * The available color names are taken from the World Wide Web consortium's SVG
+ * color list. A chart of the color names is as follows, (note that both
+ * spellings of grey/gray including slategrey/slategray etc are valid):
+ *
+ * |                        |                        |                        |
+ * |------------------------|------------------------|------------------------|
+ * | **Purples**            | **Reds**               | **Browns**             |
+ * | - Lavender             | - IndianRed            | - Cornsilk             |
+ * | - Thistle              | - LightCoral           | - BlanchedAlmond       |
+ * | - Plum                 | - Salmon               | - Bisque               |
+ * | - Violet               | - DarkSalmon           | - NavajoWhite          |
+ * | - Orchid               | - LightSalmon          | - Wheat                |
+ * | - Fuchsia              | - Red                  | - BurlyWood            |
+ * | - Magenta              | - Crimson              | - Tan                  |
+ * | - MediumOrchid         | - FireBrick            | - RosyBrown            |
+ * | - MediumPurple         | - DarkRed              | - SandyBrown           |
+ * | - BlueViolet           |                        | - Goldenrod            |
+ * | - DarkViolet           | **Greens**             | - DarkGoldenrod        |
+ * | - DarkOrchid           | - GreenYellow          | - Peru                 |
+ * | - DarkMagenta          | - Chartreuse           | - Chocolate            |
+ * | - Purple               | - LawnGreen            | - SaddleBrown          |
+ * | - Indigo               | - Lime                 | - Sienna               |
+ * | - DarkSlateBlue        | - LimeGreen            | - Brown                |
+ * | - SlateBlue            | - PaleGreen            | - Maroon               |
+ * | - MediumSlateBlue      | - LightGreen           |                        |
+ * |                        | - MediumSpringGreen    | **Whites**             |
+ * | **Pinks**              | - SpringGreen          | - White                |
+ * | - Pink                 | - MediumSeaGreen       | - Snow                 |
+ * | - LightPink            | - SeaGreen             | - Honeydew             |
+ * | - HotPink              | - ForestGreen          | - MintCream            |
+ * | - DeepPink             | - Green                | - Azure                |
+ * | - MediumVioletRed      | - DarkGreen            | - AliceBlue            |
+ * | - PaleVioletRed        | - YellowGreen          | - GhostWhite           |
+ * |                        | - OliveDrab            | - WhiteSmoke           |
+ * | **Blues**              | - Olive                | - Seashell             |
+ * | - Aqua                 | - DarkOliveGreen       | - Beige                |
+ * | - Cyan                 | - MediumAquamarine     | - OldLace              |
+ * | - LightCyan            | - DarkSeaGreen         | - FloralWhite          |
+ * | - PaleTurquoise        | - LightSeaGreen        | - Ivory                |
+ * | - Aquamarine           | - DarkCyan             | - AntiqueWhite         |
+ * | - Turquoise            | - Teal                 | - Linen                |
+ * | - MediumTurquoise      |                        | - LavenderBlush        |
+ * | - DarkTurquoise        | **Oranges**            | - MistyRose            |
+ * | - CadetBlue            | - LightSalmon          |                        |
+ * | - SteelBlue            | - Coral                | **Grays**              |
+ * | - LightSteelBlue       | - Tomato               | - Gainsboro            |
+ * | - PowderBlue           | - OrangeRed            | - LightGrey            |
+ * | - LightBlue            | - DarkOrange           | - Silver               |
+ * | - SkyBlue              | - Orange               | - DarkGray             |
+ * | - LightSkyBlue         |                        | - Gray                 |
+ * | - DeepSkyBlue          | **Yellows**            | - DimGray              |
+ * | - DodgerBlue           | - Gold                 | - LightSlateGray       |
+ * | - CornflowerBlue       | - Yellow               | - SlateGray            |
+ * | - RoyalBlue            | - LightYellow          | - DarkSlateGray        |
+ * | - Blue                 | - LemonChiffon         | - Black                |
+ * | - MediumBlue           | - LightGoldenrodYellow |                        |
+ * | - DarkBlue             | - PapayaWhip           |                        |
+ * | - Navy                 | - Moccasin             |                        |
+ * | - MidnightBlue         | - PeachPuff            |                        |
+ * |                        | - PaleGoldenrod        |                        |
+ * |                        | - Khaki                |                        |
+ * |                        | - DarkKhaki            |                        |
+ */
+
+/**
+ * @typedef {(ColorLst|ColorStr|ColorName)} Color
+ *
+ * Any colour value accepted by OpenSCAD's `color()` module: an RGB/RGBA
+ * vector (`ColorLst`), a CSS hex string (`ColorStr`), or an SVG colour
+ * name (`ColorName`).
+ */
+
+/**
+ * Apply an opacity factor to a colour.
+ *
+ * Supports hex strings (`RGB`, `RRGGBB`, `RGBA`, `RRGGBBAA`) and list
+ * colours (`[r,g,b]` or `[r,g,b,a]`). String alpha values are rewritten,
+ * and list alpha values are inserted or multiplied.
+ *
+ * @param {(string|list[number,...])} c
+ *   Input colour.
+ * @param {number} alpha
+ *   Opacity factor in range [0, 1]. Values are clamped.
+ *
+ * @returns {(string|list[number,...])}
+ *   Colour with adjusted alpha.
+ */
+function color_alpha(c, alpha) =
+  is_undef(alpha)
+  ? c
+  : let(a = clamp(alpha, 0, 1))
+    is_string(c)
+    ? len(c) == 3
+      ? str(c, to_hex(floor(a*15), 1))
+      : len(c) == 6
+        ? str(c, to_hex(floor(a*255), 2))
+        : len(c) == 4
+          ? str(els(c, 0, -2), to_hex(floor(a*to_dec(els(c, -1))/15), 1))
+          : len(c) == 8
+            ? str(els(c, 0, -3), to_hex(floor(a*to_dec(els(c, -2))/255), 2))
+            : // colour name... what to do?  No change for now.
+              c
+    : assert(is_list(c), "Colour must be string or list")
+      len(c) == 3
+      ? push(c, [a])
+      : let (
+          alpha_base = c[3],
+          alpha_out = max(0, min(1, alpha_base * a))
+        )
+        replace(c, 3, 3, [alpha_out])
+;
