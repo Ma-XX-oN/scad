@@ -21,9 +21,9 @@ ChatGPT helped with code and documentation review, mainly for consistency and
 cleanup.
 
 It also helped a bit with a doc-generator workflow I originally built to keep
-GPT focused. Without strong constraints, it would basically say, "Ooo, is that
-a butterfly? It might impact what I'm doing..." and with that, it would timeout
-and not report anything.
+GPT focused. Without strong constraints, it would basically say, "Ooo, is that a
+butterfly? It might impact what I'm doing..." and with that, it would go off and
+search and search resulting in a timeout and not report anything.
 
 The original goal of that generator was to produce structured symbol data for
 GPT lookup. I later pivoted it into JSON output for the whole library's usable
