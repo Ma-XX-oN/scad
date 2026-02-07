@@ -102,7 +102,7 @@ something like, would you like to try Codex?
 
 Codex is like Claude Code, it has read/write access to the project files. It is
 just like GPT but has no access to the memories that I gave it through the
-web. Which was annoying. HOWEVER, it appeared that it was a little more generous
+web, which was annoying. HOWEVER, it appeared that it was a little more generous
 with the token limits. That might be just the dealer giving the junkie some free
 dope to get me hooked. Still working that out.
 
@@ -112,7 +112,7 @@ WTF man?
 
 It turns out that many of the approvals were caused by Codex being, let's say...
 creative with how it edited files. Instead of using the approved tooling (`rg`
-is a read-only tool to read a file and `apply_patch` allows writing to a file)
+is a read-only tool to read files and `apply_patch` allows writing to files)
 which should only ask for permission once per file. Barring a few permission
 issues with those tools, Codex would just randomly use handmade PowerShell
 scripts that would require me to approve every effing time.  That really pissed
