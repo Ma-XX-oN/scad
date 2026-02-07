@@ -59,7 +59,9 @@ GPT which coding AI followed directions best. It referenced articles showing
 Claude was slightly better than GPT on coding benchmarks (around 4%). So I tried
 Claude Code. **It was amazing!**
 
-![Coding benchmark comparison](benchmark.webp)*
+![Coding benchmark comparison](benchmark.webp)
+*Source: [Anthropic announces Claude Opus 4.5, the new AI coding frontrunner](https://www.itpro.com/technology/artificial-intelligence/anthropic-announces-claude-opus-4-5-the-new-ai-coding-frontrunner?utm_source=chatgpt.com)*
+
 
 ### The Good
 
