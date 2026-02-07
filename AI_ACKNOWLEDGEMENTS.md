@@ -62,7 +62,6 @@ Claude Code. **It was amazing!**
 ![Coding benchmark comparison](benchmark.webp)
 *Source: [Anthropic announces Claude Opus 4.5, the new AI coding frontrunner](https://www.itpro.com/technology/artificial-intelligence/anthropic-announces-claude-opus-4-5-the-new-ai-coding-frontrunner?utm_source=chatgpt.com)*
 
-
 ### The Good
 
 Claude's planning behavior worked out of the box, so I did not need to spend
@@ -107,12 +106,12 @@ it would choose unnecessary ad-hoc scripting instead of the approved workflow
 (`rg` for reads, `apply_patch` for writes), which meant I had to approve every
 effing time. That really pissed me off.
 
-Another big issue was line endings. `apply_patch` often behaved as if it were
-Unix-centric, adding `LF` lines in files that were otherwise `CRLF`.
+Another big issue was line endings. `apply_patch` appeared to behave as if it
+were Unix-centric, adding `LF` lines in files that were otherwise `CRLF`.
 
-I'm hedging here because Codex later claimed it hadn't sent `CRLF`, so this may
-have been the tool, the model, or both making things up. Either way, it was
-super frustrating!
+I'm hedging here because Codex later claimed it hadn't sent `CRLF` even after
+specifically telling it to, so this may have been the tool's design limitation,
+the model making things up, or both. Either way, it was super frustrating!
 
 I eventually had it verify output and normalize line endings back to the
 expected format. That required extra approvals and overhead that shouldn't
