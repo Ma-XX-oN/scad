@@ -1,6 +1,7 @@
 # OpenSCAD Curry Library (OCL)
 
 - [Purpose](#purpose)
+- [AI Acknowledgements](#ai-acknowledgements)
 - [About this file](#about-this-file)
 - [Installation](#installation)
   - [Importing Library Files](#importing-library-files)
@@ -32,6 +33,10 @@ read.  From there, once you've created whatever code you want and you feel it's
 not fast enough, optimisation is always an option.  Code readability and
 maintainability are the primary goal of this library.  Speed is secondary
 (though performance was also considered and it is quite fast).
+
+## AI Acknowledgements
+
+See [AI_Acknowledgements.md](AI_ACKNOWLEDGEMENTS.md).
 
 ## About this file
 
