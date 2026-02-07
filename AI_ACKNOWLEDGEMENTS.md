@@ -53,13 +53,13 @@ Python took more than an hour or two.  It was very stubborn.
 
 I needed spline-driven direction for the `skin` library. GPT gave useful ideas,
 but the workflow was slow - I had to manually copy-paste outputs, often
-discovering errors that required another round trip. I wanted editor
-integration to speed up the iteration cycle. I'd tried GitHub Copilot earlier, so I asked GPT which coding AI followed 
-directions best. It referenced articles showing Claude was slightly better 
-than GPT on coding benchmarks (around 4%). So I tried Claude Code. 
-**It was amazing!**
+discovering errors that required another round trip. I wanted editor integration
+to speed up the iteration cycle. I'd tried GitHub Copilot earlier, so I asked
+GPT which coding AI followed directions best. It referenced articles showing
+Claude was slightly better than GPT on coding benchmarks (around 4%). So I tried
+Claude Code. **It was amazing!**
 
-![Coding benchmark comparison](benchmark.png)  
+![Coding benchmark comparison](benchmark.png)
 *Source: [Anthropic announces Claude Opus 4.5, the new AI coding frontrunner](https://www.itpro.com/technology/artificial-intelligence/anthropic-announces-claude-opus-4-5-the-new-ai-coding-frontrunner?utm_source=chatgpt.com)*
 
 
@@ -107,18 +107,16 @@ it would choose unnecessary ad-hoc scripting instead of the approved workflow
 (`rg` for reads, `apply_patch` for writes), which meant I had to approve every
 effing time. That really pissed me off.
 
-Another big issue is that `apply_patch` appears to be Unix-centric, as it seemed
-to force added lines to end with `LF`, regardless of the file's global setting.
+Another big issue was line endings. `apply_patch` often behaved as if it were
+Unix-centric, adding `LF` lines in files that were otherwise `CRLF`.
 
-I'm hedging a bit here because during my testing, Codex was saying that it
-didn't send a `CRLF` to the `apply_patch` command after the fact. This made it
-appear that it could have been lazy or lying, but it could have been that it
-didn't have the information and was inferring information incorrectly.
+I'm hedging here because Codex later claimed it hadn't sent `CRLF`, so this may
+have been the tool, the model, or both making things up. Either way, it was
+super frustrating!
 
-Regardless, whether it was Codex or the tool it used, it annoyed me to no end. I
-finally got it to check the resulting file and convert back to the correct line
-endings.  That required another command to be accepted, but should be a one-off
-as long as it doesn't get creative and keep changing the fix command.
+I eventually had it verify output and normalize line endings back to the
+expected format. That required extra approvals and overhead that shouldn't
+have been necessary.
 
 Both of these issues had to be significantly reduced by pushing stricter rules
 into `AGENTS.md`, but that itself took effort I should not have had to spend.
@@ -129,4 +127,5 @@ I liked Claude Code's feel much better out of the box.  It felt more polished to
 me than Codex.
 
 Despite the frustrations documented above, once set up properly, both tools
-significantly accelerated my development workflow.
+significantly accelerated my development workflow. Ironically, both helped
+edit this very document.
